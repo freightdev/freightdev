@@ -28,8 +28,8 @@
 ### 💼 Contact + Social
 
 - 📫 `jesse.freightdev@gmail.com`
-- 🌐 [open-hwy.com](https://open-hwy.com) — Open ecosystem for freight agents  
-- 🌐 [fedispatching.com](https://fedispatching.com) — Dispatcher SaaS tools  
+- 🌐 [open-hwy.com](https://open-hwy.com) — OpenHWY's ecosystem for freight agents
+- 🌐 [fedispatching.com](https://fedispatching.com) — FED's dispatcher SaaS tools  
 - 🌐 [8teenwheelers.com](https://8teenwheelers.com) — ELDA’s driver-side node  
 
 ---
@@ -55,7 +55,7 @@
 
 **MIT License** applies to:
 
-- MARK Kernel  
+- MARK  
 - All OpenHWY platform agents (ELDA, FED, ECO, HWY)  
 - Shared infrastructure/tools  
 
