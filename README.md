@@ -13,7 +13,7 @@
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents
 - **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata
 - **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes
-- **[pkg](https://github.com/freightdev/pkg)** — Shared runtime packages and tool layers
+- **[pkgs](https://github.com/freightdev/pkgs)** — Shared runtime packages and tool layers
 - **[docs](https://github.com/freightdev/docs)** — Canonical documentation and architecture
 - **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer
 - **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)
