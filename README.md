@@ -25,7 +25,9 @@ If you’re using this, you’re part of the build.
 ## ☕ Support the Build
 
 If this repo helps you, consider buying me a coffee:  
+
 **👉 [buymeacoffee.com/freightdev](https://buymeacoffee.com/freightdev)**  
+
 Every dollar funds tools for the ones still behind the wheel.
 
 [![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev) 
