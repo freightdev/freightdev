@@ -5,7 +5,7 @@
 
 ---
 
-## 🚧 Still in Development
+## 🚧 Still in Development | ☕ Support the Build
 
 This project is **actively being built**, refined, and soon to be stress-tested in the real world.
 
@@ -20,9 +20,6 @@ If you’re using this, you’re part of the build.
 
 ![status](https://img.shields.io/badge/status-in%20development-orange?style=flat-square)  
 
----
-
-## ☕ Support the Build
 
 If this repo helps you, consider buying me a coffee:  
 
@@ -88,4 +85,10 @@ Every dollar funds tools for the ones still behind the wheel.
 Everything critical runs under **MIT**:  
 > MARK, ELDA, FED, ECO, HWY — the backbone of OpenHWY
 
+---
+
+Built with calloused hands, sleepless nights, and way too much coffee.  
+Thanks for being here.
+
+— Jesse 
 
