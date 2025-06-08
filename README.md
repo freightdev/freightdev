@@ -23,7 +23,7 @@ If you’re using this, you’re part of the build.
 
 If this repo helps you, consider buying me a coffee:  
 
-**👉 [buymeacoffee.com/freightdev](https://buymeacoffee.com/freightdev)**  
+👉 [coff.ee/freightdev](https://coff.ee/freightdev) 
 
 Every dollar funds tools for the ones still behind the wheel.
 
