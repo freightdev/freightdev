@@ -10,7 +10,6 @@
 - **[markstudio](https://github.com/freightdev/markstudio)** — Build your own mark agents and markers
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — open-source MIT agents
 - **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata
-- **[projects](https://github.com/freightdev/projects)** — Planning, flows, staging
 - **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes
 - **[pkg](https://github.com/freightdev/pkg)** — Shared runtime packages and tool layers
 - **[docs](https://github.com/freightdev/docs)** — Canonical documentation and architecture
