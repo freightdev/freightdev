@@ -8,7 +8,7 @@
 
 ### 🚚 Projects in the OpenHWY Ecosystem
 
-- **[freightdev](https://github.com/freightdev/freightdev)** — README.md, journals, philosophy, about me,
+- **[freightdev](https://github.com/freightdev/freightdev)** — README.md, journals, philosophy, me
 - **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)  
 - **[tools](https://github.com/freightdev/tools)** — Marks, Markers, and Custom Logic  
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents  
