@@ -58,5 +58,6 @@
 
 **MIT License** applies to:  
 - **MARK**  
-- All OpenHWY platform agents (ELDA, FED, ECO, HWY)  
-- Shared infrastructure/tools  
+- All OpenHWY platform agents (ELDA, FED, ECO, HWY)
+
+---
