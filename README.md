@@ -1,7 +1,6 @@
 # 👋 Jesse Conley — @freightdev
 
-> AI developer for the freight industry.  
-> Former long-haul driver. Now I build tools that protect the ones still on the road.
+> “I’m Jesse Conley, a former driver building AI for the ones still behind the wheel. I didn’t learn to code to automate away the road — I did it to give it back to the ones it left behind. My stack is fully custom, my tools are fully open, and my goal is simple: build the system before the system builds us.”
 
 ---
 
