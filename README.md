@@ -41,17 +41,17 @@ Every dollar funds tools for the ones still behind the wheel.
 | [`mark`](https://github.com/freightdev/mark)             | Memory Agent Routing Kernel (MARK) — markdown-native orchestration |
 | [`tools`](https://github.com/freightdev/tools)           | Marks, markers, executable tool logic                              |
 | [`agents`](https://github.com/freightdev/agents)         | AI dispatchers (ELDA, FED, HWY, ECO) — MIT-licensed                |
-| [`models`](https://github.com/freightdev/models)         | Routing brains, behavior configs, model logic                      |
+| [`models`](https://github.com/freightdev/models)         | Routing brains, behavior configs, model logic                       |
 | [`archives`](https://github.com/freightdev/archives)     | Logs, prototypes, legacy tests                                     |
 | [`pkgs`](https://github.com/freightdev/pkgs)             | Shared runtime layers and toolkits                                 |
-| [`docs`](https://github.com/freightdev/docs)             | System diagrams, flows, and build guides                           |
+| [`docs`](https://github.com/freightdev/docs)             | System diagrams, flows, and build guides                            |
 | [`showcase`](https://github.com/freightdev/showcase)     | Screenshots, GIFs, and demo media                                  |
 | [`story`](https://github.com/freightdev/story)           | Books, journals, and dev journey                                   |
 | [`infra`](https://github.com/freightdev/infra)           | Kubernetes, CI/CD, server ops                                      |
 | [`www`](https://github.com/freightdev/www)               | Public-facing UI (Vite)                                            |
 | [`apps`](https://github.com/freightdev/apps)             | Internal app stack (Next.js + Expo)                                |
 | [`dashboards`](https://github.com/freightdev/dashboards) | Custom loadboards and data viz                                     |
-| [`platforms`](https://github.com/freightdev/platforms)   | Agent platforms and orchestration flows                            |
+| [`platforms`](https://github.com/freightdev/platforms)   | Agent platforms and orchestration flows                             |
 | [`studios`](https://github.com/freightdev/studios)       | Local AI training, testing, debugging                              |
 | [`repos`](https://github.com/freightdev/repos)           | Monorepo and AI build logic                                        |
 
@@ -60,8 +60,8 @@ Every dollar funds tools for the ones still behind the wheel.
 ## 💼 Contact
 
 * Email: `jesse.freightdev@gmail.com`
-* Website: [**open-hwy.com**](https://open-hwy.com) — freight agent ecosystem
-* Tools: [**fedispatching.com**](https://fedispatching.com) — dispatcher tools + automation
+* OpenHWY-side: [**open-hwy.com**](https://open-hwy.com) — freight agent ecosystem
+* Dispatcher-side: [**fedispatching.com**](https://fedispatching.com) — dispatcher tools + automation
 * Driver-side: [**8teenwheelers.com**](https://8teenwheelers.com) — ELDA’s guardian AI
 
 ---
