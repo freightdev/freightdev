@@ -1,63 +1,60 @@
-# 👋 Jesse Conley — @freightdev
+# 👋 Jesse Conley — [`@freightdev`](https://github.com/freightdev)
 
-> “I’m Jesse Conley, a former driver building AI for the ones still behind the wheel.  
-> I didn’t learn to code to automate away the road — I did it to give it back to the ones it left behind.  
-> My stack is fully custom, my tools are fully open, and my goal is simple: build the system before the system builds us.”
-
----
-
-### 🚚 Projects in the OpenHWY Ecosystem
-
-- **[freightdev](https://github.com/freightdev/freightdev)** — my standards, my philosophy, my ethics, me
-- **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)  
-- **[tools](https://github.com/freightdev/tools)** — Marks, Markers, and Custom Logic  
-- **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents  
-- **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata  
-- **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes  
-- **[pkgs](https://github.com/freightdev/pkgs)** — Shared runtime packages and tool layers  
-- **[docs](https://github.com/freightdev/docs)** — System documentation and architecture  
-- **[showcase](https://github.com/freightdev/showcase)** — Screenshots, GIFs, demos  
-- **[story](https://github.com/freightdev/story)** — Dev journey, books, tales, journals
-- **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer  
-- **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)  
-- **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)  
-- **[dashboards](https://github.com/freightdev/dashboards)** — Custom data and load views  
-- **[platforms](https://github.com/freightdev/platforms)** — Top-level OpenHWY agents and flows  
-- **[studios](https://github.com/freightdev/studios)** — Local agent trainers, debuggers, sandboxes  
-- **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops  
+> “I’m Jesse Conley — a former long-haul trucker who sat down and learned AI so the ones still behind the wheel wouldn’t be left behind.  
+> I didn’t learn to code to automate the road. I learned to build the system before the system builds us.”
 
 ---
 
-### 💼 Contact + Social
+## 🚚 OpenHWY Ecosystem Projects
 
-- 📫 `jesse.freightdev@gmail.com`  
-- 🌐 [open-hwy.com](https://open-hwy.com) — OpenHWY's ecosystem for freight agents  
-- 🌐 [fedispatching.com](https://fedispatching.com) — FED's dispatcher SaaS tools  
-- 🌐 [8teenwheelers.com](https://8teenwheelers.com) — ELDA’s driver-side node  
+| Repo | Purpose |
+|------|---------|
+| **[`freightdev`](https://github.com/freightdev/freightdev)** | Personal standards, philosophy, and raw ethics |
+| **[`mark`](https://github.com/freightdev/mark)** | *Memory Agent Routing Kernel* — Markdown-first task logic |
+| **[`tools`](https://github.com/freightdev/tools)** | Marks, markers, and raw executable logic |
+| **[`agents`](https://github.com/freightdev/agents)** | AI-powered dispatchers: ELDA, FED, HWY, ECO *(all MIT-licensed)* |
+| **[`models`](https://github.com/freightdev/models)** | Routing brains, behavior configs, model logic |
+| **[`archives`](https://github.com/freightdev/archives)** | Logs, prototypes, legacy tests |
+| **[`pkgs`](https://github.com/freightdev/pkgs)** | Shared runtime layers and toolkits |
+| **[`docs`](https://github.com/freightdev/docs)** | System diagrams, flows, and build guides |
+| **[`showcase`](https://github.com/freightdev/showcase)** | Screenshots, GIFs, video demos |
+| **[`story`](https://github.com/freightdev/story)** | My books, journals, and dev journey |
+| **[`infra`](https://github.com/freightdev/infra)** | Kubernetes, CI/CD, server ops |
+| **[`www`](https://github.com/freightdev/www)** | Public-facing UI (Vite) |
+| **[`apps`](https://github.com/freightdev/apps)** | Internal app stack (Next.js + Expo) |
+| **[`dashboards`](https://github.com/freightdev/dashboards)** | Custom loadboards and data viz |
+| **[`platforms`](https://github.com/freightdev/platforms)** | OpenHWY agents and top-level flows |
+| **[`studios`](https://github.com/freightdev/studios)** | Local agent training, debugging, testing |
+| **[`repos`](https://github.com/freightdev/repos)** | Live freight monorepo and AI ops |
 
 ---
 
-### ⚙️ Tech Stack
+## 💼 Contact
+
+- 📧 `jesse.freightdev@gmail.com`  
+- 🌐 [open-hwy.com](https://open-hwy.com) — freight agent ecosystem  
+- 🌐 [fedispatching.com](https://fedispatching.com) — dispatcher tools + automation  
+- 🌐 [8teenwheelers.com](https://8teenwheelers.com) — ELDA’s driver-side guardian
+
+---
+
+## ⚙️ Stack
 
 `Rust` • `Python` • `TypeScript` • `Next.js` • `Vite` • `Expo` • `FastAPI`  
 `LangGraph` • `Ray` • `MARK` • `OpenVINO` • `PyTorch` • `TensorFlow`
 
 ---
 
-### 🧠 Philosophy
+## 🧠 Core Beliefs
 
-> *"Don't replace drivers. Protect them with AI."*  
-> *"Automation isn’t freedom unless the people who built the road still eat."*  
-> *"The only way to beat bad AI is to build better AI — and give it back to the ones who get used by it."*  
-> *"I didn’t learn to code to play along. I built the system I needed when no one else would."*  
-> *"ELDA guards all drivers. FED supports dispatchers. ECO moves freight. HWY logs the truth."*
-
----
-
-### 📦 License
-
-**MIT License** applies to:  
-- **MARK**  
-- All OpenHWY platform agents (ELDA, FED, ECO, HWY)
+> *Don’t replace drivers. Protect them.*  
+> *Automation isn’t freedom unless the ones who built the road still eat.*  
+> *The only way to beat bad AI is to build better AI — and give it back to the ones being used by it.*  
+> *ELDA guards. FED supports. ECO moves. HWY logs.*
 
 ---
+
+## 📄 License
+
+Everything critical runs under **MIT**:  
+> MARK, ELDA, FED, ECO, HWY — the backbone of OpenHWY
