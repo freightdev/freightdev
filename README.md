@@ -33,7 +33,7 @@
 
 ### ⚙️ Tech Stack
 
-`Rust` • `Python` • `TypeScript` • `Next.js` • `Expo` • `FastAPI`  
+`Rust` • `Python` • `TypeScript` • `Next.js` • `Vite` • `Expo` • `FastAPI`  
 `LangGraph` • `CrewAI` • `Ray` • `MARK` • `OpenVINO` • `PyTorch` • `TensorFlow`
 
 ---
