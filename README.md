@@ -60,7 +60,7 @@ Every dollar funds tools for the ones still behind the wheel.
 ## 💼 Contact
 
 * Email: `jesse.freightdev@gmail.com`
-* OpenHWY-side: [**open-hwy.com**](https://open-hwy.com) — freight agent ecosystem
+* Open-side: [**open-hwy.com**](https://open-hwy.com) — freight agent ecosystem
 * Dispatcher-side: [**fedispatching.com**](https://fedispatching.com) — dispatcher tools + automation
 * Driver-side: [**8teenwheelers.com**](https://8teenwheelers.com) — ELDA’s guardian AI
 
