@@ -18,6 +18,8 @@
 - **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer
 - **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)
 - **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)
+- **[dashboards](https://github.com/freightdev/dashboards)** — 
+- **[platforms](https://github.com/freightdev/platforms)** — 
 - **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops
 
 ---
