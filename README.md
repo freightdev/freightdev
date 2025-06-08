@@ -42,7 +42,7 @@
 > *"Automation isn’t freedom unless the people who built the road still eat."*  
 > *"The only way to beat bad AI is to build better AI — and give it back to the ones who get used by it."*  
 > *"I didn’t learn to code to play along. I learned to build the system I needed when no one else would."*  
-> *"ELDA guards the drivers. FED helps the dispatchers. ECO moves freight. MARK runs the flow. HWY logs everything. OpenHWY holds the line."*
+> *"ELDA guards all drivers. FED helps dispatchers. ECO moves world freight. HWY logs and reported everything. OpenHWY holds the line."*
 
 ---
 
@@ -51,7 +51,7 @@
 Everything here is released under the **MIT License**, including:
 - MARK
 - Agents (ELDA, FED, ECO, HWY)
-- Shared tools and infrastructure
+- Shared tools
 
 💸 **Non-Profit/paid**
 - **Models** — Proprietary routing brains and AI configurations
