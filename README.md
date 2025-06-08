@@ -5,7 +5,7 @@
 
 ---
 
-## 🚧 Still in Development | 🙏 Support the Build
+## 🚧 Still in Development
 
 This project is **actively being built**, refined, and soon to be stress-tested in the real world.
 
