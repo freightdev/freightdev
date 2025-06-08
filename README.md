@@ -85,8 +85,6 @@ Every dollar funds tools for the ones still behind the wheel.
 Everything critical runs under **MIT**:  
 > MARK, ELDA, FED, ECO, HWY — the backbone of OpenHWY
 
----
-
 Built with calloused hands, sleepless nights, and way too much coffee.  
 Thanks for being here.
 
