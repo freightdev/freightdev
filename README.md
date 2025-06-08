@@ -8,28 +8,28 @@
 
 ### 🚚 Projects in the OpenHWY Ecosystem
 
-- **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)
-- **[tools](https://github.com/freightdev/tools)** — Marks, Markers, and Custom Logic
-- **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents
-- **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata
-- **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes
-- **[pkgs](https://github.com/freightdev/pkgs)** — Shared runtime packages and tool layers
-- **[docs](https://github.com/freightdev/docs)** — System documentation and architecture
-- **[showcases](https://github.com/freightdev/showcases)** — Screenshots, GIFs, demos
-- **[stories](https://github.com/freightdev/stories)** — Dev journey, books, journals, philosoghy
-- **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer
-- **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)
-- **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)
-- **[dashboards](https://github.com/freightdev/dashboards)** — Custom data and load views
-- **[platforms](https://github.com/freightdev/platforms)** — Top-level OpenHWY agents and flows
-- **[studios](https://github.com/freightdev/studios)** — Local agent trainers, debuggers, sandboxes
-- **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops
+- **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)  
+- **[tools](https://github.com/freightdev/tools)** — Marks, Markers, and Custom Logic  
+- **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents  
+- **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata  
+- **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes  
+- **[pkgs](https://github.com/freightdev/pkgs)** — Shared runtime packages and tool layers  
+- **[docs](https://github.com/freightdev/docs)** — System documentation and architecture  
+- **[showcases](https://github.com/freightdev/showcases)** — Screenshots, GIFs, demos  
+- **[stories](https://github.com/freightdev/stories)** — Dev journey, books, journals, philosophy  
+- **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer  
+- **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)  
+- **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)  
+- **[dashboards](https://github.com/freightdev/dashboards)** — Custom data and load views  
+- **[platforms](https://github.com/freightdev/platforms)** — Top-level OpenHWY agents and flows  
+- **[studios](https://github.com/freightdev/studios)** — Local agent trainers, debuggers, sandboxes  
+- **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops  
 
 ---
 
 ### 💼 Contact + Social
 
-- 📫 `jesse.freightdev@gmail.com`
+- 📫 `jesse.freightdev@gmail.com`  
 - 🌐 [open-hwy.com](https://open-hwy.com) — OpenHWY's ecosystem for freight agents  
 - 🌐 [fedispatching.com](https://fedispatching.com) — FED's dispatcher SaaS tools  
 - 🌐 [8teenwheelers.com](https://8teenwheelers.com) — ELDA’s driver-side node  
@@ -55,8 +55,7 @@
 
 ### 📦 License
 
-**MIT License** applies to:
-
+**MIT License** applies to:  
 - MARK  
 - All OpenHWY platform agents (ELDA, FED, ECO, HWY)  
 - Shared infrastructure/tools  
