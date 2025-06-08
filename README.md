@@ -19,7 +19,6 @@ If you’re using this, you’re part of the build.
 > *“I won’t ship anything I wouldn’t use on the road myself.”* — Jesse
 
 ![status](https://img.shields.io/badge/status-in%20development-orange?style=flat-square)  
-[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev) 
 
 ---
 
@@ -28,6 +27,7 @@ If you’re using this, you’re part of the build.
 If this repo helps you, consider buying me a coffee:  
 **👉 [buymeacoffee.com/freightdev](https://buymeacoffee.com/freightdev)**  
 Every dollar funds tools for the ones still behind the wheel.
+[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev) 
 
 ---
 
