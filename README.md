@@ -28,7 +28,7 @@
 ### 💼 Contact + Social
 
 - 📫 `jesse.freightdev@gmail.com`
-- 🌐 [open-hwy.com](https://open-hwy.com) — OpenHWY's ecosystem for freight agents
+- 🌐 [open-hwy.com](https://open-hwy.com) — OpenHWY's ecosystem for freight agents  
 - 🌐 [fedispatching.com](https://fedispatching.com) — FED's dispatcher SaaS tools  
 - 🌐 [8teenwheelers.com](https://8teenwheelers.com) — ELDA’s driver-side node  
 
@@ -62,4 +62,4 @@
 **🔐 Private / Paid**  
 - **Marks** — Domain-specific logic chains  
 - **Markers** — High-performance orchestration flows  
-- **Models** — Proprietary routing brains + config metadata  
+- **Models** — Proprietary routing brains + config metadata
