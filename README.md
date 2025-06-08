@@ -1,6 +1,6 @@
 # 👋 Jesse Conley — [`@freightdev`](https://github.com/freightdev)
 
-> “I’m Jesse Conley — a former 10yr trucker who sat down and learned AI so the ones still behind the wheel wouldn’t be left behind.  
+> “I’m Jesse Conley — a former long-haul trucker who sat down and learned AI so the ones still behind the wheel wouldn’t be left behind.  
 > I didn’t learn to code to automate the road. I learned to build the system before the system builds us.”
 
 ---
