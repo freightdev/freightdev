@@ -19,7 +19,7 @@
 - **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)
 - **[dashboards](https://github.com/freightdev/dashboards)** — 
 - **[platforms](https://github.com/freightdev/platforms)** —
-- **[studios](https://github.com/freightdev/studios)** — Visual authoring tools for marks and markers
+- **[studios](https://github.com/freightdev/studios)** — 
 - **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops
 
 ---
