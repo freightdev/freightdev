@@ -9,7 +9,7 @@
 ### 🚚 Projects in the OpenHWY Ecosystem
 
 - **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)
-- **[tools](https://github.com/freightdev/tools)** — 
+- **[tools](https://github.com/freightdev/tools)** — Marks and Markers
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents
 - **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata
 - **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes
@@ -18,9 +18,9 @@
 - **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer
 - **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)
 - **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)
-- **[dashboards](https://github.com/freightdev/dashboards)** — 
-- **[platforms](https://github.com/freightdev/platforms)** —
-- **[studios](https://github.com/freightdev/studios)** — 
+- **[dashboards](https://github.com/freightdev/dashboards)** — Custom data and load views
+- **[platforms](https://github.com/freightdev/platforms)** — Top-level OpenHWY agents and flows
+- **[studios](https://github.com/freightdev/studios)** — Local agent trainers, debuggers, sandboxes
 - **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops
 
 ---
@@ -56,12 +56,10 @@
 **MIT License** applies to:
 
 - MARK Kernel  
-- All platform agents (ELDA, FED, ECO, HWY)  
+- All OpenHWY platform agents (ELDA, FED, ECO, HWY)  
 - Shared infrastructure/tools  
 
 **🔐 Private / Paid**  
 - **Marks** — Domain-specific logic chains  
 - **Markers** — High-performance orchestration flows  
 - **Models** — Proprietary routing brains + config metadata  
-
----
