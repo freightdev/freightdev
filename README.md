@@ -17,7 +17,7 @@
 - **[docs](https://github.com/freightdev/docs)** — Canonical documentation and architecture
 - **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer
 - **[www](https://github.com/freightdev/www)** — Public UI (Vite)
-- **[apps](https://github.com/freightdev/apps)** — Private UI (Vite/Next + Expo)
+- **[apps](https://github.com/freightdev/apps)** — Private UI (Vite/Next.js + Expo)
 - **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops
 
 ---
