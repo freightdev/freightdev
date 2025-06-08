@@ -7,7 +7,7 @@
 ### 🚚 Projects in the OpenHWY Ecosystem
 
 - **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)
-- **[markstudio](https://github.com/freightdev/markstudio)** — Build your own marks and markers from chat memory
+- **[markstudio](https://github.com/freightdev/markstudio)** — Build your own marks and markers from scratch
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — open-source MIT platform agents
 - **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata
 - **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes
@@ -50,7 +50,7 @@
 
 Everything here is released under the **MIT License**, including:
 - MARK
-- Agents (ELDA, FED, ECO, HWY, etc.)
+- Agents (ELDA, FED, ECO, HWY)
 - Shared tools and infrastructure
 
 💸 **Non-Profit/paid**
