@@ -24,6 +24,14 @@ Every dollar funds tools for the ones still behind the wheel.
 
 ---
 
+## ☕ Support the Build
+
+If this repo helps you, consider buying me a coffee:  
+**👉 [buymeacoffee.com/freightdev](https://buymeacoffee.com/freightdev)**  
+Every dollar funds tools for the ones still behind the wheel.
+
+---
+
 ## 🚚 OpenHWY Ecosystem Projects
 
 | Repo | Purpose |
