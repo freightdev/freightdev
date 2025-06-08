@@ -58,8 +58,5 @@
 
 **MIT License** applies to:  
 - **MARK**  
-- **Marks** — Domain-specific logic chains  
-- **Markers** — High-performance orchestration flows  
-- **Models** — Proprietary routing brains + config metadata
 - All OpenHWY platform agents (ELDA, FED, ECO, HWY)  
 - Shared infrastructure/tools  
