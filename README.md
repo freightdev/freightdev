@@ -8,6 +8,7 @@
 
 ### 🚚 Projects in the OpenHWY Ecosystem
 
+- **[freightdev](https://github.com/freightdev/freightdev)** — README.md, journals, philosophy, about me,
 - **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)  
 - **[tools](https://github.com/freightdev/tools)** — Marks, Markers, and Custom Logic  
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents  
@@ -16,7 +17,7 @@
 - **[pkgs](https://github.com/freightdev/pkgs)** — Shared runtime packages and tool layers  
 - **[docs](https://github.com/freightdev/docs)** — System documentation and architecture  
 - **[showcases](https://github.com/freightdev/showcases)** — Screenshots, GIFs, demos  
-- **[stories](https://github.com/freightdev/stories)** — Dev journey, books, journals, philosophy  
+- **[stories](https://github.com/freightdev/stories)** — Dev journey, books, tales
 - **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer  
 - **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)  
 - **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)  
