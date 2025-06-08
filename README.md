@@ -9,7 +9,6 @@
 ### 🚚 Projects in the OpenHWY Ecosystem
 
 - **[mark](https://github.com/freightdev/mark)** — Memory Agent Routing Kernel (MARK)
-- **[markstudio](https://github.com/freightdev/markstudio)** — Visual authoring tools for marks and markers
 - **[agents](https://github.com/freightdev/agents)** — ELDA, FED, HWY, ECO — MIT-licensed platform agents
 - **[models](https://github.com/freightdev/models)** — Proprietary routing brains, config layers, behavior metadata
 - **[archives](https://github.com/freightdev/archives)** — Dev logs, test logic, AI prototypes
@@ -19,7 +18,8 @@
 - **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)
 - **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)
 - **[dashboards](https://github.com/freightdev/dashboards)** — 
-- **[platforms](https://github.com/freightdev/platforms)** — 
+- **[platforms](https://github.com/freightdev/platforms)** —
+- **[studios](https://github.com/freightdev/studios)** — Visual authoring tools for marks and markers
 - **[repos](https://github.com/freightdev/repos)** — Full monorepo for real-time freight ops
 
 ---
