@@ -16,7 +16,7 @@
 - **[pkgs](https://github.com/freightdev/pkgs)** — Shared runtime packages and tool layers
 - **[docs](https://github.com/freightdev/docs)** — System documentation and architecture
 - **[showcase](https://github.com/freightdev/showcase)** — Screenshots, GIFs, demos
-- **[story](https://github.com/freightdev/story)** — Dev journey, books, journals, philosoghy
+- **[stories](https://github.com/freightdev/stories)** — Dev journey, books, journals, philosoghy
 - **[infra](https://github.com/freightdev/infra)** — Kubernetes, CI/CD, deployment layer
 - **[www](https://github.com/freightdev/www)** — Public-facing UI (Vite)
 - **[apps](https://github.com/freightdev/apps)** — Internal UI (Next.js + Expo)
