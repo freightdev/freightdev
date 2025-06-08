@@ -29,7 +29,7 @@ Every dollar funds tools for the ones still behind the wheel.
 | Repo | Purpose |
 |------|---------|
 | **[`freightdev`](https://github.com/freightdev/freightdev)** | Personal standards, philosophy, and raw ethics |
-| **[`mark`](https://github.com/freightdev/mark)** | *Markdown Agent Routing Kernel* — Markdown-first task logic |
+| **[`mark`](https://github.com/freightdev/mark)** | *Memory Agent Routing Kernel* — Markdown-first memory marker |
 | **[`tools`](https://github.com/freightdev/tools)** | Marks, markers, and raw executable logic |
 | **[`agents`](https://github.com/freightdev/agents)** | AI-powered dispatchers: ELDA, FED, HWY, ECO *(all MIT-licensed)* |
 | **[`models`](https://github.com/freightdev/models)** | Routing brains, behavior configs, model logic |
