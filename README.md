@@ -7,10 +7,10 @@
 
 ## 🚧 Still in Development | 🙏 Support the Build
 
-This project is **actively being built**, refined, and will soon ready for real world stress-tested.
+This project is **actively being built**, refined, and soon to be stress-tested in the real world.
 
-- Features may change as I break, test, and rebuild everything from the ground up.
-- Some logic is experimental or placeholder until it's solid enough for real deployment.
+- Features may change as I break, test, and rebuild everything from the ground up.  
+- Some logic is experimental or placeholder until it's solid enough for real deployment.  
 - Nothing gets released until it’s strong enough to be trusted by the people it’s built for.
 
 If you’re reading this, you’re early.  
@@ -18,8 +18,8 @@ If you’re using this, you’re part of the build.
 
 > *“I won’t ship anything I wouldn’t use on the road myself.”* — Jesse
 
-![status](https://img.shields.io/badge/status-in%20development-orange?style=flat-square)
-[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev)
+![status](https://img.shields.io/badge/status-in%20development-orange?style=flat-square)  
+[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev)  
 Every dollar funds tools for the ones still behind the wheel.
 
 ---
