@@ -85,5 +85,5 @@ Every dollar funds tools for the ones still behind the wheel.
 Everything critical runs under **MIT**:  
 > MARK, ELDA, FED, ECO, HWY — the backbone of OpenHWY
 
-Every dollar funds tools for the ones still behind the wheel.[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev)
+[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee&style=flat)](https://buymeacoffee.com/freightdev)
 
