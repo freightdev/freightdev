@@ -38,6 +38,9 @@ Every dollar funds tools for the ones still behind the wheel.
 | Repo                                                     | Purpose                                                            |
 | -------------------------------------------------------- | ------------------------------------------------------------------ |
 | [`freightdev`](https://github.com/freightdev/freightdev) | Personal standards, philosophy, stories/journeys, and raw ethics   |
+| [`bookmark`](https://github.com/freightdev/bookmark)     |                            |
+| [`storybook`](https://github.com/freightdev/storybook)   |                            |
+| [`notebook`](https://github.com/freightdev/notebook)     |                            |
 | [`mark`](https://github.com/freightdev/mark)             | Memory Agent Routing Kernel (MARK) — markdown-native orchestration |
 | [`tools`](https://github.com/freightdev/tools)           | Marks, markers, executable tool logic                              |
 | [`agents`](https://github.com/freightdev/agents)         | AI dispatchers (ELDA, FED, HWY, ECO) — MIT-licensed                |
@@ -49,8 +52,6 @@ Every dollar funds tools for the ones still behind the wheel.
 | [`infra`](https://github.com/freightdev/infra)           | Kubernetes, CI/CD, server ops                                      |
 | [`www`](https://github.com/freightdev/www)               | Public-facing UI (Vite)                                            |
 | [`apps`](https://github.com/freightdev/apps)             | Internal app stack (Next.js + Expo)                                |
-| [`dashboards`](https://github.com/freightdev/dashboards) | Custom loadboards and data viz                                     |
-| [`platforms`](https://github.com/freightdev/platforms)   | Agent platforms and orchestration flows                            |
 | [`studios`](https://github.com/freightdev/studios)       | Local AI training, testing, debugging                              |
 | [`repos`](https://github.com/freightdev/repos)           | Monorepo and AI build logic                                        |
 
@@ -68,8 +69,8 @@ Every dollar funds tools for the ones still behind the wheel.
 ## ⚙️ Tech Stack
 
 ```
-Rust • Python • TypeScript • FastAPI • Next.js • Expo • Vite
-LangGraph • Ray • PyTorch • TensorFlow • OpenVINO • MARK
+Rust • Python • FastAPI • TypeScript|JavaScript • Next.js • Expo • Vite
+LangGraph • AutoGen • CrewAI • Ray • Mark • PyTorch • TensorFlow • OpenVINO 
 ```
 
 ---
