@@ -28,9 +28,9 @@ If you’re using this, you’re part of the build.
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
 | [`bookos`](https://github.com/freightdev/bookos)                   | Core operating system for memory-based books                            |
-| [`markcli`](https://github.com/freightdev/markcli)                 | Memory Assisted Routing Kernel (MARK) — markdown-native orchestration   |
-| [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing bookmarks, building book flows, and more    |
-| [`openhwy`](https://github.com/freightdev/openhwy)                 | Unified API and agent ecosystem for logistics, powered by BookOS + MARK |
+| [`markcli`](https://github.com/freightdev/markcli)                 | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
+| [`bookshelf`](https://github.com/freightdev/bookshelf)             | Visual studio for composing bookcases, building book flows, and more     |
+| [`openhwy`](https://github.com/freightdev/openhwy)                 | Unified API and agent ecosystem for logistics, powered by BookOS + MARK  |
 
 ---
 
@@ -56,7 +56,7 @@ Everything critical runs under open licenses:
 
 - **OpenHWY** — MIT  
 - **BookOS** — MIT  
-- **Bookmark Studio** — MIT  
+- **Bookshelf** — MIT  
 - **MARK CLI** — [GMPL-v1](https://your-license-link.com)  
   <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
 
