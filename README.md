@@ -34,18 +34,6 @@ If you’re using this, you’re part of the build.
 
 ---
 
-
-## ✍️ Author
-
-**Jesse Edward Eugene Wayne Conley**
-  - 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
-  - 🔗 [github.com/freightdev](https://github.com/freightdev)
-
-> "I didn’t build this to automate the road. I built it so no one gets left behind."
-
-
----
-
 ## ⚙️ Tech Stack
 
 ```txt
@@ -71,6 +59,16 @@ Everything critical runs under open licenses:
 - **Bookmark Studio** — MIT  
 - **MARK CLI** — [GMPL-v1](https://your-license-link.com)  
   <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
+
+---
+
+## ✍️ Author
+
+**Jesse Edward Eugene Wayne Conley**
+  - 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
+  - 🔗 [github.com/freightdev](https://github.com/freightdev)
+
+> "I didn’t build this to automate the road. I built it so no one gets left behind."
 
 ---
 
