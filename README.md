@@ -71,13 +71,16 @@ Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vi
 
 Everything critical runs under open licenses:
 
-> OpenHWY — MIT
-> BookOS — MIT
-> Bookmark Studio — MIT
-> MARK CLI — [GMPL-v1](./LICENSE.md) *(custom license: free use, open modification of memory routing only)*
+- **OpenHWY** — MIT  
+- **BookOS** — MIT  
+- **Bookmark Studio** — MIT  
+- **MARK CLI** — [GMPL-v1](https://your-license-link.com)  
+  <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
 
+---
 
-Built with calloused hands, sleepless nights, and way too much coffee.
+Built with calloused hands, sleepless nights, and way too much coffee.  
 Thanks for being here.
 
-— Jesse 🚚💻☕️
+— Jesse 🚚💻☕
+
