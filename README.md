@@ -22,17 +22,6 @@ If you’re using this, you’re part of the build.
 
 ---
 
-## ☕️ Support the Build
-
-If this repo helps you, consider buying me a coffee:
-👉 [**coff.ee/freightdev**](https://coff.ee/freightdev)
-
-[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee\&style=flat-square)](https://coff.ee/freightdev)
-
-Every dollar funds tools for the ones still behind the wheel.
-
----
-
 ## 🚚 Projects
 
 | Repo                                                               | Purpose                                                                 |
@@ -76,6 +65,17 @@ Everything critical runs under open licenses:
 - **Bookmark Studio** — MIT  
 - **MARK CLI** — [GMPL-v1](https://your-license-link.com)  
   <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
+
+---
+
+## ☕️ Support the Build
+
+If this repo helps you, consider buying me a coffee:
+👉 [**coff.ee/freightdev**](https://coff.ee/freightdev)
+
+[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee\&style=flat-square)](https://coff.ee/freightdev)
+
+Every dollar funds tools for the ones still behind the wheel.
 
 ---
 
