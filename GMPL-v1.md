@@ -1,4 +1,4 @@
-# GMPL-v1 — Memory Public License v1
+# GMPL-v1 — General Memory Public License v1
 
 ### (Because memory should never be owned)
 
