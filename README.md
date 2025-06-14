@@ -72,14 +72,14 @@ Everything critical runs under open licenses:
 
 ---
 
-## ☕️ Support the Build
+## 💛 Support
 
-If this repo helps you, consider buying me a coffee:
-👉 [**coff.ee/freightdev**](https://coff.ee/freightdev)
+If this project helps you or inspires your agent builds:
+[Buy Me a Coffee](https://coff.ee/freightdev)
 
-[![Buy Me a Coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-yellow?logo=buymeacoffee\&style=flat-square)](https://coff.ee/freightdev)
+Every dollar goes toward tools for the ones still behind the wheel.
 
-Every dollar funds tools for the ones still behind the wheel.
+️ Jesse — [freightdev](https://github.com/freightdev)
 
 ---
 
