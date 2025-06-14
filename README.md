@@ -27,7 +27,6 @@ If you’re using this, you’re part of the build.
 | Repo                                                               | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
-| [`bookos`](https://github.com/freightdev/bookos)                   | Core operating system for memory-based books                            |
 | [`markcli`](https://github.com/freightdev/markcli)                 | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
 | [`bookshelf`](https://github.com/freightdev/bookshelf)             | Visual studio for composing bookcases, building book flows, and more     |
 | [`openhwy`](https://github.com/freightdev/openhwy)                 | Unified API and agent ecosystem for logistics, powered by BookOS + MARK  |
