@@ -28,7 +28,7 @@ If you’re using this, you’re part of the build.
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
 | [`markcli`](https://github.com/freightdev/markcli)                 | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
-| [`bookmark`](https://github.com/freightdev/bookmark)               | Visual studio for composing bookcases, building book flows, and more     |
+| [`bookmark`](https://github.com/freightdev/bookmark)               | Visual studio for composing markers, building book flows, and more       |
 
 | Repo - Private                                                     | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
@@ -56,7 +56,7 @@ Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vi
 
 Everything critical runs under open licenses:
 
-- **Bookshelf** — MIT  
+- **Bookmark** — MIT  
 - **MARK CLI** — [GMPL-v1](https://your-license-link.com)  
   <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
 
