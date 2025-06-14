@@ -34,9 +34,15 @@ If you’re using this, you’re part of the build.
 
 ---
 
-## 💼 Contact
 
-* Email: [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
+## ✍️ Author
+
+**Jesse Edward Eugene Wayne Conley**
+  - 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
+  - 🔗 [github.com/freightdev](https://github.com/freightdev)
+
+> "I didn’t build this to automate the road. I built it so no one gets left behind."
+
 
 ---
 
