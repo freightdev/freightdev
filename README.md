@@ -69,28 +69,20 @@ Rust • Python • TypeScript • MARK • FastAPI • Next.js • Vite • Exp
 
 ---
 
-## ✍️ Author
+## ✍️ Author & Developer
 
 **Jesse Edward Eugene Wayne Conley**
-📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
-🔗 [github.com/freightdev](https://github.com/freightdev)
+* 🧠 [github.com/freightdev](https://github.com/freightdev)
+* 💬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
 
-> "I didn’t build this to automate the road. I built it so no one gets left behind."
+> "If the memory is worth keeping, the mark should hold weight."
 
 ---
 
 ## 💛 Support
 
 If this project helps you or inspires your agent builds:
-[Buy Me a Coffee](https://coff.ee/freightdev)
+👉 [Buy Me a Coffee](https://coff.ee/freightdev)
 
-> Every dollar goes toward tools for the ones still behind the wheel.
+> Every dollar supports building tools for the ones still behind the wheel.
 
-️ Jesse — [freightdev](https://github.com/freightdev)
-
----
-
-Built with calloused hands, sleepless nights, and way too much coffee.
-Thanks for being here.
-
-— Jesse 🚚💻☕
