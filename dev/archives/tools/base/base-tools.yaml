@@ -1,0 +1,17 @@
+## base-tools.yaml
+---
+tools:
+  - name: base_runner.py
+    purpose: entrypoint for running tools
+  - name: tool_base.py
+    purpose: abstract base class for tools
+  - name: tool_validator.py
+    purpose: validation logic for tool metadata and structure
+  - name: tool_config_loader.py
+    purpose: loads and parses configuration files
+  - name: tool_logger.py
+    purpose: standardized logging for tools
+  - name: tool_registry.py
+    purpose: tool registration and dynamic loading system
+  - name: tool_executor.py
+    purpose: executes tool logic in safe runtime contexts

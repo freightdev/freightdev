@@ -1,0 +1,93 @@
+{
+  "models": [
+    {
+      "title": "GPT-4o",
+      "provider": "openai",
+      "apiKey": "${OPENAI_API_KEY}",
+      "model": "gpt-4o",
+      "temperature": 0.3
+    },
+    {
+      "title": "OpenChat Local",
+      "provider": "ollama",
+      "baseUrl": "${OLLAMA_BASE_URL}",
+      "model": "openchat",
+      "temperature": 0.6
+    }
+  ],
+  "defaultModel": "GPT-4o",
+  "autocompleteModel": "GPT-4o",
+  "fallbackModel": "OpenChat Local",
+  "autocompleteNumCompletions": 3,
+  "contextSize": 300000,
+  "allowAnonymousTelemetry": false,
+  "contextFiles": {
+    "include": [
+      "**/*.{ts,tsx,js,jsx,json,md,py,sh,cjs,mjs,yml,yaml,toml}",
+      "!**/node_modules/**",
+      "!**/.next/**",
+      "!**/dist/**",
+      "!**/.git/**",
+      "!**/.storybook/**",
+      "!**/coverage/**",
+      "!**/logs/**"
+    ]
+  },
+  "slashCommands": [
+    // ✨ Core Dev
+    { "name": "/continue", "description": "Continue writing the selected code" },
+    { "name": "/edit", "description": "Edit the selected code using instructions" },
+    { "name": "/ask", "description": "Ask a question about the selected code" },
+    { "name": "/new", "description": "Start a new file from scratch" },
+    { "name": "/explain", "description": "Explain the selected code in detail" },
+    { "name": "/comment", "description": "Add inline comments to explain this code" },
+    { "name": "/refactor", "description": "Refactor the selected code to improve structure" },
+    { "name": "/optimize", "description": "Optimize the selected code for performance" },
+    { "name": "/types", "description": "Add or infer TypeScript types" },
+    { "name": "/doc", "description": "Add documentation or JSDoc to the code" },
+
+    // 🧪 Testing
+    { "name": "/test", "description": "Generate unit tests for the selected code" },
+    { "name": "/debug", "description": "Add debug statements to this code" },
+    { "name": "/fixbug", "description": "Identify and fix bugs in the selected code" },
+    { "name": "/validate", "description": "Validate for syntax or logical issues" },
+
+    // 🧱 UI & Components
+    { "name": "/ui", "description": "Scaffold a new UI component (atom, molecule, etc)" },
+    { "name": "/storybook", "description": "Generate a Storybook story for this component" },
+    { "name": "/tailwind", "description": "Apply Tailwind classes to match design" },
+    { "name": "/responsive", "description": "Make component responsive for mobile" },
+    { "name": "/theme", "description": "Apply UI theme config to component" },
+
+    // ⚙️ Backend & API
+    { "name": "/endpoint", "description": "Create a REST or GraphQL endpoint" },
+    { "name": "/fastapi", "description": "Scaffold a FastAPI route with schema" },
+    { "name": "/auth", "description": "Add authentication logic" },
+    { "name": "/sql", "description": "Generate SQL or ORM query" },
+
+    // 🤖 Agents & Tools
+    { "name": "/agent", "description": "Create a new AI agent structure" },
+    { "name": "/tool", "description": "Scaffold a new AI tool definition" },
+    { "name": "/mark", "description": "Convert file to a .mark agent routing doc" },
+    { "name": "/marker", "description": "Create .marker metadata file for a tool" },
+
+    // 🐚 DevOps / Scripts
+    { "name": "/bash", "description": "Generate a shell script from logic" },
+    { "name": "/docker", "description": "Create a Dockerfile or Compose setup" },
+    { "name": "/k8s", "description": "Generate Kubernetes deployment config" },
+    { "name": "/env", "description": "Create a .env.example from used vars" },
+
+    // 📝 Docs & Readmes
+    { "name": "/readme", "description": "Generate README.md for a package or tool" },
+    { "name": "/onboard", "description": "Write onboarding instructions for new devs" },
+    { "name": "/changelog", "description": "Generate changelog from commit history" },
+    { "name": "/license", "description": "Generate a standard open-source license file" },
+
+    // ✨ Bonus
+    { "name": "/summarize", "description": "Summarize this file" },
+    { "name": "/convert", "description": "Convert this code to another language or style" },
+    { "name": "/compare", "description": "Compare two pieces of code" },
+    { "name": "/lintfix", "description": "Lint and auto-fix this file" },
+    { "name": "/rename", "description": "Rename variables/functions intelligently" }
+  ]
+}

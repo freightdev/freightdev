@@ -1,0 +1,39 @@
+/* packages/ui/src/styles/theme.css */
+/* theme.css */
+
+:root {
+  --background: linear-gradient(to bottom right, #1b002b, #250038, #001f3f);
+  --foreground: #f4f4f5;
+  --accent: #3a004d;
+  --accent-blue: #00336a;
+  --highlight: #ff66c4;
+  --button-bg: #ff66c4;
+  --button-hover-bg: #ff33aa;
+  --button-text: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+}
+
+button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,23 @@
+## tests-tools.yaml
+---
+tools:
+  - name: test_runner.py
+    purpose: centralized test runner for all tool categories
+  - name: test_base_tools.py
+    purpose: tests for base tools
+  - name: test_agents.py
+    purpose: tests for agent orchestration logic
+  - name: test_audio_tools.py
+    purpose: tests for audio processing and transcription tools
+  - name: test_chatops.py
+    purpose: tests for chat-based command and agent interactions
+  - name: test_code_utils.py
+    purpose: tests for code-related tools and utilities
+  - name: test_data_pipeline.py
+    purpose: tests for data processing, cleaning, and structuring tools
+  - name: test_terminal_tools.py
+    purpose: tests for terminal automation and shell-based tools
+  - name: test_document_tools.py
+    purpose: tests for PDF, Markdown, and documentation-related tools
+  - name: test_packetpilot.py
+    purpose: tests for PacketPilot's form-filling logic and web automation

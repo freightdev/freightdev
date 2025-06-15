@@ -1,0 +1,17 @@
+## business-tools.yaml
+---
+tools:
+  - name: invoice_generator.py
+    purpose: generates PDF or structured invoices
+  - name: contract_builder.py
+    purpose: creates and fills standard contract templates
+  - name: payment_tracker.py
+    purpose: logs and manages client payments
+  - name: client_manager.py
+    purpose: stores client contact and engagement data
+  - name: quote_calculator.py
+    purpose: builds job quotes based on parameters
+  - name: revenue_reporter.py
+    purpose: calculates and outputs revenue summaries
+  - name: biz_utils.py
+    purpose: shared helpers (e.g., tax calc, date formatting)

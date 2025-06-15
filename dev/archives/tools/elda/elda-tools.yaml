@@ -1,0 +1,19 @@
+## elda-tools.yaml
+---
+tools:
+  - name: elda_router.py
+    purpose: main interface between ELDA and the local AI agent system
+  - name: elda_guardian.py
+    purpose: AI watchdog that ensures tools stay within ethical/legal bounds
+  - name: elda_licenser.py
+    purpose: verifies OpenHWY license and ELDA tool access rights
+  - name: elda_prompt_cleaner.py
+    purpose: sanitizes user input and prompt context before processing
+  - name: elda_session_manager.py
+    purpose: manages active ELDA user sessions and tool access state
+  - name: elda_learning_tracker.py
+    purpose: tracks user learning milestones and unlock progress
+  - name: elda_policy_enforcer.py
+    purpose: enforces usage rules and subscription constraints
+  - name: elda_local_ui.py
+    purpose: lightweight local web UI for interacting with ELDA

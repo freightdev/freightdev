@@ -1,0 +1,17 @@
+## cargoconnect-tools.yaml
+---
+tools:
+  - name: loadboard_connector.py
+    purpose: manages logins and sessions for load boards
+  - name: scrape_dispatch_data.py
+    purpose: scrapes and extracts load info from web portals
+  - name: online_form_connector.py
+    purpose: connects agents/users to online forms
+  - name: session_manager.py
+    purpose: tracks multiple browser sessions per user
+  - name: tab_switcher.py
+    purpose: handles browser tab focus and task assignment
+  - name: bookmark_loader.py
+    purpose: loads saved broker/loadboard bookmarks
+  - name: connect_utils.py
+    purpose: shared utilities for scraping and session control

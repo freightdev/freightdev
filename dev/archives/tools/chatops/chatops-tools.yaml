@@ -1,0 +1,19 @@
+## chatops-tools.yaml
+---
+tools:
+  - name: chat_logger.py
+    purpose: logs all chat messages and timestamps
+  - name: chat_router.py
+    purpose: routes incoming messages to appropriate agents
+  - name: prompt_formatter.py
+    purpose: formats input/output prompts for agents
+  - name: persona_loader.py
+    purpose: loads predefined agent personas or tones
+  - name: chat_history_fetcher.py
+    purpose: retrieves historical chat context on demand
+  - name: reply_timer.py
+    purpose: adds delay or timing logic to responses
+  - name: interrupt_handler.py
+    purpose: detects and processes conversation interruptions
+  - name: chatops_utils.py
+    purpose: shared functions for chat session handling

@@ -1,0 +1,17 @@
+## packetpilot-tools.yaml
+---
+tools:
+  - name: form_parser.py
+    purpose: parses standard broker and carrier packet forms (PDF/HTML)
+  - name: autofill_engine.py
+    purpose: fills out packet forms automatically based on user profile and load data
+  - name: signature_inserter.py
+    purpose: inserts digital signatures into forms using saved credentials
+  - name: packet_tracker.py
+    purpose: logs status of submitted packets and provides updates
+  - name: form_template_matcher.py
+    purpose: detects and matches forms against known packet templates
+  - name: packetpilot_agent.py
+    purpose: agent wrapper to coordinate form parsing and submission logic
+  - name: error_detector.py
+    purpose: catches missing fields or errors before packet submission

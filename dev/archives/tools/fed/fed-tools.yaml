@@ -1,0 +1,19 @@
+## fed-tools.yaml
+---
+tools:
+  - name: fed_orchestrator.py
+    purpose: central Ray-based coordinator for all FED agents (PacketPilot, CargoConnect, etc.)
+  - name: fed_rate_whisperer.py
+    purpose: calculates and suggests competitive rates during broker calls
+  - name: fed_call_handler.py
+    purpose: manages broker calls, Twilio integration, and AI voice responses
+  - name: fed_task_router.py
+    purpose: routes tasks to the appropriate sub-agent based on context
+  - name: fed_subscription_check.py
+    purpose: enforces usage limits and tier-based access controls
+  - name: fed_logger.py
+    purpose: tracks all actions and decisions made by FED agents
+  - name: fed_shadow_mode.py
+    purpose: enables silent observation and training mode for AI decisions
+  - name: fed_cli_interface.py
+    purpose: command-line interface to interact with FED tools

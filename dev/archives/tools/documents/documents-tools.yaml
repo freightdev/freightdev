@@ -1,0 +1,19 @@
+## documents-tools.yaml
+---
+tools:
+  - name: doc_converter.py
+    purpose: converts between formats: .md ⇄ .pdf, .html, .docx
+  - name: doc_indexer.py
+    purpose: creates semantic indexes (or embeddings) of documents
+  - name: doc_parser.py
+    purpose: extracts structured data (headers, dates, values) from docs
+  - name: doc_redactor.py
+    purpose: redacts sensitive info from documents (PII, API keys, etc.)
+  - name: doc_splitter.py
+    purpose: splits large documents into manageable chunks
+  - name: metadata_extractor.py
+    purpose: extracts and summarizes document metadata
+  - name: pdf_cleaner.py
+    purpose: removes annotations, watermarks, or scanned artifacts
+  - name: template_filler.py
+    purpose: auto-fills forms and templates (e.g., contracts, W-9s)

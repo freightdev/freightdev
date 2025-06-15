@@ -1,0 +1,13 @@
+## visual-tools.yaml
+---
+tools:
+  - name: ascii_renderer.py
+    purpose: converts images or text into ASCII art for terminal display
+  - name: graph_plotter.py
+    purpose: generates matplotlib/seaborn visualizations from data
+  - name: flow_diagram_builder.py
+    purpose: creates flowcharts or diagrams from structured YAML/JSON
+  - name: timeline_generator.py
+    purpose: renders event timelines from logs or structured data
+  - name: ui_mock_preview.py
+    purpose: renders UI mockups from Penpot/Figma exports or configs

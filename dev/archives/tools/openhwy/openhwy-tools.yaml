@@ -1,0 +1,17 @@
+## openhwy-tools.yaml
+---
+tools:
+  - name: license_validator.py
+    purpose: verifies OpenHWY license tokens and driver/dispatcher IDs
+  - name: route_optimizer.py
+    purpose: suggests optimal routes based on load type, weather, and time
+  - name: load_recommender.py
+    purpose: recommends loads to drivers based on preferences and OpenHWY data
+  - name: identity_card_generator.py
+    purpose: creates standardized license card visuals and data for users
+  - name: compliance_checker.py
+    purpose: checks for DOT and FMCSA rule compliance using OpenHWY rules
+  - name: usage_logger.py
+    purpose: logs API/tool usage for transparency and platform contribution
+  - name: openhwy_api_wrapper.py
+    purpose: unified wrapper to access OpenHWY core APIs

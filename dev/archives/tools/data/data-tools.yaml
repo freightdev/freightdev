@@ -1,0 +1,23 @@
+## data-tools.yaml
+---
+tools:
+  - name: csv_cleaner.py
+    purpose: removes nulls, trims whitespace, standardizes headers
+  - name: data_loader.py
+    purpose: loads CSV, JSON, Parquet, DuckDB, etc.
+  - name: data_profiler.py
+    purpose: generates summaries: nulls, uniques, stats
+  - name: deduper.py
+    purpose: finds and removes duplicates from datasets
+  - name: duckdb_query.py
+    purpose: runs SQL queries on local DuckDB databases
+  - name: json_flatten.py
+    purpose: flattens nested JSON into tabular format
+  - name: format_detector.py
+    purpose: detects file formats from byte or content
+  - name: schema_generator.py
+    purpose: infers data schema from file structure
+  - name: splitter.py
+    purpose: splits datasets by row count, percent, or condition
+  - name: type_coercer.py
+    purpose: converts columns to desired types (int, float, str, etc.)

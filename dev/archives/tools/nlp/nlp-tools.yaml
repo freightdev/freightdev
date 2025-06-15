@@ -1,0 +1,19 @@
+## nlp-tools.yaml
+---
+tools:
+  - name: grammar_corrector.py
+    purpose: fixes grammar, punctuation, and structure issues in text
+  - name: keyword_extractor.py
+    purpose: pulls key terms, entities, or topics from a given text
+  - name: language_detector.py
+    purpose: identifies the language of input text (e.g., English, Spanish, etc.)
+  - name: sentiment_analyzer.py
+    purpose: detects emotional tone (positive/neutral/negative) in text
+  - name: summarizer.py
+    purpose: produces short, meaningful summaries of long texts
+  - name: text_classifier.py
+    purpose: classifies text into predefined categories or labels
+  - name: text_embedder.py
+    purpose: encodes text into vector embeddings (for similarity, search, etc.)
+  - name: translator.py
+    purpose: translates text between languages

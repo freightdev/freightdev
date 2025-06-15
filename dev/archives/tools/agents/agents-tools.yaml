@@ -1,0 +1,17 @@
+## agents-tools.yaml
+---
+tools:
+  - name: agent_base.py
+    purpose: abstract agent base class (interfaces, init, lifecycle)
+  - name: agent_config.py
+    purpose: schema and loader for agent configuration files
+  - name: agent_controller.py
+    purpose: manages agent execution, restarts, and delegation
+  - name: agent_registry.py
+    purpose: keeps track of available agents and their metadata
+  - name: agent_router.py
+    purpose: routes tasks to appropriate agents based on type/policy
+  - name: agent_state.py
+    purpose: handles persistent agent state, memory, and session data
+  - name: agent_utils.py
+    purpose: helper functions for agent workflows

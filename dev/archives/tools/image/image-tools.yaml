@@ -1,0 +1,19 @@
+## image-tools.yaml
+---
+tools:
+  - name: image_captioner.py
+    purpose: generates natural language captions for images using vision-language models
+  - name: image_cleaner.py
+    purpose: removes artifacts, noise, or watermarks from images
+  - name: image_compressor.py
+    purpose: optimizes image file size without major quality loss
+  - name: image_convertor.py
+    purpose: converts between formats (JPG, PNG, WebP, etc.)
+  - name: image_describer.py
+    purpose: extracts semantic content and features from an image
+  - name: image_editor.py
+    purpose: applies transformations: crop, resize, rotate, color adjust
+  - name: image_generator.py
+    purpose: generates synthetic images from prompts (DALL·E, SD, etc.)
+  - name: image_similarity.py
+    purpose: compares images for similarity or duplicates (CLIP, hashing)
