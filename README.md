@@ -24,27 +24,29 @@ If you’re using this, you’re part of the build.
 
 ## 🚚 Projects
 
-| Repo - Public                                                      | Purpose                                                                 |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
-| [`mark`](https://github.com/freightdev/mark)                       | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
-| [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more       |
-| [`bookstore`](https://github.com/freightdev/bookstore)             |        |
-| [`ink-trail`](https://github.com/freightdev/ink-trail)             |        |
-| [`PMSL`](https://github.com/freightdev/PMSL)                       |        |
+### Public Repos
 
-| Repo - Private                                                     | Purpose                                                                 |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| [`openhwy`](https://github.com/freightdev/openhwy)                 | Unified API and agent ecosystem for logistics, powered by MARK           |
+| Repo                                                               | Purpose                                                            |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics   |
+| [`mark`](https://github.com/freightdev/mark)                       | Memory Aware Routing Kernel (MARK) — markdown-native orchestration |
+| [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more  |
+| [`bookstore`](https://github.com/freightdev/bookstore)             | Public marketplace for structured memory: books, marks, ribbons    |
+| [`ink-trail`](https://github.com/freightdev/ink-trail)             | Tokenized usage tracking for paid `.marker` flows                   |
+| [`PMSL`](https://github.com/freightdev/PMSL)                       | Public Memory Structure License — protects structural memory flow   |
 
+### Private Repos
 
+| Repo                                               | Purpose                                                        |
+| -------------------------------------------------- | -------------------------------------------------------------- |
+| [`openhwy`](https://github.com/freightdev/openhwy) | Unified API and agent ecosystem for logistics, powered by MARK  |
 
 ---
 
 ## ⚙️ Tech Stack
 
 ```txt
-Rust • Python • TypeScript/JavaScript • MARK • FastAPI • NextJS/Vite • Expo
+Rust • Python • TypeScript • MARK • FastAPI • Next.js • Vite • Expo
 ```
 
 ---
@@ -59,18 +61,19 @@ Rust • Python • TypeScript/JavaScript • MARK • FastAPI • NextJS/Vite �
 
 ## 📄 License
 
-- **Bookstore** - Proriotary
-- **Bookmark** — MIT  
-- **MARK** — [PMSL-v1]
-- **Ink-Trail** - Proriotary
+* **Bookmark Studio** — MIT
+* **MARK** — [PMSL-v1](https://github.com/freightdev/PMSL)
+* **Bookstore** — Proprietary
+* **Ink Trail** — Proprietary
+* **OpenHWY** — Proprietary / PMSL Hybrid
 
 ---
 
 ## ✍️ Author
 
 **Jesse Edward Eugene Wayne Conley**
-  - 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
-  - 🔗 [github.com/freightdev](https://github.com/freightdev)
+📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
+🔗 [github.com/freightdev](https://github.com/freightdev)
 
 > "I didn’t build this to automate the road. I built it so no one gets left behind."
 
@@ -87,8 +90,7 @@ If this project helps you or inspires your agent builds:
 
 ---
 
-Built with calloused hands, sleepless nights, and way too much coffee.  
+Built with calloused hands, sleepless nights, and way too much coffee.
 Thanks for being here.
 
 — Jesse 🚚💻☕
-
