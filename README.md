@@ -27,8 +27,10 @@ If you’re using this, you’re part of the build.
 | Repo - Public                                                      | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
-| [`markcli`](https://github.com/freightdev/markcli)                 | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
+| [`mark`](https://github.com/freightdev/mark)                       | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
 | [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more       |
+| [`bookstore`](https://github.com/freightdev/bookstore)             |        |
+| [`ink-trail`](https://github.com/freightdev/ink-trail)             |        |
 
 | Repo - Private                                                     | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
