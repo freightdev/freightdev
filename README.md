@@ -28,7 +28,7 @@ If you’re using this, you’re part of the build.
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
 | [`markcli`](https://github.com/freightdev/markcli)                 | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
-| [`bookmark`](https://github.com/freightdev/bookmark)               | Visual studio for composing markers, building book flows, and more       |
+| [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more       |
 
 | Repo - Private                                                     | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
