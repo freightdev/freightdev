@@ -31,17 +31,20 @@ If you’re using this, you’re part of the build.
 | [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more       |
 | [`bookstore`](https://github.com/freightdev/bookstore)             |        |
 | [`ink-trail`](https://github.com/freightdev/ink-trail)             |        |
+| [`PMSL`](https://github.com/freightdev/PMSL)                       |        |
 
 | Repo - Private                                                     | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`openhwy`](https://github.com/freightdev/openhwy)                 | Unified API and agent ecosystem for logistics, powered by MARK           |
+
+
 
 ---
 
 ## ⚙️ Tech Stack
 
 ```txt
-Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vite • Expo
+Rust • Python • TypeScript/JavaScript • MARK • FastAPI • NextJS/Vite • Expo
 ```
 
 ---
@@ -56,11 +59,10 @@ Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vi
 
 ## 📄 License
 
-Everything critical runs under open licenses:
-
+- **Bookstore** - Proriotary
 - **Bookmark** — MIT  
-- **MARK CLI** — [GMPL-v1](https://your-license-link.com)  
-  <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
+- **MARK** — [PMSL-v1]
+- **Ink-Trail** - Proriotary
 
 ---
 
@@ -79,7 +81,7 @@ Everything critical runs under open licenses:
 If this project helps you or inspires your agent builds:
 [Buy Me a Coffee](https://coff.ee/freightdev)
 
-Every dollar goes toward tools for the ones still behind the wheel.
+> Every dollar goes toward tools for the ones still behind the wheel.
 
 ️ Jesse — [freightdev](https://github.com/freightdev)
 
