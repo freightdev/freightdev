@@ -79,8 +79,6 @@ If this project helps you or inspires your agent builds:
 
 Every dollar goes toward tools for the ones still behind the wheel.
 
----
-
 Built with calloused hands, sleepless nights, and way too much coffee.  
 Thanks for being here.
 
