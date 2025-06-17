@@ -1,1 +1,0 @@
-# Ethical Logistic Driver Assistant
