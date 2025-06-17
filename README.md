@@ -56,7 +56,7 @@ Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vi
 
 Everything critical runs under open licenses:
 
-- **Bookmark** — MIT  
+- **Bookmark Studio** — MIT  
 - **MARK** — [PMSL-v1](https://your-license-link.com)  
   <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
 
