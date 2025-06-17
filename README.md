@@ -74,8 +74,8 @@ Everything critical runs under open licenses:
 
 ## 💛 Support
 
-If this project helps you or inspires your agent builds:
-[Buy Me a Coffee](https://coff.ee/freightdev)
+If this project helps you or inspires your agent builds
+* [Buy Me a Coffee](https://coff.ee/freightdev)
 
 Every dollar goes toward tools for the ones still behind the wheel.
 
