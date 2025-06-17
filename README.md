@@ -62,7 +62,7 @@ Everything critical runs under open licenses:
 
 ---
 
-## ✍️ Author
+## ✍️ Author & Developer
 
 **Jesse Edward Eugene Wayne Conley**
   - 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
