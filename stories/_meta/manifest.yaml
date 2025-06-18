@@ -1,0 +1,12 @@
+stories:
+  - id: builder
+    type: narrative
+    tales_file: builder.tales.yaml
+    path: builder-tales/
+    icon: 🛠️
+
+  - id: trucker
+    type: narrative
+    tales_file: trucker.tales.yaml
+    path: trucker-tales/
+    icon: 🚛

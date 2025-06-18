@@ -1,0 +1,13 @@
+tales:
+  builder:
+    - id: tale-1-ill-do-it-anyway
+      title: I`ll Do It Anyway
+      chapters: 32
+
+    - id: tale-2-but-you-said
+      title: But You Said
+      chapters: 32
+
+    - id: tale-3-i-wrote-it-anyway
+      title: I Wrote It Anyway
+      chapters: 32
