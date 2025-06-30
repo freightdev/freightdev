@@ -28,18 +28,23 @@ If you’re using this, you’re part of the build.
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics        |
 | [`mark`](https://github.com/freightdev/mark)                       | Memory Aware Routing Kernel (MARK) — markdown-native orchestration      |
+| [`marketeer`](https://github.com/freightdev/marketeer)             | Book-based routing. Component-first thinking. Agent-native framework.    |
 | [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more       |
+| [`PMSL`](https://github.com/freightdev/PMSL)                       | Because memory should stay free, open, and shareable — forever.         |
+| [`OpenBook`](https://github.com/freightdev/OpenBook)               | Agent Protocol - Open your book, before you approach my family.         |
 
 | Repo - Private                                                     | Purpose                                                                 |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| [`openhwy`](https://github.com/freightdev/openhwy)                 | Unified API and agent ecosystem for logistics, powered by MARK           |
+| [`openhwy`](https://github.com/freightdev/openhwy)                 | Fullstack Monorepo and agent ecosystem for logistics, powered by MARK   |
+| [`bookstore`](https://github.com/freightdev/bookstore)             | Official **distribution and orchestration hub** for memory-based books    |
+| [`ink-trail`](https://github.com/freightdev/ink-trail)             | Tokenized Logic Layer for trailing Marker Agents executions             |
 
 ---
 
 ## ⚙️ Tech Stack
 
 ```txt
-Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vite • Expo
+Markdown • MARKeteer • MARK CLI • Rust • TypeScript/JavaScript • YAML/JSON
 ```
 
 ---
@@ -49,16 +54,21 @@ Rust • Python • TypeScript/JavaScript • MARK CLI • FastAPI • NextJS/Vi
 > Don’t replace drivers. Protect them.
 > Automation isn’t freedom unless the ones who built the road still eat.
 > The only way to beat bad AI is to build better AI — and give it back to the ones being used by it.
-
+> Agents can help this world, but trust is earned not given. Show me your book(memory flows), and let me decide if I trust you around my family.
 ---
 
 ## 📄 License
 
 Everything critical runs under open licenses:
 
-- **Bookmark Studio** — MIT  
-- **MARK** — [PMSL-v1](https://your-license-link.com)  
+- **MARK** — [PMSL-v1](https://your-license-link.com)
   <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
+- **OpenHWY** — [PMSL-v1](https://your-license-link.com)
+  <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
+- **MARKeteer** — MIT
+- **Bookmark Studio** — MIT
+- **Bookstore** — Propriotry
+- **OpenHWY** — Propriotry
 
 ---
 
@@ -79,7 +89,7 @@ If this project helps you or inspires your agent builds
 
 Every dollar goes toward tools for the ones still behind the wheel.
 
-Built with calloused hands, sleepless nights, and way too much coffee.  
+Built with calloused hands, sleepless nights, and way too much coffee.
 Thanks for being here.
 
 — Jesse 🚚💻☕
