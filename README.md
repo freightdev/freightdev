@@ -22,22 +22,44 @@ If you’re using this, you’re part of the build.
 
 ---
 
-## 🚚 Projects
+## 🌊 License
 
 | Repo - Public                                                      | Purpose                                                               |
 | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| [`freightdev`](https://github.com/freightdev/freightdev)           | Personal standards, philosophy, stories/journeys, and raw ethics      |
-| [`mark`](https://github.com/freightdev/mark)                       | Memory Aware Routing Kernel (MARK) — markdown-native orchestration    |
-| [`marketeer`](https://github.com/freightdev/marketeer)             | Book-based routing. Component-first thinking. Agent-native framework.  |
-| [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more     |
 | [`PMSL`](https://github.com/freightdev/PMSL)                       | Because memory should stay free, open, and shareable — forever.       |
+
+---
+
+## 🌊 Protocols
+
+| Repo - Public                                                      | Purpose                                                               |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
 | [`openbook`](https://github.com/freightdev/openbook)               | Agent Protocol - Open your book, before you approach my family.       |
 
-| Repo - Private                                         | Purpose                                                                |
-| ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| [`openhwy`](https://github.com/freightdev/openhwy)     | Fullstack Monorepo and agent ecosystem for logistics, powered by MARK  |
-| [`bookstore`](https://github.com/freightdev/bookstore) | Official **distribution and orchestration hub** for memory-based books   |
-| [`ink-trail`](https://github.com/freightdev/ink-trail) | Tokenized Logic Layer for trailing Marker Agents executions            |
+---
+
+## 🤗 Open
+
+| Repo - Public                                                      | Purpose                                                               |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| [`mark`](https://github.com/freightdev/mark)                       | Memory Aware Routing Kernel (MARK) — markdown-native orchestration    |
+| [`markos`](https://github.com/freightdev/markos)                   | Powered by MARK, built for memory orchestration. BookUI supported.    |
+| [`marketeer`](https://github.com/freightdev/marketeer)             | Book-based routing. Component-first thinking. Agent-native framework.  |
+| [`bookmark-studio`](https://github.com/freightdev/bookmark-studio) | Visual studio for composing markers, building book flows, and more     |
+| [`bookui`](https://github.com/freightdev/bookui)                   | Designed for making memory readable by humans and agents a-like.      |
+| [`llama-runner`](https://github.com/freightdev/llama-runner)       | Built in Rust. Powered by `llama.cpp`. Tuned for perfection.          |
+
+
+---
+
+## 🚚 Closed
+
+| Repo - Private                                                     | Purpose                                                                |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [`openhwy`](https://github.com/freightdev/openhwy)                 | Fullstack Monorepo and agent ecosystem for logistics, powered by MARK  |
+| [`bookstore`](https://github.com/freightdev/bookstore)             | Official **distribution and orchestration hub** for memory-based books   |
+| [`ink-trail`](https://github.com/freightdev/ink-trail)             | Tokenized Logic Layer for trailing Marker Agents executions           |
+
 
 ---
 
@@ -62,12 +84,21 @@ Markdown • MARKeteer • MARK CLI • Rust • TypeScript/JavaScript • YAML/
 
 Everything critical runs under open licenses:
 
-* **MARK** — [PMSL-v1](https://your-license-link.com) <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
-* **OpenHWY** — [PMSL-v1](https://your-license-link.com) <sub><i>custom license: free to use, modify, and route memory — but improvements must be open</i></sub>
-* **MARKeteer** — MIT
+**Protocols**
+* **OpenBook** — [PMSL-v1](https://github.com/freightdev/PMSL)
+
+**Open-source Projects**
+* **MARK** — MIT
+* **MarkOS** — MIT
+* **BookUI** - MIT
 * **Bookmark Studio** — MIT
-* **Bookstore** — Proprietary
+* **Marketeer** - MIT
+* **Llama-Runner** — MIT
+
+**Closed Projects**
 * **OpenHWY** — Proprietary
+* **Bookstore** — Proprietary
+* **Ink-Trails** - Proprietary
 
 ---
 
@@ -77,9 +108,9 @@ Everything critical runs under open licenses:
 
 * 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
 * 🔗 [github.com/freightdev](https://github.com/freightdev)
+* 🤗 [huggingface.co/freightdev](https://huggingface.co/freightdev)
 * 🔌 [x.com/freightdevjesse](https://x.com/freightdevjesse)
 * 🖇️ [linkedin.com/in/freightdevjesse](https://linkedin.com/in/freightdevjesse)
-* 🤗 [huggingface.co/freightdev](https://huggingface.co/freightdev)
               
 > "I didn’t build this to automate the road. I built it so no one gets left behind."
 
