@@ -78,7 +78,7 @@ Everything critical runs under open licenses:
 * 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
 * 🔗 [github.com/freightdev](https://github.com/freightdev)
 * 🔌 [x.com/freightdevjesse](https://x.com/freightdevjesse)
-* 🖇️ [linkedin.com/in/freightdevjesse](www.linkedin.com/in/freightdevjesse)
+* 🖇️ [linkedin.com/in/freightdevjesse](https://linkedin.com/in/freightdevjesse)
               
 > "I didn’t build this to automate the road. I built it so no one gets left behind."
 
