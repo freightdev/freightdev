@@ -77,8 +77,8 @@ Everything critical runs under open licenses:
 
 * 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
 * 🔗 [github.com/freightdev](https://github.com/freightdev)
-
-<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="VERTICAL" data-vanity="freightdevjesse" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://www.linkedin.com/in/freightdevjesse?trk=profile-badge">Jesse Conley</a></div>
+* 🔌 [x.com/freightdevjesse](https://x.com/freightdevjesse)
+* 🖇️ [linkedin.com/in/freightdevjesse](www.linkedin.com/in/freightdevjesse)
               
 > "I didn’t build this to automate the road. I built it so no one gets left behind."
 
