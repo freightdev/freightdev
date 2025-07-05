@@ -28,7 +28,7 @@ These tools are **actively evolving**, being field-tested, and rebuilt daily.
 | Repo                                                 | Purpose                                                               |
 | ---------------------------------------------------- | --------------------------------------------------------------------- |
 | [`openbook`](https://github.com/freightdev/openbook) | Agent protocol. *Open your book before you approach my family.*       |
-| [`PMSL`](https://github.com/freightdev/PMSL)         | **Publicly Shared Memory License** — keep memory open and shareable. |
+| [`PMSL`](https://github.com/freightdev/PMSL)         | **Public Memory Structure License** — keep memory open and shareable. |
 
 ### 🤗 Open Tools
 
@@ -76,7 +76,7 @@ Rust • TypeScript • MARK CLI • Markdown • YAML • JSON • AI Agents �
 
 | Project Category     | License Type                                                                    |
 | -------------------- | ------------------------------------------------------------------------------- |
-| **Protocols**        | [PMSL-v1](https://github.com/freightdev/PMSL) (Permanent Shared Memory License) |
+| **Protocols**        | [PMSL-v1](https://github.com/freightdev/PMSL) (Public Memory Structure License) |
 | **Open Tools**       | MIT                                                                             |
 | **Closed Platforms** | Proprietary                                                                     |
 
