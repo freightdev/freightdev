@@ -28,7 +28,7 @@ These tools are **actively evolving**, being field-tested, and rebuilt daily.
 | Repo                                                 | Purpose                                                               |
 | ---------------------------------------------------- | --------------------------------------------------------------------- |
 | [`openbook`](https://github.com/freightdev/openbook) | Agent protocol. *Open your book before you approach my family.*       |
-| [`PMSL`](https://github.com/freightdev/PMSL)         | **Permanent Shared Memory License** — keep memory open and shareable. |
+| [`PMSL`](https://github.com/freightdev/PMSL)         | **Publicly Shared Memory License** — keep memory open and shareable. |
 
 ### 🤗 Open Tools
 
