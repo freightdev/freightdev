@@ -1,6 +1,7 @@
 # 👋 Jesse Conley — [`@freightdev`](https://github.com/freightdev)
 
 > *"I’m Jesse Conley — a former long-haul trucker who sat down and learned AI so the ones still behind the wheel wouldn’t be left behind.
+> 
 > *“I did build to automate the road. I build so no one gets left behind.”*
 
 ![status](https://img.shields.io/badge/status-in%20development-orange?style=flat-square)
