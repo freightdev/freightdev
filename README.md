@@ -27,14 +27,6 @@ These tools are **actively evolving**, being field-tested, and rebuilt daily.
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
 | [`llama-runner`](https://github.com/freightdev/llama-runner)       | Rust-based runner for `llama.cpp` — optimized and precise.               |
 
-### 🔒 Closed Projects
-
-| Repo                                                   | Purpose                                                          |
-| ------------------------------------------------------ | ---------------------------------------------------------------- |
-| [`openhwy`](https://github.com/freightdev/openhwy)     | Full-stack TMS + agent ecosystem for logistics. Powered by MARK. |
-| [`bookstore`](https://github.com/freightdev/bookstore) | Memory distribution + orchestration hub.                         |
-
-
 ---
 
 ## ⚙️ Tech Stack
@@ -59,7 +51,6 @@ Rust • Go • Python • TypeScript • JavaScript • Markdown • YAML • J
 | Project Category     | License Type                                                                    |
 | -------------------- | ------------------------------------------------------------------------------- |
 | **Open Tools**       | MIT                                                                             |
-| **Closed Platforms** | Proprietary                                                                     |
 
 ---
 
