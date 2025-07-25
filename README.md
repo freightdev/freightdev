@@ -26,7 +26,9 @@ These tools are **actively evolving**, being field-tested, and rebuilt daily.
 
 | Repo                                                               | Purpose                                                                  |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| [`llama-runner`](https://github.com/freightdev/llama-runner)       | Rust-based runner for `llama.cpp` — optimized and precise.               |
+| [`llama-runner`](https://github.com/freightdev/llama-runner)       | Rust-based runner for `llama.cpp`                                        |
+| [`codriver`](https://github.com/freightdev/codiver)                | Rust-based IDE paired with `llama-runner`                                |
+
 
 ---
 
