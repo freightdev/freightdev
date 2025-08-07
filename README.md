@@ -1,59 +1,71 @@
 # 👋 Jesse Conley — [`@freightdev`](https://github.com/freightdev)
 
-> *"I’m Jesse Conley — a former long-haul trucker who sat down and learned AI so the ones still behind the wheel wouldn’t be left behind.
-> 
-> *“I did build to automate the road. I build so no one gets left behind.”*
+---
 
-![status](https://img.shields.io/badge/status-in%20development-orange?style=flat-square)
+## BACKGROUND & CONTEXT
+
+I'm Jesse Conley — a former long-haul trucker (since 2015) who spent all of 2024 in deep, intentional self-education. I’ve learned systems from the silicon level up to AI consciousness. I understand computation from electrical wave modulation through CPU instruction sets to high-level application design.
+
+I learned AI so the ones still behind the wheel wouldn’t be left behind.
 
 ---
 
-## ⚠️ This Is a Live Build
+## TECHNICAL EXPERTISE
 
-These tools are **actively evolving**, being field-tested, and rebuilt daily.
+- **Systems Understanding**  
+  Built my own OS/kernel (`MARK` – *Memory-Aware Routing Kernel*). Understand electricity flow at the silicon level, CPU caching (L1–L7), memory management, and networking from waveform modulation up.
 
-* Features may break, get replaced, or rewritten overnight.
-* Some logic is experimental or placeholder.
-* Nothing ships until it's strong enough to be trusted by the people it’s built for.
+- **Programming Languages**  
+  Rust (preferred), TypeScript, JavaScript, Python, Bash/Zsh, YAML/JSON. Can read C++ and Go.
 
-> *“I won’t ship anything I wouldn’t use for myself.”*
+- **Infrastructure**  
+  Podman/Docker, XFS (prefer ZFS), Linux (Arch), custom ISO building, bare-metal optimization.
 
----
+- **AI/ML**  
+  Built a Rust FFI wrapper around `llama.cpp`. Understand model training structures, token alignment, and semantic memory issues. I *refuse* to train models until I understand data structuring from the ground up.
 
-## 🧱 Core Repositories
-
-### 🤗 Open Tools
-
-| Repo                                                               | Purpose                                                                  |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| [`llama-runner`](https://github.com/freightdev/llama-runner)       | Rust-based runner for `llama.cpp`                                        |
-| [`codriver`](https://github.com/freightdev/codiver)                | Rust-based IDE paired with `llama-runner`                                |
-
+- **Web Development**  
+  Built 400+ atomic TypeScript components. Spent 4 months studying Next.js internals. Now building **Bookmark** — my own framework inspired by Next.js, structured for speed, isolation, and end-user focus.
 
 ---
 
-## ⚙️ Tech Stack
+## PHILOSOPHY
 
-```txt
-Rust • Go • Python • TypeScript • JavaScript • Markdown • YAML • JSON 
-```
+> "If I don’t understand how AI thinks, I don’t deserve to own or control one."
+
+> "I don’t build to automate the road. I build so no one gets left behind."
+
+> "I won’t ship anything I wouldn’t use myself."
+
+> "Automation isn’t freedom unless the ones who built the road still eat."
+
+> "The only way to beat bad AI is to build better AI — and give it back to the ones being used by it."
+
+> "Trust is earned, not given. If you’re building agents, show your memory."
 
 ---
 
-## 🧠 Core Beliefs
+## APPROACH
 
-> Automation isn’t freedom unless the ones who built the road still eat.
-> The only way to beat bad AI is to build better AI — and give it back to the ones being used by it.
-> Trust is earned, not given.
-> If you’re building agents, show your memory.
+- **Learning Method**  
+  Destroy and rebuild systems intentionally to understand failure points.
+
+- **Technical Standards**  
+  Don’t build anything I don’t understand from physics up.
+
+- **AI Ethics**  
+  Building **Trucker Tales** — structured wisdom from real drivers to ground future AI.
+
+- **Spiritual Understanding**  
+  Found divine connection through following light and physics. I understand GOD as the essence of creative order.
 
 ---
 
-## 📄 Licensing
+## GOALS
 
-| Project Category     | License Type                                                                    |
-| -------------------- | ------------------------------------------------------------------------------- |
-| **Open Tools**       | MIT                                                                             |
+To build AI systems that **protect human drivers** — not replace them.  
+To create infrastructure that **bridges wisdom with capability**.  
+To establish trucking platforms that **serve drivers, not exploit them**.
 
 ---
 
@@ -77,6 +89,5 @@ If this inspires your build, saves you time, or helps your agents run smarter:
 Every dollar supports the tools made for the ones still behind the wheel.
 
 > Built with calloused hands, sleepless nights, and way too much coffee.
-> Thanks for being here.
 >
-> — Jesse Conley 🚚💻☕
+> — Jesse E.E.W. Conley 🚚💻☕
