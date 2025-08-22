@@ -19,7 +19,7 @@ I won’t ship anything I wouldn’t use myself.
 ## TECHNICAL EXPERTISE
 
 - **Systems Understanding**  
-  Built my own OS/kernel (`MARK` – *Memory-Aware Routing Kernel*). Understand electricity flow at the silicon level, CPU caching (L1–L7), memory management, and networking from waveform modulation up.
+  Understand electricity flow at the silicon level, CPU caching (L1–L7), memory management, and networking from waveform modulation up.
 
 - **Programming Languages**  
    Zsh(shell/env), Rust (compute power/lowlow stuf), TypeScript (NextJS/React/Expo) , JavaScript (Frontend Scripting), Python(Math Wizard), YAML/JSON(structure).
