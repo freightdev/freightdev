@@ -1,6 +1,0 @@
-# Data directory - contains user conversations and models
-data/
-!data/.gitkeep
-
-# But keep some structure files
-!data/README.md

@@ -1,7 +1,0 @@
-node_modules
-npm-debug.log
-*.log
-.git
-.env
-.DS_Store
-*.md
