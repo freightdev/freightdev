@@ -1,5 +1,5 @@
 {
-  "name": "fed-tms",
+  "name": "openhwy",
   "version": "1.0.0",
   "bin": {
     "next-forge": "dist/index.js"
