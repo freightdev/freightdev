@@ -1,0 +1,18 @@
+# Neovide configuration
+
+[general]
+# Set the frame rate
+idle = true
+idle-timeout = 300
+
+# Font settings
+font-family = "JetBrainsMono Nerd Font"
+font-size = 12
+
+# Animations
+animation-length = 0.1
+scroll-speed = 2
+
+# Cursor
+cursor-animation-length = 0.06
+cursor-trail-size = 0.8

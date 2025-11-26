@@ -1,0 +1,10 @@
+{
+  "id": "tone-analyzer",
+  "label": "Tone Analyzer",
+  "system": "System prompt for Tone Analyzer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,72 @@
+ml-frameworks/
+├── tensorflow/
+│   ├── tensorflow-cuda13/       # Built with CUDA 13 support
+│   │   ├── bin/
+│   │   ├── lib/
+│   │   ├── include/
+│   │   ├── site-packages/
+│   │   └── logs/
+│   ├── configs/                 # Bazel build configs, tuning
+│   ├── models/                  # Pretrained models for TF
+│   └── experiments/             # Experimental builds / dev branches
+├── pytorch/
+│   ├── pytorch-cuda13/          # Built with CUDA 13 support
+│   │   ├── bin/
+│   │   ├── lib/
+│   │   ├── include/
+│   │   ├── site-packages/
+│   │   └── logs/
+│   ├── configs/
+│   ├── models/                  # Pretrained PyTorch models
+│   └── experiments/
+├── jax/
+│   ├── jax-cuda/                # Built with GPU support
+│   ├── jaxlib/
+│   └── experiments/
+├── onnx/
+│   ├── onnxruntime-gpu/
+│   ├── models/
+│   └── converters/              # TF <-> PyTorch <-> ONNX converters
+├── huggingface/
+│   ├── transformers/
+│   ├── datasets/
+│   └── tokenizers/
+├── deep-speed/
+│   ├── deepspeed/
+│   └── configs/
+├── diffusers/
+│   ├── stable-diffusion/
+│   ├── training/
+│   └── inference/
+├── accelerate/
+│   ├── configs/
+│   └── scripts/
+├── scikit-learn/
+│   ├── core/
+│   └── experiments/
+├── xgboost/
+│   ├── gpu/
+│   └── cpu/
+├── lightgbm/
+│   ├── gpu/
+│   └── cpu/
+├── mlflow/                       # Experiment tracking and pipelines
+│   ├── server/
+│   ├── experiments/
+│   └── logs/
+├── ray/                          # Distributed training / orchestration
+│   ├── core/
+│   ├── tune/
+│   └── serve/
+├── triton/                       # Inference server for ML models
+│   ├── bin/
+│   ├── models/
+│   └── configs/
+├── metrics/
+│   ├── benchmarks/
+│   ├── profiling/
+│   └── logs/
+└── docs/
+    ├── setup-guides/
+    ├── framework-comparison/
+    └── tuning/

@@ -1,0 +1,57 @@
+platform_packages:
+  - name: Platform MVP
+    price: 25000
+    timeline: "6-8 weeks"
+    tier: Launch
+    description: >
+      Multi-user platform with user management, dashboards, and core workflows.
+      Perfect for validating marketplace or SaaS concepts with real users.
+    includes:
+      - User registration & profiles
+      - Role-based dashboards
+      - Core platform workflows (2-3)
+      - Payment processing integration
+      - Basic admin panel
+      - API foundation
+      - Mobile-responsive design
+    excludes:
+      - Advanced marketplace features
+      - Complex workflow automation
+      - Third-party integrations
+
+  - name: Platform Professional
+    price: 55000
+    timeline: "8-12 weeks"
+    tier: Professional
+    description: >
+      Complete platform with advanced features, integrations, and scalability.
+      Built for proven concepts ready to compete and scale rapidly.
+    includes:
+      - Everything in Platform MVP
+      - Advanced user management
+      - Notification system
+      - Third-party integrations
+      - Advanced analytics
+      - API documentation
+      - Performance optimization
+      - Support system integration
+    ideal_for:
+      - Validated marketplaces
+      - B2B SaaS platforms
+      - Service platforms
+
+  - name: Platform Enterprise
+    price: 150000+
+    timeline: "14-20 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise-grade platform with white-label options, advanced automation,
+      and enterprise integrations. Built for platform businesses at scale.
+    includes:
+      - Everything in Professional
+      - White-label/multi-tenant architecture
+      - Advanced workflow automation
+      - Enterprise integrations
+      - Custom reporting suite
+      - Advanced security & compliance
+      - Dedicated platform team (6 months)

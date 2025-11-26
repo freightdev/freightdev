@@ -1,0 +1,120 @@
+# .memory/schemas/base/prompt.base.schema.yaml
+
+id:            # Unique ID for this prompt
+  type: string
+  required: true
+
+command:       # The CLI command this prompt is tied to (e.g., ask, clean, create)
+  type: string
+  required: true
+
+name:          # Human-readable name for this prompt
+  type: string
+  required: true
+
+description:   # Summary of what this prompt does
+  type: string
+  required: true
+
+type:          # Prompt type (static, dynamic, generated, template)
+  type: string
+  enum: [static, dynamic, generated, template]
+  default: dynamic
+  required: true
+
+visibility:    # Should this be user-facing or system/internal
+  type: string
+  enum: [public, private, system]
+  default: public
+  required: false
+
+role:          # The assistant or agent role being simulated
+  type: string
+  required: true
+
+goal:          # High-level goal or mission of this prompt
+  type: string
+  required: true
+
+rules:         # Behavioral rules to guide model responses
+  type: array
+  items: string
+  required: false
+
+context:       # Reference to injected context (file, memory, path, etc.)
+  type: array
+  items: string
+  required: false
+
+inputs:        # Acceptable runtime inputs
+  type: object
+  required: false
+  additional:
+    type: object
+    properties:
+      required:
+        type: boolean
+      type:
+        type: string
+      description:
+        type: string
+
+constraints:   # Hard limitations (e.g., avoid JSON, max tokens, etc.)
+  type: array
+  items: string
+  required: false
+
+format:        # Response format (text, json, markdown, html, etc.)
+  type: string
+  enum: [txt, json, md, yaml, html, css, py, js, ts]
+  default: markdown
+  required: false
+
+template:      # Optional inline template string (if no external .md)
+  type: string
+  required: false
+
+path:   # Path to external .md or .tst template file
+  type: string
+  required: true
+
+flags:         # CLI flags that trigger or modify the prompt
+  type: object
+  required: false
+  properties:
+    global:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          type:
+            type: string
+          usage:
+            type: string
+    local:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          type:
+            type: string
+          usage:
+            type: string
+
+response:  # Path or memory slot where the response will go
+  type: string
+  required: false
+
+dependencies:     # Other prompts or agents this depends on
+  type: array
+  items: string
+  required: false
+
+updated_at:
+  type: string
+  format: date-time
+  required: false

@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Loads</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-icon {
+        padding: 10px;
+        width: 40px;
+        height: 40px;
+        justify-content: center;
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    .tab-count {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* FILTERS */
+    .filters {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-label {
+        font-size: 12px;
+        color: #888;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-input, .filter-select {
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .filter-input:focus, .filter-select:focus {
+        outline: none;
+        border-color: #d946ef;
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .toolbar-left {
+        display: flex;
+        gap: 12px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    /* TABLE */
+    .table-container {
+        background: #16213e;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    th {
+        padding: 16px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th:hover {
+        color: #d946ef;
+    }
+
+    td {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tbody tr {
+        transition: all 0.2s;
+    }
+
+    tbody tr:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .load-number {
+        font-weight: 600;
+        color: #d946ef;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-available {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .badge-assigned {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .badge-transit {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+
+    .badge-delivered {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .badge-invoiced {
+        background: rgba(100, 116, 139, 0.2);
+        color: #64748b;
+    }
+
+    .location-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .location-main {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+    }
+
+    .location-time {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .driver-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .driver-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .driver-unassigned {
+        color: #666;
+        font-style: italic;
+    }
+
+    .rate-cell {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .margin-cell {
+        font-size: 12px;
+        color: #10b981;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(217, 70, 239, 0.1);
+        color: #d946ef;
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .action-btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .action-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* PAGINATION */
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .pagination-info {
+        color: #888;
+        font-size: 14px;
+    }
+
+    .pagination-controls {
+        display: flex;
+        gap: 8px;
+    }
+
+    .page-btn {
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: #e0e0e0;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .page-btn:hover {
+        background: rgba(217, 70, 239, 0.1);
+        border-color: #d946ef;
+    }
+
+    .page-btn.active {
+        background: #d946ef;
+        border-color: #d946ef;
+    }
+
+    .page-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-mini {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .stat-mini-value {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stat-mini-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .modal-footer {
+        padding: 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title">Loads</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">
+                        📥 Import from DAT
+                    </button>
+                    <button class="btn btn-secondary">
+                        📤 Export
+                    </button>
+                    <button class="btn btn-primary" onclick="showModal()">
+                        ➕ New Load
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active">All Loads <span class="tab-count">12</span></div>
+                <div class="tab">Available <span class="tab-count">3</span></div>
+                <div class="tab">Assigned <span class="tab-count">2</span></div>
+                <div class="tab">In Transit <span class="tab-count">4</span></div>
+                <div class="tab">Delivered <span class="tab-count">2</span></div>
+                <div class="tab">Invoiced <span class="tab-count">1</span></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- STATS BAR -->
+            <div class="stats-bar">
+                <div class="stat-mini">
+                    <div class="stat-mini-value">12</div>
+                    <div class="stat-mini-label">Total Loads</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">$29.6K</div>
+                    <div class="stat-mini-label">Total Revenue</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">$6.3K</div>
+                    <div class="stat-mini-label">Total Margin</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">2,927</div>
+                    <div class="stat-mini-label">Total Miles</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">$2.48</div>
+                    <div class="stat-mini-label">Avg Rate/Mile</div>
+                </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" class="filter-input" placeholder="Load #, city, commodity...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select">
+                        <option>All Statuses</option>
+                        <option>Available</option>
+                        <option>Assigned</option>
+                        <option>In Transit</option>
+                        <option>Delivered</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Driver</label>
+                    <select class="filter-select">
+                        <option>All Drivers</option>
+                        <option>Unassigned</option>
+                        <option>John Smith</option>
+                        <option>Maria Garcia</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Origin</label>
+                    <input type="text" class="filter-input" placeholder="City or State">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Destination</label>
+                    <input type="text" class="filter-input" placeholder="City or State">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <input type="date" class="filter-input">
+                </div>
+            </div>
+
+            <!-- LOADS TABLE -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Load #</th>
+                            <th>Status</th>
+                            <th>Pickup</th>
+                            <th>Delivery</th>
+                            <th>Driver</th>
+                            <th>Equipment</th>
+                            <th>Miles</th>
+                            <th>Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="load-number">LD-2024-4527</span></td>
+                            <td><span class="badge badge-transit">In Transit</span></td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Houston, TX</div>
+                                    <div class="location-time">Dec 18, 08:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Austin, TX</div>
+                                    <div class="location-time">Dec 18, 04:00 PM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="driver-cell">
+                                    <div class="driver-avatar-small">JS</div>
+                                    <span>John Smith</span>
+                                </div>
+                            </td>
+                            <td>Dry Van</td>
+                            <td>165</td>
+                            <td>
+                                <div class="rate-cell">$2,450</div>
+                                <div class="margin-cell">+$650 margin</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">🗺️ Track</button>
+                                    <button class="action-btn-secondary">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="load-number">LD-2024-4528</span></td>
+                            <td><span class="badge badge-available">Available</span></td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Dallas, TX</div>
+                                    <div class="location-time">Dec 19, 10:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Springfield, MO</div>
+                                    <div class="location-time">Dec 20, 08:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="driver-unassigned">Unassigned</div>
+                            </td>
+                            <td>Dry Van</td>
+                            <td>430</td>
+                            <td>
+                                <div class="rate-cell">$2,150</div>
+                                <div class="margin-cell">+$550 margin</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👤 Assign</button>
+                                    <button class="action-btn-secondary">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="load-number">LD-2024-4529</span></td>
+                            <td><span class="badge badge-assigned">Assigned</span></td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Raytown, MO</div>
+                                    <div class="location-time">Dec 20, 06:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Charlotte, NC</div>
+                                    <div class="location-time">Dec 21, 06:00 PM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="driver-cell">
+                                    <div class="driver-avatar-small">SW</div>
+                                    <span>Sarah Williams</span>
+                                </div>
+                            </td>
+                            <td>Dry Van</td>
+                            <td>985</td>
+                            <td>
+                                <div class="rate-cell">$4,400</div>
+                                <div class="margin-cell">+$1,200 margin</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Docs</button>
+                                    <button class="action-btn-secondary">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="load-number">LD-2024-4530</span></td>
+                            <td><span class="badge badge-delivered">Delivered</span></td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Anaheim, CA</div>
+                                    <div class="location-time">Dec 16, 07:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Las Vegas, NV</div>
+                                    <div class="location-time">Dec 17, 02:00 PM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="driver-cell">
+                                    <div class="driver-avatar-small">MJ</div>
+                                    <span>Mike Johnson</span>
+                                </div>
+                            </td>
+                            <td>Flatbed</td>
+                            <td>270</td>
+                            <td>
+                                <div class="rate-cell">$2,120</div>
+                                <div class="margin-cell">+$570 margin</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">💵 Invoice</button>
+                                    <button class="action-btn-secondary">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="load-number">LD-2024-4531</span></td>
+                            <td><span class="badge badge-available">Available</span></td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Houston, TX</div>
+                                    <div class="location-time">Dec 21, 09:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Austin, TX</div>
+                                    <div class="location-time">Dec 21, 03:00 PM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="driver-unassigned">Unassigned</div>
+                            </td>
+                            <td>Reefer</td>
+                            <td>162</td>
+                            <td>
+                                <div class="rate-cell">$2,650</div>
+                                <div class="margin-cell">+$700 margin</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👤 Assign</button>
+                                    <button class="action-btn-secondary">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="load-number">LD-2024-4532</span></td>
+                            <td><span class="badge badge-available">Available</span></td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Denver, CO</div>
+                                    <div class="location-time">Dec 22, 11:00 AM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="location-cell">
+                                    <div class="location-main">📍 Phoenix, AZ</div>
+                                    <div class="location-time">Dec 23, 04:00 PM</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="driver-unassigned">Unassigned</div>
+                            </td>
+                            <td>Dry Van</td>
+                            <td>815</td>
+                            <td>
+                                <div class="rate-cell">$3,580</div>
+                                <div class="margin-cell">+$930 margin</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👤 Assign</button>
+                                    <button class="action-btn-secondary">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="pagination-info">Showing 1-6 of 12 loads</div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" disabled>Previous</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW LOAD MODAL -->
+<div class="modal" id="newLoadModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Create New Load</div>
+            <button class="modal-close" onclick="hideModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Load Number</label>
+                    <input type="text" class="form-input" value="LD-2024-4533" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Customer/Broker</label>
+                    <select class="form-select">
+                        <option>Select...</option>
+                        <option>FreightLink Logistics</option>
+                        <option>National Freight Solutions</option>
+                        <option>AutoParts Distribution Inc</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Commodity</label>
+                    <input type="text" class="form-input" placeholder="e.g., Electronics">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Weight (lbs)</label>
+                    <input type="number" class="form-input" placeholder="e.g., 42000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Equipment Type</label>
+                    <select class="form-select">
+                        <option>Dry Van</option>
+                        <option>Flatbed</option>
+                        <option>Reefer</option>
+                        <option>Step Deck</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Distance (miles)</label>
+                    <input type="number" class="form-input" placeholder="Auto-calculated">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Pickup Location</label>
+                    <input type="text" class="form-input" placeholder="Full address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pickup Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pickup Time</label>
+                    <input type="time" class="form-input">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Delivery Location</label>
+                    <input type="text" class="form-input" placeholder="Full address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Time</label>
+                    <input type="time" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Rate</label>
+                    <input type="number" class="form-input" placeholder="$2,450">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Driver Pay</label>
+                    <input type="number" class="form-input" placeholder="$1,800">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Special Instructions</label>
+                    <textarea class="form-textarea" placeholder="Loading notes, delivery requirements, etc."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="hideModal()">Cancel</button>
+            <button class="btn btn-primary">Create Load</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showModal() {
+        document.getElementById('newLoadModal').classList.add('show');
+    }
+
+    function hideModal() {
+        document.getElementById('newLoadModal').classList.remove('show');
+    }
+
+    // Close modal on outside click
+    document.getElementById('newLoadModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideModal();
+        }
+    });
+</script>
+</body>
+</html>

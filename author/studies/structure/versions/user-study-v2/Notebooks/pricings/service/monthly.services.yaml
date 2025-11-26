@@ -1,0 +1,39 @@
+monthly_services:
+  - name: Website Maintenance
+    price: 300
+    billing: monthly
+    description: >
+      Keep your website secure, fast, and up-to-date. Perfect for business
+      owners who want to focus on their business, not their website.
+    includes:
+      - Security updates & monitoring
+      - Performance optimization
+      - Content updates (2 hours/month)
+      - Backup management
+      - Email support (business hours)
+
+  - name: App Support
+    price: 800
+    billing: monthly
+    description: >
+      Ongoing support for your web or mobile application. Bug fixes,
+      minor updates, and technical support for your users.
+    includes:
+      - Bug fixes & maintenance
+      - Minor feature updates
+      - Performance monitoring
+      - User support assistance
+      - Priority email/phone support
+
+  - name: Growth Partner
+    price: 1500
+    billing: monthly
+    description: >
+      Ongoing development partnership. New features, optimization,
+      and strategic technical guidance for growing businesses.
+    includes:
+      - 10 hours development time
+      - New feature development
+      - Performance optimization
+      - Strategic consulting
+      - Priority support

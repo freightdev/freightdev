@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: lead_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: leads
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-leads123}
+      POSTGRES_DB: lead_agency
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U leads"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI backend
+  api:
+    build: ./backend
+    container_name: lead_api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://leads:${POSTGRES_PASSWORD:-leads123}@localhost:5432/lead_agency
+      OLLAMA_ENDPOINTS: http://192.168.12.106:11434,http://192.168.12.136:11434,http://192.168.12.66:11434,http://192.168.12.9:11434
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/app:/app/app
+    network_mode: host  # Access Ollama cluster on host network
+
+volumes:
+  postgres-data:

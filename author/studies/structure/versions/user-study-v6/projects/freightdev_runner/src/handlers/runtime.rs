@@ -1,0 +1,7 @@
+streaming
+
+websocket
+
+interactive
+
+batch

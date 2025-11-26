@@ -1,0 +1,307 @@
+#!/usr/bin/env zsh
+
+# ============================================================================
+# FOLDER SCAFFOLD GENERATOR - ACTUALLY WORKING VERSION
+# ============================================================================
+# Dependencies: jq (install with: pacman -S jq)
+# ============================================================================
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+VERSION="2.0.0"
+DRY_RUN=false
+FORCE=false
+DEBUG=false
+
+print_banner() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║${WHITE}         WORKING FOLDER SCAFFOLD GENERATOR v${VERSION}           ${CYAN}║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
+    echo
+}
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_debug() { [[ "$DEBUG" == "true" ]] && echo -e "${CYAN}[DEBUG]${NC} $1"; }
+
+show_usage() {
+    echo "Usage: $0 <input_file> <output_path> [options]"
+    echo
+    echo "Dependencies:"
+    echo "  jq - Install with: pacman -S jq"
+    echo
+    echo "Options:"
+    echo "  --dry, --preview    Show what would be created"
+    echo "  --force            Skip confirmations"
+    echo "  --debug            Enable debug output"
+    echo "  --help, -h         Show this help"
+    echo
+    echo "Example:"
+    echo "  $0 structure.tree ./my-project --dry"
+}
+
+check_dependencies() {
+    if ! command -v jq >/dev/null 2>&1; then
+        log_error "jq is required but not installed"
+        echo "Install with: pacman -S jq"
+        exit 1
+    fi
+}
+
+# Clean line and extract name
+clean_name() {
+    local line="$1"
+    
+    # Remove comments
+    line=$(echo "$line" | sed 's/#.*$//' | sed 's|//.*$||' | sed 's|/\*.*\*/||')
+    
+    # Remove emojis
+    line=$(echo "$line" | sed 's/[🤖🧠📚📝🦙💾📁📄⚙️🔧🎯🚀💡🔍⭐🎨🛠️📊🎭🔒🌟💻🎪]//g')
+    
+    # Remove all tree drawing characters and clean up
+    line=$(echo "$line" | sed -E 's/^[[:space:]]*[│├└─┐┌┘┗┓┏┛┗┃━┣┫┳┻╋╭╮╯╰╱╲╳├─│└┬┴┼╟╢╤╧╪╫╬]*[[:space:]]*//')
+    
+    # Trim whitespace and remove trailing slash
+    line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's|/$||')
+    
+    echo "$line"
+}
+
+# Calculate indentation level
+get_indent_level() {
+    local line="$1"
+    local count=0
+    local i=0
+    
+    while [[ $i -lt ${#line} ]]; do
+        local char="${line:$i:1}"
+        case "$char" in
+            ' ') ((count++)) ;;
+            $'\t') ((count += 4)) ;;
+            '│'|'├'|'└'|'─') ((count += 2)) ;;
+            *) break ;;
+        esac
+        ((i++))
+    done
+    
+    echo $((count / 4))  # Convert to depth level
+}
+
+# Convert tree structure to JSON for proper processing
+tree_to_json() {
+    local input_file="$1"
+    local -a stack=()
+    local -a json_stack=('{}')
+    local line_num=0
+    
+    echo '{"root": {"type": "dir", "children": {}}}' > /tmp/scaffold_temp.json
+    
+    while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
+        ((line_num++))
+        
+        # Skip empty lines
+        [[ -z "$(echo "$raw_line" | tr -d '[:space:]')" ]] && continue
+        
+        local clean=$(clean_name "$raw_line")
+        [[ -z "$clean" ]] && continue
+        
+        local depth=$(get_indent_level "$raw_line")
+        local is_file=false
+        
+        # Determine if it's a file
+        if [[ "$clean" =~ \.[a-zA-Z0-9]+$ ]]; then
+            is_file=true
+        fi
+        
+        log_debug "Line $line_num: depth=$depth, name='$clean', file=$is_file"
+        
+        # Build JSON path
+        local json_path=".root.children"
+        local i=0
+        while [[ $i -lt $depth && $i -lt ${#stack[@]} ]]; do
+            json_path="${json_path}.\"${stack[$i]}\".children"
+            ((i++))
+        done
+        
+        # Adjust stack
+        while [[ ${#stack[@]} -gt $depth ]]; do
+            unset 'stack[-1]'
+        done
+        
+        # Add to JSON
+        if [[ "$is_file" == "true" ]]; then
+            jq "${json_path}.\"$clean\" = {\"type\": \"file\"}" /tmp/scaffold_temp.json > /tmp/scaffold_temp2.json
+            mv /tmp/scaffold_temp2.json /tmp/scaffold_temp.json
+        else
+            jq "${json_path}.\"$clean\" = {\"type\": \"dir\", \"children\": {}}" /tmp/scaffold_temp.json > /tmp/scaffold_temp2.json
+            mv /tmp/scaffold_temp2.json /tmp/scaffold_temp.json
+            stack+=("$clean")
+        fi
+        
+    done < "$input_file"
+}
+
+# Create structure from JSON
+create_from_json() {
+    local output_path="$1"
+    local json_file="/tmp/scaffold_temp.json"
+    local created_dirs=0
+    local created_files=0
+    
+    # Recursive function to process JSON structure
+    process_node() {
+        local current_path="$1"
+        local json_path="$2"
+        
+        # Get all children
+        local children=$(jq -r "${json_path}.children | keys[]" "$json_file" 2>/dev/null)
+        
+        for child in $children; do
+            local child_path="$current_path/$child"
+            local child_json_path="${json_path}.children.\"$child\""
+            local child_type=$(jq -r "${child_json_path}.type" "$json_file" 2>/dev/null)
+            
+            if [[ "$child_type" == "dir" ]]; then
+                if [[ "$DRY_RUN" == "true" ]]; then
+                    echo -e "${CYAN}[DRY]${NC} Dir:  $child_path/"
+                else
+                    mkdir -p "$child_path" && ((created_dirs++))
+                fi
+                log_debug "Created dir: $child_path"
+                
+                # Process children recursively
+                process_node "$child_path" "$child_json_path"
+                
+            elif [[ "$child_type" == "file" ]]; then
+                if [[ "$DRY_RUN" == "true" ]]; then
+                    echo -e "${CYAN}[DRY]${NC} File: $child_path"
+                else
+                    touch "$child_path" && ((created_files++))
+                fi
+                log_debug "Created file: $child_path"
+            fi
+        done
+    }
+    
+    # Create base directory
+    if [[ "$DRY_RUN" != "true" ]]; then
+        mkdir -p "$output_path"
+    fi
+    
+    # Start processing from root
+    process_node "$output_path" ".root"
+    
+    echo
+    log_success "Structure creation complete!"
+    if [[ "$DRY_RUN" == "true" ]]; then
+        echo -e "  ${BLUE}Mode:${NC} Dry run (preview only)"
+    else
+        echo -e "  ${GREEN}Directories:${NC} $created_dirs"
+        echo -e "  ${GREEN}Files:${NC} $created_files"
+    fi
+}
+
+# Main function
+main() {
+    local input_file=""
+    local output_path=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --dry|--preview) DRY_RUN=true; shift ;;
+            --force) FORCE=true; shift ;;
+            --debug) DEBUG=true; shift ;;
+            --help|-h) show_usage; exit 0 ;;
+            -*) log_error "Unknown option: $1"; show_usage; exit 1 ;;
+            *)
+                if [[ -z "$input_file" ]]; then
+                    input_file="$1"
+                elif [[ -z "$output_path" ]]; then
+                    output_path="$1"
+                else
+                    log_error "Too many arguments"
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    print_banner
+    check_dependencies
+    
+    # Validate arguments
+    if [[ -z "$input_file" || -z "$output_path" ]]; then
+        log_error "Both input file and output path required"
+        show_usage
+        exit 1
+    fi
+    
+    if [[ ! -f "$input_file" ]]; then
+        log_error "Input file not found: $input_file"
+        exit 1
+    fi
+    
+    if [[ ! -r "$input_file" ]]; then
+        log_error "Cannot read input file: $input_file"
+        exit 1
+    fi
+    
+    # Check for suspicious patterns
+    local suspicious_patterns=('\$\{' '`' '\$\(' '[;&|<>]' '\.\.\/' '^/')
+    local found_suspicious=false
+    
+    for pattern in "${suspicious_patterns[@]}"; do
+        if grep -qE "$pattern" "$input_file"; then
+            if [[ "$found_suspicious" == "false" ]]; then
+                log_warning "Suspicious patterns detected:"
+                found_suspicious=true
+            fi
+            echo -e "  ${YELLOW}⚠️${NC} Pattern: $pattern"
+        fi
+    done
+    
+    if [[ "$found_suspicious" == "true" && "$FORCE" != "true" ]]; then
+        echo -e "\n${RED}Continue anyway? [y/N]:${NC} "
+        read -r response
+        [[ ! "$response" =~ ^[Yy]$ ]] && exit 1
+    fi
+    
+    # Process the file
+    log_info "Converting tree structure to JSON..."
+    tree_to_json "$input_file"
+    
+    if [[ "$DEBUG" == "true" ]]; then
+        echo -e "\n${CYAN}Generated JSON structure:${NC}"
+        cat /tmp/scaffold_temp.json | jq .
+        echo
+    fi
+    
+    log_info "Creating directory structure..."
+    create_from_json "$output_path"
+    
+    # Show final result
+    if [[ "$DRY_RUN" != "true" ]]; then
+        echo -e "\n${WHITE}Final structure:${NC}"
+        if command -v tree >/dev/null 2>&1; then
+            tree "$output_path"
+        else
+            find "$output_path" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+        fi
+    fi
+    
+    # Cleanup
+    rm -f /tmp/scaffold_temp.json /tmp/scaffold_temp2.json
+}
+
+main "$@"

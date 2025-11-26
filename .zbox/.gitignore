@@ -1,0 +1,50 @@
+# Extra ignores
+.ai/
+.env/
+
+# SSL certificates
+.secret/
+.env
+certs/
+*.pem
+*.key
+*.crt
+
+# Logs
+*.log
+#logs/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test coverage
+coverage.out
+coverage.html
+
+# Projects
+build/
+node_modules/
+__pycache__/
+target/
+Cargo.lock
+.next/
+.turbo/
+.svelte-kit/
+.storybook/
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots

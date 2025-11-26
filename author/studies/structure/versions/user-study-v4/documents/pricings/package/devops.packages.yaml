@@ -1,0 +1,57 @@
+devops_packages:
+  - name: DevOps Starter
+    price: 5500
+    timeline: "2-3 weeks"
+    tier: Foundation
+    description: >
+      Essential CI/CD pipeline and deployment automation. Get your code from
+      development to production safely and consistently.
+    includes:
+      - CI/CD pipeline setup (GitHub Actions/GitLab)
+      - Automated testing integration
+      - Production deployment automation
+      - Environment configuration
+      - Basic monitoring & alerts
+      - Rollback procedures
+    excludes:
+      - Container orchestration
+      - Infrastructure as code
+      - Advanced security scanning
+
+  - name: DevOps Professional
+    price: 12500
+    timeline: "3-4 weeks"
+    tier: Professional
+    description: >
+      Complete DevOps infrastructure with containers, orchestration, and comprehensive monitoring.
+      Perfect for teams serious about reliability and developer productivity.
+    includes:
+      - Everything in DevOps Starter
+      - Docker containerization
+      - Kubernetes orchestration
+      - Infrastructure as Code (Terraform)
+      - Comprehensive logging & monitoring
+      - Security scanning & compliance
+      - Load balancing & auto-scaling
+      - DevOps training session
+    ideal_for:
+      - Growing development teams
+      - Microservices architectures
+      - Compliance-required industries
+
+  - name: DevOps Enterprise
+    price: 35000+
+    timeline: "6-10 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise-grade infrastructure with multi-cloud, disaster recovery, and security.
+      Built for organizations where downtime isn't an option.
+    includes:
+      - Everything in Professional
+      - Multi-cloud architecture
+      - Disaster recovery & backups
+      - Advanced security & compliance
+      - Performance optimization
+      - Custom tooling & integrations
+      - 24/7 monitoring & support
+      - Dedicated DevOps engineer (3 months)

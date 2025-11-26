@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Control Center</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js for reactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* Custom animations and glassmorphism */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .bg-gradient-animated {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Pulse animation for status dots */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#ec4899',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 min-h-screen text-white font-sans"
+      x-data="dashboardApp()"
+      x-init="init()">
+
+    <!-- Loading Screen -->
+    <div x-show="loading" x-transition
+         class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-xl">Initializing Agency Control Center...</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="flex h-screen" x-show="!loading" x-transition>
+
+        <!-- Sidebar -->
+        <aside class="w-64 glass border-r border-white/10 p-6 flex flex-col"
+               :class="sidebarOpen ? 'block' : 'hidden md:flex'">
+
+            <!-- Logo -->
+            <div class="mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center animate-float">
+                        <i class="fas fa-robot text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Agency</h1>
+                        <p class="text-xs text-gray-400">Control Center</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 space-y-2">
+                <a @click="currentView = 'dashboard'"
+                   :class="currentView === 'dashboard' ? 'bg-white/10' : ''"
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer glass-hover">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a @click="currentView = 'services'"
+                   :class="currentView === 'services' ? 'bg-white/10' : ''"
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer glass-hover">
+                    <i class="fas fa-server"></i>
+                    <span>Services</span>
+                </a>
+
+                <a @click="currentView = 'files'"
+                   :class="currentView === 'files' ? 'bg-white/10' : ''"
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer glass-hover">
+                    <i class="fas fa-folder"></i>
+                    <span>Files</span>
+                </a>
+
+                <a @click="currentView = 'markdown'"
+                   :class="currentView === 'markdown' ? 'bg-white/10' : ''"
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer glass-hover">
+                    <i class="fas fa-file-code"></i>
+                    <span>Markdown Editor</span>
+                </a>
+
+                <a @click="currentView = 'logs'"
+                   :class="currentView === 'logs' ? 'bg-white/10' : ''"
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer glass-hover">
+                    <i class="fas fa-terminal"></i>
+                    <span>Logs</span>
+                </a>
+
+                <a @click="currentView = 'settings'"
+                   :class="currentView === 'settings' ? 'bg-white/10' : ''"
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg cursor-pointer glass-hover">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="mt-auto glass rounded-lg p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-accent to-secondary rounded-full flex items-center justify-center">
+                        <span x-text="user.username ? user.username[0].toUpperCase() : 'U'"></span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-sm" x-text="user.full_name || user.username"></p>
+                        <p class="text-xs text-gray-400" x-text="user.role"></p>
+                    </div>
+                    <button @click="logout()" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-hidden flex flex-col">
+
+            <!-- Header -->
+            <header class="glass border-b border-white/10 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold" x-text="getViewTitle()"></h2>
+                        <p class="text-gray-400 text-sm">Last updated: <span x-text="lastUpdate"></span></p>
+                    </div>
+
+                    <!-- System Stats -->
+                    <div class="hidden lg:flex items-center space-x-4">
+                        <div class="glass rounded-lg px-4 py-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-microchip text-primary"></i>
+                                <span class="text-sm">CPU: <span x-text="systemStats.cpu_percent + '%'" class="font-bold"></span></span>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-lg px-4 py-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-memory text-green-400"></i>
+                                <span class="text-sm">RAM: <span x-text="systemStats.memory_percent + '%'" class="font-bold"></span></span>
+                            </div>
+                        </div>
+
+                        <button @click="refreshData()" class="glass rounded-lg px-4 py-2 hover:bg-white/10">
+                            <i class="fas fa-sync-alt" :class="refreshing ? 'animate-spin' : ''"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto p-6">
+
+                <!-- Dashboard View -->
+                <div x-show="currentView === 'dashboard'" x-transition class="space-y-6">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="glass rounded-xl p-6 glass-hover cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-green-400 text-2xl"></i>
+                                </div>
+                                <span class="text-3xl font-bold text-green-400" x-text="services.filter(s => s.status === 'running').length"></span>
+                            </div>
+                            <h3 class="text-gray-400 text-sm">Running Services</h3>
+                        </div>
+
+                        <div class="glass rounded-xl p-6 glass-hover cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-times-circle text-red-400 text-2xl"></i>
+                                </div>
+                                <span class="text-3xl font-bold text-red-400" x-text="services.filter(s => s.status !== 'running').length"></span>
+                            </div>
+                            <h3 class="text-gray-400 text-sm">Stopped Services</h3>
+                        </div>
+
+                        <div class="glass rounded-xl p-6 glass-hover cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-hdd text-blue-400 text-2xl"></i>
+                                </div>
+                                <span class="text-3xl font-bold text-blue-400" x-text="systemStats.disk_percent + '%'"></span>
+                            </div>
+                            <h3 class="text-gray-400 text-sm">Disk Usage</h3>
+                        </div>
+
+                        <div class="glass rounded-xl p-6 glass-hover cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-clock text-purple-400 text-2xl"></i>
+                                </div>
+                                <span class="text-3xl font-bold text-purple-400">24/7</span>
+                            </div>
+                            <h3 class="text-gray-400 text-sm">Uptime</h3>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button @click="startAllServices()"
+                                    class="bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 rounded-lg p-4 text-center">
+                                <i class="fas fa-play text-2xl text-green-400 mb-2"></i>
+                                <p class="text-sm">Start All</p>
+                            </button>
+
+                            <button @click="stopAllServices()"
+                                    class="bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg p-4 text-center">
+                                <i class="fas fa-stop text-2xl text-red-400 mb-2"></i>
+                                <p class="text-sm">Stop All</p>
+                            </button>
+
+                            <button @click="currentView = 'logs'"
+                                    class="bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 rounded-lg p-4 text-center">
+                                <i class="fas fa-terminal text-2xl text-blue-400 mb-2"></i>
+                                <p class="text-sm">View Logs</p>
+                            </button>
+
+                            <button @click="refreshData()"
+                                    class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 rounded-lg p-4 text-center">
+                                <i class="fas fa-sync-alt text-2xl text-purple-400 mb-2"></i>
+                                <p class="text-sm">Refresh</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Services Overview -->
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Services Overview</h3>
+                        <div class="space-y-3">
+                            <template x-for="service in services.slice(0, 5)" :key="service.name">
+                                <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10">
+                                    <div class="flex items-center space-x-4">
+                                        <div :class="service.status === 'running' ? 'bg-green-400' : 'bg-red-400'"
+                                             class="w-3 h-3 rounded-full animate-pulse-slow"></div>
+                                        <div>
+                                            <p class="font-semibold" x-text="service.name"></p>
+                                            <p class="text-sm text-gray-400">Port: <span x-text="service.port"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-400" x-text="service.memory_mb ? service.memory_mb + ' MB' : '--'"></p>
+                                        <p class="text-sm text-gray-400" x-text="service.uptime || '--'"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <button @click="currentView = 'services'" class="w-full mt-4 text-center text-primary hover:text-primary/80">
+                            View All Services →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Services View -->
+                <div x-show="currentView === 'services'" x-transition class="space-y-6">
+                    <div class="grid gap-4">
+                        <template x-for="service in services" :key="service.name">
+                            <div class="glass rounded-xl p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div :class="service.status === 'running' ? 'bg-green-400' : 'bg-red-400'"
+                                             class="w-4 h-4 rounded-full animate-pulse-slow"></div>
+                                        <div class="flex-1">
+                                            <h3 class="text-lg font-bold" x-text="service.name"></h3>
+                                            <p class="text-sm text-gray-400">
+                                                Port: <span x-text="service.port"></span> |
+                                                PID: <span x-text="service.pid || 'N/A'"></span> |
+                                                Uptime: <span x-text="service.uptime || '--'"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center space-x-2">
+                                        <template x-if="service.status === 'running'">
+                                            <button @click="controlService(service.name, 'stop')"
+                                                    class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg">
+                                                <i class="fas fa-stop mr-2"></i>Stop
+                                            </button>
+                                        </template>
+                                        <template x-if="service.status !== 'running'">
+                                            <button @click="controlService(service.name, 'start')"
+                                                    class="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 rounded-lg">
+                                                <i class="fas fa-play mr-2"></i>Start
+                                            </button>
+                                        </template>
+                                        <button @click="controlService(service.name, 'restart')"
+                                                class="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 rounded-lg">
+                                            <i class="fas fa-redo mr-2"></i>Restart
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Service metrics -->
+                                <template x-if="service.status === 'running'">
+                                    <div class="mt-4 grid grid-cols-3 gap-4">
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-primary" x-text="service.cpu_percent + '%'"></p>
+                                            <p class="text-xs text-gray-400">CPU</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-green-400" x-text="service.memory_mb + ' MB'"></p>
+                                            <p class="text-xs text-gray-400">Memory</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-purple-400" x-text="service.uptime"></p>
+                                            <p class="text-xs text-gray-400">Uptime</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Files View -->
+                <div x-show="currentView === 'files'" x-transition class="space-y-6">
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">File Upload</h3>
+                        <div class="border-2 border-dashed border-white/20 rounded-lg p-12 text-center hover:border-primary/50 cursor-pointer"
+                             @dragover.prevent
+                             @drop.prevent="handleFileDrop($event)">
+                            <i class="fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4"></i>
+                            <p class="text-lg mb-2">Drag & drop files here</p>
+                            <p class="text-sm text-gray-400 mb-4">or</p>
+                            <input type="file" id="fileUpload" @change="uploadFile($event)" class="hidden">
+                            <label for="fileUpload" class="px-6 py-3 bg-primary hover:bg-primary/80 rounded-lg cursor-pointer inline-block">
+                                Choose File
+                            </label>
+                        </div>
+
+                        <div x-show="uploadProgress > 0" class="mt-4">
+                            <div class="bg-white/10 rounded-full h-2 overflow-hidden">
+                                <div class="bg-primary h-full transition-all duration-300"
+                                     :style="'width: ' + uploadProgress + '%'"></div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-2 text-center" x-text="uploadProgress + '%'"></p>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Recent Uploads</h3>
+                        <div class="space-y-2">
+                            <template x-for="file in uploadedFiles" :key="file.filename">
+                                <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file text-blue-400"></i>
+                                        <span x-text="file.filename"></span>
+                                    </div>
+                                    <button @click="downloadFile(file.filename)" class="text-primary hover:text-primary/80">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Markdown Editor View -->
+                <div x-show="currentView === 'markdown'" x-transition class="space-y-6">
+                    <div class="glass rounded-xl p-6 h-[600px] flex">
+                        <div class="flex-1 flex flex-col pr-3">
+                            <h3 class="text-lg font-bold mb-3">Editor</h3>
+                            <textarea x-model="markdownContent"
+                                      @input="renderMarkdown()"
+                                      class="flex-1 bg-white/5 border border-white/10 rounded-lg p-4 font-mono text-sm resize-none focus:outline-none focus:border-primary"
+                                      placeholder="# Start writing markdown..."></textarea>
+                        </div>
+                        <div class="flex-1 flex flex-col pl-3 border-l border-white/10">
+                            <h3 class="text-lg font-bold mb-3">Preview</h3>
+                            <div class="flex-1 bg-white/5 border border-white/10 rounded-lg p-4 overflow-y-auto prose prose-invert max-w-none"
+                                 x-html="markdownPreview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs View -->
+                <div x-show="currentView === 'logs'" x-transition class="space-y-6">
+                    <div class="glass rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold">Service Logs</h3>
+                            <select x-model="selectedService" @change="loadLogs()"
+                                    class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                                <option value="">Select service...</option>
+                                <template x-for="service in services" :key="service.name">
+                                    <option :value="service.name" x-text="service.name"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <div class="bg-black/50 rounded-lg p-4 font-mono text-sm h-96 overflow-y-auto">
+                            <template x-for="(log, index) in logs" :key="index">
+                                <div class="mb-1 hover:bg-white/5 px-2 py-1 rounded" x-text="log"></div>
+                            </template>
+                            <template x-if="logs.length === 0">
+                                <p class="text-gray-500 text-center mt-8">Select a service to view logs</p>
+                            </template>
+                        </div>
+
+                        <button @click="loadLogs()" class="mt-4 px-4 py-2 bg-primary hover:bg-primary/80 rounded-lg">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Logs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Settings View -->
+                <div x-show="currentView === 'settings'" x-transition class="space-y-6">
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">User Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Username</label>
+                                <input type="text" :value="user.username" disabled
+                                       class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Email</label>
+                                <input type="email" :value="user.email" disabled
+                                       class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Role</label>
+                                <input type="text" :value="user.role" disabled
+                                       class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4 text-red-400">Danger Zone</h3>
+                        <button @click="stopAllServices()" class="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>Stop All Services
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+# Lead Agency v2 - Filtering Rules
+# Define what makes a lead worth pursuing
+
+budget:
+  # Minimum budget to consider (in USD)
+  min_budget: 300
+
+  # Maximum budget (null = no limit)
+  max_budget: null
+
+  # Budget detection patterns
+  patterns:
+    # "$5000", "$5k", "$5,000"
+    - regex: '\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\d+k)'
+      multiplier: 1
+
+    # "5000 USD", "5k USD"
+    - regex: '(\d+(?:,\d{3})*|\d+k)\s*(?:USD|usd|\$)'
+      multiplier: 1
+
+    # "Budget: 5000"
+    - regex: 'budget:?\s*(\d{1,3}(?:,\d{3})*)'
+      multiplier: 1
+
+tech_stack:
+  # Preferred technologies (boost score)
+  preferred:
+    - "react"
+    - "flutter"
+    - "dart"
+    - "javascript"
+    - "typescript"
+    - "tailwind"
+    - "nextjs"
+    - "node.js"
+    - "python"
+    - "flask"
+    - "jninja2"
+    - "fastapi"
+    - "postgresql"
+    - "surrealdb"
+    - "mongodb"
+    - "kubernetes"
+    - "aws"
+    - "azure"
+    - "docker"
+    - "podman"
+    - "go"
+    - "rust"
+    - "actix web"
+    - "axum"
+
+  # Acceptable technologies (neutral)
+  acceptable:
+    - "vue"
+    - "pytorch"
+    - "tenserflow"
+    - "terraform"
+    - "ansible"
+    - "django"
+    - "angular"
+    - "express"
+    - "nestjs"
+    - "rails"
+    - "laravel"
+    - "php"
+
+  # Red flag technologies (lower score)
+  avoid:
+    - "wordpress plugin"
+    - "shopify theme"
+    - "wix"
+    - "marterial ui"
+    - "squarespace"
+
+project_type:
+  # Types of projects to look for
+  target_types:
+    - "full application"
+    - "website application"
+    - "marketing pages"
+    - "landing pages"
+    - "custom pages"
+    - "AI/ML"
+    - "campaign"
+    - "monorepo"
+    - "platform"
+    - "dashboard"
+    - "portal"
+    - "cloud"
+    - "saas"
+    - "paas"
+    - "api"
+    - "mvp"
+    - "sda"
+    - "pwa"
+
+  # Types to avoid
+  exclude_types:
+    - "template customization"
+    - "wordpress setup"
+    - "fix bug"
+    - "small task"
+
+quality_indicators:
+  # Positive signals
+  good_signs:
+    - "detailed description"
+    - "technical requirements"
+    - "timeline"
+    - "ongoing work"
+    - "established company"
+    - "funded startup"
+    - "equity"
+    - "long-term"
+
+  # Red flags
+  red_flags:
+    - "asap"
+    - "urgent"
+    - "cheap"
+    - "budget friendly"
+    - "student rate"
+    - "exposure"
+    - "for free"
+    - "unpaid"
+    - "rev share only"
+    - "no budget"
+
+min_score:
+  # Minimum score to qualify (0-100)
+  threshold: 20
+
+  # Score to trigger detailed research
+  research_threshold: 50
+
+  # Score to auto-approve for outreach
+  auto_approve_threshold: 80

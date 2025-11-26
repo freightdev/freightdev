@@ -1,0 +1,160 @@
+# docker-compose.yml
+version: "3.8"
+
+services:
+    auth_service:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: auth_service
+        ports:
+            - "${SERVER_PORT:-8080}:8080"
+        environment:
+            - AUTH_DIR=${AUTH_DIR:-$SERVICE_DIR/auth_service}
+            - DATABASE_DIR=${DATABASE_DIR:-$CONTAINER_DIR/datasets}
+            - MIGRATIONS_DIR=${MIGRATIONS_DIR:-$DATABASE_DIR/migrations}
+
+            # Server Configuration
+            - SERVER_PORT=8080
+            - SERVER_HOST=0.0.0.0
+            - ENVIRONMENT=production
+
+            # Database Configuration
+            - DB_HOST=postgres
+            - DB_PORT=5432
+            - DB_USERNAME=postgres
+            - DB_PASSWORD=${DB_PASSWORD:-secure_password}
+            - DB_NAME=auth_service
+            - DB_SSL_MODE=disable
+            - DB_MAX_OPEN_CONNS=25
+            - DB_MAX_IDLE_CONNS=10
+
+            # JWT Configuration
+            - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:-change-this-in-production}
+            - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-change-this-in-production}
+            - JWT_ACCESS_EXPIRY=15m
+            - JWT_REFRESH_EXPIRY=168h
+            - JWT_ISSUER=auth-service
+
+            # Redis Configuration
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+            - REDIS_DB=0
+
+            # Email Configuration (optional)
+            - SMTP_HOST=${SMTP_HOST:-}
+            - SMTP_PORT=${SMTP_PORT:-587}
+            - SMTP_USERNAME=${SMTP_USERNAME:-}
+            - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+            - FROM_EMAIL=${FROM_EMAIL:-noreply@yourapp.com}
+
+            # Security Configuration
+            - RATE_LIMIT_REQUESTS=100
+            - RATE_LIMIT_WINDOW=1h
+            - MAX_LOGIN_ATTEMPTS=5
+            - LOCKOUT_DURATION=15m
+
+            # Logging
+            - LOG_LEVEL=info
+            - LOG_FORMAT=json
+
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_started
+        networks:
+            - auth-network
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 30s
+
+    postgres:
+        image: postgres:15-alpine
+        container_name: auth-postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=${DB_PASSWORD:-secure_password}
+            - POSTGRES_DB=auth_service
+            - PGDATA=${DATA_DIR}/var/lib/postgresql/data/pgdata
+        ports:
+            - "${DB_EXTERNAL_PORT:-5432}:5432"
+        volumes:
+            - postgres_data:${VOLUME_DIR}/var/lib/postgresql/data
+            - ${MIGRATIONS_DIR}/001_initial_schema.up.sql:${VOLUME_DIR}/docker-entrypoint-initdb.d/001_initial_schema.sql:ro
+        networks:
+            - auth-network
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres -d auth_service"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        command: >
+            postgres
+            -c shared_preload_libraries=pg_stat_statements
+            -c pg_stat_statements.max=10000
+            -c pg_stat_statements.track=all
+            -c max_connections=200
+            -c shared_buffers=256MB
+            -c effective_cache_size=1GB
+            -c work_mem=4MB
+            -c maintenance_work_mem=64MB
+
+    redis:
+        image: redis:7-alpine
+        container_name: auth-redis
+        command: >
+            redis-server
+            --appendonly yes
+            --requirepass ${REDIS_PASSWORD:-}
+            --maxmemory 256mb
+            --maxmemory-policy allkeys-lru
+        ports:
+            - "${REDIS_EXTERNAL_PORT:-6379}:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - auth-network
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 10s
+            timeout: 3s
+            retries: 5
+
+    # Optional: Database migration service
+    migrate:
+        image: migrate/migrate:v4.16.2
+        container_name: auth-migrate
+        volumes:
+            - ${MIGRATIONS_DIR}:${VOLUME_DIR}/migrations
+        networks:
+            - auth-network
+        depends_on:
+            postgres:
+                condition: service_healthy
+        command: >
+            -path=${VOLUME_DIR}/migrations
+            -database="postgres://postgres:${DB_PASSWORD:-secure_password}@postgres:5432/auth_service?sslmode=disable"
+            up
+        profiles:
+            - migration
+
+networks:
+    auth-network:
+        driver: bridge
+        name: auth-network
+
+volumes:
+    postgres_data:
+        driver: local
+        name: auth_postgres_data
+    redis_data:
+        driver: local
+        name: auth_redis_data

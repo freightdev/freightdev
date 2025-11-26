@@ -1,0 +1,54 @@
+[package]
+name        = "co_driver"
+version     = "0.1.0"
+edition     = "2025"
+build       = "build.rs"
+description = ""
+license     = "MIT"
+repository  = "https://github.com/freightdev/co_driver"
+readme      = "README.md"
+include     = [
+  "README.md",
+  "src/**/*",
+  "build.rs",
+  "justfile",
+]
+
+[lib]
+name = "co_libs"
+path = "src/lib.rs"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+dialoguer = "0.11"
+colored = "3.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+serde_json = "1.0"
+tokio = { version = "1.38", features = ["full"] }
+walkdir = "2.5.0"
+toml = "0.8.22"
+chrono = "0.4.41"
+difference = "2.0.0"
+env_logger = "0.11"
+libc = "0.2"
+log = "0.4"
+
+[build-dependencies]
+bindgen = "0.72"
+
+[features]
+default        = []
+regen-bindings = []       # toggle with `--features regen-bindings`
+
+[profile.release]
+opt-level     = 3         # trade compile time vs runtime speed - "z" for smaller binaries
+lto           = true      # link-time optimization
+codegen-units = 1         # best-optimized single-unit build
+strip         = "symbols" # strip symbols but keep backtraces
+panic         = "abort"   # smaller binary
+
+[profile.dev]
+opt-level       = 1
+debug           = true
+overflow-checks = true

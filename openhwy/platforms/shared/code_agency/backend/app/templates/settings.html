@@ -1,0 +1,827 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block nav_settings %}active{% endblock %}
+
+{% block head %}
+<style>
+    /* Settings-specific styles */
+    .settings-container {
+        min-height: calc(100vh - 4rem);
+        padding: 2rem;
+    }
+
+    .settings-header {
+        margin-bottom: 2rem;
+    }
+
+    .settings-nav {
+        position: sticky;
+        top: 5rem;
+    }
+
+    .settings-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 0.75rem;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+    }
+
+    .settings-nav-item:hover {
+        background: var(--glass-hover);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .settings-nav-item.active {
+        background: var(--glass-active);
+        color: rgb(196, 181, 253);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .settings-section {
+        display: none;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .settings-section.active {
+        display: block;
+    }
+
+    .model-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .model-card:hover {
+        background: var(--glass-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2);
+    }
+
+    .model-card.selected {
+        background: var(--glass-active);
+        border-color: rgba(139, 92, 246, 0.6);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Custom Range Slider */
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        outline: none;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+
+    /* Custom Checkbox */
+    input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.25rem;
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg);
+        cursor: pointer;
+        position: relative;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    input[type="checkbox"]:checked {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        color: white;
+        font-size: 0.875rem;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .stat-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2);
+    }
+
+    .cluster-health-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+        .settings-container {
+            padding: 1rem;
+        }
+
+        .settings-nav {
+            position: static;
+            margin-bottom: 2rem;
+        }
+
+        .settings-nav-item {
+            font-size: 0.875rem;
+            padding: 0.625rem 0.875rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="settings-header">
+            <h1 class="text-3xl md:text-4xl font-bold text-gradient flex items-center gap-3">
+                <i class="fas fa-cog"></i>
+                Settings
+            </h1>
+            <p class="mt-2 text-gray-300">Configure your AI Agency and Ollama cluster</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Settings Navigation -->
+            <div class="lg:col-span-1">
+                <nav class="settings-nav">
+                    <button class="settings-nav-item active" data-section="ollama">
+                        <i class="fas fa-brain w-5"></i>
+                        <span>Ollama Cluster</span>
+                    </button>
+
+                    <button class="settings-nav-item" data-section="generation">
+                        <i class="fas fa-sliders-h w-5"></i>
+                        <span>Generation</span>
+                    </button>
+
+                    <button class="settings-nav-item" data-section="agents">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Agents</span>
+                    </button>
+
+                    <button class="settings-nav-item" data-section="interface">
+                        <i class="fas fa-palette w-5"></i>
+                        <span>Interface</span>
+                    </button>
+
+                    <button class="settings-nav-item" data-section="system">
+                        <i class="fas fa-server w-5"></i>
+                        <span>System</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="lg:col-span-3">
+                <!-- Ollama Cluster Section -->
+                <div id="ollama-section" class="settings-section active">
+                    <div class="glass-card p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white">Ollama Cluster</h2>
+                                <p class="text-gray-300 text-sm mt-1">Manage your distributed AI models</p>
+                            </div>
+                            <button onclick="refreshClusterInfo()" class="btn-glass">
+                                <i class="fas fa-sync-alt mr-2"></i>Refresh
+                            </button>
+                        </div>
+
+                        <!-- Cluster Health -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                                <i class="fas fa-heartbeat text-purple-400"></i>
+                                Cluster Health
+                            </h3>
+                            <div id="cluster-health" class="space-y-3">
+                                <div class="text-center py-4 text-gray-400">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <p>Checking cluster health...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Available Models -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                                <i class="fas fa-layer-group text-purple-400"></i>
+                                Available Models (<span id="model-count">0</span>)
+                            </h3>
+                            <div id="models-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="text-center py-8 text-gray-400 col-span-full">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <p>Loading models...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generation Settings Section -->
+                <div id="generation-section" class="settings-section">
+                    <div class="glass-card p-6">
+                        <h2 class="text-2xl font-bold text-white mb-2">Generation Parameters</h2>
+                        <p class="text-gray-300 text-sm mb-6">Configure default generation settings</p>
+
+                        <div class="space-y-6">
+                            <!-- Temperature -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Temperature</span>
+                                    <span class="text-purple-300" id="temp-value">0.7</span>
+                                </label>
+                                <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+                                <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                    <span>Focused (0.0)</span>
+                                    <span>Balanced (1.0)</span>
+                                    <span>Creative (2.0)</span>
+                                </div>
+                            </div>
+
+                            <!-- Max Tokens -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Max Tokens</span>
+                                    <span class="text-purple-300" id="tokens-value">512</span>
+                                </label>
+                                <input type="range" id="max-tokens" min="128" max="4096" step="128" value="512">
+                                <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                    <span>Short</span>
+                                    <span>Long</span>
+                                </div>
+                            </div>
+
+                            <!-- Top P -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Top P</span>
+                                    <span class="text-purple-300" id="top-p-value">0.9</span>
+                                </label>
+                                <input type="range" id="top-p" min="0" max="1" step="0.05" value="0.9">
+                                <p class="text-xs text-gray-400 mt-1">Nucleus sampling threshold</p>
+                            </div>
+
+                            <!-- Top K -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Top K</span>
+                                    <span class="text-purple-300" id="top-k-value">40</span>
+                                </label>
+                                <input type="range" id="top-k" min="1" max="100" step="1" value="40">
+                                <p class="text-xs text-gray-400 mt-1">Limits token selection pool</p>
+                            </div>
+
+                            <!-- Repeat Penalty -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Repetition Penalty</span>
+                                    <span class="text-purple-300" id="repeat-penalty-value">1.1</span>
+                                </label>
+                                <input type="range" id="repeat-penalty" min="1" max="2" step="0.05" value="1.1">
+                                <p class="text-xs text-gray-400 mt-1">Penalizes repeated tokens</p>
+                            </div>
+
+                            <div class="flex gap-3 pt-4 border-t border-gray-700">
+                                <button onclick="saveGenerationSettings()" class="btn-glass-primary flex-1">
+                                    <i class="fas fa-save mr-2"></i>Save Settings
+                                </button>
+                                <button onclick="resetGenerationSettings()" class="btn-glass">
+                                    <i class="fas fa-undo mr-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agents Section -->
+                <div id="agents-section" class="settings-section">
+                    <div class="glass-card p-6">
+                        <h2 class="text-2xl font-bold text-white mb-2">Agent Configuration</h2>
+                        <p class="text-gray-300 text-sm mb-6">Configure specialized AI agents</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <!-- Chat Agent -->
+                            <div class="stat-card">
+                                <div class="text-3xl mb-2">💬</div>
+                                <div class="text-white font-semibold">Chat Agent</div>
+                                <div class="text-xs text-gray-400 mt-1">General conversation</div>
+                                <label class="flex items-center justify-center gap-2 mt-3">
+                                    <input type="checkbox" id="chat-agent-enabled" checked>
+                                    <span class="text-sm text-gray-300">Enabled</span>
+                                </label>
+                            </div>
+
+                            <!-- Code Agent -->
+                            <div class="stat-card">
+                                <div class="text-3xl mb-2">💻</div>
+                                <div class="text-white font-semibold">Code Agent</div>
+                                <div class="text-xs text-gray-400 mt-1">Programming help</div>
+                                <label class="flex items-center justify-center gap-2 mt-3">
+                                    <input type="checkbox" id="code-agent-enabled" checked>
+                                    <span class="text-sm text-gray-300">Enabled</span>
+                                </label>
+                            </div>
+
+                            <!-- Analysis Agent -->
+                            <div class="stat-card">
+                                <div class="text-3xl mb-2">📊</div>
+                                <div class="text-white font-semibold">Analysis Agent</div>
+                                <div class="text-xs text-gray-400 mt-1">Data analysis</div>
+                                <label class="flex items-center justify-center gap-2 mt-3">
+                                    <input type="checkbox" id="analysis-agent-enabled" checked>
+                                    <span class="text-sm text-gray-300">Enabled</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-3">
+                                <input type="checkbox" id="auto-routing" checked>
+                                <div>
+                                    <div class="text-white font-medium">Automatic Agent Routing</div>
+                                    <div class="text-xs text-gray-400">Let the system choose the best agent</div>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center gap-3">
+                                <input type="checkbox" id="agent-fallback" checked>
+                                <div>
+                                    <div class="text-white font-medium">Fallback to General Agent</div>
+                                    <div class="text-xs text-gray-400">Use chat agent if specialized agent fails</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interface Section -->
+                <div id="interface-section" class="settings-section">
+                    <div class="glass-card p-6">
+                        <h2 class="text-2xl font-bold text-white mb-2">Interface Preferences</h2>
+                        <p class="text-gray-300 text-sm mb-6">Customize the look and feel</p>
+
+                        <div class="space-y-6">
+                            <!-- Font Size -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Font Size</span>
+                                    <span class="text-purple-300" id="font-size-value">14px</span>
+                                </label>
+                                <input type="range" id="font-size" min="12" max="20" step="1" value="14">
+                            </div>
+
+                            <!-- Animation Speed -->
+                            <div>
+                                <label class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">Animation Speed</span>
+                                    <span class="text-purple-300" id="animation-speed-value">Normal</span>
+                                </label>
+                                <input type="range" id="animation-speed" min="1" max="3" step="1" value="2">
+                                <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                    <span>Slow</span>
+                                    <span>Normal</span>
+                                    <span>Fast</span>
+                                </div>
+                            </div>
+
+                            <!-- UI Options -->
+                            <div class="space-y-3 pt-4 border-t border-gray-700">
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" id="show-timestamps" checked>
+                                    <span class="text-white">Show message timestamps</span>
+                                </label>
+
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" id="compact-mode">
+                                    <span class="text-white">Compact mode</span>
+                                </label>
+
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" id="sound-effects">
+                                    <span class="text-white">Sound effects</span>
+                                </label>
+
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" id="smooth-scroll" checked>
+                                    <span class="text-white">Smooth scrolling</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Section -->
+                <div id="system-section" class="settings-section">
+                    <div class="glass-card p-6">
+                        <h2 class="text-2xl font-bold text-white mb-2">System Information</h2>
+                        <p class="text-gray-300 text-sm mb-6">View system status and performance</p>
+
+                        <!-- System Stats -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="stat-card">
+                                <div class="text-sm text-gray-400 mb-1">CPU Usage</div>
+                                <div class="text-2xl font-bold text-blue-400" id="cpu-usage">--</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="text-sm text-gray-400 mb-1">Memory</div>
+                                <div class="text-2xl font-bold text-green-400" id="memory-usage">--</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="text-sm text-gray-400 mb-1">Disk Space</div>
+                                <div class="text-2xl font-bold text-purple-400" id="disk-usage">--</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="text-sm text-gray-400 mb-1">Uptime</div>
+                                <div class="text-2xl font-bold text-orange-400" id="uptime">--</div>
+                            </div>
+                        </div>
+
+                        <!-- Version Info -->
+                        <div class="glass-card p-4 mb-4">
+                            <h3 class="text-white font-semibold mb-3">Version Information</h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div>
+                                    <span class="text-gray-400">AI Agency:</span>
+                                    <span class="text-white ml-2">v1.0.0</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400">Python:</span>
+                                    <span class="text-white ml-2" id="python-version">--</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400">FastAPI:</span>
+                                    <span class="text-white ml-2" id="fastapi-version">--</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400">Platform:</span>
+                                    <span class="text-white ml-2">Linux</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Actions -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <button onclick="clearCache()" class="btn-glass">
+                                <i class="fas fa-broom mr-2"></i>Clear Cache
+                            </button>
+                            <button onclick="exportSettings()" class="btn-glass">
+                                <i class="fas fa-download mr-2"></i>Export Settings
+                            </button>
+                            <button onclick="importSettings()" class="btn-glass">
+                                <i class="fas fa-upload mr-2"></i>Import Settings
+                            </button>
+                            <button onclick="restartSystem()" class="btn-glass">
+                                <i class="fas fa-power-off mr-2"></i>Restart System
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let clusterData = null;
+    let selectedModel = null;
+
+    // Navigation
+    document.querySelectorAll('.settings-nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const section = item.dataset.section;
+
+            // Update nav active state
+            document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+
+            // Update section visibility
+            document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`${section}-section`).classList.add('active');
+        });
+    });
+
+    // Range slider updates
+    const sliders = [
+        { id: 'temperature', valueId: 'temp-value' },
+        { id: 'max-tokens', valueId: 'tokens-value' },
+        { id: 'top-p', valueId: 'top-p-value' },
+        { id: 'top-k', valueId: 'top-k-value' },
+        { id: 'repeat-penalty', valueId: 'repeat-penalty-value' },
+        { id: 'font-size', valueId: 'font-size-value', suffix: 'px' },
+        { id: 'animation-speed', valueId: 'animation-speed-value', map: ['Slow', 'Normal', 'Fast'] }
+    ];
+
+    sliders.forEach(slider => {
+        const element = document.getElementById(slider.id);
+        const valueElement = document.getElementById(slider.valueId);
+
+        if (element && valueElement) {
+            element.addEventListener('input', (e) => {
+                const value = e.target.value;
+                if (slider.map) {
+                    valueElement.textContent = slider.map[value - 1];
+                } else if (slider.suffix) {
+                    valueElement.textContent = value + slider.suffix;
+                } else {
+                    valueElement.textContent = value;
+                }
+            });
+        }
+    });
+
+    // Load Ollama cluster info
+    async function loadClusterInfo() {
+        try {
+            // Load models
+            const modelsResponse = await fetch('/api/ollama/models');
+            const modelsData = await modelsResponse.json();
+
+            document.getElementById('model-count').textContent = modelsData.count;
+
+            const modelsList = document.getElementById('models-list');
+            modelsList.innerHTML = '';
+
+            modelsData.models.forEach(model => {
+                const sizeMB = (model.size / (1024 * 1024)).toFixed(0);
+                const card = document.createElement('div');
+                card.className = 'model-card';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="font-semibold text-white">${model.name}</div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                <i class="fas fa-server mr-1"></i>${model.node}
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                <i class="fas fa-database mr-1"></i>${sizeMB} MB
+                            </div>
+                        </div>
+                        <i class="fas fa-check text-green-400 hidden"></i>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.model-card').forEach(c => {
+                        c.classList.remove('selected');
+                        c.querySelector('.fa-check').classList.add('hidden');
+                    });
+                    card.classList.add('selected');
+                    card.querySelector('.fa-check').classList.remove('hidden');
+                    selectedModel = model.name;
+                });
+
+                modelsList.appendChild(card);
+            });
+
+            // Load health
+            const healthResponse = await fetch('/api/ollama/health');
+            const healthData = await healthResponse.json();
+
+            const healthDiv = document.getElementById('cluster-health');
+            healthDiv.innerHTML = '';
+
+            Object.entries(healthData.nodes).forEach(([node, healthy]) => {
+                const item = document.createElement('div');
+                item.className = 'cluster-health-item';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="status-dot ${healthy ? 'running' : 'stopped'}"></div>
+                        <div>
+                            <div class="text-white font-medium">${node}</div>
+                            <div class="text-xs text-gray-400">Ollama Node</div>
+                        </div>
+                    </div>
+                    <span class="text-sm ${healthy ? 'text-green-400' : 'text-red-400'}">
+                        ${healthy ? 'Online' : 'Offline'}
+                    </span>
+                `;
+                healthDiv.appendChild(item);
+            });
+
+        } catch (error) {
+            console.error('Failed to load cluster info:', error);
+            document.getElementById('models-list').innerHTML = `
+                <div class="col-span-full text-center py-8 text-red-400">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <p>Failed to load cluster information</p>
+                </div>
+            `;
+        }
+    }
+
+    async function refreshClusterInfo() {
+        const btn = event.target.closest('button');
+        const icon = btn.querySelector('.fa-sync-alt');
+        icon.classList.add('fa-spin');
+
+        await loadClusterInfo();
+
+        setTimeout(() => {
+            icon.classList.remove('fa-spin');
+        }, 500);
+    }
+
+    function saveGenerationSettings() {
+        const settings = {
+            temperature: document.getElementById('temperature').value,
+            max_tokens: document.getElementById('max-tokens').value,
+            top_p: document.getElementById('top-p').value,
+            top_k: document.getElementById('top-k').value,
+            repeat_penalty: document.getElementById('repeat-penalty').value
+        };
+
+        localStorage.setItem('generation_settings', JSON.stringify(settings));
+
+        // Show success message
+        showNotification('Settings saved successfully!', 'success');
+    }
+
+    function resetGenerationSettings() {
+        document.getElementById('temperature').value = 0.7;
+        document.getElementById('max-tokens').value = 512;
+        document.getElementById('top-p').value = 0.9;
+        document.getElementById('top-k').value = 40;
+        document.getElementById('repeat-penalty').value = 1.1;
+
+        // Trigger input events to update displays
+        sliders.forEach(slider => {
+            const element = document.getElementById(slider.id);
+            if (element) element.dispatchEvent(new Event('input'));
+        });
+
+        showNotification('Settings reset to defaults', 'info');
+    }
+
+    function clearCache() {
+        if (confirm('Clear all cached data? This cannot be undone.')) {
+            localStorage.clear();
+            showNotification('Cache cleared successfully', 'success');
+        }
+    }
+
+    function exportSettings() {
+        const settings = {
+            generation: {
+                temperature: document.getElementById('temperature').value,
+                max_tokens: document.getElementById('max-tokens').value,
+                top_p: document.getElementById('top-p').value,
+                top_k: document.getElementById('top-k').value,
+                repeat_penalty: document.getElementById('repeat-penalty').value
+            },
+            interface: {
+                font_size: document.getElementById('font-size').value,
+                animation_speed: document.getElementById('animation-speed').value,
+                show_timestamps: document.getElementById('show-timestamps').checked,
+                compact_mode: document.getElementById('compact-mode').checked
+            }
+        };
+
+        const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ai-agency-settings.json';
+        a.click();
+
+        showNotification('Settings exported successfully', 'success');
+    }
+
+    function importSettings() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const settings = JSON.parse(event.target.result);
+                    // Apply settings
+                    if (settings.generation) {
+                        Object.entries(settings.generation).forEach(([key, value]) => {
+                            const element = document.getElementById(key.replace('_', '-'));
+                            if (element) {
+                                element.value = value;
+                                element.dispatchEvent(new Event('input'));
+                            }
+                        });
+                    }
+                    showNotification('Settings imported successfully', 'success');
+                } catch (error) {
+                    showNotification('Failed to import settings', 'error');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function restartSystem() {
+        if (confirm('Restart the AI Agency system? This will disconnect all active sessions.')) {
+            showNotification('Restarting system...', 'info');
+            // Implement restart logic
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        // Simple notification implementation
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 glass-card p-4 z-50 animate-slide-up`;
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i class="fas fa-${type === 'success' ? 'check-circle text-green-400' : type === 'error' ? 'exclamation-circle text-red-400' : 'info-circle text-blue-400'}"></i>
+                <span class="text-white">${message}</span>
+            </div>
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // Load system stats
+    async function loadSystemStats() {
+        // Placeholder - implement real system monitoring
+        document.getElementById('cpu-usage').textContent = '--';
+        document.getElementById('memory-usage').textContent = '--';
+        document.getElementById('disk-usage').textContent = '--';
+        document.getElementById('uptime').textContent = '--';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        loadClusterInfo();
+        loadSystemStats();
+
+        // Load saved settings
+        const saved = localStorage.getItem('generation_settings');
+        if (saved) {
+            const settings = JSON.parse(saved);
+            Object.entries(settings).forEach(([key, value]) => {
+                const element = document.getElementById(key.replace('_', '-'));
+                if (element) {
+                    element.value = value;
+                    element.dispatchEvent(new Event('input'));
+                }
+            });
+        }
+
+        // Refresh system stats every 5 seconds
+        setInterval(loadSystemStats, 5000);
+    });
+</script>
+{% endblock %}

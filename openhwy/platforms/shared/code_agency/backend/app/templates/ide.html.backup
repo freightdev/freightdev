@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}AI Assistant IDE{% endblock %}
+
+{% block nav_ide %}active{% endblock %}
+
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="h-screen flex flex-col">
+    <!-- IDE Header -->
+    <div class="bg-white dark:bg-ai-dark border-b border-gray-200 dark:border-gray-700 px-4 py-2">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- File operations -->
+                <div class="flex items-center space-x-2">
+                    <button id="new-file-btn" class="btn-ghost text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        New
+                    </button>
+                    
+                    <button id="save-file-btn" class="btn-ghost text-sm" disabled>
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                        </svg>
+                        Save
+                    </button>
+                </div>
+                
+                <!-- Current file info -->
+                <div id="current-file-info" class="text-sm text-gray-600 dark:text-gray-400">
+                    No file selected
+                </div>
+            </div>
+            
+            <!-- Right side controls -->
+            <div class="flex items-center space-x-2">
+                <!-- Git status -->
+                <div id="git-status" class="hidden text-sm text-gray-600 dark:text-gray-400">
+                    <span class="inline-flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                        <span id="git-branch">main</span>
+                    </span>
+                </div>
+                
+                <!-- Layout toggle -->
+                <button id="layout-toggle" class="btn-ghost text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main IDE Layout -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+            <!-- Sidebar tabs -->
+            <div class="flex border-b border-gray-200 dark:border-gray-700">
+                <button class="sidebar-tab active" data-tab="files">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                    Files
+                </button>
+                
+                <button class="sidebar-tab" data-tab="git">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                    Git
+                </button>
+            </div>
+
+            <!-- File Explorer -->
+            <div id="files-panel" class="sidebar-panel active flex-1 overflow-y-auto scrollbar-thin">
+                <div class="p-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">Explorer</h3>
+                        <div class="flex space-x-1">
+                            <button id="refresh-files" class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                            </button>
+                            <button id="new-folder" class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="file-tree" class="file-tree">
+                        <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Loading files...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Git Panel -->
+            <div id="git-panel" class="sidebar-panel flex-1 overflow-y-auto scrollbar-thin">
+                <div class="p-2">
+                    <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Source Control</h3>
+                    
+                    <!-- Git actions -->
+                    <div class="space-y-2 mb-4">
+                        <button id="git-commit" class="w-full btn-primary text-sm">
+                            Commit Changes
+                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="git-pull" class="btn-secondary text-sm">Pull</button>
+                            <button id="git-push" class="btn-secondary text-sm">Push</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Changes -->
+                    <div id="git-changes">
+                        <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+                            <p class="text-sm">No changes detected</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Editor Area -->
+            <div class="flex-1 flex">
+                <!-- Code Editor -->
+                <div class="flex-1 flex flex-col">
+                    <!-- Editor tabs -->
+                    <div id="editor-tabs" class="editor-tabs min-h-[40px]">
+                        <div class="text-center py-2 text-gray-500 dark:text-gray-400 text-sm">
+                            No files open
+                        </div>
+                    </div>
+                    
+                    <!-- Monaco Editor Container -->
+                    <div id="monaco-container" class="flex-1 relative">
+                        <div id="editor-placeholder" class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                                </svg>
+                                <h3 class="text-lg font-medium mb-2">Welcome to AI Assistant IDE</h3>
+                                <p class="text-sm">Open a file from the explorer to start coding</p>
+                                <p class="text-xs mt-2 opacity-75">Ctrl+N: New file | Ctrl+O: Open file</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chat Sidebar -->
+                <div id="chat-sidebar" class="w-80 bg-white dark:bg-ai-dark border-l border-gray-200 dark:border-gray-700 flex flex-col">
+                    <!-- Chat header -->
+                    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">AI Assistant</h3>
+                            <button id="toggle-chat" class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Agent selector -->
+                        <div class="mt-2">
+                            <select id="agent-selector" class="w-full text-xs input-primary">
+                                <option value="codriver">CoDriver (Auto)</option>
+                                <option value="code">Code Assistant</option>
+                                <option value="chat">General Chat</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat messages -->
+                    <div id="chat-messages" class="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
+                        <div class="message assistant">
+                            <div class="message-avatar assistant">AI</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <p>Hello! I'm your AI coding assistant. I can help you with:</p>
+                                    <ul class="list-disc list-inside mt-2 text-sm">
+                                        <li>Writing and debugging code</li>
+                                        <li>Explaining programming concepts</li>
+                                        <li>Code reviews and optimization</li>
+                                        <li>General programming questions</li>
+                                    </ul>
+                                    <p class="mt-2 text-sm">How can I help you today?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat input -->
+                    <div class="chat-input-container">
+                        <div class="flex space-x-2">
+                            <textarea 
+                                id="chat-input" 
+                                placeholder="Ask me anything about your code..."
+                                class="textarea-primary flex-1 resize-none"
+                                rows="3"
+                            ></textarea>
+                            <button id="send-message" class="btn-primary self-end">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            <span>Ctrl+Enter to send</span>
+                            <span id="token-count">0 tokens</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom panel (Terminal/Output) -->
+            <div id="bottom-panel" class="h-64 border-t border-gray-200 dark:border-gray-700 bg-gray-900 hidden">
+                <div class="flex h-8 bg-gray-800 border-b border-gray-700">
+                    <button class="panel-tab active px-3 py-1 text-sm text-gray-300 hover:text-white" data-panel="terminal">
+                        Terminal
+                    </button>
+                    <button class="panel-tab px-3 py-1 text-sm text-gray-300 hover:text-white" data-panel="output">
+                        Output
+                    </button>
+                    <div class="flex-1"></div>
+                    <button id="close-bottom-panel" class="px-2 text-gray-400 hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="terminal-container" class="panel-content active h-full">
+                    <div id="terminal" class="terminal h-full"></div>
+                </div>
+                
+                <div id="output-container" class="panel-content h-full p-4 font-mono text-sm text-gray-300 overflow-y-auto">
+                    <div class="text-gray-500">Output will appear here...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Context Menu -->
+<div id="context-menu" class="fixed hidden z-50 bg-white dark:bg-ai-dark border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 min-w-[150px]">
+    <!-- Context menu items will be dynamically added -->
+</div>
+
+<!-- Modals -->
+<div id="new-file-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('new-file-modal')"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-ai-dark rounded-lg shadow-xl p-6 w-96">
+        <h3 class="text-lg font-medium mb-4">Create New File</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">File Name</label>
+                <input type="text" id="new-file-name" placeholder="example.py" class="input-primary w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">File Type</label>
+                <select id="new-file-type" class="input-primary w-full">
+                    <option value="text">Text File</option>
+                    <option value="python">Python (.py)</option>
+                    <option value="javascript">JavaScript (.js)</option>
+                    <option value="typescript">TypeScript (.ts)</option>
+                    <option value="rust">Rust (.rs)</option>
+                    <option value="html">HTML (.html)</option>
+                    <option value="css">CSS (.css)</option>
+                    <option value="json">JSON (.json)</option>
+                    <option value="yaml">YAML (.yaml)</option>
+                    <option value="markdown">Markdown (.md)</option>
+                </select>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeModal('new-file-modal')" class="btn-secondary">Cancel</button>
+                <button id="create-file-btn" class="btn-primary">Create File</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="commit-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('commit-modal')"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-ai-dark rounded-lg shadow-xl p-6 w-96">
+        <h3 class="text-lg font-medium mb-4">Commit Changes</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Commit Message</label>
+                <textarea id="commit-message" placeholder="Describe your changes..." class="textarea-primary w-full" rows="3"></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Files to Commit</label>
+                <div id="files-to-commit" class="max-h-32 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded p-2 space-y-1">
+                    <!-- Files will be listed here -->
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeModal('commit-modal')" class="btn-secondary">Cancel</button>
+                <button id="confirm-commit-btn" class="btn-primary">Commit</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<script src="{{ url_for('static', path='js/ide.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,371 @@
+#!/usr/bin/env zsh
+
+# ============================================================================
+# ADVANCED FOLDER SCAFFOLD GENERATOR
+# ============================================================================
+# Configuration Section - Edit these values as needed
+# ============================================================================
+
+# Colors for output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly PURPLE='\033[0;35m'
+readonly CYAN='\033[0;36m'
+readonly WHITE='\033[1;37m'
+readonly NC='\033[0m' # No Color
+
+# Script configuration
+readonly SCRIPT_NAME="scaffold"
+readonly VERSION="1.0.0"
+readonly MAX_DEPTH=20
+
+# File patterns to recognize
+readonly VALID_EXTENSIONS=("md" "txt" "tree" "scaffold" "struct")
+
+# Suspicious patterns that warrant user confirmation
+readonly SUSPICIOUS_PATTERNS=(
+    '\$\{[^}]*\}'           # Variable substitution
+    '`[^`]*`'               # Command substitution
+    '\$\([^)]*\)'           # Command substitution
+    '[;&|<>]'               # Shell operators
+    '\.\./+'                # Directory traversal
+    '^/+'                   # Absolute paths
+    '[*?{}[\]]'             # Glob patterns
+)
+
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+print_banner() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║${WHITE}          ADVANCED FOLDER SCAFFOLD GENERATOR v${VERSION}           ${CYAN}║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
+    echo
+}
+
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+log_debug() {
+    [[ -n "$DEBUG" ]] && echo -e "${PURPLE}[DEBUG]${NC} $1"
+}
+
+show_usage() {
+    echo -e "${WHITE}Usage:${NC}"
+    echo -e "  $SCRIPT_NAME <input_file> <output_path> [options]"
+    echo
+    echo -e "${WHITE}Options:${NC}"
+    echo -e "  --dry, --preview    Show what would be created without actually creating"
+    echo -e "  --force            Skip confirmation prompts"
+    echo -e "  --debug            Enable debug output"
+    echo -e "  --max-depth N      Maximum directory depth (default: $MAX_DEPTH)"
+    echo -e "  --help, -h         Show this help message"
+    echo
+    echo -e "${WHITE}Supported file types:${NC} ${VALID_EXTENSIONS[*]}"
+}
+
+# ============================================================================
+# VALIDATION FUNCTIONS
+# ============================================================================
+
+validate_input_file() {
+    local file="$1"
+    
+    if [[ ! -f "$file" ]]; then
+        log_error "Input file does not exist: $file"
+        return 1
+    fi
+    
+    if [[ ! -r "$file" ]]; then
+        log_error "Cannot read input file: $file"
+        return 1
+    fi
+    
+    return 0
+}
+
+validate_output_path() {
+    local path="$1"
+    
+    if [[ -e "$path" && -n "$(ls -A "$path" 2>/dev/null)" ]]; then
+        log_warning "Output directory exists and is not empty: $path"
+        if [[ "$FORCE" != "true" ]]; then
+            echo -n "Continue and potentially overwrite contents? [y/N]: "
+            read -r response
+            [[ "$response" =~ ^[Yy]$ ]] || return 1
+        fi
+    fi
+    
+    return 0
+}
+
+detect_suspicious_patterns() {
+    local content="$1"
+    local file="$2"
+    local found_suspicious=false
+    
+    for pattern in "${SUSPICIOUS_PATTERNS[@]}"; do
+        if echo "$content" | grep -qE "$pattern"; then
+            if [[ "$found_suspicious" == "false" ]]; then
+                log_warning "Suspicious patterns detected in $file"
+                found_suspicious=true
+            fi
+            echo -e "  ${YELLOW}⚠️${NC} Pattern: $pattern"
+        fi
+    done
+    
+    if [[ "$found_suspicious" == "true" && "$FORCE" != "true" ]]; then
+        echo -e "\n${RED}These patterns might indicate security risks.${NC}"
+        echo -n "Do you want to continue? [y/N]: "
+        read -r response
+        [[ "$response" =~ ^[Yy]$ ]] || return 1
+    fi
+    
+    return 0
+}
+
+# ============================================================================
+# PARSING FUNCTIONS
+# ============================================================================
+
+clean_line() {
+    local line="$1"
+    
+    # Remove comments (simple approach)
+    line=$(echo "$line" | sed 's/#.*$//' | sed 's/\/\/.*$//' | sed 's/\/\*.*\*\///')
+    
+    # Remove emojis and tree characters
+    line=$(echo "$line" | sed 's/[🤖🧠📚📝🦙💾📁📄⚙️🔧🎯🚀💡🔍⭐🎨🛠️📊🎭🔒🌟💻🎪]//g')
+    
+    # Remove tree drawing characters
+    line=$(echo "$line" | sed 's/^[[:space:]]*[│├└─┐┌┘┗┓┏┛┗┃━┣┫┳┻╋╭╮╯╰╱╲╳]*[[:space:]]*//')
+    
+    # Trim whitespace
+    line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    
+    echo "$line"
+}
+
+parse_structure() {
+    local file="$1"
+    local line_num=0
+    
+    log_info "Parsing structure from: $file"
+    
+    # Read and check for suspicious patterns
+    local content=$(cat "$file")
+    detect_suspicious_patterns "$content" "$file" || return 1
+    
+    # Process each line
+    while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
+        ((line_num++))
+        
+        # Skip empty lines
+        [[ -z "$raw_line" ]] && continue
+        
+        local clean=$(clean_line "$raw_line")
+        
+        # Skip empty cleaned lines
+        [[ -z "$clean" ]] && continue
+        
+        # Calculate depth from original line indentation
+        local depth=0
+        local temp="$raw_line"
+        while [[ "$temp" =~ ^[[:space:]] ]]; do
+            ((depth++))
+            temp="${temp:1}"
+        done
+        depth=$((depth / 4))  # Assume 4 spaces per level
+        
+        # Check if it's a file (has extension and doesn't end with /)
+        local is_file="false"
+        if [[ "$clean" =~ \.[a-zA-Z0-9]+$ && ! "$clean" =~ /$ ]]; then
+            is_file="true"
+        fi
+        
+        # Remove trailing slash from directories
+        clean="${clean%/}"
+        
+        echo "$depth:$is_file:$clean"
+        log_debug "Line $line_num: depth=$depth, file=$is_file, name='$clean'"
+        
+    done < "$file"
+}
+
+# ============================================================================
+# CREATION FUNCTIONS
+# ============================================================================
+
+create_structure() {
+    local output_path="$1"
+    local created_dirs=0
+    local created_files=0
+    local failed_items=0
+    
+    log_info "Creating structure at: $output_path"
+    
+    # Create base directory
+    if [[ "$DRY_RUN" != "true" ]]; then
+        mkdir -p "$output_path" || {
+            log_error "Failed to create base directory: $output_path"
+            return 1
+        }
+    fi
+    
+    # Read structure from stdin and process
+    while IFS=':' read -r depth is_file item_name; do
+        [[ -z "$item_name" ]] && continue
+        
+        local full_path="$output_path/$item_name"
+        
+        if [[ "$is_file" == "true" ]]; then
+            if [[ "$DRY_RUN" == "true" ]]; then
+                echo -e "${CYAN}[DRY]${NC} Would create file: $full_path"
+            else
+                local dir_path="${full_path%/*}"
+                mkdir -p "$dir_path" 2>/dev/null
+                if touch "$full_path" 2>/dev/null; then
+                    ((created_files++))
+                    log_debug "Created file: $full_path"
+                else
+                    ((failed_items++))
+                    log_warning "Failed to create file: $full_path"
+                fi
+            fi
+        else
+            if [[ "$DRY_RUN" == "true" ]]; then
+                echo -e "${CYAN}[DRY]${NC} Would create directory: $full_path"
+            else
+                if mkdir -p "$full_path" 2>/dev/null; then
+                    ((created_dirs++))
+                    log_debug "Created directory: $full_path"
+                else
+                    ((failed_items++))
+                    log_warning "Failed to create directory: $full_path"
+                fi
+            fi
+        fi
+    done
+    
+    # Print summary
+    echo
+    log_success "Structure creation complete!"
+    echo -e "${WHITE}Summary:${NC}"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        echo -e "  ${BLUE}Mode:${NC} Dry run (no files created)"
+    else
+        echo -e "  ${GREEN}Directories created:${NC} $created_dirs"
+        echo -e "  ${GREEN}Files created:${NC} $created_files"
+        if [[ $failed_items -gt 0 ]]; then
+            echo -e "  ${RED}Failed items:${NC} $failed_items"
+        fi
+    fi
+    
+    return 0
+}
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+main() {
+    local input_file=""
+    local output_path=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --dry|--preview)
+                export DRY_RUN="true"
+                shift
+                ;;
+            --force)
+                export FORCE="true"
+                shift
+                ;;
+            --debug)
+                export DEBUG="true"
+                shift
+                ;;
+            --max-depth)
+                export MAX_DEPTH="$2"
+                shift 2
+                ;;
+            --help|-h)
+                show_usage
+                exit 0
+                ;;
+            -*)
+                log_error "Unknown option: $1"
+                show_usage
+                exit 1
+                ;;
+            *)
+                if [[ -z "$input_file" ]]; then
+                    input_file="$1"
+                elif [[ -z "$output_path" ]]; then
+                    output_path="$1"
+                else
+                    log_error "Too many arguments"
+                    show_usage
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Show banner
+    print_banner
+    
+    # Validate required arguments
+    if [[ -z "$input_file" || -z "$output_path" ]]; then
+        log_error "Both input file and output path are required"
+        show_usage
+        exit 1
+    fi
+    
+    # Validate inputs
+    validate_input_file "$input_file" || exit 1
+    validate_output_path "$output_path" || exit 1
+    
+    # Process the file
+    log_info "Starting scaffold generation..."
+    
+    if parse_structure "$input_file" | create_structure "$output_path"; then
+        echo
+        log_success "Scaffold generation completed successfully!"
+        
+        if [[ "$DRY_RUN" != "true" ]]; then
+            echo -e "\n${WHITE}Generated structure:${NC}"
+            if command -v tree >/dev/null 2>&1; then
+                tree "$output_path" 2>/dev/null
+            else
+                ls -la "$output_path"
+            fi
+        fi
+    else
+        log_error "Scaffold generation failed"
+        exit 1
+    fi
+}
+
+# Run main function with all arguments
+main "$@"

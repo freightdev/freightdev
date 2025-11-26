@@ -1,0 +1,62 @@
+bundle_packages:
+  - name: Startup Complete
+    price: 12500
+    original_value: 16500
+    savings: 4000
+    timeline: "4-6 weeks"
+    tier: Launch
+    description: >
+      Everything a startup needs to launch professionally. Website, authentication,
+      payments, and analytics - all integrated and ready to scale.
+    includes:
+      - Business Pro Website (normally $2,500)
+      - Auth Professional (normally $7,500)
+      - Payments Basic (normally $4,500)
+      - Analytics Starter (normally $2,500)
+      - Integration & testing
+      - Launch support
+    ideal_for:
+      - Early-stage startups
+      - MVP launches
+      - Bootstrapped companies
+
+  - name: SaaS Launch Bundle
+    price: 35000
+    original_value: 47000
+    savings: 12000
+    timeline: "8-10 weeks"
+    tier: Professional
+    description: >
+      Complete SaaS platform bundle with everything you need to launch and scale.
+      Authentication, payments, analytics, and support - fully integrated.
+    includes:
+      - Platform MVP (normally $25,000)
+      - Auth Professional (normally $7,500)
+      - Payments Professional (normally $9,500)
+      - Analytics Professional (normally $6,500)
+      - 3 months Support Professional
+    ideal_for:
+      - SaaS startups
+      - B2B platforms
+      - Subscription businesses
+
+  - name: Enterprise Launch
+    price: 125000
+    original_value: 175000
+    savings: 50000
+    timeline: "14-18 weeks"
+    tier: Enterprise
+    description: >
+      Full enterprise platform with advanced features, security, and dedicated support.
+      Everything needed for enterprise-grade launch and operation.
+    includes:
+      - Platform Enterprise (normally $150,000+)
+      - Auth Enterprise (normally $18,000+)
+      - DevOps Professional (normally $12,500)
+      - Analytics Enterprise (normally $15,000+)
+      - 6 months Support Enterprise
+      - Dedicated project manager
+    ideal_for:
+      - Enterprise software companies
+      - Large-scale platforms
+      - Mission-critical systems

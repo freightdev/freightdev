@@ -1,0 +1,22 @@
+name: "Hello Script"
+description: "Runs a hello command"
+version: "1.0"
+
+variables:
+  greeting: "Hello"
+
+prompts:
+  - key: "target"
+    question: "Who do you want to greet?"
+    type: "input"
+    default: "world"
+
+  - key: "confirm"
+    question: "Should I say hello?"
+    type: "confirm"
+    default: true
+
+actions:
+  - type: "run_command"
+    cmd: "echo '{{greeting}}, {{target}}!'"
+    condition: "{{confirm}}"

@@ -1,0 +1,14 @@
+# kubernetes/pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+    name: auth-service-pdb
+    namespace: auth-service
+spec:
+    minAvailable: 1
+    selector:
+        matchLabels:
+            app: auth-service
+
+---
+

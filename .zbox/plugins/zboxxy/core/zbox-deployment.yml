@@ -1,0 +1,36 @@
+# zbox-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zbox-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zbox
+  template:
+    metadata:
+      labels:
+        app: zbox
+    spec:
+      containers:
+      - name: zbox
+        image: zbox:latest
+        ports:
+        - containerPort: 80
+        - containerPort: 8080
+        env:
+        - name: ZBOX_MODE
+          value: "production"
+        volumeMounts:
+        - name: models-volume
+          mountPath: /opt/zbox/models
+        - name: data-volume  
+          mountPath: /opt/zbox/data
+      volumes:
+      - name: models-volume
+        persistentVolumeClaim:
+          claimName: zbox-models-pvc
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: zbox-data-pvc

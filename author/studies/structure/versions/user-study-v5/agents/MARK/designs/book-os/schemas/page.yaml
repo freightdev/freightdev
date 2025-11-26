@@ -1,0 +1,31 @@
+# Page Definition Schema
+
+page_id: ""
+title: ""                     # Page title or short label
+path: ""                      # Canonical file location
+
+status: ""                    # active | torn | burned | redacted
+
+ink:
+  inked_by: ""                # Marker or agent name
+  burned_at: ""               # ISO timestamp
+  content: ""                 # Burned, final, immutable text
+  marker_ref: ""              # Which marker performed the writing
+  stroke_count: 0             # Number of strokes it took to complete
+
+fold:
+  is_folded: false
+  reason: ""
+  folded_at: ""               # Optional timestamp
+  folded_by: ""               
+tear:
+  is_torn: false
+  reason: ""
+  torn_at: ""                 # Optional timestamp
+  torn_by: ""
+
+ribbons: []                   # Optional related ribbon IDs
+trails: []                    # Optional related trail IDs
+
+created_at: ""
+modified_at: ""

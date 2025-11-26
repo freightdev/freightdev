@@ -1,0 +1,239 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "show_edit_predictions": false,
+  "use_system_prompts": true,
+  "use_system_path_prompts": true,
+  "auto_update": false,
+  "disable_ai": false,
+  "calls": {
+    "mute_on_join": true
+  },
+  "git": {
+    "blame": {
+      "show_avatar": true
+    },
+    "git_gutter": "tracked_files"
+  },
+  "outline_panel": {
+    "file_icons": true
+  },
+  "tabs": {
+    "close_position": "right",
+    "file_icons": false,
+    "git_status": false
+  },
+  "title_bar": {
+    "show_menus": true,
+    "show_branch_name": true,
+    "show_branch_icon": true
+  },
+  "terminal": {
+    "scrollbar": {
+      "show": "never"
+    },
+    "toolbar": {
+      "breadcrumbs": true
+    },
+    "shell": "system",
+    "dock": "bottom",
+    "button": true
+  },
+  "status_bar": {
+    "cursor_position_button": true,
+    "active_language_button": true
+  },
+  "project_panel": {
+    "open_file_on_paste": true,
+    "hide_hidden": false,
+    "hide_root": false,
+    "sticky_scroll": true,
+    "scrollbar": {
+      "show": "never"
+    },
+    "auto_fold_dirs": true,
+    "starts_open": true,
+    "auto_reveal_entries": true,
+    "git_status": true,
+    "folder_icons": false,
+    "file_icons": false,
+    "entry_spacing": "comfortable",
+    "hide_gitignore": false,
+    "default_width": 240.0,
+    "dock": "left",
+    "button": true
+  },
+  "search": {
+    "regex": true
+  },
+  "diagnostics_max_severity": "error",
+  "prettier": {
+    "allowed": true
+  },
+  "agent": {
+    "default_model": {
+      "provider": "ollama",
+      "model": "mistralite"
+    },
+    "model_parameters": []
+  },
+  "edit_predictions": {
+    "disabled_globs": []
+  },
+  "minimap": {
+    "show": "always"
+  },
+  "drag_and_drop_selection": {},
+  "base_keymap": "VSCode",
+  "ui_font_family": ".ZedSans",
+  "buffer_line_height": "comfortable",
+  "buffer_font_weight": 400.0,
+  "buffer_font_family": ".ZedMono",
+  "ui_font_size": 16.0,
+  "buffer_font_size": 16.0,
+  "theme": "One Dark",
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://192.168.12.136:11434",
+      "available_models": [
+        {
+          "name": "mistralite",
+          "display_name": "Local - Mistral Lite 7B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "shieldgemma",
+          "display_name": "Local - ShieldGemma 9B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "duckdb-nsql",
+          "display_name": "Local - DuckDB NSQL 7B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "llava-phi3",
+          "display_name": "Local - LLaVA Phi3 3.8B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": true
+        },
+        {
+          "name": "llava-llama3",
+          "display_name": "Local - LLaVA Llama3 8B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": true
+        }
+      ]
+    },
+    "ollama_node": {
+      "api_url": "http://192.168.12.66:11434",
+      "available_models": [
+        {
+          "name": "deepcoder",
+          "display_name": "Node66 - DeepCoder 14B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "codestral",
+          "display_name": "Node66 - Codestral 22B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "deepseek-coder-v2",
+          "display_name": "Node66 - DeepSeek Coder V2 16B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "codellama",
+          "display_name": "Node66 - CodeLlama 13B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        }
+      ]
+    },
+    "ollama_node_106": {
+      "api_url": "http://192.168.12.106:11434",
+      "available_models": [
+        {
+          "name": "granite4",
+          "display_name": "Node106 - Granite4 1B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "nexusraven",
+          "display_name": "Node106 - NexusRaven 13B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "qwen2.5",
+          "display_name": "Node106 - Qwen2.5 14B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "gemma3",
+          "display_name": "Node106 - Gemma3 12B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        }
+      ]
+    },
+    "ollamad": {
+      "api_url": "http://192.168.12.9:11434",
+      "available_models": [
+        {
+          "name": "smallthinker",
+          "display_name": "Node9 - SmallThinker 3B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "nuextract",
+          "display_name": "Node9 - NuExtract 3.8B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        },
+        {
+          "name": "phi4-mini",
+          "display_name": "Node9 - Phi4 Mini 3.8B",
+          "max_tokens": 32768,
+          "supports_tools": true,
+          "supports_images": false
+        }
+      ]
+    }
+  }
+}

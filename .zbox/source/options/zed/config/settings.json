@@ -1,0 +1,123 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+    "ui_font_size": 20,
+    "buffer_font_size": 18,
+    "buffer_font_family": "Liberation Mono",
+    "show_wrap_guides": true,
+    "wrap_guides": [100, 120],
+    "soft_wrap": "editor_width",
+    "tab_size": 4,
+    "hard_tabs": false,
+    "use_autoclose": true,
+    "cursor_blink": false,
+    "confirm_quit": true,
+    "restore_on_startup": "last_workspace",
+    "autosave": "on_window_change",
+    "format_on_save": "on",
+    "show_whitespaces": "selection",
+    "code_actions_on_format": {
+        "source.organizeImports": true
+    },
+    "theme": {
+        "mode": "system",
+        "light": "Ayu Dark",
+        "dark": "Ayu Dark"
+    },
+    "whitespace_map": {
+        "space": "•",
+        "tab": "→"
+    },
+    "indent_guides": {
+        "enabled": true,
+        "coloring": "indent_aware"
+    },
+    "inlay_hints": {
+        "enabled": true,
+        "show_type_hints": true,
+        "show_parameter_hints": true,
+        "show_other_hints": true
+    },
+    "git": {
+        "git_gutter": "tracked_files",
+        "inline_blame": {
+            "enabled": true
+        }
+    },
+    "project_panel": {
+        "dock": "left",
+        "default_width": 240
+    },
+    "preview_tabs": {
+        "enabled": false
+    },
+    "toolbar": {
+        "breadcrumbs": true,
+        "quick_actions": false,
+        "selections_menu": false
+    },
+    "tab_bar": {
+        "show": true
+    },
+    "scrollbar": {
+        "show": "never"
+    },
+    "minimap": {
+        "show": "always"
+    },
+    "terminal": {
+        "shell": {
+            "program": "zsh"
+        },
+        "font_size": 14,
+        "font_family": "Liberation Mono",
+        "working_directory": "current_project_directory"
+    },
+    "lsp": {
+        "rust-analyzer": {
+            "binary": {
+                "path": "rust-analyzer"
+            },
+            "initialization_options": {
+                "checkOnSave": {
+                    "command": "clippy"
+                },
+                "cargo": {
+                    "features": "all"
+                },
+                "procMacro": {
+                    "enable": true
+                }
+            }
+        }
+    },
+    "languages": {
+        "Rust": {
+            "tab_size": 4,
+            "hard_tabs": false,
+            "format_on_save": "on",
+            "formatter": "language_server",
+            "enable_language_server": true
+        }
+    },
+    "file_types": {
+        "Dockerfile": ["Dockerfile", "Dockerfile.*", "*.dockerfile"],
+        "TOML": ["*.toml", "Cargo.toml", "Cargo.lock"],
+        "YAML": ["*.yml", "*.yaml"],
+        "JSON": ["*.json", "*.jsonc"]
+    },
+    "experimental.theme_overrides": {
+        "background": "#1e1e1e",
+        "editor.background": "#1e1e1e"
+    },
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false
+    }
+}

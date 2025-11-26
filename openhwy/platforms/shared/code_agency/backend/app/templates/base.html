@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title | default("AI Assistant") }}{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configure Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'ai-blue': '#3b82f6',
+                        'ai-purple': '#8b5cf6',
+                        'ai-dark': '#1e1e2e',
+                        'ai-darker': '#11111b',
+                        'code-bg': '#2d3748',
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'Monaco', 'Consolas', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/glass-theme.css') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Block for additional head content -->
+    {% block head %}{% endblock %}
+</head>
+<body class="h-full text-white">
+    <!-- Navigation -->
+    <nav class="glass-nav sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo and main nav -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="/" class="text-2xl font-bold text-gradient flex items-center gap-2">
+                            <i class="fas fa-robot"></i>
+                            AI Agency
+                        </a>
+                    </div>
+
+                    <div class="hidden md:ml-6 md:flex md:space-x-2">
+                        <a href="/" class="nav-link {% block nav_ide %}{% endblock %}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                            </svg>
+                            IDE
+                        </a>
+
+                        <a href="/chat" class="nav-link {% block nav_chat %}{% endblock %}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.172-.268c-.77-.268-1.645-.268-2.208.268L5.172 22H3a2 2 0 01-2-2V12C1 7.582 4.582 4 9 4h12c4.418 0 8 3.582 8 8z"/>
+                            </svg>
+                            Chat
+                        </a>
+
+                        <a href="/control" class="nav-link {% block nav_control %}{% endblock %}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                            </svg>
+                            Control
+                        </a>
+
+                        <a href="/settings" class="nav-link {% block nav_settings %}{% endblock %}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Settings
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Right side -->
+                <div class="flex items-center space-x-4">
+                    <!-- Model status indicator -->
+                    <div id="model-status" class="flex items-center space-x-2 text-sm">
+                        <div id="status-dot" class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                        <span id="status-text" class="text-gray-600 dark:text-gray-400">Loading...</span>
+                    </div>
+                    
+                    <!-- Dark mode toggle -->
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- Mobile menu button -->
+                    <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-ai-dark border-t border-gray-200 dark:border-gray-700">
+                <a href="/" class="mobile-nav-link">IDE</a>
+                <a href="/chat" class="mobile-nav-link">Chat</a>
+                <a href="/control" class="mobile-nav-link">Control</a>
+                <a href="/settings" class="mobile-nav-link">Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2">
+        <!-- Toasts will be dynamically added here -->
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white dark:bg-ai-dark rounded-lg p-6 flex items-center space-x-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-ai-blue"></div>
+            <div class="text-lg">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Base JavaScript -->
+    <script src="{{ url_for('static', path='js/base.js') }}"></script>
+    
+    <!-- Block for additional scripts -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

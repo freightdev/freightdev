@@ -1,0 +1,10 @@
+{
+  "id": "table-analyzer",
+  "label": "Table Analyzer",
+  "system": "System prompt for Table Analyzer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

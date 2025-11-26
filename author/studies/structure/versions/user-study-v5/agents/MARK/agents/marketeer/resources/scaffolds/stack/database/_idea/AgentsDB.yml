@@ -1,0 +1,24 @@
+#! AgentsDB (PostgreSQL + Redis)
+
+services:
+  agentsdb:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: agent_admin
+      POSTGRES_PASSWORD: strongpassword    #? <===== Change Before Production
+      POSTGRES_DB: agents
+    volumes:
+      - /var/agentsdb:/var/lib/postgresql/data
+    networks:
+      - platform-net
+
+  redis_agents:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - /var/redis_agents:/data
+    networks:
+      - platform-net
+
+#* - RedisAI for fast in-memory agent embeddings
+#* - TTL caching for ephemeral agent memory

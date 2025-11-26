@@ -1,0 +1,10 @@
+{
+  "id": "radio-announcer",
+  "label": "Radio Announcer",
+  "system": "System prompt for Radio Announcer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

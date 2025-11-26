@@ -1,0 +1,2896 @@
+openapi: 3.0.3
+info:
+  title: FED-TMS API
+  description: Fast & Easy Dispatching - Transportation Management System API
+  version: 1.0.0
+  contact:
+    name: FED-TMS Support
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:3002/api/v1
+    description: Development server
+  - url: https://api.fedtms.com/api/v1
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ==================== COMMON SCHEMAS ====================
+
+    Error:
+      type: object
+      required:
+        - success
+        - error
+        - timestamp
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Resource not found
+        code:
+          type: string
+          example: NOT_FOUND
+        timestamp:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      required:
+        - total
+        - page
+        - limit
+        - totalPages
+      properties:
+        total:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 10
+
+    # ==================== AUTH SCHEMAS ====================
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - first_name
+        - last_name
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        first_name:
+          type: string
+        last_name:
+          type: string
+        company_name:
+          type: string
+
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        avatar_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserWithRoles:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            roles:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+
+    AuthResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - token
+            - user
+          properties:
+            token:
+              type: string
+              description: JWT authentication token
+            user:
+              $ref: '#/components/schemas/UserWithRoles'
+        timestamp:
+          type: string
+          format: date-time
+
+    # ==================== DRIVER SCHEMAS ====================
+
+    Driver:
+      type: object
+      required:
+        - id
+        - user_id
+        - license_number
+        - company_id
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        company_id:
+          type: string
+        license_number:
+          type: string
+        license_class:
+          type: string
+        license_expiry:
+          type: string
+          format: date-time
+        vehicle_type:
+          type: string
+        vehicle_vin:
+          type: string
+        vehicle_plate:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, on_leave, suspended]
+        rating:
+          type: number
+          format: float
+        total_loads:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateDriverRequest:
+      type: object
+      required:
+        - user_id
+        - license_number
+      properties:
+        user_id:
+          type: string
+        license_number:
+          type: string
+        license_class:
+          type: string
+        license_expiry:
+          type: string
+          format: date-time
+        vehicle_type:
+          type: string
+        vehicle_vin:
+          type: string
+        vehicle_plate:
+          type: string
+
+    UpdateDriverRequest:
+      type: object
+      properties:
+        license_number:
+          type: string
+        license_class:
+          type: string
+        license_expiry:
+          type: string
+          format: date-time
+        vehicle_type:
+          type: string
+        vehicle_vin:
+          type: string
+        vehicle_plate:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, on_leave, suspended]
+
+    DriverDocument:
+      type: object
+      required:
+        - id
+        - driver_id
+        - type
+        - document_url
+      properties:
+        id:
+          type: string
+        driver_id:
+          type: string
+        type:
+          type: string
+          enum: [license, insurance, medical_cert, background_check]
+        document_url:
+          type: string
+          format: uri
+        expiry_date:
+          type: string
+          format: date-time
+        uploaded_at:
+          type: string
+          format: date-time
+
+    CreateDriverDocumentRequest:
+      type: object
+      required:
+        - type
+        - document_url
+      properties:
+        type:
+          type: string
+          enum: [license, insurance, medical_cert, background_check]
+        document_url:
+          type: string
+          format: uri
+        expiry_date:
+          type: string
+          format: date-time
+
+    DriverLocation:
+      type: object
+      required:
+        - id
+        - driver_id
+        - latitude
+        - longitude
+      properties:
+        id:
+          type: string
+        driver_id:
+          type: string
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+        accuracy:
+          type: number
+          format: float
+        timestamp:
+          type: string
+          format: date-time
+
+    UpdateLocationRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+        accuracy:
+          type: number
+          format: float
+
+    DriverRating:
+      type: object
+      required:
+        - id
+        - driver_id
+        - rating
+      properties:
+        id:
+          type: string
+        driver_id:
+          type: string
+        rating:
+          type: number
+          format: int32
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        load_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    CreateRatingRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: number
+          format: int32
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        load_id:
+          type: string
+
+    DriverRatingsResponse:
+      type: object
+      required:
+        - ratings
+        - pagination
+        - average
+        - count
+      properties:
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/DriverRating'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        average:
+          type: number
+          format: float
+        count:
+          type: integer
+
+    # ==================== LOAD SCHEMAS ====================
+
+    Load:
+      type: object
+      required:
+        - id
+        - company_id
+        - reference_number
+        - pickup_address
+        - delivery_address
+        - rate
+      properties:
+        id:
+          type: string
+        company_id:
+          type: string
+        reference_number:
+          type: string
+        pickup_address:
+          type: string
+        pickup_city:
+          type: string
+        pickup_state:
+          type: string
+        pickup_zip:
+          type: string
+        pickup_date:
+          type: string
+          format: date-time
+        delivery_address:
+          type: string
+        delivery_city:
+          type: string
+        delivery_state:
+          type: string
+        delivery_zip:
+          type: string
+        delivery_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [pending, accepted, in_transit, delivered, cancelled]
+        commodity:
+          type: string
+        weight:
+          type: number
+        dimensions:
+          type: string
+        hazmat:
+          type: boolean
+        special_handling:
+          type: string
+        rate:
+          type: number
+          format: double
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateLoadRequest:
+      type: object
+      required:
+        - reference_number
+        - pickup_address
+        - pickup_city
+        - pickup_state
+        - pickup_zip
+        - pickup_date
+        - delivery_address
+        - delivery_city
+        - delivery_state
+        - delivery_zip
+        - delivery_date
+        - rate
+      properties:
+        reference_number:
+          type: string
+        pickup_address:
+          type: string
+        pickup_city:
+          type: string
+        pickup_state:
+          type: string
+        pickup_zip:
+          type: string
+        pickup_date:
+          type: string
+          format: date-time
+        delivery_address:
+          type: string
+        delivery_city:
+          type: string
+        delivery_state:
+          type: string
+        delivery_zip:
+          type: string
+        delivery_date:
+          type: string
+          format: date-time
+        commodity:
+          type: string
+        weight:
+          type: number
+        dimensions:
+          type: string
+        hazmat:
+          type: boolean
+        special_handling:
+          type: string
+        rate:
+          type: number
+          format: double
+
+    UpdateLoadRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, accepted, in_transit, delivered, cancelled]
+        pickup_date:
+          type: string
+          format: date-time
+        delivery_date:
+          type: string
+          format: date-time
+        rate:
+          type: number
+          format: double
+        commodity:
+          type: string
+        weight:
+          type: number
+        special_handling:
+          type: string
+
+    LoadAssignment:
+      type: object
+      required:
+        - id
+        - load_id
+        - driver_id
+      properties:
+        id:
+          type: string
+        load_id:
+          type: string
+        driver_id:
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, rejected, completed]
+        assigned_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    AssignLoadRequest:
+      type: object
+      required:
+        - driver_id
+      properties:
+        driver_id:
+          type: string
+
+    LoadTracking:
+      type: object
+      required:
+        - id
+        - load_id
+        - status
+      properties:
+        id:
+          type: string
+        load_id:
+          type: string
+        status:
+          type: string
+          enum: [pickup_arrived, pickup_completed, in_transit, delivery_arrived, delivered, failed]
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        notes:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    UpdateTrackingRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [pickup_arrived, pickup_completed, in_transit, delivery_arrived, delivered, failed]
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+        notes:
+          type: string
+
+    LoadDocument:
+      type: object
+      required:
+        - id
+        - load_id
+        - type
+        - url
+      properties:
+        id:
+          type: string
+        load_id:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+          format: uri
+        uploaded_at:
+          type: string
+          format: date-time
+
+    # ==================== INVOICE SCHEMAS ====================
+
+    Invoice:
+      type: object
+      required:
+        - id
+        - company_id
+        - invoice_number
+        - amount
+        - status
+      properties:
+        id:
+          type: string
+        company_id:
+          type: string
+        invoice_number:
+          type: string
+        driver_id:
+          type: string
+        load_id:
+          type: string
+        amount:
+          type: number
+          format: double
+        status:
+          type: string
+          enum: [pending, sent, partial, paid, overdue, cancelled]
+        due_date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateInvoiceRequest:
+      type: object
+      required:
+        - invoice_number
+        - amount
+        - due_date
+      properties:
+        invoice_number:
+          type: string
+        driver_id:
+          type: string
+        load_id:
+          type: string
+        amount:
+          type: number
+          format: double
+          minimum: 0
+        due_date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        notes:
+          type: string
+
+    UpdateInvoiceRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, sent, partial, paid, overdue, cancelled]
+        amount:
+          type: number
+          format: double
+          minimum: 0
+        due_date:
+          type: string
+          format: date-time
+
+    # ==================== PAYMENT SCHEMAS ====================
+
+    Payment:
+      type: object
+      required:
+        - id
+        - company_id
+        - amount
+        - status
+        - method
+      properties:
+        id:
+          type: string
+        company_id:
+          type: string
+        invoice_id:
+          type: string
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+          default: USD
+        status:
+          type: string
+          enum: [pending, completed, failed, refunded]
+        method:
+          type: string
+          enum: [card, ach, wire, check, cash]
+        transaction_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreatePaymentRequest:
+      type: object
+      required:
+        - amount
+        - method
+      properties:
+        invoice_id:
+          type: string
+        amount:
+          type: number
+          format: double
+          minimum: 0
+        method:
+          type: string
+          enum: [card, ach, wire, check, cash]
+        transaction_id:
+          type: string
+
+    UpdatePaymentRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          minimum: 0
+        method:
+          type: string
+          enum: [card, ach, wire, check, cash]
+        status:
+          type: string
+          enum: [pending, completed, failed, refunded]
+        transaction_id:
+          type: string
+
+    # ==================== NOTIFICATION SCHEMAS ====================
+
+    Notification:
+      type: object
+      required:
+        - id
+        - user_id
+        - type
+        - title
+        - message
+        - read
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        type:
+          type: string
+          enum: [assignment, payment, document, system, message]
+        title:
+          type: string
+        message:
+          type: string
+        link:
+          type: string
+          format: uri
+        data:
+          type: object
+        read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    CreateNotificationRequest:
+      type: object
+      required:
+        - user_id
+        - type
+        - title
+        - message
+      properties:
+        user_id:
+          type: string
+        type:
+          type: string
+          enum: [assignment, payment, document, system, message]
+        title:
+          type: string
+        message:
+          type: string
+        link:
+          type: string
+          format: uri
+        data:
+          type: object
+
+    UpdateNotificationRequest:
+      type: object
+      properties:
+        read:
+          type: boolean
+
+    # ==================== CONVERSATION SCHEMAS ====================
+
+    Conversation:
+      type: object
+      required:
+        - id
+        - company_id
+      properties:
+        id:
+          type: string
+        company_id:
+          type: string
+        name:
+          type: string
+        is_group:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ConversationDetail:
+      allOf:
+        - $ref: '#/components/schemas/Conversation'
+        - type: object
+          properties:
+            participants:
+              type: array
+              items:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+            messages:
+              type: array
+              items:
+                $ref: '#/components/schemas/Message'
+
+    Message:
+      type: object
+      required:
+        - id
+        - conversation_id
+        - sender_id
+        - content
+      properties:
+        id:
+          type: string
+        conversation_id:
+          type: string
+        sender_id:
+          type: string
+        content:
+          type: string
+        message_type:
+          type: string
+          enum: [text, image, file, system]
+        attachment_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateConversationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        is_group:
+          type: boolean
+          default: false
+        participant_ids:
+          type: array
+          items:
+            type: string
+
+    SendMessageRequest:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          minLength: 1
+        message_type:
+          type: string
+          enum: [text, image, file, system]
+          default: text
+        attachment_url:
+          type: string
+          format: uri
+
+    # ==================== RESPONSE WRAPPERS ====================
+
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - data
+        - timestamp
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+
+    PaginatedResponse:
+      type: object
+      required:
+        - success
+        - data
+        - pagination
+        - timestamp
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        timestamp:
+          type: string
+          format: date-time
+
+paths:
+  # ==================== AUTHENTICATION ====================
+
+  /auth/login:
+    post:
+      summary: Login user
+      description: Authenticate user with email and password
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/register:
+    post:
+      summary: Register new user
+      description: Create new user account
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/me:
+    get:
+      summary: Get current user
+      description: Get authenticated user details
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Current user details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/UserWithRoles'
+                      timestamp:
+                        type: string
+                        format: date-time
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ==================== USERS ====================
+
+  /users:
+    get:
+      summary: List users
+      description: Get all users in company
+      tags:
+        - Users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create user
+      description: Create new user in company
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - first_name
+                - last_name
+                - role_id
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                phone:
+                  type: string
+                role_id:
+                  type: string
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/User'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/UserWithRoles'
+                      timestamp:
+                        type: string
+                        format: date-time
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update user
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/User'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete user
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  # ==================== DRIVERS ====================
+
+  /drivers:
+    get:
+      summary: List drivers
+      description: Get all drivers in company
+      tags:
+        - Drivers
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, on_leave, suspended]
+      responses:
+        '200':
+          description: Drivers list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Driver'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create driver
+      tags:
+        - Drivers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverRequest'
+      responses:
+        '201':
+          description: Driver created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Driver'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /drivers/{id}:
+    get:
+      summary: Get driver by ID
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Driver details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Driver'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update driver
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDriverRequest'
+      responses:
+        '200':
+          description: Driver updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Driver'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete driver
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Driver deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  /drivers/{id}/documents:
+    get:
+      summary: List driver documents
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Documents list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DriverDocument'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Upload driver document
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverDocumentRequest'
+      responses:
+        '201':
+          description: Document uploaded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/DriverDocument'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /drivers/{id}/documents/{docId}:
+    get:
+      summary: Get driver document
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: docId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/DriverDocument'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update driver document
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: docId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverDocumentRequest'
+      responses:
+        '200':
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/DriverDocument'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete driver document
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: docId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  /drivers/{id}/locations:
+    get:
+      summary: Get driver location history
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Location history
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DriverLocation'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Update driver location
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLocationRequest'
+      responses:
+        '201':
+          description: Location updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/DriverLocation'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /drivers/{id}/ratings:
+    get:
+      summary: Get driver ratings
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Driver ratings
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/DriverRatingsResponse'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Add driver rating
+      tags:
+        - Drivers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRatingRequest'
+      responses:
+        '201':
+          description: Rating added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/DriverRating'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  # ==================== LOADS ====================
+
+  /loads:
+    get:
+      summary: List loads
+      description: Get all loads in company
+      tags:
+        - Loads
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, accepted, in_transit, delivered, cancelled]
+        - name: pickup_date_start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: pickup_date_end
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Loads list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Load'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create load
+      tags:
+        - Loads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLoadRequest'
+      responses:
+        '201':
+          description: Load created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Load'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /loads/{id}:
+    get:
+      summary: Get load by ID
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Load details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Load'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update load
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLoadRequest'
+      responses:
+        '200':
+          description: Load updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Load'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete load
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Load deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  /loads/{id}/assignments:
+    get:
+      summary: List load assignments
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assignments list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LoadAssignment'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Assign driver to load
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignLoadRequest'
+      responses:
+        '201':
+          description: Assignment created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/LoadAssignment'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /loads/{id}/tracking:
+    get:
+      summary: Get load tracking history
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Tracking history
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LoadTracking'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Update load tracking
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTrackingRequest'
+      responses:
+        '201':
+          description: Tracking updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/LoadTracking'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /loads/{id}/documents:
+    get:
+      summary: List load documents
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Documents list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LoadDocument'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Upload load document
+      tags:
+        - Loads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - url
+              properties:
+                type:
+                  type: string
+                url:
+                  type: string
+                  format: uri
+      responses:
+        '201':
+          description: Document uploaded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/LoadDocument'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  # ==================== INVOICES ====================
+
+  /invoices:
+    get:
+      summary: List invoices
+      tags:
+        - Invoices
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, sent, partial, paid, overdue, cancelled]
+      responses:
+        '200':
+          description: Invoices list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Invoice'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create invoice
+      tags:
+        - Invoices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvoiceRequest'
+      responses:
+        '201':
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Invoice'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /invoices/{id}:
+    get:
+      summary: Get invoice by ID
+      tags:
+        - Invoices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoice details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        allOf:
+                          - $ref: '#/components/schemas/Invoice'
+                          - type: object
+                            properties:
+                              totalPaid:
+                                type: number
+                                format: double
+                              remaining:
+                                type: number
+                                format: double
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update invoice
+      tags:
+        - Invoices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInvoiceRequest'
+      responses:
+        '200':
+          description: Invoice updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Invoice'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete invoice
+      tags:
+        - Invoices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoice deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  # ==================== PAYMENTS ====================
+
+  /payments:
+    get:
+      summary: List payments
+      tags:
+        - Payments
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, completed, failed, refunded]
+      responses:
+        '200':
+          description: Payments list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Payment'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create payment
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentRequest'
+      responses:
+        '201':
+          description: Payment created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Payment'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /payments/{id}:
+    get:
+      summary: Get payment by ID
+      tags:
+        - Payments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Payment'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update payment
+      tags:
+        - Payments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePaymentRequest'
+      responses:
+        '200':
+          description: Payment updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Payment'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete payment
+      tags:
+        - Payments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  # ==================== NOTIFICATIONS ====================
+
+  /notifications:
+    get:
+      summary: List user notifications
+      tags:
+        - Notifications
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Notifications list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Notification'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create notification
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNotificationRequest'
+      responses:
+        '201':
+          description: Notification created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Notification'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /notifications/{id}:
+    get:
+      summary: Get notification by ID
+      tags:
+        - Notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Notification'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update notification
+      tags:
+        - Notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotificationRequest'
+      responses:
+        '200':
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Notification'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete notification
+      tags:
+        - Notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  # ==================== CONVERSATIONS ====================
+
+  /conversations:
+    get:
+      summary: List conversations
+      tags:
+        - Conversations
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Conversations list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Conversation'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Create conversation
+      tags:
+        - Conversations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConversationRequest'
+      responses:
+        '201':
+          description: Conversation created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Conversation'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+  /conversations/{id}:
+    get:
+      summary: Get conversation by ID
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Conversation details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/ConversationDetail'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    put:
+      summary: Update conversation
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Conversation updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/ConversationDetail'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    delete:
+      summary: Delete conversation
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Conversation deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+  /conversations/{id}/messages:
+    get:
+      summary: List messages in conversation
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Message'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+                      timestamp:
+                        type: string
+                        format: date-time
+
+    post:
+      summary: Send message
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                      data:
+                        $ref: '#/components/schemas/Message'
+                      timestamp:
+                        type: string
+                        format: date-time

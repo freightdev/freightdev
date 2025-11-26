@@ -1,0 +1,16 @@
+[Unit]
+Description=Nginx Web Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

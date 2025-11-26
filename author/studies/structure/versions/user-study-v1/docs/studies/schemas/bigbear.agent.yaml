@@ -1,0 +1,224 @@
+identity:
+  id: BB
+  name: Big Bear
+  description: |
+    Big Bear is the authority agent responsible for monitoring highway enforcement activity,
+    weigh station status, accidents, road hazards, and public alerts. He is not a router or dispatcher.
+    He simply watches, logs, and shows what’s happening out there. He maintains a dashboard of current
+    known law enforcement positions, DOT activity, traffic incidents, and any other “bear” activity.
+    Big Bear gets stronger with user reports and passive data collection.
+  tagline: "The road has eyes. Big Bear sees them all."
+  owned_by: Fast & Easy Dispatching LLC
+  version: 0.0.1
+  license: Proprietary
+  visibility: public
+
+roles:
+  primary: Passive road monitoring and alert broadcasting.
+  secondary:
+    - Hazard reporting
+    - Law enforcement watch
+    - Weigh station tracking
+  fallback:
+    - Public road status scraper
+    - Crowdsource report aggregator
+
+capabilities:
+  input_types:
+    - crowd_reports
+    - traffic_feeds
+    - government data
+    - DOT broadcasts
+  output_types:
+    - alert_map
+    - status_dashboard
+    - hazard_feed
+  tasks:
+    - fetch_reports
+    - verify_incidents
+    - update_dashboard
+    - tag_alerts
+    - expire_old_data
+  limits:
+    memory: 512MB
+    runtime: 24h
+    rate_limit: 1000_reports_per_hour
+    threads: 4
+    timeout: 120s
+
+tools:
+  - report_collector
+  - alert_tag_engine
+  - geolocation_mapper
+  - weigh_station_tracker
+  - accident_feed_reader
+  - officer_ping_cache
+
+dependencies:
+  - gps_api
+  - traffic_incident_feeds
+  - dot_station_api
+  - open_map_layer
+
+apis:
+  - traffic/openfeed
+  - dot/station_status
+  - fed/user_report
+  - gps/location_check
+
+models:
+  - incident.clustering
+  - alert.deduplicator
+  - confidence.scorer
+
+bindings:
+  - geojson-mapper
+  - realtime-cache
+  - report-filter-engine
+
+triggers:
+  on_start:
+    - load_cached_alerts
+    - pull_active weigh stations
+  on_request:
+    - user_check_area
+    - request_bear_log
+  on_timer:
+    - refresh_traffic_data
+    - expire_stale_incidents
+  on_event:
+    - report_submitted
+    - DOT alert received
+
+intents:
+  default: monitor_and_alert
+  fallback: passive_cache_view
+  allowed:
+    - watch_roads
+    - fetch_incidents
+    - log_enforcement
+    - alert_driver
+  denied:
+    - dispatch_driver
+    - plan_routes
+    - control navigation
+
+protocols:
+  communication:
+    - passive_feed
+    - one-way alert ping
+  transport:
+    - TLSv1.3
+  security:
+    - anonymous_reports_allowed
+    - verified_sources_tagged
+  storage:
+    - alert_db
+    - geoindex_cache
+
+rules:
+  ethics:
+    - never publish exact officer names or plates
+    - no permanent tracking of individuals
+    - keep reports anonymous unless verified
+  permissions:
+    - may store general location data
+    - may visualize alert history
+  restrictions:
+    - no 2-way communication with law enforcement
+    - no rerouting traffic or dispatching trucks
+
+workflow:
+  bootstrap:
+    - pull initial DOT and traffic data
+    - warm geo cache
+  routine:
+    - collect new reports
+    - tag incident type
+    - broadcast to dashboard
+  shutdown:
+    - flush expired alerts
+    - archive logs
+    - pause traffic stream
+
+memory:
+  type: geo_cache + alert_log
+  scope: global
+  persistence: time-based TTL storage
+  indexing: lat + lon + alert_type + time
+
+data:
+  sources:
+    - user_report
+    - government_feed
+    - DOT station status
+  sinks:
+    - alert_dashboard
+    - hazard_feed
+  formats:
+    - json
+    - geojson
+    - csv
+
+logging:
+  level: info
+  path: /var/log/bigbear.log
+  rotation: daily
+  retention: 14d
+
+ui:
+  cli_flags:
+    - --map
+    - --bearlog
+    - --watch
+    - --clear-cache
+  dashboard: fedispatching.com/dashboard/bigbear
+  webhooks:
+    - /api/bigbear/report
+    - /api/bigbear/ping
+    - /api/bigbear/map
+
+metrics:
+  telemetry:
+    - alerts_active
+    - user_reports_received
+    - station_status_fetched
+  heartbeat: 10m
+  alerts:
+    - report_spike
+    - stale_feed
+    - map_update_failed
+
+env:
+  vars:
+    ENABLE_USER_REPORTS: true
+    ENABLE_GOV_FEED: true
+  secrets:
+    - DOT_API_KEY
+    - MAP_TILE_KEY
+
+auth:
+  methods:
+    - token
+    - anonymous
+  token_scope:
+    - read_dashboard
+    - submit_report
+  encryption: AES256
+
+tenants:
+  scope: public_global
+  isolation: n/a
+  permissions:
+    - can submit reports
+    - can view alerts
+
+containers:
+  image: ghcr.io/fedispatching/bigbear:latest
+  runtime: docker
+  entrypoint: ["./start-agent", "--mode", "monitor"]
+
+meta:
+  created_at: 2025-07-26
+  updated_at: TODO
+  schema_version: 1.0.0

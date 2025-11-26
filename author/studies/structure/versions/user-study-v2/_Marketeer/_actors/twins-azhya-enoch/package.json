@@ -1,0 +1,20 @@
+{
+  "name": "azhya-enoch-ai",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm install && poetry env use python3.11 && poetry install",
+    "reset": "rm -rf package-lock.json node_modules poetry.lock .venv __pycache__"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.21.2",
+    "openai": "^4.29.2",
+    "puppeteer": "^22.0.0",
+    "socket.io": "^4.8.1",
+    "yahoo-finance2": "^2.3.0"
+  }
+}

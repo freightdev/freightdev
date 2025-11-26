@@ -1,0 +1,94 @@
+#############################
+# ZBOX Base Manifest Schema
+# Template for creating profile manifests
+#############################
+
+# Profile metadata
+profile:
+  name: "base"
+  version: "1.0.0"
+  description: "Base manifest template for zBox profiles"
+  author: "Jesse E.E.W. Conley"
+  created: "2025-11-22"
+
+# Agent configuration
+agent:
+  name: "zBoxxy"
+  type: "sandbox"
+  isolation_level: "medium"  # low, medium, high, strict
+
+# Environment variables to set for this profile
+environment:
+  # Custom environment variables
+  vars: {}
+    # EXAMPLE_VAR: "value"
+
+  # PATH additions (prepended to existing PATH)
+  paths: []
+    # - "$HOME/.local/bin"
+
+  # Load specific .env files
+  dotenv: []
+    # - "$ZBOX_PROFILES/workspace/.env"
+
+# Resources to load
+resources:
+  # Config files to source
+  configs: []
+    # - "$ZBOX_PROFILES/workspace/config/environments.zsh"
+
+  # Functions/helpers to load
+  functions: []
+    # - "$ZBOX_SRC/helpers/custom.zsh"
+
+  # Plugins to activate
+  plugins: []
+    # - "zsh-autosuggestions"
+
+  # Tools to make available
+  tools: []
+    # - "$ZBOX_TOOLS/core/github-repo-selector.zsh"
+
+# Access controls (sandbox boundaries)
+access:
+  # Directories this profile can read
+  read_paths: []
+    # - "$HOME/projects"
+    # - "$ZBOX_RESOURCES"
+
+  # Directories this profile can write to
+  write_paths: []
+    # - "$HOME/workspace"
+
+  # Directories completely blocked
+  blocked_paths: []
+    # - "$HOME/.ssh/private_keys"
+
+  # Network access
+  network:
+    enabled: true
+    allowed_hosts: []  # Empty = all hosts allowed
+    blocked_hosts: []
+
+# Symlinks to create for this profile
+symlinks: {}
+  # ".gitconfig": "$ZBOX_PROFILES/workspace/config/git/.gitconfig"
+
+# Aliases specific to this profile
+aliases: {}
+  # work: "cd $HOME/workspace"
+
+# Commands to run on profile activation
+hooks:
+  on_activate: []
+    # - "echo 'Profile activated'"
+
+  on_deactivate: []
+    # - "echo 'Profile deactivated'"
+
+  on_error: []
+    # - "echo 'Error occurred'"
+
+# Dependencies (other profiles/manifests to load first)
+dependencies: []
+  # - "base-tools"

@@ -1,0 +1,56 @@
+auth_packages:
+  - name: Auth Essentials
+    price: 3500
+    timeline: "1-2 weeks"
+    tier: Basic
+    description: >
+      Secure user authentication that just works. Email/password login with
+      password reset, session management, and basic security hardening.
+    includes:
+      - Email/password authentication
+      - Password reset flow
+      - Session management
+      - Basic rate limiting
+      - Email verification
+      - Security headers configuration
+    excludes:
+      - Social login integrations
+      - Multi-factor authentication
+      - Role-based permissions
+
+  - name: Auth Professional
+    price: 7500
+    timeline: "2-3 weeks"
+    tier: Professional
+    description: >
+      Complete authentication system with social login, MFA, and role management.
+      Perfect for apps that need enterprise-grade security with user-friendly experience.
+    includes:
+      - Everything in Auth Essentials
+      - Social login (Google, GitHub, etc.)
+      - Multi-factor authentication (TOTP/SMS)
+      - Role-based permissions
+      - Account management UI
+      - Security audit logging
+      - Password policy enforcement
+    ideal_for:
+      - SaaS applications
+      - Business applications
+      - Apps handling sensitive data
+
+  - name: Auth Enterprise
+    price: 18000+
+    timeline: "4-6 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise identity management with SSO, advanced security, and compliance features.
+      Built for organizations with complex security requirements and audit needs.
+    includes:
+      - Everything in Professional
+      - Single Sign-On (SAML/OAuth)
+      - Advanced threat detection
+      - Compliance reporting (SOC2, HIPAA)
+      - Custom authentication flows
+      - Admin security dashboard
+      - Integration with identity providers
+      - Security consultation & training

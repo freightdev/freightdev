@@ -1,0 +1,1100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - ELDA Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .elda-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .elda-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        position: relative;
+    }
+
+    .elda-status {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 14px;
+        height: 14px;
+        background: #10b981;
+        border-radius: 50%;
+        border: 2px solid #16213e;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    .elda-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .elda-name {
+        font-size: 20px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .elda-tagline {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* CHAT CONTAINER */
+    .chat-container {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    .chat-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* WELCOME SCREEN */
+    .welcome-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 48px;
+        text-align: center;
+    }
+
+    .welcome-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 64px;
+        margin-bottom: 24px;
+        box-shadow: 0 20px 60px rgba(168, 85, 247, 0.4);
+    }
+
+    .welcome-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-subtitle {
+        font-size: 18px;
+        color: #888;
+        margin-bottom: 48px;
+        max-width: 600px;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        max-width: 900px;
+        width: 100%;
+    }
+
+    .quick-action-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: left;
+    }
+
+    .quick-action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(168, 85, 247, 0.3);
+        border-color: #a855f7;
+    }
+
+    .action-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .action-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .action-description {
+        font-size: 13px;
+        color: #888;
+        line-height: 1.5;
+    }
+
+    /* MESSAGES */
+    .message {
+        display: flex;
+        gap: 16px;
+        max-width: 800px;
+    }
+
+    .message.user {
+        margin-left: auto;
+        flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .message-avatar.elda {
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+    }
+
+    .message-avatar.user {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    }
+
+    .message-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .message-bubble {
+        padding: 16px 20px;
+        border-radius: 16px;
+        line-height: 1.6;
+    }
+
+    .message.elda .message-bubble {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .message.user .message-bubble {
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        color: white;
+    }
+
+    .message-time {
+        font-size: 11px;
+        color: #666;
+        padding: 0 8px;
+    }
+
+    .typing-indicator {
+        display: flex;
+        gap: 6px;
+        padding: 16px 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 16px;
+        width: fit-content;
+    }
+
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #a855f7;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+        0%, 60%, 100% { opacity: 0.3; }
+        30% { opacity: 1; }
+    }
+
+    /* SUGGESTIONS */
+    .suggestions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+    }
+
+    .suggestion-chip {
+        padding: 8px 16px;
+        background: rgba(168, 85, 247, 0.1);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .suggestion-chip:hover {
+        background: rgba(168, 85, 247, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* INPUT AREA */
+    .chat-input-area {
+        padding: 24px 32px;
+        background: #16213e;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
+    }
+
+    .input-container {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .input-wrapper {
+        flex: 1;
+        position: relative;
+    }
+
+    .chat-input {
+        width: 100%;
+        padding: 16px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #e0e0e0;
+        font-size: 15px;
+        resize: none;
+        min-height: 52px;
+        max-height: 150px;
+        font-family: inherit;
+        transition: all 0.2s;
+    }
+
+    .chat-input:focus {
+        outline: none;
+        border-color: #a855f7;
+        background: rgba(168, 85, 247, 0.05);
+    }
+
+    .send-btn {
+        padding: 14px 24px;
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+    }
+
+    .send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* CONTEXT PANEL */
+    .context-panel {
+        width: 320px;
+        background: #16213e;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 24px;
+        overflow-y: auto;
+    }
+
+    .context-section {
+        margin-bottom: 32px;
+    }
+
+    .context-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #666;
+        margin-bottom: 16px;
+    }
+
+    .context-item {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .context-item-label {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 4px;
+    }
+
+    .context-item-value {
+        font-weight: 600;
+    }
+
+    .capability-item {
+        padding: 12px;
+        background: rgba(168, 85, 247, 0.05);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .capability-icon {
+        font-size: 20px;
+    }
+
+    .capability-text {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    /* LOAD CARDS IN CHAT */
+    .load-card-chat {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 12px;
+    }
+
+    .load-header-chat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .load-number-chat {
+        font-weight: 700;
+        color: #a855f7;
+    }
+
+    .load-route-chat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .load-details-chat {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        font-size: 12px;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Learning</div>
+            <div class="nav-item">
+                <div class="nav-icon">🎓</div>
+                <div class="nav-label">Training Center</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">🤖</div>
+                <div class="nav-label">ELDA Assistant</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="elda-header">
+                <div class="elda-avatar">
+                    🤖
+                    <div class="elda-status"></div>
+                </div>
+                <div class="elda-info">
+                    <div class="elda-name">ELDA</div>
+                    <div class="elda-tagline">Enhanced Logistics Dispatch Assistant</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">🔄 New Chat</button>
+                <button class="btn btn-secondary">📜 History</button>
+                <button class="btn btn-secondary">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-main">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- WELCOME SCREEN -->
+                    <div class="welcome-screen" id="welcomeScreen">
+                        <div class="welcome-avatar">🤖</div>
+                        <div class="welcome-title">Hello, Jesse! 👋</div>
+                        <div class="welcome-subtitle">
+                            I'm ELDA, your AI-powered dispatch assistant. I can help you find loads, manage drivers, track payments, answer questions about dispatching, and automate your daily tasks. How can I help you today?
+                        </div>
+                        <div class="quick-actions">
+                            <div class="quick-action-card" onclick="sendQuickAction('Find me available loads from Houston to Austin')">
+                                <div class="action-icon">🔍</div>
+                                <div class="action-title">Find Loads</div>
+                                <div class="action-description">Search for available loads on all connected load boards</div>
+                            </div>
+                            <div class="quick-action-card" onclick="sendQuickAction('Show me which drivers are available today')">
+                                <div class="action-icon">👥</div>
+                                <div class="action-title">Check Driver Availability</div>
+                                <div class="action-description">See which drivers are ready for dispatch</div>
+                            </div>
+                            <div class="quick-action-card" onclick="sendQuickAction('What payments are overdue?')">
+                                <div class="action-icon">💰</div>
+                                <div class="action-title">Payment Status</div>
+                                <div class="action-description">Review outstanding invoices and payments</div>
+                            </div>
+                            <div class="quick-action-card" onclick="sendQuickAction('Create an invoice for load LD-2024-4527')">
+                                <div class="action-icon">📄</div>
+                                <div class="action-title">Generate Invoice</div>
+                                <div class="action-description">Automatically create and send invoices</div>
+                            </div>
+                            <div class="quick-action-card" onclick="sendQuickAction('How do I negotiate better rates with brokers?')">
+                                <div class="action-icon">💡</div>
+                                <div class="action-title">Get Advice</div>
+                                <div class="action-description">Learn dispatching tips and best practices</div>
+                            </div>
+                            <div class="quick-action-card" onclick="sendQuickAction('Show me my business performance this month')">
+                                <div class="action-icon">📊</div>
+                                <div class="action-title">Analytics</div>
+                                <div class="action-description">View revenue, margins, and trends</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EXAMPLE CONVERSATION (Hidden by default) -->
+                    <div style="display: none;" id="exampleChat">
+                        <!-- User Message -->
+                        <div class="message user">
+                            <div class="message-avatar user">J</div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    Find me available loads from Houston to Austin
+                                </div>
+                                <div class="message-time">2:45 PM</div>
+                            </div>
+                        </div>
+
+                        <!-- ELDA Response -->
+                        <div class="message elda">
+                            <div class="message-avatar elda">🤖</div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    I found 8 available loads from Houston to Austin on your connected load boards. Here are the top 3 by rate:
+                                    
+                                    <div class="load-card-chat">
+                                        <div class="load-header-chat">
+                                            <div class="load-number-chat">LD-2024-5847 (DAT)</div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #10b981;">$2,850</div>
+                                        </div>
+                                        <div class="load-route-chat">
+                                            <span>Houston, TX</span>
+                                            <span style="color: #a855f7;">→</span>
+                                            <span>Austin, TX</span>
+                                        </div>
+                                        <div class="load-details-chat">
+                                            <div>📦 Equipment: Dry Van</div>
+                                            <div>⚖️ Weight: 42,000 lbs</div>
+                                            <div>📏 Distance: 165 miles</div>
+                                            <div>💵 $2.75/mile</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="load-card-chat">
+                                        <div class="load-header-chat">
+                                            <div class="load-number-chat">LD-2024-5848 (Truckstop)</div>
+                                            <div style="font-size: 20px; font-weight: 700; color: #10b981;">$2,650</div>
+                                        </div>
+                                        <div class="load-route-chat">
+                                            <span>Houston, TX</span>
+                                            <span style="color: #a855f7;">→</span>
+                                            <span>Austin, TX</span>
+                                        </div>
+                                        <div class="load-details-chat">
+                                            <div>📦 Equipment: Dry Van</div>
+                                            <div>⚖️ Weight: 38,000 lbs</div>
+                                            <div>📏 Distance: 162 miles</div>
+                                            <div>💵 $2.63/mile</div>
+                                        </div>
+                                    </div>
+
+                                    Would you like me to assign one of these to an available driver?
+                                </div>
+                                <div class="suggestions">
+                                    <div class="suggestion-chip">✅ Assign to John Smith</div>
+                                    <div class="suggestion-chip">📞 Call broker for LD-5847</div>
+                                    <div class="suggestion-chip">🔍 Show more loads</div>
+                                </div>
+                                <div class="message-time">2:45 PM</div>
+                            </div>
+                        </div>
+
+                        <!-- User Message 2 -->
+                        <div class="message user">
+                            <div class="message-avatar user">J</div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    Assign the first load to John Smith
+                                </div>
+                                <div class="message-time">2:46 PM</div>
+                            </div>
+                        </div>
+
+                        <!-- ELDA Response 2 -->
+                        <div class="message elda">
+                            <div class="message-avatar elda">🤖</div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    ✅ Perfect! I've assigned load LD-2024-5847 to John Smith.
+                                    
+                                    Here's what I did:
+                                    • Created load record in your system
+                                    • Assigned to John Smith (Dry Van, currently available in Houston)
+                                    • Sent rate confirmation to broker
+                                    • Notified John via SMS with pickup details
+                                    • Added to your dispatch board for today
+                                    • Set up automatic tracking
+
+                                    <strong>Load Details:</strong>
+                                    • Pickup: Today 8:00 PM - Houston, TX
+                                    • Delivery: Tomorrow 4:00 PM - Austin, TX
+                                    • Rate: $2,850 ($2.75/mile)
+                                    • Driver Pay: $2,565 (90%)
+                                    • Your Dispatch Fee: $285 (10%)
+
+                                    John confirmed via SMS - he's heading to pickup now. Would you like me to monitor this load and send you updates?
+                                </div>
+                                <div class="suggestions">
+                                    <div class="suggestion-chip">✅ Yes, track this load</div>
+                                    <div class="suggestion-chip">📧 Email broker confirmation</div>
+                                    <div class="suggestion-chip">🔍 Find return load from Austin</div>
+                                </div>
+                                <div class="message-time">2:46 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <textarea 
+                                class="chat-input" 
+                                id="chatInput" 
+                                placeholder="Ask ELDA anything... (e.g., 'Find loads', 'Check driver status', 'Create invoice')"
+                                rows="1"
+                                onkeydown="handleKeyPress(event)"
+                            ></textarea>
+                        </div>
+                        <button class="send-btn" onclick="sendMessage()">
+                            Send 🚀
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEXT PANEL -->
+            <div class="context-panel">
+                <div class="context-section">
+                    <div class="context-title">🎯 Current Context</div>
+                    <div class="context-item">
+                        <div class="context-item-label">Active Loads</div>
+                        <div class="context-item-value">12 loads</div>
+                    </div>
+                    <div class="context-item">
+                        <div class="context-item-label">Available Drivers</div>
+                        <div class="context-item-value">8 drivers</div>
+                    </div>
+                    <div class="context-item">
+                        <div class="context-item-label">Pending Payments</div>
+                        <div class="context-item-value">$47,250</div>
+                    </div>
+                    <div class="context-item">
+                        <div class="context-item-label">Today's Revenue</div>
+                        <div class="context-item-value">$8,900</div>
+                    </div>
+                </div>
+
+                <div class="context-section">
+                    <div class="context-title">🤖 ELDA Capabilities</div>
+                    <div class="capability-item">
+                        <div class="capability-icon">🔍</div>
+                        <div class="capability-text">Search all load boards simultaneously</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">👥</div>
+                        <div class="capability-text">Assign loads to best-matched drivers</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">💵</div>
+                        <div class="capability-text">Generate invoices & track payments</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">📊</div>
+                        <div class="capability-text">Analyze business performance & trends</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">📧</div>
+                        <div class="capability-text">Send emails & SMS to drivers/brokers</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">🗺️</div>
+                        <div class="capability-text">Track loads in real-time</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">📄</div>
+                        <div class="capability-text">Auto-fill carrier packets & documents</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">💡</div>
+                        <div class="capability-text">Answer dispatching questions 24/7</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">⚡</div>
+                        <div class="capability-text">Automate repetitive tasks</div>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon">🎓</div>
+                        <div class="capability-text">Recommend training courses</div>
+                    </div>
+                </div>
+
+                <div class="context-section">
+                    <div class="context-title">💡 Quick Tips</div>
+                    <div style="font-size: 12px; color: #888; line-height: 1.6;">
+                        • Be specific with your requests
+                        <br>• I can see all your loads, drivers, and financials
+                        <br>• I learn your preferences over time
+                        <br>• Ask me to explain anything I do
+                        <br>• Use voice input for hands-free operation
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        // Hide welcome screen
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('exampleChat').style.display = 'flex';
+        document.getElementById('exampleChat').style.flexDirection = 'column';
+        document.getElementById('exampleChat').style.gap = '24px';
+        
+        // Add user message
+        const messagesContainer = document.getElementById('chatMessages');
+        const userMessage = createUserMessage(message);
+        messagesContainer.appendChild(userMessage);
+        
+        // Clear input
+        input.value = '';
+        input.style.height = 'auto';
+        
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Show typing indicator
+        const typingIndicator = createTypingIndicator();
+        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Simulate ELDA response
+        setTimeout(() => {
+            typingIndicator.remove();
+            const eldaMessage = createEldaMessage(getEldaResponse(message));
+            messagesContainer.appendChild(eldaMessage);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 2000);
+    }
+
+    function sendQuickAction(message) {
+        const input = document.getElementById('chatInput');
+        input.value = message;
+        sendMessage();
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function createUserMessage(text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message user';
+        messageDiv.innerHTML = `
+            <div class="message-avatar user">J</div>
+            <div class="message-content">
+                <div class="message-bubble">${text}</div>
+                <div class="message-time">${getCurrentTime()}</div>
+            </div>
+        `;
+        return messageDiv;
+    }
+
+    function createEldaMessage(text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message elda';
+        messageDiv.innerHTML = `
+            <div class="message-avatar elda">🤖</div>
+            <div class="message-content">
+                <div class="message-bubble">${text}</div>
+                <div class="message-time">${getCurrentTime()}</div>
+            </div>
+        `;
+        return messageDiv;
+    }
+
+    function createTypingIndicator() {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message elda';
+        messageDiv.innerHTML = `
+            <div class="message-avatar elda">🤖</div>
+            <div class="message-content">
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        `;
+        return messageDiv;
+    }
+
+    function getCurrentTime() {
+        const now = new Date();
+        return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function getEldaResponse(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        if (lowerMessage.includes('load') && lowerMessage.includes('find')) {
+            return `I found several loads matching your criteria. Let me pull the best options from all your connected load boards... 🔍`;
+        } else if (lowerMessage.includes('driver')) {
+            return `Here's your current driver status:<br><br>✅ Available (8): John Smith, Maria Garcia, Mike Johnson...<br>🚛 On Load (4): Sarah Williams, Carlos Rodriguez...<br>⏸️ Off Duty (2): David Brown, Lisa Martinez<br><br>Would you like to see more details about any specific driver?`;
+        } else if (lowerMessage.includes('payment') || lowerMessage.includes('overdue')) {
+            return `You have 3 overdue payments totaling $8,900:<br><br>1. National Freight Solutions - $3,200 (4 days overdue)<br>2. TransAmerica Brokerage - $2,850 (2 days overdue)<br>3. Midwest Logistics - $2,850 (1 day overdue)<br><br>Would you like me to send payment reminders to these brokers?`;
+        } else if (lowerMessage.includes('invoice')) {
+            return `I can help you create an invoice! Which load would you like to invoice? Or would you like me to automatically generate invoices for all completed and delivered loads?`;
+        } else if (lowerMessage.includes('negotiate') || lowerMessage.includes('rate')) {
+            return `Here are my top tips for negotiating better rates:<br><br>1. 📊 Know the market - Check DAT rate averages for your lane<br>2. 💪 Leverage your track record - Mention your on-time delivery rate<br>3. 🤝 Build relationships - Consistent brokers often pay better<br>4. ⏰ Timing matters - Rates are higher on Fridays and before holidays<br>5. 📦 Bundle loads - Negotiate better rates for round trips<br><br>Would you like me to recommend a training course on rate negotiation?`;
+        } else if (lowerMessage.includes('performance') || lowerMessage.includes('analytics')) {
+            return `Here's your business performance this month:<br><br>📈 Revenue: $89,430 (+18% vs last month)<br>💰 Net Profit: $21,630 (24.2% margin)<br>🚛 Loads Completed: 47 loads<br>💵 Average Rate: $2.48/mile<br>⏱️ Avg Days to Payment: 28 days<br>⭐ Driver On-Time Rate: 98.1%<br><br>You're trending up! Would you like a detailed breakdown or recommendations for improvement?`;
+        } else {
+            return `I understand you're asking about "${message}". I can help with that! Could you provide a bit more detail so I can give you the best answer?`;
+        }
+    }
+
+    // Auto-resize textarea
+    document.getElementById('chatInput').addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+</script>
+</body>
+</html>

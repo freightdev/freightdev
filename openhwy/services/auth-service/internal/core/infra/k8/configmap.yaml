@@ -1,0 +1,28 @@
+# kubernetes/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: auth-service-config
+    namespace: auth-service
+data:
+    SERVER_PORT: "8080"
+    SERVER_HOST: "0.0.0.0"
+    ENVIRONMENT: "production"
+    DB_HOST: "postgres-service"
+    DB_PORT: "5432"
+    DB_NAME: "auth_service"
+    DB_SSL_MODE: "require"
+    REDIS_HOST: "redis-service"
+    REDIS_PORT: "6379"
+    JWT_ISSUER: "auth-service"
+    JWT_ACCESS_EXPIRY: "15m"
+    JWT_REFRESH_EXPIRY: "168h"
+    LOG_LEVEL: "info"
+    LOG_FORMAT: "json"
+    RATE_LIMIT_REQUESTS: "100"
+    RATE_LIMIT_WINDOW: "1h"
+    MAX_LOGIN_ATTEMPTS: "5"
+    LOCKOUT_DURATION: "15m"
+
+---
+

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@web/*": ["apps/web/src/*"],
+      "@mobile/*": ["apps/mobile/src/*"],
+      "@base/*": ["packages/base/src/*"],
+      "@ui/*": ["packages/ui/src/*"],
+      "@api/*": ["packages/api/src/*"],
+      "@app/*": ["packages/app/src/*"]
+    }
+  }
+}

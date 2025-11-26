@@ -1,0 +1,56 @@
+database_packages:
+  - name: Database Setup
+    price: 3000
+    timeline: "1-2 weeks"
+    tier: Foundation
+    description: >
+      Production-ready database with proper indexing, backups, and monitoring.
+      Perfect for apps moving from development to real users.
+    includes:
+      - Database design & optimization
+      - Automated backups
+      - Performance monitoring
+      - Index optimization
+      - Basic security hardening
+      - Migration scripts
+    excludes:
+      - Complex data modeling
+      - Replication setup
+      - Advanced performance tuning
+
+  - name: Database Professional
+    price: 8500
+    timeline: "2-3 weeks"
+    tier: Professional
+    description: >
+      Scalable database architecture with replication, caching, and advanced monitoring.
+      Built for growing applications that need reliability and performance.
+    includes:
+      - Everything in Database Setup
+      - Master-replica replication
+      - Redis caching layer
+      - Advanced monitoring & alerting
+      - Query optimization
+      - Data archiving strategy
+      - Performance dashboard
+    ideal_for:
+      - High-traffic applications
+      - SaaS platforms
+      - E-commerce sites
+
+  - name: Database Enterprise
+    price: 20000+
+    timeline: "4-6 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise database infrastructure with sharding, disaster recovery, and compliance.
+      Built for mission-critical applications with strict uptime requirements.
+    includes:
+      - Everything in Professional
+      - Database sharding/partitioning
+      - Disaster recovery system
+      - Compliance & audit logging
+      - Multi-region replication
+      - Custom performance optimization
+      - 24/7 monitoring & support
+      - Database administration training

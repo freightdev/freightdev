@@ -1,0 +1,26 @@
+# docker-compose.yml
+
+services:
+    user_service:
+        build: .
+        ports:
+            - "8080:8080"
+        environment:
+            - SERVER_ENVIRONMENT=development
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+            - DATABASE_NAME=user_service
+            - DATABASE_USERNAME=user_service
+            - DATABASE_PASSWORD=password123
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - AUTH_JWT_SECRET=your-super-secret-jwt-key-change-in-production
+        depends_on:
+            - redis
+        restart: unless-stopped
+
+    redis:
+        image: redis:7-alpine
+        ports:
+            - "6379:6379"
+        restart: unless-stopped

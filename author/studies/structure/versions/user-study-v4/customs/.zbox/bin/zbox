@@ -1,0 +1,1128 @@
+#!/usr/bin/env zsh
+# zBox — BULLETPROOF PURE ZSH CORE (maximum compatibility)
+# drop at ~/.zbox/bin/zbox and chmod +x
+
+# Force ZSH mode and strict error handling
+emulate -L zsh
+setopt NO_GLOB_SUBST NO_GLOB_ASSIGN
+setopt ERR_EXIT ERR_RETURN
+setopt WARN_CREATE_GLOBAL
+set -o nounset
+
+# Version check - require ZSH 5.0+
+if [[ ${ZSH_VERSION%%.*} -lt 5 ]]; then
+  print -r -- "[FATAL] ZSH 5.0+ required. Current: $ZSH_VERSION" >&2
+  exit 1
+fi
+
+# ---------- enhanced logging with timestamps ----------
+_log_timestamp() {
+  # Use builtin printf for maximum compatibility
+  builtin printf '%(%Y-%m-%d %H:%M:%S)T' -1 2>/dev/null || date '+%Y-%m-%d %H:%M:%S'
+}
+
+log_i() { print -r -- "[$(_log_timestamp)] [INFO] $*"; }
+log_w() { print -r -- "[$(_log_timestamp)] [WARN] $*" >&2; }
+log_e() { print -r -- "[$(_log_timestamp)] [ERROR] $*" >&2; }
+log_d() { [[ -n "${ZBOX_DEBUG:-}" ]] && print -r -- "[$(_log_timestamp)] [DEBUG] $*" >&2; }
+
+# ---------- bulletproof realpath with multiple fallback strategies ----------
+_realpath() {
+  emulate -L zsh
+  setopt LOCAL_OPTIONS NO_GLOB_SUBST
+  set -o nounset
+  
+  local input="$1"
+  local current_path result
+  
+  # Strategy 1: Try zsh/stat module (preferred)
+  if zmodload -F zsh/stat b:zstat 2>/dev/null; then
+    local -A stat_info
+    local path="$input" resolved_path dir base link_target
+    
+    # Make absolute first
+    case "$path" in
+      /*) ;;
+      *) path="${PWD%/}/$path" ;;
+    esac
+    
+    # Follow symlinks with loop detection
+    local -A seen_paths
+    local max_depth=20 depth=0
+    
+    while (( ++depth <= max_depth )); do
+      # Check for cycles
+      if [[ -n "${seen_paths[$path]:-}" ]]; then
+        log_w "Symlink cycle detected: $path"
+        break
+      fi
+      seen_paths[$path]=1
+      
+      # Get file info
+      if zstat -HL -A stat_info -- "$path" 2>/dev/null; then
+        if [[ -n "${stat_info[link]:-}" ]]; then
+          link_target="${stat_info[link]}"
+          case "$link_target" in
+            /*) path="$link_target" ;;
+            *) path="${path%/*}/$link_target" ;;
+          esac
+          continue
+        fi
+      fi
+      break
+    done
+    
+    REPLY="$path"
+    return 0
+  fi
+  
+  # Strategy 2: Try external realpath if available
+  if command -v realpath >/dev/null 2>&1; then
+    if result=$(realpath "$input" 2>/dev/null); then
+      REPLY="$result"
+      return 0
+    fi
+  fi
+  
+  # Strategy 3: Try readlink -f if available
+  if command -v readlink >/dev/null 2>&1; then
+    if result=$(readlink -f "$input" 2>/dev/null); then
+      REPLY="$result"
+      return 0
+    fi
+  fi
+  
+  # Strategy 4: Python fallback
+  if command -v python3 >/dev/null 2>&1; then
+    if result=$(python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$input" 2>/dev/null); then
+      REPLY="$result"
+      return 0
+    fi
+  fi
+  
+  # Strategy 5: Manual resolution (last resort)
+  case "$input" in
+    /*) current_path="$input" ;;
+    *) current_path="${PWD%/}/$input" ;;
+  esac
+  
+  # Basic normalization
+  REPLY="$current_path"
+  return 0
+}
+
+# ---------- compute zbox root with enhanced error handling ----------
+_determine_zbox_root() {
+  local script_path real_script_path bin_dir
+  
+  # Get script path using ZSH parameter expansion
+  script_path="${(%):-%N}"
+  
+  if [[ -z "$script_path" ]]; then
+    log_e "Cannot determine script path"
+    return 1
+  fi
+  
+  # Resolve to real path
+  _realpath "$script_path"
+  real_script_path="$REPLY"
+  
+  log_d "Script path: $script_path -> $real_script_path"
+  
+  # Extract directories
+  bin_dir="${real_script_path%/*}"
+  _zbox_root="${bin_dir%/bin}"
+  
+  # Validate structure
+  if [[ "$bin_dir" == "$_zbox_root" ]]; then
+    log_w "zbox not in bin/ subdirectory, using parent of script location"
+    _zbox_root="$bin_dir"
+  fi
+  
+  log_d "ZBox root determined: $_zbox_root"
+  return 0
+}
+
+# Initialize root path
+_determine_zbox_root || {
+  log_e "Failed to determine zbox root directory"
+  exit 1
+}
+
+# ---------- constants with validation ----------
+ZBOX_DIR="${ZBOX_DIR:-$_zbox_root}"
+ZBOX_ETC="$ZBOX_DIR/etc"
+ZBOX_TENANTS="$ZBOX_DIR/zboxxies"
+ZBOX_SHARE="$ZBOX_DIR/share"
+ZBOX_LOG="$ZBOX_DIR/var/logs"
+ZBOX_VAR="$ZBOX_DIR/var"
+
+# Validate zbox directory is writable if it exists
+if [[ -e "$ZBOX_DIR" && ! -w "$ZBOX_DIR" ]]; then
+  log_e "ZBox directory not writable: $ZBOX_DIR"
+  exit 1
+fi
+
+# ---------- bulletproof directory creation ----------
+_ensure_dir() {
+  emulate -L zsh
+  setopt LOCAL_OPTIONS NO_GLOB_SUBST
+  set -o nounset
+  
+  local target_path="$1"
+  local current_path="" remaining_path="$target_path"
+  local component
+  
+  if [[ -z "$target_path" ]]; then
+    log_e "_ensure_dir: empty path"
+    return 1
+  fi
+  
+  # Handle absolute vs relative paths
+  case "$remaining_path" in
+    /*)
+      current_path="/"
+      remaining_path="${remaining_path#/}"
+      ;;
+    *)
+      current_path="$PWD"
+      ;;
+  esac
+  
+  # Create directories component by component
+  while [[ -n "$remaining_path" ]]; do
+    case "$remaining_path" in
+      */*)
+        component="${remaining_path%%/*}"
+        remaining_path="${remaining_path#*/}"
+        ;;
+      *)
+        component="$remaining_path"
+        remaining_path=""
+        ;;
+    esac
+    
+    # Skip empty components
+    [[ -z "$component" ]] && continue
+    
+    # Build path
+    current_path="${current_path%/}/$component"
+    
+    # Create if doesn't exist
+    if [[ ! -e "$current_path" ]]; then
+      if ! mkdir "$current_path" 2>/dev/null; then
+        log_e "Failed to create directory: $current_path"
+        return 1
+      fi
+      log_d "Created directory: $current_path"
+    elif [[ ! -d "$current_path" ]]; then
+      log_e "Path exists but is not a directory: $current_path"
+      return 1
+    fi
+  done
+  
+  return 0
+}
+
+# ---------- enhanced manifest loading with validation ----------
+_load_manifest() {
+  emulate -L zsh
+  setopt LOCAL_OPTIONS NO_GLOB_SUBST
+  set -o nounset
+  
+  local manifest_file="$1"
+  
+  if [[ -z "$manifest_file" ]]; then
+    log_e "_load_manifest: no file specified"
+    return 1
+  fi
+  
+  if [[ ! -f "$manifest_file" ]]; then
+    log_e "Manifest file not found: $manifest_file"
+    return 1
+  fi
+  
+  if [[ ! -r "$manifest_file" ]]; then
+    log_e "Manifest file not readable: $manifest_file"
+    return 1
+  fi
+  
+  log_d "Loading manifest: $manifest_file"
+  
+  # Source in a clean environment
+  (
+    emulate -L zsh
+    setopt NO_GLOB_SUBST NO_GLOB_ASSIGN
+    set -o nounset
+    
+    # shellcheck disable=SC1090
+    source "$manifest_file"
+  ) || {
+    log_e "Failed to load manifest: $manifest_file"
+    return 1
+  }
+  
+  # Re-source to get variables in current scope
+  source "$manifest_file" || {
+    log_e "Failed to source manifest: $manifest_file"
+    return 1
+  }
+  
+  log_d "Manifest loaded successfully"
+  return 0
+}
+
+# ---------- enhanced environment building with safety checks ----------
+_build_env() {
+  emulate -L zsh
+  setopt LOCAL_OPTIONS NO_GLOB_SUBST
+  set -o nounset
+  
+  local tenant_root="$1"
+  
+  if [[ -z "$tenant_root" || ! -d "$tenant_root" ]]; then
+    log_e "_build_env: invalid tenant root: ${tenant_root:-<empty>}"
+    return 1
+  fi
+  
+  log_d "Building environment for tenant: $tenant_root"
+  
+  # Apply security hardening
+  umask 077
+  
+  # Set resource limits with fallback handling
+  local -A limits=(
+    [cpu]="${ZBOX_LIMIT_CPU:-30}"
+    [nofile]="${ZBOX_LIMIT_NOFILE:-1024}"
+    [as]="${ZBOX_LIMIT_ASKB:-1048576}"
+    [rss]="${ZBOX_LIMIT_RSSKB:-524288}"
+  )
+  
+  local limit_name limit_value
+  for limit_name limit_value in ${(@kv)limits}; do
+    case "$limit_name" in
+      cpu) ulimit -t "$limit_value" 2>/dev/null || log_w "Failed to set CPU limit" ;;
+      nofile) ulimit -n "$limit_value" 2>/dev/null || log_w "Failed to set file descriptor limit" ;;
+      as) ulimit -v "$limit_value" 2>/dev/null || log_w "Failed to set virtual memory limit" ;;
+      rss) ulimit -m "$limit_value" 2>/dev/null || log_w "Failed to set RSS limit" ;;
+    esac
+  done
+  
+  # Set clean PATH
+  local tenant_bin="$tenant_root/bin"
+  if [[ -d "$tenant_bin" ]]; then
+    PATH="$tenant_bin"
+  else
+    log_w "Tenant bin directory missing: $tenant_bin"
+    PATH=""
+  fi
+  export PATH
+  
+  # Set baseline environment
+  export ZBOX_TENANT="${TENANT_ID:-unknown}"
+  export ZBOX_TENANT_ROOT="$tenant_root"
+  export LANG="${ZBOX_LANG:-C.UTF-8}"
+  export LC_ALL="${ZBOX_LC_ALL:-C.UTF-8}"
+  
+  # Load environment files from manifest
+  local i=1 env_file_var env_file
+  while :; do
+    env_file_var="ENV_FILE_$i"
+    env_file="${(P)env_file_var:-}"
+    
+    [[ -z "$env_file" ]] && break
+    
+    if [[ -f "$env_file" && -r "$env_file" ]]; then
+      log_d "Loading env file: $env_file"
+      set -a
+      source "$env_file" 2>/dev/null || log_w "Failed to load env file: $env_file"
+      set +a
+    else
+      log_w "Environment file not found or not readable: $env_file"
+    fi
+    
+    (( i++ ))
+    # Safety check to prevent infinite loops
+    (( i > 100 )) && {
+      log_w "Too many environment files, stopping at $i"
+      break
+    }
+  done
+  
+  # Load key-value pairs from manifest
+  local j=1 key_var val_var key val
+  while :; do
+    key_var="ENV_KV_${j}_KEY"
+    val_var="ENV_KV_${j}_VAL"
+    key="${(P)key_var:-}"
+    val="${(P)val_var:-}"
+    
+    [[ -z "$key" ]] && break
+    
+    # Validate key name (basic security check)
+    if [[ "$key" =~ '^[A-Za-z_][A-Za-z0-9_]*$' ]]; then
+      typeset -gx -- "$key=$val"
+      log_d "Set environment variable: $key=$val"
+    else
+      log_w "Invalid environment variable name: $key"
+    fi
+    
+    (( j++ ))
+    # Safety check
+    (( j > 100 )) && {
+      log_w "Too many environment variables, stopping at $j"
+      break
+    }
+  done
+  
+  log_d "Environment built successfully"
+  return 0
+}
+
+# ---------- enhanced hook execution with timeout ----------
+_run_hook() {
+  emulate -L zsh
+  setopt LOCAL_OPTIONS NO_GLOB_SUBST
+  set -o nounset
+  
+  local hook_file="$1" phase="${2:-unknown}"
+  
+  [[ -z "$hook_file" ]] && return 0
+  [[ ! -f "$hook_file" ]] && return 0
+  [[ ! -r "$hook_file" ]] && {
+    log_w "Hook file not readable: $hook_file"
+    return 0
+  }
+  
+  log_d "Running hook: $hook_file (phase: $phase)"
+  
+  export ZBOX_PHASE="$phase"
+  export ZBOX_HOOK_FILE="$hook_file"
+  
+  # Run hook with timeout if possible
+  local hook_timeout="${ZBOX_HOOK_TIMEOUT:-30}"
+  
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$hook_timeout" zsh -c "source '$hook_file'" 2>/dev/null || {
+      local exit_code=$?
+      if (( exit_code == 124 )); then
+        log_w "Hook timed out after ${hook_timeout}s: $hook_file"
+      else
+        log_w "Hook failed with exit code $exit_code: $hook_file"
+      fi
+    }
+  else
+    # Fallback without timeout
+    zsh -c "source '$hook_file'" 2>/dev/null || log_w "Hook failed: $hook_file"
+  fi
+  
+  unset ZBOX_PHASE ZBOX_HOOK_FILE
+  return 0
+}
+
+# ---------- enhanced wrapper creation with validation ----------
+_make_wrapper() {
+  emulate -L zsh
+  setopt LOCAL_OPTIONS NO_GLOB_SUBST
+  set -o nounset
+  
+  local target="$1" output="$2"
+  
+  if [[ -z "$target" || -z "$output" ]]; then
+    log_e "_make_wrapper: missing arguments (target, output)"
+    return 1
+  fi
+  
+  # Validate target exists and is executable
+  if [[ ! -f "$target" ]]; then
+    log_w "Wrapper target does not exist: $target"
+  elif [[ ! -x "$target" ]]; then
+    log_w "Wrapper target not executable: $target"
+  fi
+  
+  # Create output directory if needed
+  local output_dir="${output%/*}"
+  if [[ "$output_dir" != "$output" ]]; then
+    _ensure_dir "$output_dir" || return 1
+  fi
+  
+  log_d "Creating wrapper: $output -> $target"
+  
+  # Create wrapper script with enhanced logging
+  {
+    print -r -- '#!/usr/bin/env zsh'
+    print -r -- '# Generated wrapper by zBox'
+    print -r -- 'emulate -L zsh'
+    print -r -- 'setopt NO_GLOB_SUBST'
+    print -r -- 'set -o nounset'
+    print -r -- ''
+    print -r -- 'tenant_dir="${0%/*}/.."'
+    print -r -- 'log_file="$tenant_dir/var/logs/exec.log"'
+    print -r -- 'log_dir="${log_file%/*}"'
+    print -r -- ''
+    print -r -- '# Ensure log directory exists'
+    print -r -- '[[ -d "$log_dir" ]] || mkdir -p "$log_dir" 2>/dev/null'
+    print -r -- ''
+    print -r -- '# Log execution with timestamp and user info'
+    print -r -- 'if [[ -w "$log_dir" ]]; then'
+    print -r -- '  {' 
+    print -r -- '    printf "%(%Y-%m-%d %H:%M:%S)T " -1 2>/dev/null || date "+%Y-%m-%d %H:%M:%S "'
+    print -r -- '    print -r -- "${USER:-unknown} ${0##*/} -- $*"'
+    print -r -- '  } >> "$log_file" 2>/dev/null'
+    print -r -- 'fi'
+    print -r -- ''
+    print -r -- "# Execute target: $target"
+    print -r -- "exec -- $(printf '%q' "$target") \"\$@\""
+  } > "$output" || {
+    log_e "Failed to create wrapper: $output"
+    return 1
+  }
+  
+  # Set permissions
+  chmod 0755 "$output" || {
+    log_e "Failed to set permissions on wrapper: $output"
+    return 1
+  }
+  
+  log_d "Wrapper created successfully: $output"
+  return 0
+}
+
+# ================== ENHANCED COMMANDS ==================
+
+cmd_bootstrap() {
+  log_i "Starting zBox bootstrap..."
+  
+  local directories=(
+    "$ZBOX_DIR"
+    "$ZBOX_DIR/bin"
+    "$ZBOX_ETC"
+    "$ZBOX_SHARE" 
+    "$ZBOX_TENANTS"
+    "$ZBOX_LOG"
+    "$ZBOX_VAR"
+  )
+  
+  local dir
+  for dir in "${directories[@]}"; do
+    _ensure_dir "$dir" || {
+      log_e "Bootstrap failed: could not create $dir"
+      return 1
+    }
+  done
+  
+  # Create basic configuration
+  local config_file="$ZBOX_ETC/zbox.conf"
+  if [[ ! -f "$config_file" ]]; then
+    {
+      print -r -- "# zBox Global Configuration"
+      print -r -- "ZBOX_VERSION=1.0.0"
+      print -r -- "ZBOX_BOOTSTRAP_DATE=$(date -I 2>/dev/null || date '+%Y-%m-%d')"
+      print -r -- "ZBOX_DEFAULT_SHELL=zsh"
+    } > "$config_file" || log_w "Could not create config file"
+  fi
+  
+  log_i "zBox bootstrap complete at: $ZBOX_DIR"
+  return 0
+}
+
+cmd_init() {
+  local tenant="$1"
+  
+  if [[ -z "$tenant" ]]; then
+    log_e "Usage: zbox init <tenant>"
+    return 1
+  fi
+  
+  # Validate tenant name
+  if [[ ! "$tenant" =~ '^[a-zA-Z0-9][a-zA-Z0-9._-]*$' ]]; then
+    log_e "Invalid tenant name: $tenant (use alphanumeric, dots, dashes, underscores)"
+    return 1
+  fi
+  
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  
+  if [[ -d "$tenant_root" ]]; then
+    log_w "Tenant already exists: $tenant"
+    return 1
+  fi
+  
+  log_i "Creating tenant: $tenant"
+  
+  # Create tenant directory structure
+  local tenant_directories=(
+    "$tenant_root/bin"
+    "$tenant_root/etc"
+    "$tenant_root/etc/hooks"
+    "$tenant_root/lib"
+    "$tenant_root/var/logs"
+    "$tenant_root/tmp"
+  )
+  
+  local dir
+  for dir in "${tenant_directories[@]}"; do
+    _ensure_dir "$dir" || {
+      log_e "Failed to create tenant directory: $dir"
+      return 1
+    }
+  done
+  
+  # Create manifest with enhanced structure
+  local manifest_file="$tenant_root/etc/manifest.zsh"
+  {
+    print -r -- "#!/usr/bin/env zsh"
+    print -r -- "# Tenant manifest for: $tenant"
+    print -r -- "# Generated: $(date 2>/dev/null || echo 'unknown')"
+    print -r -- ""
+    print -r -- "TENANT_ID='$tenant'"
+    print -r -- "TENANT_ROOT='$tenant_root'"
+    print -r -- "TENANT_VERSION='1.0.0'"
+    print -r -- ""
+    print -r -- "# Executable allowlist (absolute paths to real binaries):"
+    print -r -- "ALLOW_1_TARGET='/usr/bin/curl'"
+    print -r -- "ALLOW_1_NAME='curl'"
+    print -r -- "ALLOW_2_TARGET='/usr/bin/jq'"  
+    print -r -- "ALLOW_2_NAME='jq'"
+    print -r -- "ALLOW_3_TARGET='/bin/cat'"
+    print -r -- "ALLOW_3_NAME='cat'"
+    print -r -- "# ALLOW_4_TARGET='/usr/bin/python3'"
+    print -r -- "# ALLOW_4_NAME='python3'"
+    print -r -- ""
+    print -r -- "# Environment files to source (explicit paths, no globs):"
+    print -r -- "ENV_FILE_1='$tenant_root/etc/base.env'"
+    print -r -- "# ENV_FILE_2='/etc/zbox/global.env'"
+    print -r -- ""
+    print -r -- "# Direct environment variable assignments:"
+    print -r -- "ENV_KV_1_KEY='ZBOX_MODE'"
+    print -r -- "ENV_KV_1_VAL='tenant'"
+    print -r -- "ENV_KV_2_KEY='TENANT_NAME'"
+    print -r -- "ENV_KV_2_VAL='$tenant'"
+    print -r -- "# ENV_KV_3_KEY='CUSTOM_VAR'"
+    print -r -- "# ENV_KV_3_VAL='custom_value'"
+    print -r -- ""
+    print -r -- "# Hook scripts (optional):"
+    print -r -- "HOOK_PRE_ENTER='$tenant_root/etc/hooks/pre_enter.zsh'"
+    print -r -- "HOOK_POST_ENTER='$tenant_root/etc/hooks/post_enter.zsh'"
+    print -r -- "HOOK_PRE_RUN='$tenant_root/etc/hooks/pre_run.zsh'"
+    print -r -- "HOOK_POST_RUN='$tenant_root/etc/hooks/post_run.zsh'"
+    print -r -- ""
+    print -r -- "# Resource limits:"
+    print -r -- "ZBOX_LIMIT_CPU=60"
+    print -r -- "ZBOX_LIMIT_NOFILE=1024"
+    print -r -- "ZBOX_LIMIT_ASKB=1048576"  
+    print -r -- "ZBOX_LIMIT_RSSKB=524288"
+    print -r -- ""
+    print -r -- "# Hook timeout (seconds):"
+    print -r -- "ZBOX_HOOK_TIMEOUT=30"
+  } > "$manifest_file" || {
+    log_e "Failed to create manifest file"
+    return 1
+  }
+  
+  # Create base environment file
+  local env_file="$tenant_root/etc/base.env"
+  {
+    print -r -- "# Base environment for tenant: $tenant"
+    print -r -- "# This file is sourced with 'set -a' (auto-export)"
+    print -r -- ""
+    print -r -- "ZBOX_TENANT_INITIALIZED=$(date +%s 2>/dev/null || echo 0)"
+    print -r -- "HOME=$tenant_root"
+    print -r -- "TMPDIR=$tenant_root/tmp"
+  } > "$env_file" || log_w "Could not create base environment file"
+  
+  # Create sample hooks
+  local hook_file
+  for hook_file in pre_enter post_enter pre_run post_run; do
+    {
+      print -r -- "#!/usr/bin/env zsh"
+      print -r -- "# Sample hook: $hook_file"
+      print -r -- "# Phase: \$ZBOX_PHASE"
+      print -r -- "# Tenant: \$ZBOX_TENANT"
+      print -r -- ""
+      print -r -- "# Add your hook logic here"
+      print -r -- "# echo \"Hook $hook_file executed for \$ZBOX_TENANT\""
+    } > "$tenant_root/etc/hooks/${hook_file}.zsh"
+    chmod 0755 "$tenant_root/etc/hooks/${hook_file}.zsh" 2>/dev/null
+  done
+  
+  log_i "Tenant '$tenant' created successfully"
+  log_i "Edit manifest: $manifest_file"
+  log_i "Run 'zbox allow-sync $tenant' to create executable wrappers"
+  
+  return 0
+}
+
+cmd_allow_sync() {
+  local tenant="$1"
+  
+  if [[ -z "$tenant" ]]; then
+    log_e "Usage: zbox allow-sync <tenant>"
+    return 1
+  fi
+  
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  local manifest_file="$tenant_root/etc/manifest.zsh"
+  
+  if [[ ! -d "$tenant_root" ]]; then
+    log_e "Tenant does not exist: $tenant"
+    return 1
+  fi
+  
+  if [[ ! -r "$manifest_file" ]]; then
+    log_e "Cannot read manifest: $manifest_file"
+    return 1
+  fi
+  
+  log_i "Syncing allowlist for tenant: $tenant"
+  
+  _load_manifest "$manifest_file" || return 1
+  
+  local count=0
+  local i=1 target_var name_var target name output_file
+  
+  while :; do
+    target_var="ALLOW_${i}_TARGET"
+    name_var="ALLOW_${i}_NAME"
+    target="${(P)target_var:-}"
+    name="${(P)name_var:-}"
+    
+    [[ -z "$target" || -z "$name" ]] && break
+    
+    # Validate wrapper name
+    if [[ ! "$name" =~ '^[a-zA-Z0-9._-]+$' ]]; then
+      log_w "Invalid wrapper name '$name', skipping"
+      (( i++ ))
+      continue
+    fi
+    
+    output_file="$tenant_root/bin/$name"
+    
+    if _make_wrapper "$target" "$output_file"; then
+      (( count++ ))
+      log_d "Created wrapper: $name -> $target"
+    else
+      log_w "Failed to create wrapper for: $name"
+    fi
+    
+    (( i++ ))
+    
+    # Safety check
+    (( i > 100 )) && {
+      log_w "Too many allowlist entries, stopping at $i"
+      break
+    }
+  done
+  
+  log_i "Allowlist sync complete for '$tenant': $count wrappers created"
+  return 0
+}
+
+cmd_enter() {
+  local tenant="$1"
+  
+  if [[ -z "$tenant" ]]; then
+    log_e "Usage: zbox enter <tenant>"
+    return 1
+  fi
+  
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  local manifest_file="$tenant_root/etc/manifest.zsh"
+  
+  if [[ ! -d "$tenant_root" ]]; then
+    log_e "Tenant does not exist: $tenant"
+    return 1
+  fi
+  
+  if [[ ! -r "$manifest_file" ]]; then
+    log_e "Cannot read manifest: $manifest_file"
+    return 1
+  fi
+  
+  log_i "Entering tenant: $tenant"
+  
+  _load_manifest "$manifest_file" || return 1
+  _build_env "$tenant_root" || return 1
+  
+  # Run pre-enter hook
+  _run_hook "${HOOK_PRE_ENTER:-}" "pre_enter"
+  
+  # Log entry
+  local log_file="$tenant_root/var/logs/enter.log"
+  local log_dir="${log_file%/*}"
+  
+  _ensure_dir "$log_dir" 2>/dev/null
+  if [[ -w "$log_dir" ]]; then
+    {
+      printf '%(%Y-%m-%d %H:%M:%S)T ' -1 2>/dev/null || date '+%Y-%m-%d %H:%M:%S '
+      print -r -- "enter ${USER:-unknown}@$(hostname 2>/dev/null || echo unknown) pid=$$"
+    } >> "$log_file" 2>/dev/null
+  fi
+  
+  # Run post-enter hook
+  _run_hook "${HOOK_POST_ENTER:-}" "post_enter"
+  
+  # Start clean interactive shell
+  log_i "Starting interactive shell in tenant '$tenant'"
+  log_i "Use 'exit' to leave the tenant"
+  
+  export PS1="[zbox:$tenant] \$ "
+  export ZBOX_ACTIVE_TENANT="$tenant"
+  
+  exec zsh -f
+}
+
+cmd_run() {
+  local tenant="$1"
+  shift || {
+    log_e "Usage: zbox run <tenant> [--] <command> [args...]"
+    return 1
+  }
+  
+  # Handle optional -- separator
+  [[ "$1" == "--" ]] && shift
+  
+  if [[ $# -eq 0 ]]; then
+    log_e "No command specified"
+    return 1
+  fi
+  
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  local manifest_file="$tenant_root/etc/manifest.zsh"
+  
+  if [[ ! -d "$tenant_root" ]]; then
+    log_e "Tenant does not exist: $tenant"
+    return 1
+  fi
+  
+  if [[ ! -r "$manifest_file" ]]; then
+    log_e "Cannot read manifest: $manifest_file"
+    return 1
+  fi
+  
+  log_i "Running command in tenant '$tenant': $*"
+  log_i "Running command in tenant '$tenant': $*"
+  
+  _load_manifest "$manifest_file" || return 1
+  _build_env "$tenant_root" || return 1
+  
+  # Run pre-run hook
+  _run_hook "${HOOK_PRE_RUN:-}" "pre_run"
+  
+  # Log command execution
+  local log_file="$tenant_root/var/logs/run.log"
+  local log_dir="${log_file%/*}"
+  
+  _ensure_dir "$log_dir" 2>/dev/null
+  if [[ -w "$log_dir" ]]; then
+    {
+      printf '%(%Y-%m-%d %H:%M:%S)T ' -1 2>/dev/null || date '+%Y-%m-%d %H:%M:%S '
+      print -r -- "run ${USER:-unknown}@$(hostname 2>/dev/null || echo unknown) pid=$$ -- $*"
+    } >> "$log_file" 2>/dev/null
+  fi
+  
+  # Run post-run hook  
+  _run_hook "${HOOK_POST_RUN:-}" "post_run"
+  
+  # Execute command in clean environment
+  export ZBOX_ACTIVE_TENANT="$tenant"
+  exec zsh -fc "$*"
+}
+
+cmd_list() {
+  log_i "ZBox tenants:"
+  
+  if [[ ! -d "$ZBOX_TENANTS" ]]; then
+    log_w "Tenants directory does not exist: $ZBOX_TENANTS"
+    return 0
+  fi
+  
+  local tenant_count=0
+  local tenant_dir tenant_name manifest_file tenant_id
+  
+  # List directories in tenants folder
+  for tenant_dir in "$ZBOX_TENANTS"/*(/N); do
+    [[ -d "$tenant_dir" ]] || continue
+    
+    tenant_name="${tenant_dir##*/}"
+    manifest_file="$tenant_dir/etc/manifest.zsh"
+    
+    if [[ -r "$manifest_file" ]]; then
+      # Try to extract tenant ID from manifest
+      tenant_id=$(grep '^TENANT_ID=' "$manifest_file" 2>/dev/null | cut -d"'" -f2 2>/dev/null || echo "$tenant_name")
+      print -r -- "  ✓ $tenant_id"
+      (( tenant_count++ ))
+    else
+      print -r -- "  ? $tenant_name (no manifest)"
+    fi
+  done
+  
+  if (( tenant_count == 0 )); then
+    log_i "No tenants found. Use 'zbox init <name>' to create one."
+  else
+    log_i "Found $tenant_count tenant(s)"
+  fi
+  
+  return 0
+}
+
+cmd_info() {
+  local tenant="${1:-}"
+  
+  if [[ -z "$tenant" ]]; then
+    # Show global info
+    log_i "ZBox System Information:"
+    print -r -- "  Root: $ZBOX_DIR"
+    print -r -- "  Version: $(grep '^ZBOX_VERSION=' "$ZBOX_ETC/zbox.conf" 2>/dev/null | cut -d= -f2 || echo 'unknown')"
+    print -r -- "  ZSH Version: $ZSH_VERSION"
+    print -r -- "  Tenants Directory: $ZBOX_TENANTS"
+    print -r -- "  Logs Directory: $ZBOX_LOG"
+    
+    if [[ -f "$ZBOX_ETC/zbox.conf" ]]; then
+      local bootstrap_date
+      bootstrap_date=$(grep '^ZBOX_BOOTSTRAP_DATE=' "$ZBOX_ETC/zbox.conf" 2>/dev/null | cut -d= -f2)
+      [[ -n "$bootstrap_date" ]] && print -r -- "  Bootstrap Date: $bootstrap_date"
+    fi
+    
+    return 0
+  fi
+  
+  # Show tenant-specific info
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  local manifest_file="$tenant_root/etc/manifest.zsh"
+  
+  if [[ ! -d "$tenant_root" ]]; then
+    log_e "Tenant does not exist: $tenant"
+    return 1
+  fi
+  
+  log_i "Tenant Information: $tenant"
+  print -r -- "  Root: $tenant_root"
+  
+  if [[ -r "$manifest_file" ]]; then
+    # Load manifest to get info
+    (
+      source "$manifest_file" 2>/dev/null
+      print -r -- "  ID: ${TENANT_ID:-unknown}"
+      print -r -- "  Version: ${TENANT_VERSION:-unknown}"
+      
+      # Count wrappers
+      local wrapper_count=0
+      if [[ -d "$tenant_root/bin" ]]; then
+        wrapper_count=$(find "$tenant_root/bin" -type f -executable 2>/dev/null | wc -l)
+      fi
+      print -r -- "  Executable Wrappers: $wrapper_count"
+      
+      # Check for logs
+      if [[ -d "$tenant_root/var/logs" ]]; then
+        local log_files
+        log_files=$(find "$tenant_root/var/logs" -name "*.log" -type f 2>/dev/null | wc -l)
+        print -r -- "  Log Files: $log_files"
+      fi
+      
+      # Resource limits
+      print -r -- "  Resource Limits:"
+      print -r -- "    CPU Time: ${ZBOX_LIMIT_CPU:-30}s"
+      print -r -- "    File Descriptors: ${ZBOX_LIMIT_NOFILE:-1024}"
+      print -r -- "    Virtual Memory: ${ZBOX_LIMIT_ASKB:-1048576}KB"
+      print -r -- "    RSS Memory: ${ZBOX_LIMIT_RSSKB:-524288}KB"
+    )
+  else
+    log_w "Manifest not readable: $manifest_file"
+  fi
+  
+  return 0
+}
+
+cmd_remove() {
+  local tenant="$1"
+  local force="${2:-}"
+  
+  if [[ -z "$tenant" ]]; then
+    log_e "Usage: zbox remove <tenant> [--force]"
+    return 1
+  fi
+  
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  
+  if [[ ! -d "$tenant_root" ]]; then
+    log_e "Tenant does not exist: $tenant"
+    return 1
+  fi
+  
+  # Confirmation unless --force
+  if [[ "$force" != "--force" ]]; then
+    log_w "This will permanently delete tenant '$tenant' and all its data."
+    print -n "Type 'yes' to confirm: "
+    read -r confirmation
+    
+    if [[ "$confirmation" != "yes" ]]; then
+      log_i "Removal cancelled"
+      return 0
+    fi
+  fi
+  
+  log_i "Removing tenant: $tenant"
+  
+  # Remove tenant directory
+  if rm -rf "$tenant_root" 2>/dev/null; then
+    log_i "Tenant '$tenant' removed successfully"
+  else
+    log_e "Failed to remove tenant directory: $tenant_root"
+    return 1
+  fi
+  
+  return 0
+}
+
+cmd_logs() {
+  local tenant="$1"
+  local log_type="${2:-all}"
+  
+  if [[ -z "$tenant" ]]; then
+    log_e "Usage: zbox logs <tenant> [enter|run|exec|all]"
+    return 1
+  fi
+  
+  local tenant_root="$ZBOX_TENANTS/$tenant"
+  local logs_dir="$tenant_root/var/logs"
+  
+  if [[ ! -d "$tenant_root" ]]; then
+    log_e "Tenant does not exist: $tenant"
+    return 1
+  fi
+  
+  if [[ ! -d "$logs_dir" ]]; then
+    log_w "No logs directory for tenant: $tenant"
+    return 0
+  fi
+  
+  log_i "Logs for tenant '$tenant':"
+  
+  case "$log_type" in
+    enter)
+      if [[ -f "$logs_dir/enter.log" ]]; then
+        cat "$logs_dir/enter.log"
+      else
+        log_i "No enter log found"
+      fi
+      ;;
+    run)
+      if [[ -f "$logs_dir/run.log" ]]; then
+        cat "$logs_dir/run.log"
+      else
+        log_i "No run log found"
+      fi
+      ;;
+    exec)
+      if [[ -f "$logs_dir/exec.log" ]]; then
+        cat "$logs_dir/exec.log"
+      else
+        log_i "No exec log found"
+      fi
+      ;;
+    all|*)
+      local f
+      for f in "$logs_dir"/*.log(N); do
+        [[ -f "$f" ]] || continue
+        print -r -- "==> ${f##*/} <=="
+        cat "$f"
+        print
+      done
+      ;;
+  esac
+
+  return 0
+}
+
+
+# ---------- Enhanced CLI with comprehensive help ----------
+_show_help() {
+  cat <<'HELP'
+zBox - Pure ZSH Containerization System
+
+USAGE:
+    zbox <command> [arguments...]
+
+COMMANDS:
+    bootstrap                    Initialize zBox directory structure
+    init <tenant>               Create a new tenant with manifest
+    allow-sync <tenant>         Generate executable wrappers from manifest  
+    enter <tenant>              Start interactive shell in tenant
+    run <tenant> [--] <cmd>     Execute command in tenant environment
+    list                        List all available tenants
+    info [tenant]               Show system or tenant information
+    remove <tenant> [--force]   Remove a tenant (with confirmation)
+    logs <tenant> [type]        View tenant logs (enter|run|exec|all)
+    help                        Show this help message
+
+EXAMPLES:
+    zbox bootstrap              # Initialize zBox system
+    zbox init myapp             # Create 'myapp' tenant
+    zbox allow-sync myapp       # Create wrappers for myapp
+    zbox enter myapp            # Interactive shell in myapp
+    zbox run myapp -- curl -s http://example.com
+    zbox list                   # List all tenants
+    zbox info myapp             # Show myapp information
+    zbox logs myapp enter       # Show enter logs for myapp
+    zbox remove myapp           # Remove myapp (with prompt)
+
+TENANT STRUCTURE:
+    ~/.zbox/zboxxies/<tenant>/
+    ├── bin/          # Executable wrappers
+    ├── etc/          # Configuration and manifest
+    │   ├── manifest.zsh      # Tenant configuration
+    │   ├── base.env          # Environment variables
+    │   └── hooks/            # Pre/post execution hooks
+    ├── lib/          # Libraries and data
+    ├── tmp/          # Temporary files
+    └── var/logs/     # Execution logs
+
+ENVIRONMENT VARIABLES:
+    ZBOX_DIR          # Override zBox root directory
+    ZBOX_DEBUG        # Enable debug logging (any non-empty value)
+    ZBOX_HOOK_TIMEOUT # Hook execution timeout in seconds (default: 30)
+
+For more information, edit tenant manifest files to customize:
+- Executable allowlists (ALLOW_*_TARGET/NAME)  
+- Environment files (ENV_FILE_*)
+- Environment variables (ENV_KV_*_KEY/VAL)
+- Execution hooks (HOOK_*)
+- Resource limits (ZBOX_LIMIT_*)
+HELP
+}
+
+# ---------- Main CLI dispatcher with enhanced error handling ----------
+# ================== COMMAND DISPATCH ==================
+main() {
+  local cmd="${1:-}"
+  shift || true
+
+  case "$cmd" in
+    bootstrap) cmd_bootstrap "$@" ;;
+    init)      cmd_init "$@" ;;
+    allow-sync) cmd_allow_sync "$@" ;;
+    enter)     cmd_enter "$@" ;;
+    run)       cmd_run "$@" ;;
+    list)      cmd_list "$@" ;;
+    info)      cmd_info "$@" ;;
+    remove)    cmd_remove "$@" ;;
+    logs)      cmd_logs "$@" ;;
+    *)
+      print -r -- "Usage: zbox <command> [args...]"
+      print -r -- ""
+      print -r -- "Commands:"
+      print -r -- "  bootstrap         Initialize zBox root"
+      print -r -- "  init <tenant>     Create new tenant"
+      print -r -- "  allow-sync <t>    Create wrappers from manifest"
+      print -r -- "  enter <tenant>    Enter interactive tenant shell"
+      print -r -- "  run <t> <cmd>     Run a command inside tenant"
+      print -r -- "  list              List all tenants"
+      print -r -- "  info [tenant]     Show info (global or tenant)"
+      print -r -- "  remove <t>        Remove tenant"
+      print -r -- "  logs <t> [type]   Show tenant logs"
+      return 1
+      ;;
+  esac
+}
+
+main "$@"

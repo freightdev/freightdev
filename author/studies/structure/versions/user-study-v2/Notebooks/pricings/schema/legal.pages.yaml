@@ -1,0 +1,45 @@
+legal_pages:
+  - name: "Privacy Policy"
+    required: true
+    description: >
+      Outlines how user data is collected, used, stored, and protected. Required by most data compliance laws (e.g., GDPR, CCPA).
+
+  - name: "Terms of Service"
+    required: true
+    description: >
+      Defines the rules and conditions for using the website or application. Protects your rights and limits liability.
+
+  - name: "Cookie Policy"
+    required: if_cookies_used
+    description: >
+      Explains how cookies and tracking technologies are used. Required if any analytics, ads, or session storage is implemented.
+
+  - name: "Refund Policy"
+    required: optional
+    description: >
+      Recommended for e-commerce or service-based platforms to clarify return and refund terms.
+
+  - name: "Accessibility Statement"
+    required: recommended
+    description: >
+      States the site's commitment to accessibility and outlines any accommodations or standards followed (e.g., WCAG).
+
+  - name: "DMCA Notice"
+    required: optional
+    description: >
+      Important for user-generated content or media-heavy sites. Allows copyright owners to request takedown of infringing content.
+
+  - name: "Disclaimer"
+    required: optional
+    description: >
+      Used to limit liability or clarify informational content (e.g., “not legal advice,” “results may vary,” etc.).
+
+  - name: "Acceptable Use Policy"
+    required: for_platforms
+    description: >
+      Defines acceptable behaviors for users, especially in platforms with accounts, community features, or data submission.
+
+  - name: "Data Processing Agreement"
+    required: for_enterprise_or_api
+    description: >
+      Required when handling user data on behalf of clients (e.g., SaaS platforms with user databases). Outlines data responsibilities between parties.

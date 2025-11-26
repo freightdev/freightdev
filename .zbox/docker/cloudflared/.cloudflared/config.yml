@@ -1,0 +1,26 @@
+tunnel: edae7d3d-59b6-40e4-9269-55eb65581cd7
+credentials-file: /etc/cloudflared/edae7d3d-59b6-40e4-9269-55eb65581cd7.json
+
+ingress:
+
+###########################################
+# HOSTBOX - Hosting Machine
+# Role = Infrastructure Hosting
+###########################################
+#
+# Service Endpoints
+#
+  - hostname: nextcloud.open-hwy.com
+    service: http://localhost:8080
+
+  - hostname: webui.open-hwy.com
+    service: http://localhost:3000
+
+  - hostname: n8n.open-hwy.com
+    service: http://localhost:5678
+
+#
+# Error Page support
+#
+
+  - service: http_status:404

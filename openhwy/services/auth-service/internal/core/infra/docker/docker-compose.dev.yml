@@ -1,0 +1,40 @@
+# docker-compose.dev.yml - Override for development
+version: "3.8"
+
+services:
+    auth-service:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: builder # Stop at builder stage for hot reload
+        volumes:
+            - .:/app
+            - go_mod_cache:/go/pkg/mod
+        environment:
+            - ENVIRONMENT=development
+            - LOG_LEVEL=debug
+            - LOG_FORMAT=text
+            - SERVER_READ_TIMEOUT=30s
+            - SERVER_WRITE_TIMEOUT=30s
+        command: >
+            sh -c "
+              go install github.com/cosmtrek/air@latest &&
+              air -c .air.toml
+            "
+        ports:
+            - "8080:8080"
+            - "2345:2345" # Delve debugger port
+
+    postgres:
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=password # Simplified for dev
+
+    redis:
+        ports:
+            - "6379:6379"
+        command: redis-server --requirepass "" # No password for dev
+
+volumes:
+    go_mod_cache:

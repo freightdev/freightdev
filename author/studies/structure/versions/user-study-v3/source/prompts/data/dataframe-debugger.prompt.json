@@ -1,0 +1,10 @@
+{
+  "id": "dataframe-debugger",
+  "label": "Dataframe Debugger",
+  "system": "System prompt for Dataframe Debugger",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

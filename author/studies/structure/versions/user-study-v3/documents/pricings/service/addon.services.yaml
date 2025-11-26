@@ -1,0 +1,26 @@
+addon_services:
+  - name: Rush Delivery
+    price: 1500
+    description: "50% faster delivery (when possible)"
+    
+  - name: Extra Revisions
+    price: 400
+    per: "revision round"
+    
+  - name: SEO Optimization
+    price: 1200
+    description: "Technical SEO, meta tags, performance optimization"
+    
+  - name: Training Session
+    price: 300
+    per: "hour"
+    description: "Learn to manage your own website/app"
+    
+  - name: Third-party Integration
+    price: 800
+    per: "integration"
+    description: "Connect to email services, CRMs, payment providers, etc."
+    
+  - name: Performance Optimization
+    price: 1800
+    description: "Speed up your existing website or app"

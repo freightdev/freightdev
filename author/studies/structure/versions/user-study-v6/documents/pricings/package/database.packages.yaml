@@ -1,0 +1,67 @@
+database_packages:
+  - name: Database Architecture
+    price: 8500
+    timeline: "2-3 weeks"
+    tier: Foundation
+    description: >
+      Scalable database architecture designed for growth. Proper indexing, relationships,
+      and optimization from day one. Perfect for applications expecting significant data growth.
+    includes:
+      - Database schema design & optimization
+      - Advanced indexing strategies
+      - Query performance optimization
+      - Data migration scripts
+      - Backup & recovery procedures
+      - Performance monitoring setup
+      - Documentation & best practices
+    excludes:
+      - Replication setup
+      - Advanced caching
+      - Multi-database management
+    ideal_for:
+      - Growing applications
+      - Data-intensive systems
+      - Performance-critical applications
+
+  - name: Database Enterprise
+    price: 22000
+    timeline: "4-6 weeks"
+    tier: Professional
+    description: >
+      High-availability database infrastructure with replication, sharding, and disaster recovery.
+      Built for mission-critical applications that cannot afford downtime.
+    includes:
+      - Everything in Database Architecture
+      - Master-slave replication setup
+      - Database sharding implementation
+      - Advanced caching layer (Redis)
+      - Disaster recovery procedures
+      - Database cluster management
+      - Real-time monitoring & alerting
+      - Performance tuning & optimization
+      - Database administration training
+    ideal_for:
+      - High-traffic applications
+      - Mission-critical systems
+      - Global applications
+
+  - name: Database Cloud Migration
+    price: 35000+
+    timeline: "6-10 weeks"
+    tier: Enterprise
+    description: >
+      Complete database modernization with cloud-native architecture, auto-scaling, and advanced analytics.
+      Built for enterprises ready to leverage cloud-native database technologies.
+    includes:
+      - Everything in Database Enterprise
+      - Cloud-native database migration
+      - Auto-scaling configuration
+      - Multi-region deployment
+      - Advanced security & compliance
+      - Data analytics pipeline
+      - Cost optimization strategies
+      - Dedicated database architect (3 months)
+    ideal_for:
+      - Large enterprise migrations
+      - Cloud-first organizations
+      - Data-driven businesses

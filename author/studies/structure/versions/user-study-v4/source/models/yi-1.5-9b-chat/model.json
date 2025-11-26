@@ -1,0 +1,10 @@
+{
+  "id": "yi-1.5-9b-chat",
+  "name": "Yi-1.5 Chat",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "4.96 GB",
+  "license": "Apache 2.0",
+  "path": "models/yi-1.5-9b-chat/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/tensorblock/Yi-1.5-9B-Chat-GGUF/resolve/main/yi-1.5-9b-chat.Q4_K_M.gguf"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "socratic-guide",
+  "label": "Socratic Guide",
+  "system": "System prompt for Socratic Guide",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

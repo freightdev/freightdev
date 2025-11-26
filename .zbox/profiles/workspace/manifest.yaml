@@ -1,0 +1,89 @@
+#############################
+# Workspace Profile Manifest
+# Main working environment for development
+#############################
+
+# Profile metadata
+profile:
+  name: "workspace"
+  version: "1.0.0"
+  description: "Primary development workspace environment"
+  author: "Jesse E.E.W. Conley"
+  created: "2025-11-22"
+
+# Agent configuration
+agent:
+  name: "workspace-agent"
+  type: "development"
+  isolation_level: "low"  # Full access to development resources
+
+# Environment variables
+environment:
+  vars:
+    WORKSPACE_ROOT: "$HOME/workspace"
+    DEV_MODE: "true"
+
+  paths:
+    - "$HOME/.local/bin"
+    - "$HOME/.cargo/bin"
+    - "$HOME/go/bin"
+    - "$ZBOX_BIN"
+
+  dotenv: []
+
+# Resources to load
+resources:
+  configs:
+    - "$ZBOX_PROFILES/workspace/config/environments.zsh"
+
+  functions:
+    - "$ZBOX_SRC/helpers/trash.zsh"
+    - "$ZBOX_SRC/helpers/docker.zsh"
+    - "$ZBOX_SRC/helpers/github.zsh"
+
+  plugins: []
+
+  tools:
+    - "$ZBOX_TOOLS/core/github-repo-selector.zsh"
+
+# Access controls
+access:
+  read_paths:
+    - "$HOME"
+    - "$ZBOX_DIR"
+
+  write_paths:
+    - "$HOME/workspace"
+    - "$HOME/projects"
+    - "$HOME/freightdev"
+
+  blocked_paths:
+    - "$HOME/.ssh/private_keys"
+
+  network:
+    enabled: true
+    allowed_hosts: []
+    blocked_hosts: []
+
+# Symlinks
+symlinks: {}
+
+# Aliases
+aliases:
+  work: "cd $HOME/workspace"
+  freq: "cd $HOME/freightdev"
+  proj: "cd $HOME/projects"
+  zbox: "cd $ZBOX_DIR"
+
+# Hooks
+hooks:
+  on_activate:
+    - "echo '[ZBOX] Workspace profile activated'"
+
+  on_deactivate: []
+
+  on_error:
+    - "echo '[ZBOX] Error in workspace profile'"
+
+# Dependencies
+dependencies: []

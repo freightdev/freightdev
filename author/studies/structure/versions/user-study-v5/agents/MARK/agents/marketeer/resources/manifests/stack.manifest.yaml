@@ -1,0 +1,273 @@
+# stack.manifest.yml
+# Full-stack system manifest for infrastructure, agents, actors, and services
+# Last updated: 2025-08-07
+
+meta:
+  name: "system-stack"
+  version: "0.1.0"
+  owner: "jesse"
+  description: "Full architecture stack manifest including infra, agents, apps, actors, tools, and protocols"
+
+machines:
+  # Host machines and their roles
+  - id: archbox
+    role: infra-host
+    cpu: "AMD Ryzen 5 3550H"
+    gpu: "GTX 1650 Mobile / Vega iGPU"
+    memory: "32 GB"
+    os: "Alpine Linux"
+    kernel: "6.15.8-arch1-1"
+    zones: [container, memory, inference, training]
+
+  - id: echo-ops
+    role: ops-gateway
+    cpu: "Intel i7 (specify)"
+    gpu: "Intel UHD"
+    memory: "16 GB"
+    os: "Arch Linux"
+    kernel: "?"
+    zones: [ci, monitor, dev]
+
+  - id: lenovo-kernel
+    role: compute-node
+    cpu: "22 threads"
+    gpu: "N/A"
+    memory: "?"
+    os: "?"
+    zones: [compute, kernel]
+
+platforms:
+  # System-wide platforms and services
+  - name: arcbox
+    type: cli
+    description: "CLI stack controller between main and remote machines"
+    endpoints: [sync, tunnel, edit, list, push]
+
+  - name: trackapay
+    type: payment-app
+    provider: stripe
+    description: "Payment tracking and processing app"
+
+  - name: jupytergrid
+    type: notebook-platform
+    description: "JupyterLab-based platform across multiple kernel nodes"
+    kernels: [local, remote]
+
+agents:
+  # High-level agents
+  - name: PacketPilot
+    role: data-ingestion
+    triggers: [network, sensor]
+    capabilities: [parse, route, validate]
+
+  - name: WhisperWitness
+    role: transcription
+    triggers: [audio, call]
+    tools: [Voice Validator]
+
+  - name: Jackknife Jailer
+    role: gateway-agent
+    responsibilities:
+      - ddos_protection
+      - auth
+      - tunnel_monitor
+      - dns_proxy
+      - reverse_proxy
+
+  - name: Echo Ops
+    role: infra-ci
+    location: echo-ops
+    capabilities: [deploy, infer, monitor]
+
+  - name: Trainer Asus
+    role: training-infra
+    location: trainr-asus
+    capabilities: [cuda, triton, vllm, openvino]
+
+  - name: Codriver
+    role: dev-assistant
+    interface: local-dev
+    tools: [Git, Build System]
+
+  - name: Marketeer
+    role: memory-control
+    tools: [archive, log, recall]
+
+  - name: Jesture
+    role: chat
+    interface: user-facing
+    language_model: vllm
+
+actors:
+  # Persistent system-wide roles
+  - name: Auto-Assistant
+    role: fallback-agent
+
+  - name: Ghost Guard
+    role: intrusion-detection
+    scope: [network, memory]
+
+  - name: Memory Mark
+    role: memory-tagging
+    formats: [raw, encoded, compressed]
+
+  - name: Night Nixus
+    role: nightly-stability
+    hours: "00:00-06:00"
+
+  - name: Radar Reach
+    role: network-manager
+    scope: [external, internal, tunnel]
+
+  - name: Zone Zipper
+    role: inter-zone-transport
+    capabilities: [copy, sync, move]
+
+  - name: Yes
+    role: cache-responder
+    answers: [truths, short-answers]
+
+apps:
+  - name: Bookmark
+    type: cli
+    purpose: "Quick bookmarking tool for code or notes"
+
+  - name: Storekeeper
+    type: cli
+    purpose: "Simple key-value store access and manipulation"
+
+  - name: Platforms
+    type: web
+    endpoints: [agents, tools, data]
+
+  - name: Models
+    type: web
+    purpose: "Model browsing, downloading, training"
+
+  - name: WWW
+    type: web
+    purpose: "Static site frontend"
+
+  - name: Badge Ledger
+    type: web
+    purpose: "System badges and trust display"
+
+tools:
+  - name: Legal Logger
+    type: tool
+    purpose: "Legal and contract logging"
+    status: experimental
+
+  - name: Quick Quote
+    type: utility
+    purpose: "Real-time quote generation"
+
+  - name: Unit Usage
+    type: utility
+    purpose: "Resource usage tracker"
+
+  - name: Voice Validator
+    type: audio-tool
+    function: "Confirm voice identity"
+
+  - name: Secret Safe
+    type: secret-store
+
+  - name: Iron Insight
+    type: telemetry-tool
+
+  - name: Echo Error
+    type: logger
+    function: "Error traceback and log archive"
+
+  - name: Fuel Factor
+    type: compute-optimizer
+
+  - name: Direct Dispatcher
+    type: task-launcher
+    scope: [agent, actor, remote]
+
+services:
+  # System and infra services
+  - name: traefik
+    type: reverse-proxy
+    auth: [basic, oauth, cf_tunnel]
+    tls: true
+
+  - name: vault
+    type: secret-manager
+
+  - name: vector
+    type: telemetry-collector
+
+  - name: grafana
+    type: dashboard
+
+  - name: cloudflared
+    type: tunnel
+
+  - name: redis
+    type: cache-store
+
+  - name: tantivy
+    type: search-index
+
+  - name: teleport
+    type: ssh-access
+
+  - name: jupyterlab
+    type: notebook-server
+
+  - name: triton-inference
+    type: model-server
+
+  - name: vllm
+    type: inference-engine
+
+  - name: cudarc
+    type: memory-pool
+    language: rust
+
+networks:
+  - name: tailscale
+    role: overlay-network
+    capabilities: [exit-node, mesh, subnet-routes]
+
+  - name: cloudflare-tunnel
+    role: public-gateway
+    entrypoint: jackknife-jailer
+
+  - name: local-link
+    role: direct-host-link
+    nodes: [asus, echo-ops, lenovo]
+
+protocols:
+  - grpc
+  - http
+  - websocket
+  - ssh
+  - mqtt
+  - unix-socket
+  - zeromq
+  - json-rpc
+
+endpoints:
+  - name: asus-infer
+    path: /inference
+    protocol: grpc
+    exposed: true
+
+  - name: jailer-ui
+    path: /
+    protocol: https
+    tunnel: cloudflare
+
+  - name: notebook-asus
+    path: /lab
+    protocol: https
+    kernel: lenovo-kernel
+
+  - name: sync-push
+    protocol: ssh
+    targets: [arcbox, storekeeper]
+

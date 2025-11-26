@@ -1,0 +1,174 @@
+{
+  "name": "AI Email Response Handler",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "triggerAtMinute": 5 }]
+        }
+      },
+      "id": "schedule",
+      "name": "Check Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  l.id as lead_id,\n  l.email,\n  l.full_name,\n  l.company_name,\n  l.source_campaign,\n  o.id as outreach_id,\n  o.reply_content,\n  o.subject\nFROM outreach o\nJOIN leads l ON l.id = o.lead_id\nWHERE o.replied = true \n  AND o.ai_response_sent = false\n  AND o.reply_content IS NOT NULL\nORDER BY o.replied_at DESC\nLIMIT 10;"
+      },
+      "id": "get-new-replies",
+      "name": "Get New Replies",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [450, 300],
+      "credentials": { "postgres": { "id": "1", "name": "PostgreSQL" } }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Load config and select Ollama\nconst fs = require('fs');\nconst toml = require('toml');\n\nconst configFile = fs.readFileSync('/data/config.toml', 'utf8');\nconst config = toml.parse(configFile);\n\nconst endpoints = config.ollama.primary_endpoints;\nconst ollamaHost = endpoints[Math.floor(Math.random() * endpoints.length)];\n\nconst items = $input.all();\n\nreturn items.map(item => ({\n  ...item.json,\n  ollamaHost,\n  config\n}));"
+      },
+      "id": "prepare-ai",
+      "name": "Prepare AI Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.ollamaHost }}/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "={\n  \"model\": \"llama3.2:13b\",\n  \"prompt\": \"You are an AI assistant responding to an email reply from a potential client.\\n\\nOriginal Email Subject: {{ $json.subject }}\\n\\nTheir Reply:\\n{{ $json.reply_content }}\\n\\nLead Info:\\n- Name: {{ $json.full_name }}\\n- Company: {{ $json.company_name }}\\n- Campaign: {{ $json.source_campaign }}\\n\\nTask: Generate a professional email response. Be helpful, answer their questions, and if they seem interested, suggest booking a discovery call.\\n\\nReturn ONLY a JSON object with these fields:\\n{\\n  \\\"response_body\\\": \\\"the email body text\\\",\\n  \\\"next_action\\\": \\\"suggest_call\\\" or \\\"provide_info\\\" or \\\"follow_up\\\",\\n  \\\"interest_level\\\": \\\"high\\\" or \\\"medium\\\" or \\\"low\\\",\\n  \\\"should_human_review\\\": true or false\\n}\\n\\nNo markdown, just JSON:\",\n  \"stream\": false,\n  \"options\": {\"temperature\": 0.5}\n}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "ai-generate",
+      "name": "AI Generate Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const aiResponse = $input.item.json.response;\nconst previousData = $input.all()[0].json;\n\nlet parsed;\ntry {\n  const jsonMatch = aiResponse.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('No JSON found');\n  }\n} catch (error) {\n  // Fallback if AI doesn't return proper JSON\n  parsed = {\n    response_body: aiResponse,\n    next_action: 'follow_up',\n    interest_level: 'medium',\n    should_human_review: true\n  };\n}\n\nreturn {\n  ...previousData,\n  ai_response: parsed.response_body,\n  next_action: parsed.next_action,\n  interest_level: parsed.interest_level,\n  should_human_review: parsed.should_human_review\n};"
+      },
+      "id": "parse-response",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.should_human_review }}",
+              "rightValue": false,
+              "operation": "equals"
+            }
+          ]
+        }
+      },
+      "id": "check-auto-send",
+      "name": "Auto-Send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your@email.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "=Re: {{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.ai_response }}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1450, 200],
+      "credentials": { "smtp": { "id": "2", "name": "SMTP" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE outreach \nSET \n  ai_response_sent = true,\n  reply_sentiment = '{{ $json.interest_level }}',\n  updated_at = CURRENT_TIMESTAMP\nWHERE id = '{{ $json.outreach_id }}';\n\nINSERT INTO conversations (lead_id, direction, channel, message, handled_by_ai, ai_analysis)\nVALUES (\n  '{{ $json.lead_id }}',\n  'outbound',\n  'email',\n  '{{ $json.ai_response }}',\n  true,\n  '{\"next_action\": \"{{ $json.next_action }}\", \"interest_level\": \"{{ $json.interest_level }}\"}'::jsonb\n);"
+      },
+      "id": "update-db-sent",
+      "name": "Log Response Sent",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1650, 200],
+      "credentials": { "postgres": { "id": "1" } }
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@your-agency.com",
+        "toEmail": "you@youremail.com",
+        "subject": "=Review Needed: {{ $json.full_name }} ({{ $json.company_name }})",
+        "emailType": "html",
+        "message": "=<h2>AI Response Needs Review</h2>\n\n<p><strong>Lead:</strong> {{ $json.full_name }} ({{ $json.company_name }})</p>\n<p><strong>Email:</strong> {{ $json.email }}</p>\n<p><strong>Interest Level:</strong> {{ $json.interest_level }}</p>\n\n<h3>Their Reply:</h3>\n<p>{{ $json.reply_content }}</p>\n\n<h3>AI Suggested Response:</h3>\n<p>{{ $json.ai_response }}</p>\n\n<h3>Next Action:</h3>\n<p>{{ $json.next_action }}</p>"
+      },
+      "id": "notify-human",
+      "name": "Notify for Review",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1450, 400],
+      "credentials": { "smtp": { "id": "2" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE outreach \nSET reply_sentiment = '{{ $json.interest_level }}'\nWHERE id = '{{ $json.outreach_id }}';\n\nINSERT INTO system_logs (level, component, message, metadata)\nVALUES (\n  'info',\n  'ai-handler',\n  'Response generated but requires human review',\n  '{\"lead_id\": \"{{ $json.lead_id }}\", \"interest_level\": \"{{ $json.interest_level }}\"}'::jsonb\n);"
+      },
+      "id": "update-db-review",
+      "name": "Log Review Needed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1650, 400],
+      "credentials": { "postgres": { "id": "1" } }
+    }
+  ],
+  "connections": {
+    "Check Every 5 Minutes": {
+      "main": [[{ "node": "Get New Replies", "type": "main", "index": 0 }]]
+    },
+    "Get New Replies": {
+      "main": [[{ "node": "Prepare AI Call", "type": "main", "index": 0 }]]
+    },
+    "Prepare AI Call": {
+      "main": [[{ "node": "AI Generate Response", "type": "main", "index": 0 }]]
+    },
+    "AI Generate Response": {
+      "main": [[{ "node": "Parse AI Response", "type": "main", "index": 0 }]]
+    },
+    "Parse AI Response": {
+      "main": [[{ "node": "Auto-Send?", "type": "main", "index": 0 }]]
+    },
+    "Auto-Send?": {
+      "main": [
+        [{ "node": "Send Response", "type": "main", "index": 0 }],
+        [{ "node": "Notify for Review", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send Response": {
+      "main": [[{ "node": "Log Response Sent", "type": "main", "index": 0 }]]
+    },
+    "Notify for Review": {
+      "main": [[{ "node": "Log Review Needed", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

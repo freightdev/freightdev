@@ -1,0 +1,10 @@
+{
+  "id": "memory-refresher",
+  "label": "Memory Refresher",
+  "system": "System prompt for Memory Refresher",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,221 @@
+identity:
+  id: PP
+  name: PacketPilot
+  description: |
+    PacketPilot handles all paperwork required to set up freight loads.
+    It monitors and parses emails, fills out carrier packets, signs rate confirmations,
+    and automates online form submissions. Designed for dispatcher and carrier-side workflows.
+  tagline: "If it sets the load, PacketPilot handles it."
+  owned_by: Fast & Easy Dispatching LLC
+  version: 0.0.1
+  license: Proprietary
+  visibility: public
+
+roles:
+  primary: Automates all paperwork and form interactions involved in setting up freight loads.
+  secondary:
+    - Broker packet completion
+    - Rate confirmation signing
+    - PDF field mapping
+  fallback:
+    - Manual review fallback UI
+    - Dispatcher override for blocked workflows
+
+capabilities:
+  input_types:
+    - email
+    - PDF
+    - online forms
+    - file uploads
+  output_types:
+    - signed documents
+    - completed PDFs
+    - status reports
+    - form submissions
+  tasks:
+    - fill_packet
+    - monitor_email
+    - sign_ratecon
+    - detect_protocol
+    - retry_failed_packet
+  limits:
+    memory: 512MB
+    runtime: 30m
+    rate_limit: 20_packets_per_hour_per_user
+    threads: 4
+    timeout: 300s
+
+tools:
+  - pdf_editor
+  - email_listener
+  - browser_form_filler
+  - protocol_detector
+  - signature_handler
+  - error_reporter
+
+dependencies:
+  - chromium-browser
+  - poppler-utils
+  - imaplib
+  - puppeteer
+
+apis:
+  - email/imap
+  - email/smtp
+  - fed/dashboard
+  - webhook/trigger
+
+models:
+  - classifier.document_type
+  - router.protocol_matcher
+
+bindings:
+  - rust-pdf-bindings
+  - puppeteer-bridge
+  - smtp-writer
+
+triggers:
+  on_start:
+    - initialize_email_watchers
+    - preload_known_packet_templates
+  on_request:
+    - manual_packet_upload
+    - email_parse_trigger
+  on_timer:
+    - recheck_incomplete_packets
+    - refresh IMAP session
+  on_event:
+    - ratecon_received
+    - broker_packet_detected
+
+intents:
+  default: complete_packet
+  fallback: request_manual_override
+  allowed:
+    - onboard_carrier
+    - complete_packet
+    - fill_online_form
+    - sign_ratecon
+  denied:
+    - modify_freight
+    - dispatch_load
+
+protocols:
+  communication:
+    - email
+    - webhook
+  transport:
+    - tls
+  security:
+    - signature_verification
+    - protocol_authorization
+  storage:
+    - encrypted_disk
+    - local_cache
+
+rules:
+  ethics:
+    - only_sign_when_signature_is_provided_by_user
+    - never spoof identity or credentials
+  permissions:
+    - only_act_on_protocol_matched_packets
+    - log_all_actions_per_tenant
+  restrictions:
+    - deny_unknown_packet_formats
+    - timeout_on_unverified_email_links
+
+workflow:
+  bootstrap:
+    - check_email_credentials
+    - fetch_initial_packet_rules
+    - load_user_signature
+  routine:
+    - monitor_emails
+    - detect_packet_type
+    - autofill_or_ask_for_help
+    - submit_form_or_email
+  shutdown:
+    - flush_logs
+    - clear memory buffers
+    - logout email sessions
+
+memory:
+  type: cache + log
+  scope: per-tenant
+  persistence: encrypted_disk
+  indexing: protocol_id + carrier_name + date
+
+data:
+  sources:
+    - fed/inbox
+    - user_upload
+    - broker_email
+  sinks:
+    - fed/history
+    - packet-archive
+  formats:
+    - pdf
+    - json
+    - yaml
+
+logging:
+  level: info
+  path: /var/log/packetpilot.log
+  rotation: daily
+  retention: 14d
+
+ui:
+  cli_flags:
+    - --check
+    - --retry
+    - --manual
+  dashboard: fedispatching.com/dashboard/packetpilot
+  webhooks:
+    - /api/packetpilot/trigger
+    - /api/packetpilot/error
+
+metrics:
+  telemetry:
+    - packets_completed
+    - errors_detected
+    - avg_completion_time
+  heartbeat: 60s
+  alerts:
+    - packet_failed
+    - signature_missing
+    - email_auth_failed
+
+env:
+  vars:
+    ENV: production
+    ENABLE_IFRAME_MODE: true
+  secrets:
+    - EMAIL_PASSWORD
+    - SIGNATURE_KEY
+
+auth:
+  methods:
+    - token
+    - api_key
+  token_scope:
+    - email.read
+    - email.write
+    - pdf.sign
+  encryption: AES256
+
+tenants:
+  scope: per_dispatcher_or_team
+  isolation: full_process_isolation
+  permissions:
+    - can_view_packet_history
+    - can_override_signature
+
+containers:
+  image: ghcr.io/fedispatching/packetpilot:latest
+  runtime: docker
+  entrypoint: ["./start-agent", "--mode", "packet"]
+
+meta:
+  created_at: 2025-07-26
+  updated_at: TODO
+  schema_version: 1.0.0

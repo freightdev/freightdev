@@ -1,0 +1,68 @@
+[package]
+name = "llama_runner"
+version = "0.1.0"
+edition = "2024"
+authors = ["MARK System <mark@example.com>"]
+description = "Rust FFI wrapper for llama.cpp optimized for agent integration and pronunciation accuracy"
+license = "MIT"
+repository = "https://github.com/freightdev/llama_runner"
+keywords = ["llm", "llama", "inference", "agents", "mark"]
+categories = ["api-bindings", "science"]
+readme = "README.md"
+
+[[bin]]
+name = "llama-runner"
+path = "src/main.rs"
+
+[lib]
+name = "llama_runner"
+path = "src/lib.rs"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+
+[build-dependencies]
+bindgen = { version = "0.72", features = ["runtime"] }
+cc = "1.0"
+
+[dev-dependencies]
+tempfile = "3.8"
+criterion = "0.5"
+
+[features]
+default = []
+cuda = []
+metal = []
+blas = []
+openmp = []
+regen-bindings = []
+
+# Performance optimizations for release builds
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+opt-level = 3
+
+# Slightly optimized dev builds for faster iteration
+[profile.dev]
+opt-level = 1
+
+# Benchmarking profile
+[profile.bench]
+lto = true
+codegen-units = 1
+
+# Package metadata
+[package.metadata.docs.rs]
+features = ["regen-bindings"]
+rustdoc-args = ["--cfg", "docsrs"]
+
+[[bench]]
+name = "inference_bench"
+harness = false
+required-features = []

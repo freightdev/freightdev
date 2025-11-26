@@ -1,0 +1,47 @@
+# ╔═══════════════════════════════╗
+#?    ZBox Environment Manifest  <===== [name: zbox, version: 1.0.0]
+# ╚═══════════════════════════════╝
+
+zbox:
+  version: "1.0.0"                      # schema version of the manifest
+  created: "2025-08-25T14:00:00Z"       # ISO timestamp when box was first bootstrapped
+  updated: "2025-08-25T14:00:00Z"       # auto-updated by loader if box is moved
+  box_id: "zbox-archbox-N18xW23"        # unique box identifier (hostname+uuid)
+
+paths:
+  base_dir: "$HOME/.zbox"               # canonical absolute path (realpath of the box root)
+  bin_dir: "bin"
+  etc_dir: "etc"                        # relative path inside box
+  lib_dir: "lib"
+  var_dir: "var"
+
+envs:
+  home_dir: "$HOME"                      # user home
+  bin_dir: "${home_dir}/bin"
+  etc_dir: "${home_dir}/etc"             # configs + manifest.yml
+  set_dir: "${home_dir}/set"             # Headers for compilation
+  lib_dir: "${home_dir}/lib"             # All libraries (Zsh, Rust, etc.)
+  lib64_dir: "${home_dir}/lib64"         # Symlink to $lib_dir
+
+network:
+  ssh_user: "$USER"
+  ssh_port: 22
+  http_proxy: "http://127.0.0.1:3128"
+  https_proxy: "https://127.0.0.1:3128"
+  no_proxy: "localhost,127.0.0.1"
+
+storage:
+  archives: "${paths.data_dir}/archives"
+  backups: "${paths.data_dir}/backups"
+  sources: "${paths.data_dir}/sources"
+  compress_format: "tar.gz"               # tar.gz, tar.xz, zip, 7z
+  compress_level: 9
+
+tenants:
+  default: "jesse"
+  active: "jesse"
+  users:
+    - name: "jesse"
+      env_dir: "${paths.base_dir}/tenants/jesse"
+    - name: "guest"
+      env_dir: "${paths.base_dir}/tenants/guest"

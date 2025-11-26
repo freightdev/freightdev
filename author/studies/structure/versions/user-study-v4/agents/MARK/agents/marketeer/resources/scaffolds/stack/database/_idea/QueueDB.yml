@@ -1,0 +1,19 @@
+#! QueueDB (RabbitMQ / NATS)
+
+services:
+  queue:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: queue_admin
+      RABBITMQ_DEFAULT_PASS: strongpassword    #? <===== Change Before Production
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - /var/queue:/var/lib/rabbitmq
+    networks:
+      - platform-net
+
+#* - Persistent, clustered queues for AI inference & API tasks
+#* - Scales horizontally for 100+ AI workers
+

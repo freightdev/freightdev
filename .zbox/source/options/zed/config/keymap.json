@@ -1,0 +1,40 @@
+[
+    {
+        "context": "Editor",
+        "bindings": {
+            "ctrl-shift-p": "command_palette::Toggle",
+            "ctrl-p": "file_finder::Toggle",
+            "ctrl-shift-f": "project_search::ToggleFocus",
+            "ctrl-shift-e": "project_panel::ToggleFocus",
+            "ctrl-`": "terminal_panel::ToggleFocus",
+            "ctrl-shift-r": "editor::Rename",
+            "ctrl-space": "editor::ShowCompletions",
+            "ctrl-shift-l": "editor::SelectAllMatches",
+            "ctrl-u": "editor::UndoSelection",
+            "ctrl-shift-u": "editor::RedoSelection",
+            "ctrl-k ctrl-c": "editor::ToggleComments",
+            "ctrl-shift-i": "editor::Format",
+            "alt-up": "editor::MoveLineUp",
+            "alt-down": "editor::MoveLineDown"
+        }
+    },
+    {
+        "context": "Terminal",
+        "bindings": {
+            "ctrl-shift-c": "terminal::Copy",
+            "ctrl-shift-v": "terminal::Paste"
+        }
+    },
+    {
+        "context": "ProjectPanel",
+        "bindings": {
+            "a": "project_panel::NewFile",
+            "shift-a": "project_panel::NewDirectory",
+            "r": "project_panel::Rename",
+            "delete": "project_panel::Delete",
+            "x": "project_panel::Cut",
+            "c": "project_panel::Copy",
+            "v": "project_panel::Paste"
+        }
+    }
+]

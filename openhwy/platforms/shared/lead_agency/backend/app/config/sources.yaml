@@ -1,0 +1,110 @@
+# Lead Agency v2 - Source Configuration
+# Define where to find leads and what to look for
+
+reddit:
+  # Subreddits to monitor for web development gigs
+  subreddits:
+    - name: "forhire"
+      keywords:
+        - "web development"
+        - "full stack"
+        - "frontend"
+        - "backend"
+        - "react"
+        - "node"
+        - "javascript"
+        - "typescript"
+        - "python"
+        - "django"
+        - "flask"
+        - "nextjs"
+        - "api"
+        - "website"
+        - "web app"
+      exclude_keywords:
+        - "photography"
+        - "video edit"
+        - "graphic design"
+        - "feet"
+        - "onlyfans"
+        - "social media"
+        - "virtual assistant"
+        - "data entry"
+
+    - name: "freelance_forhire"
+      keywords:
+        - "developer"
+        - "programmer"
+        - "web"
+        - "app"
+        - "software"
+      exclude_keywords:
+        - "writer"
+        - "designer"
+        - "artist"
+
+    - name: "slavelabour"
+      keywords:
+        - "website"
+        - "web app"
+        - "full stack"
+      exclude_keywords:
+        - "simple task"
+        - "quick job"
+
+  # How many posts to check per subreddit
+  limit: 100
+
+  # How far back to look (hours)
+  max_age_hours: 72
+
+hackernews:
+  # "Who's Hiring" thread patterns
+  thread_titles:
+    - "Ask HN: Who is hiring?"
+    - "Ask HN: Freelancer? Seeking freelancer?"
+
+  # Keywords to filter comments
+  keywords:
+    - "remote"
+    - "contract"
+    - "freelance"
+    - "full stack"
+    - "frontend"
+    - "backend"
+    - "react"
+    - "node"
+    - "python"
+
+  # How many comments to process per thread
+  max_comments: 500
+
+indeed:
+  enabled: true
+  # Job search parameters
+  search_terms:
+    - "web developer contract"
+    - "full stack developer remote contract"
+    - "frontend developer freelance"
+    - "backend developer contract"
+
+  # Location settings
+  locations:
+    - "Remote"
+    - "United States"
+
+  # Job type filters
+  job_types:
+    - "contract"
+    - "temporary"
+
+  # How many results per search term
+  limit: 50
+
+linkedin:
+  enabled: false  # Requires LinkedIn API access
+  search_terms:
+    - "web developer contract"
+    - "software engineer freelance"
+
+  limit: 25

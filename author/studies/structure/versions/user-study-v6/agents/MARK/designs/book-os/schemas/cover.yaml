@@ -1,0 +1,26 @@
+# Book Cover Schema
+
+title: ""                  # Displayed book title
+subtitle: ""               # Optional subtitle
+author: ""                 # Displayed author name or alias
+description: ""            # What this book is about
+blurb: ""                  # Optional short summary (1–2 lines)
+visibility: ""             # public | private | shared
+status: ""                 # draft | sealed | archived | burned
+preview_allowed: true      # Can user preview any content?
+
+previews: []
+  - chapters: []           # What chapters can be previewed
+    pages: []              # What pages can be previewed
+    bets: []               # What bets can be previewed
+    beats: []              # What beats can be previewed
+    marks: []              # What marks can be previewed
+    markers: []            # What markers can be previewed
+    ribbons: []            # What ribbons can be previewed
+
+icon: ""                   # Optional cover image (path or URL)
+theme_color: ""            # Optional for UI rendering
+
+license:
+  name: "Creative MLNOR v2 + RCXL"
+  applies_to: ["markers", "ribbons", "beats", "prompts", "templates"]

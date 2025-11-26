@@ -1,0 +1,596 @@
+/* Custom CSS for AI Assistant */
+
+/* Navigation styles */
+.nav-link {
+    @apply inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200;
+}
+
+.nav-link.active {
+    @apply text-ai-blue dark:text-ai-purple border-ai-blue dark:border-ai-purple;
+}
+
+.mobile-nav-link {
+    @apply block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors duration-200;
+}
+
+.mobile-nav-link.active {
+    @apply text-ai-blue dark:text-ai-purple bg-ai-blue bg-opacity-10;
+}
+
+/* Button styles */
+.btn-primary {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-ai-blue hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-blue disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200;
+}
+
+.btn-secondary {
+    @apply inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-blue transition-colors duration-200;
+}
+
+.btn-danger {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200;
+}
+
+.btn-ghost {
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ai-blue transition-colors duration-200;
+}
+
+/* Input styles */
+.input-primary {
+    @apply block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-ai-blue focus:border-ai-blue dark:focus:ring-ai-purple dark:focus:border-ai-purple sm:text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-200;
+}
+
+.textarea-primary {
+    @apply block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-ai-blue focus:border-ai-blue dark:focus:ring-ai-purple dark:focus:border-ai-purple sm:text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none transition-colors duration-200;
+}
+
+/* Card styles */
+.card {
+    @apply bg-white dark:bg-ai-dark border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
+}
+
+.card-header {
+    @apply px-6 py-4 border-b border-gray-200 dark:border-gray-700;
+}
+
+.card-body {
+    @apply p-6;
+}
+
+.card-footer {
+    @apply px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-b-lg;
+}
+
+/* Code editor styles */
+.editor-container {
+    @apply relative h-full;
+}
+
+.editor-tabs {
+    @apply flex space-x-1 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4;
+}
+
+.editor-tab {
+    @apply flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200;
+}
+
+.editor-tab.active {
+    @apply text-ai-blue dark:text-ai-purple border-ai-blue dark:border-ai-purple bg-white dark:bg-ai-dark;
+}
+
+.editor-tab .close-btn {
+    @apply w-4 h-4 text-gray-400 hover:text-red-500 ml-1;
+}
+
+.editor-content {
+    @apply font-mono text-sm leading-relaxed;
+}
+
+/* File explorer styles */
+.file-tree {
+    @apply space-y-1;
+}
+
+.file-item {
+    @apply flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer transition-colors duration-200;
+}
+
+.file-item.selected {
+    @apply bg-ai-blue bg-opacity-10 text-ai-blue dark:text-ai-purple;
+}
+
+.file-item .icon {
+    @apply w-4 h-4 flex-shrink-0;
+}
+
+.folder-item {
+    @apply flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer transition-colors duration-200;
+}
+
+.folder-item.expanded .chevron {
+    @apply transform rotate-90;
+}
+
+/* Chat styles */
+.chat-container {
+    @apply flex flex-col h-full;
+}
+
+.chat-messages {
+    @apply flex-1 overflow-y-auto p-4 space-y-4;
+}
+
+.message {
+    @apply flex space-x-3;
+}
+
+.message.user {
+    @apply flex-row-reverse space-x-reverse;
+}
+
+.message-avatar {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0;
+}
+
+.message-avatar.user {
+    @apply bg-ai-blue text-white;
+}
+
+.message-avatar.assistant {
+    @apply bg-ai-purple text-white;
+}
+
+.message-content {
+    @apply flex-1 bg-white dark:bg-ai-dark rounded-lg px-4 py-2 shadow-sm border border-gray-200 dark:border-gray-700;
+}
+
+.message.user .message-content {
+    @apply bg-ai-blue bg-opacity-10 border-ai-blue border-opacity-20;
+}
+
+.message-text {
+    @apply prose dark:prose-invert max-w-none;
+}
+
+.message-time {
+    @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
+}
+
+.typing-indicator {
+    @apply flex space-x-2 items-center text-gray-500 dark:text-gray-400;
+}
+
+.typing-dot {
+    @apply w-2 h-2 bg-gray-400 rounded-full animate-pulse;
+}
+
+.chat-input-container {
+    @apply border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-ai-dark p-4;
+}
+
+/* Terminal styles */
+.terminal {
+    @apply bg-gray-900 text-green-400 font-mono text-sm p-4 h-full overflow-y-auto;
+}
+
+.terminal-cursor {
+    @apply inline-block w-2 bg-green-400 animate-pulse;
+}
+
+/* Scrollbar styles */
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+}
+
+/* Toast notification styles */
+.toast {
+    @apply max-w-sm w-full bg-white dark:bg-ai-dark shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden;
+}
+
+.toast-success {
+    @apply border-l-4 border-green-400;
+}
+
+.toast-error {
+    @apply border-l-4 border-red-400;
+}
+
+.toast-warning {
+    @apply border-l-4 border-yellow-400;
+}
+
+.toast-info {
+    @apply border-l-4 border-blue-400;
+}
+
+/* Animation utilities */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-in-out;
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .hide-mobile {
+        @apply hidden;
+    }
+    
+    .show-mobile {
+        @apply block;
+    }
+}
+
+@media (min-width: 769px) {
+    .hide-desktop {
+        @apply hidden;
+    }
+    
+    .show-desktop {
+        @apply block;
+    }
+}
+
+/* Dark mode specific adjustments */
+@media (prefers-color-scheme: dark) {
+    html:not(.light) {
+        color-scheme: dark;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* ==================================== */
+/* Enhanced Modern UI Styles            */
+/* ==================================== */
+
+/* Glass morphism effect */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth gradient backgrounds */
+.gradient-blue {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-purple {
+    background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+}
+
+.gradient-ocean {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Enhanced shadows */
+.shadow-soft {
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-glow {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+
+.dark .shadow-glow {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+}
+
+/* Pulse animation for loading states */
+@keyframes pulse-slow {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Skeleton loading animation */
+@keyframes skeleton {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 50%,
+        #f0f0f0 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton {
+    background: linear-gradient(
+        90deg,
+        #2a2a2a 25%,
+        #1f1f1f 50%,
+        #2a2a2a 75%
+    );
+    background-size: 200% 100%;
+}
+
+/* Smooth scale on hover */
+.hover-scale {
+    transition: transform 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Glow effect on focus */
+input:focus, textarea:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.dark input:focus, .dark textarea:focus {
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+}
+
+/* Progress bar animations */
+@keyframes progress {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: progress 1.5s ease-in-out infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Spin animation (for loading spinners) */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin 3s linear infinite;
+}
+
+/* Smooth transitions for theme changes */
+* {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Enhanced chat bubble */
+.chat-bubble {
+    animation: slideUp 0.3s ease-out;
+    transition: all 0.2s ease;
+}
+
+.chat-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .chat-bubble:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Button press effect */
+.btn-primary:active, .btn-secondary:active {
+    transform: scale(0.98);
+}
+
+/* Success checkmark animation */
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.checkmark-animate {
+    animation: checkmark 0.4s ease-out;
+}
+
+/* Model card hover effect */
+.model-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.model-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.dark .model-card:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Ripple effect */
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::before {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+}
+
+/* Code block improvements */
+.code-block {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.code-block:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.code-block .copy-button {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.code-block:hover .copy-button {
+    opacity: 1;
+}
+
+/* Smooth page transitions */
+.page-transition {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Status dot pulse */
+@keyframes pulse-dot {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+    }
+}
+
+.status-online {
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Enhanced scrollbar for modern look */
+.modern-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.modern-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.dark .modern-scrollbar::-webkit-scrollbar-track {
+    background: #2a2a2a;
+}
+
+.modern-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+.modern-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #63438c 100%);
+}

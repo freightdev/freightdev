@@ -1,0 +1,70 @@
+# .gitignore
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+tmp/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Backup files
+backups/
+
+# SSL certificates
+certs/
+*.pem
+*.key
+*.crt
+
+# Docker
+.docker/
+
+# Test coverage
+coverage.out
+coverage.html
+
+# Air (hot reload)
+tmp/
+build-errors.log
+
+# Node modules (for frontend or tools)
+node_modules/

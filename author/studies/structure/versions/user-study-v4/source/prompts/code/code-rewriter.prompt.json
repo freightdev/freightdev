@@ -1,0 +1,10 @@
+{
+  "id": "code-rewriter",
+  "label": "Code Rewriter",
+  "system": "System prompt for Code Rewriter",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

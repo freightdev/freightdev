@@ -1,0 +1,16 @@
+# Location: ~/docker/container/cloudflared/docker-compose.yml
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - cloudflared-network
+
+networks:
+  cloudflared-network:
+    driver: bridge

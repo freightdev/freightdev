@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "apps/web" },
+    { "path": "apps/mobile" },
+    { "path": "packages/ui" }
+  ]
+
+}
