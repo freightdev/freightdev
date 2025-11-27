@@ -1,4 +1,4 @@
-# 👋 Jesse E.E.W. Conley — [@freightdev](https://github.com/freightdev)
+# Jesse E.E.W. Conley — [@freightdev](https://github.com/freightdev)
 
 ---
 
@@ -12,16 +12,16 @@ Since April 2024, I've been in deep, intentional self-education learning Linux s
 
 ## TECHNICAL EXPERTISE
 
-- **Engineering Philosophy**  
+- **Engineering Philosophy**
   Learn by controlled destruction: intentionally break and rebuild systems to understand failure points. Avoid GUIs; work entirely in terminal. Build from first principles, not tutorials. Delete backups and rebuild from memory to prove understanding.
 
-- **System Architecture**  
+- **System Architecture**
   Filesystem optimization, multiple (15+) OS installations, compute tuning, distributed orchestration, and production monitoring. Custom kernel compilation, bootloader configuration, security hardening.
 
-- **Programming Languages**  
+- **Programming Languages**
   Rust (compute power + memory safety), Golang (infrastructure orchestration), Dart/Flutter (cross-platform applications), Python + Lua (AI automation), TypeScript/NextJS/SvelteKit (web platforms), YAML/JSON (configuration + data structures).
 
-- **Infrastructure & DevOps**  
+- **Infrastructure & DevOps**
   Docker orchestration, PostgreSQL/SurrealDB, Redis caching, Nginx/Caddy, GPG/SSH security, distributed AI systems (4-node Ollama cluster), systemd service management, ZSH environment automation.
 
 ---
@@ -33,7 +33,7 @@ Since April 2024, I've been in deep, intentional self-education learning Linux s
 - **Windmill Integration:** Building production workflows for trucking industry automation
 - **Available for Consulting:** Infrastructure architecture, custom software development for logistics/trucking companies
 
-**Specialization:**  
+**Specialization:**
 Trucking industry software and infrastructure - combining 10 years of operational experience with deep systems engineering expertise. I understand both what truckers need AND how to build it at scale.
 
 ---
@@ -63,13 +63,13 @@ Trucking industry software and infrastructure - combining 10 years of operationa
 
 **Jesse Edward Eugene Wayne Conley**
 
-* 📬 [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
-* 🔗 [github.com/freightdev](https://github.com/freightdev)
-* 🤗 [huggingface.co/freightdev](https://huggingface.co/freightdev)
-* 🔌 [x.com/freightdevjesse](https://x.com/freightdevjesse)
-* 💼 [linkedin.com/in/freightdevjesse](https://linkedin.com/in/freightdevjesse)
+* [jesse.freightdev@gmail.com](mailto:jesse.freightdev@gmail.com)
+* [github.com/freightdev](https://github.com/freightdev)
+* [huggingface.co/freightdev](https://huggingface.co/freightdev)
+* [x.com/freightdevjesse](https://x.com/freightdevjesse)
+* [linkedin.com/in/freightdevjesse](https://linkedin.com/in/freightdevjesse)
 
 ---
 
-> — Jesse E.E.W. Conley ☕  
+> — Jesse E.E.W. Conley ☕
 > *Building infrastructure for the people who built the roads.*
