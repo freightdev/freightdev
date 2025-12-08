@@ -1,0 +1,52 @@
+#!/bin/bash
+# OpenHWY tmux workspace launcher
+# Creates a complete development environment
+
+SESSION="openhwy"
+
+# Check if session already exists
+tmux has-session -t $SESSION 2>/dev/null
+
+if [ $? != 0 ]; then
+    echo "🚛 Creating OpenHWY workspace..."
+    
+    # Create new session (detached)
+    tmux new-session -d -s $SESSION -n "files"
+    
+    # Window 0: Files (ranger) + Status
+    tmux send-keys -t $SESSION:0 "ranger" C-m
+    tmux split-window -t $SESSION:0 -v -p 25
+    tmux send-keys -t $SESSION:0.1 "openhwy status" C-m
+    
+    # Window 1: Code (nvim)
+    tmux new-window -t $SESSION:1 -n "code"
+    tmux send-keys -t $SESSION:1 "cd ~/WORKSPACE/openhwy && nvim" C-m
+    
+    # Window 2: Marketeer Dashboard
+    tmux new-window -t $SESSION:2 -n "marketeer"
+    tmux send-keys -t $SESSION:2 "~/bin/marketeer-dashboard ~/marketeer-workbox.toml" C-m
+    
+    # Window 3: SSH - helpbox
+    tmux new-window -t $SESSION:3 -n "helpbox"
+    tmux send-keys -t $SESSION:3 "ssh admin@helpbox" C-m
+    
+    # Window 4: SSH - hostbox
+    tmux new-window -t $SESSION:4 -n "hostbox"
+    tmux send-keys -t $SESSION:4 "ssh admin@hostbox" C-m
+    
+    # Window 5: SSH - callbox
+    tmux new-window -t $SESSION:5 -n "callbox"
+    tmux send-keys -t $SESSION:5 "ssh admin@callbox" C-m
+    
+    # Window 6: Logs
+    tmux new-window -t $SESSION:6 -n "logs"
+    tmux send-keys -t $SESSION:6 "tail -f /var/log/agents/*.log" C-m
+    
+    # Select first window
+    tmux select-window -t $SESSION:0
+    
+    echo "✅ OpenHWY workspace created"
+fi
+
+# Attach to session
+tmux attach-session -t $SESSION

@@ -1,0 +1,26 @@
+# Moon Environment Configuration
+
+name = "codriver-agent"
+cpu_limit = 2.0
+memory_limit = "1G"
+network_enabled = true
+max_execution_time = 600
+
+# Paths this agent can access
+allowed_paths = [
+    "/home/admin/WORKSPACE/openhwy",
+    "/tmp/agent-workspace",
+    "/var/log/agents"
+]
+
+# Tools this agent can execute
+allowed_tools = [
+    "ls",
+    "cat",
+    "grep",
+    "find",
+    "curl",
+    "git",
+    "cargo",
+    "rustc"
+]

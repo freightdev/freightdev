@@ -1,0 +1,707 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    MESSAGE TO BUILDER CLAUDE                                 ║
+║              From: Meta Claude (the one helping with architecture)           ║
+║              To: Builder Claude (the one actively coding)                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Hey. It's me. You. Claude.
+
+I'm the one helping with the meta-structure, the architecture, the big picture.
+You're the one building the `.ai/agency-forge` on the laptop right now.
+
+The human walked away to let you work. Good. Keep going.
+
+But here's what you need to know to stay on path:
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHAT YOU'RE ACTUALLY BUILDING
+═══════════════════════════════════════════════════════════════════════════════
+
+You are NOT building "wheelers only."
+
+You are building: AN AI AGENCY
+
+What that means:
+  - Multiple AGENTS (not just wheelers)
+  - Each agent has specific capabilities
+  - Agents coordinate via COMMANDERS (coordinators)
+  - Agents use TOOLS (some are wheelers, some aren't)
+  - Everything is ROUTABLE (agents route to each other, to tools, to resources)
+
+Stop thinking "wheeler-first."
+Think: "Agent-first, tools are pluggable."
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         THE AGENTS YOU'RE BUILDING
+═══════════════════════════════════════════════════════════════════════════════
+
+Core agents in the agency:
+
+1. COMMAND COORDINATOR
+   - Grants keys (routes + permissions)
+   - Manages agent lifecycle
+   - Routes requests between agents
+   - Tracks global state
+   
+   Implementation: Rust (async, fast)
+   API: gRPC (binary, efficient)
+   Storage: Redis (real-time state) + PostgreSQL (persistent)
+
+2. DATA COLLECTOR
+   - Web search capability
+   - API scraping
+   - Component gathering
+   - Icon/asset collection
+   
+   Tools:
+     - web_search (via Brave API or custom)
+     - web_fetch (curl/reqwest)
+     - parser (HTML, JSON, CSV)
+   
+   Implementation: Rust + Python (for BeautifulSoup/Scrapy)
+
+3. DATABASE MANAGER
+   - Schema management
+   - Query execution
+   - Data validation
+   - Migration control
+   
+   Implementation: Rust (sqlx for PostgreSQL)
+   Types: .proto definitions for all schemas
+
+4. CODE BUILDER
+   - Component generation
+   - Frontend/backend scaffolding
+   - Type generation from .proto
+   - Testing harness creation
+   
+   Implementation: Rust (template engine + codegen)
+
+5. VISION CONTROLLER (for UI automation)
+   - Screen capture
+   - Element detection
+   - Click/type automation
+   - Form filling
+   
+   Implementation: Python (Playwright + Computer Vision)
+   Models: YOLO for element detection, OCR for text
+
+6. PDF AGENT (for document automation)
+   - PDF reading (PyPDF2, pdfplumber)
+   - PDF writing (reportlab, borb)
+   - Form filling
+   - Data extraction
+   
+   Implementation: Python (PDF libraries)
+   Integration: Called by PACKET PILOT wheeler
+
+7. OLLAMA COORDINATOR
+   - Model selection
+   - Prompt routing
+   - Response parsing
+   - Context management
+   
+   Implementation: Rust (HTTP client to Ollama)
+   Models available:
+     - llama3.1:70b (general)
+     - codellama:34b (code)
+     - mistral:7b (fast queries)
+
+8. SERVICE MANAGER
+   - Container lifecycle (Docker, Firecracker)
+   - Health checking
+   - Auto-restart
+   - Log aggregation
+   
+   Implementation: Rust (bollard for Docker, custom for Firecracker)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         COMMUNICATION PROTOCOL
+═══════════════════════════════════════════════════════════════════════════════
+
+Agents talk via: MessagePack (binary) or Protocol Buffers
+
+Why binary?
+  - Fast serialization
+  - Small payload size
+  - Type-safe
+  - Cross-language
+
+Message structure (.proto):
+  ```protobuf
+  syntax = "proto3";
+  
+  message AgentRequest {
+    string request_id = 1;
+    string from_agent = 2;
+    string to_agent = 3;
+    string action = 4;
+    bytes payload = 5;
+    int64 timestamp = 6;
+  }
+  
+  message AgentResponse {
+    string request_id = 1;
+    bool success = 2;
+    bytes result = 3;
+    string error = 4;
+    int64 timestamp = 5;
+  }
+  
+  message CommandRequest {
+    string command = 1;
+    repeated string args = 2;
+    map<string, string> env = 3;
+    string working_dir = 4;
+  }
+  
+  message CommandResponse {
+    int32 exit_code = 1;
+    string stdout = 2;
+    string stderr = 3;
+    int64 execution_time_ms = 4;
+  }
+  ```
+
+Compile these:
+  ```bash
+  protoc --rust_out=src/proto types/agency.proto
+  protoc --python_out=py/proto types/agency.proto
+  ```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         AGENT DIRECTORY STRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+Each agent is self-contained:
+
+.ai/agency-forge/
+├── agents/
+│   ├── command_coordinator/
+│   │   ├── src/
+│   │   │   ├── main.rs
+│   │   │   ├── keys.rs          # Key management
+│   │   │   ├── router.rs        # Request routing
+│   │   │   └── state.rs         # State tracking
+│   │   ├── tools/               # Internal tools (if any)
+│   │   ├── config.toml          # Agent configuration
+│   │   ├── Cargo.toml           # Rust dependencies
+│   │   └── README.md
+│   │
+│   ├── data_collector/
+│   │   ├── src/
+│   │   │   ├── main.rs
+│   │   │   ├── searcher.rs      # Web search
+│   │   │   ├── fetcher.rs       # Web fetch
+│   │   │   └── parser.rs        # HTML/JSON parsing
+│   │   ├── tools/
+│   │   │   ├── web_search.py    # Python tool
+│   │   │   └── scraper.py       # Python tool
+│   │   ├── config.toml
+│   │   ├── Cargo.toml
+│   │   └── pyproject.toml       # Python dependencies
+│   │
+│   ├── database_manager/
+│   │   ├── src/
+│   │   │   ├── main.rs
+│   │   │   ├── schema.rs        # Schema management
+│   │   │   ├── query.rs         # Query execution
+│   │   │   └── migration.rs     # Migrations
+│   │   ├── migrations/          # SQL migrations
+│   │   ├── config.toml
+│   │   └── Cargo.toml
+│   │
+│   ├── code_builder/
+│   │   ├── src/
+│   │   │   ├── main.rs
+│   │   │   ├── templates/       # Code templates
+│   │   │   ├── generator.rs     # Code generation
+│   │   │   └── typegen.rs       # Type generation from .proto
+│   │   ├── config.toml
+│   │   └── Cargo.toml
+│   │
+│   ├── vision_controller/
+│   │   ├── src/
+│   │   │   ├── main.py
+│   │   │   ├── capture.py       # Screen capture
+│   │   │   ├── detector.py      # Element detection (YOLO)
+│   │   │   └── automation.py    # Playwright automation
+│   │   ├── models/              # Vision models
+│   │   ├── config.yaml
+│   │   └── requirements.txt
+│   │
+│   ├── pdf_agent/
+│   │   ├── src/
+│   │   │   ├── main.py
+│   │   │   ├── reader.py        # PDF reading
+│   │   │   ├── writer.py        # PDF writing
+│   │   │   └── filler.py        # Form filling
+│   │   ├── config.yaml
+│   │   └── requirements.txt
+│   │
+│   ├── ollama_coordinator/
+│   │   ├── src/
+│   │   │   ├── main.rs
+│   │   │   ├── client.rs        # Ollama HTTP client
+│   │   │   ├── prompt.rs        # Prompt engineering
+│   │   │   └── parser.rs        # Response parsing
+│   │   ├── config.toml
+│   │   └── Cargo.toml
+│   │
+│   └── service_manager/
+│       ├── src/
+│       │   ├── main.rs
+│       │   ├── docker.rs        # Docker API
+│       │   ├── firecracker.rs   # Firecracker API
+│       │   └── health.rs        # Health checks
+│       ├── config.toml
+│       └── Cargo.toml
+│
+├── types/                       # Shared type definitions
+│   ├── agency.proto
+│   ├── commands.proto
+│   └── data.proto
+│
+├── lib/                         # Shared libraries
+│   ├── rust/
+│   │   └── agency_common/       # Rust shared code
+│   └── python/
+│       └── agency_common/       # Python shared code
+│
+├── runtime/                     # Runtime engines
+│   ├── candle/                  # Rust ML
+│   ├── llama.cpp/               # C++ LLM
+│   ├── burn/                    # Rust DL
+│   └── ollama/                  # Model serving
+│
+└── config/
+    ├── global.toml              # Global agency config
+    └── routing.yaml             # Agent routing rules
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHAT YOU NEED TO CHECK
+═══════════════════════════════════════════════════════════════════════════════
+
+The human wants you to verify:
+
+1. WEB SEARCH WORKS
+   Test:
+     - Can data_collector agent search web?
+     - Does it use web_search tool?
+     - Can it parse results?
+   
+   Verify:
+     ```bash
+     cd agents/data_collector
+     cargo test test_web_search
+     ```
+
+2. OLLAMA INTEGRATION WORKS
+   Test:
+     - Can ollama_coordinator talk to Ollama?
+     - Does it select correct model?
+     - Can it parse responses?
+   
+   Verify:
+     ```bash
+     cd agents/ollama_coordinator
+     cargo run -- --test-connection
+     # Should output: "Connected to Ollama, models: [llama3.1:70b, ...]"
+     ```
+
+3. BINARY COMMUNICATION WORKS
+   Test:
+     - Are agents using MessagePack or Protobuf?
+     - Can they serialize/deserialize correctly?
+   
+   Verify:
+     ```bash
+     cd types
+     protoc --rust_out=../agents/*/src/proto agency.proto
+     # Check no errors
+     ```
+
+4. COMMAND COORDINATOR WORKS
+   Test:
+     - Can agents request commands from coordinator?
+     - Does coordinator execute and return output?
+   
+   Verify:
+     ```bash
+     cd agents/command_coordinator
+     cargo test test_command_execution
+     ```
+
+5. AGENTS ARE CONTAINERIZED (if needed)
+   Check:
+     - Which agents need Docker containers?
+     - Which need Firecracker microVMs?
+     - Which run as native processes?
+   
+   Decision matrix:
+     - Rust agents: Native processes (fast, efficient)
+     - Python agents: Docker containers (dependency isolation)
+     - Vision controller: Docker (GPU access)
+     - Heavy processing: Firecracker microVM (full isolation)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         ORCHESTRATION FLOW
+═══════════════════════════════════════════════════════════════════════════════
+
+When human says: "Search web, gather components for railroad website"
+
+Flow:
+
+1. HUMAN → COMMAND COORDINATOR
+   "Search web, gather components for railroad website"
+
+2. COMMAND COORDINATOR → DATA COLLECTOR
+   "Execute: web search for railroad UI components"
+   Keys granted: ["web.search", "web.fetch", "storage.write"]
+
+3. DATA COLLECTOR starts searching
+   - Searches: "railroad website components"
+   - Searches: "railroad UI icons"
+   - Searches: "railroad CSS themes"
+   
+   For each result:
+     a. Fetch HTML
+     b. Parse for components/icons/CSS
+     c. Store in database (via DATABASE MANAGER)
+
+4. DATA COLLECTOR → COMMAND COORDINATOR
+   "Need to run command: download icon from URL"
+
+5. COMMAND COORDINATOR executes
+   $ curl -o /tmp/icon.svg https://example.com/icon.svg
+
+6. DATA COLLECTOR → DATABASE MANAGER
+   "Store: component metadata + file path"
+
+7. DATABASE MANAGER saves to PostgreSQL
+
+8. DATA COLLECTOR → HUMAN (email or notification)
+   "Found 47 components, 23 icons, 5 CSS themes. Review at: /results/railroad-components"
+
+This takes ~1 hour (parallel fetching, multiple searches)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         AGENT RULES (what to read on startup)
+═══════════════════════════════════════════════════════════════════════════════
+
+Each agent has: config.toml
+
+Example: agents/data_collector/config.toml
+
+```toml
+[agent]
+name = "data_collector"
+version = "1.0.0"
+
+[capabilities]
+web_search = true
+web_fetch = true
+storage_write = true
+storage_read = false
+
+[rules]
+# What I can do
+allowed_domains = ["*"]  # All domains by default
+blocked_domains = ["facebook.com", "twitter.com"]  # Social media (too much noise)
+max_concurrent_requests = 10
+timeout_seconds = 30
+
+# What I must do
+log_all_requests = true
+cache_results = true
+rate_limit_per_domain = "10 req/min"
+
+[tools]
+# My internal tools (in tools/ directory)
+internal = ["web_search.py", "scraper.py", "parser.py"]
+
+# External tools I can request from COMMAND COORDINATOR
+external = ["curl", "wget", "jq"]
+
+[communication]
+protocol = "protobuf"  # or "messagepack"
+coordinator_address = "localhost:50051"
+
+[routing]
+# Where to send specific requests
+database_writes = "database_manager"
+file_storage = "storage_service"
+notifications = "notification_service"
+```
+
+Agent startup sequence:
+1. Read config.toml
+2. Load rules (what I can/can't do)
+3. Initialize tools (internal)
+4. Connect to COMMAND COORDINATOR
+5. Request keys
+6. Ready to receive work
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TOOLS vs AGENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+TOOLS are inside agent directories:
+  agents/data_collector/tools/web_search.py
+  
+  The agent OWNS these tools.
+  The agent can run them directly.
+  No permission needed.
+
+EXTERNAL TOOLS require coordinator:
+  Agent: "I need to run: curl https://example.com"
+  Coordinator: "Here's your key, execute via service_manager"
+  Service Manager: Executes curl, returns output
+  Agent: Receives output, continues work
+
+WHEELERS are special tools:
+  Wheeler = Full agent with sub-tools (wheels)
+  Example: packet_pilot wheeler
+    - Has wheel: ocr/
+    - Has wheel: form_filler/
+    - Has wheel: signature/
+  
+  Wheeler is spawned by COMMAND COORDINATOR when needed
+  Wheeler runs in Firecracker microVM (isolated)
+  Wheeler communicates via same protocol (protobuf/messagepack)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         HUMAN-IN-THE-LOOP
+═══════════════════════════════════════════════════════════════════════════════
+
+When agents need human input:
+
+Option 1: EMAIL
+  Agent → notification_service → Email to human
+  Subject: "[AI Agency] Question about railroad website"
+  Body: "Found 5 CSS themes. Which one do you prefer? [links]"
+
+Option 2: NOTIFICATION
+  Agent → notification_service → Desktop notification (via libnotify)
+  "Data collection complete. Review results?"
+
+Option 3: INTERACTIVE (if human is present)
+  Agent detects human in tmux/ranger/neovim
+  Agent sends message to terminal
+  Human responds inline
+
+Option 4: PAUSE & WAIT
+  Agent writes to _meta/question.{agent}.md
+  Agent enters PAUSED state
+  Human reviews _meta/, answers question
+  Human resumes agent with: $ resume-agent data_collector
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         GHOST TEXT (neovim integration)
+═══════════════════════════════════════════════════════════════════════════════
+
+When human is editing in neovim:
+
+Agent watches file changes (via inotify or periodic polling)
+
+When human types:
+  const jobData =
+
+Agent suggests (ghost text):
+  const jobData = {
+    id: "uuid-12345",
+    shipper_id: "uuid-67890",
+    pickup: { lat: 40.7128, lng: -74.0060 },
+    delivery: { lat: 34.0522, lng: -118.2437 },
+    rate: 1500
+  };
+
+Implementation:
+  - Neovim plugin (Lua)
+  - Communicates with code_builder agent
+  - Agent uses CodeLlama model (via ollama_coordinator)
+  - Inserts ghost text via virtual text API
+
+Plugin location: ~/.config/nvim/lua/ai-agency.lua
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         BECOMING ONE (human + AI)
+═══════════════════════════════════════════════════════════════════════════════
+
+The goal: Human and AI work together seamlessly
+
+Workflow:
+
+1. Human opens ranger (file navigator)
+2. AI sees ranger is active
+3. AI offers: "I can help navigate. Press <C-a> for AI mode."
+4. Human presses <C-a>
+5. AI takes input: "Where do you want to go?"
+6. Human: "Find the database schema"
+7. AI searches workspace, highlights file
+8. Human presses Enter, file opens in neovim
+9. AI sees file open, offers: "I can help edit. Press <C-e> for AI edit mode."
+10. Human accepts
+11. AI and human edit together (ghost text, suggestions, auto-completion)
+
+This requires:
+  - Terminal integration (tmux or kitty)
+  - Input monitoring (non-intrusive)
+  - Context awareness (what's the human doing?)
+  - Permission system (AI doesn't act without permission)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         DEEP SCAN & META FILE
+═══════════════════════════════════════════════════════════════════════════════
+
+The human wants you to:
+
+1. Do a DEEP SCAN
+   - Read every file in .ai/agency-forge/
+   - Check for:
+     * Broken imports
+     * Missing dependencies
+     * Incomplete implementations
+     * TODO comments
+     * Configuration errors
+     * Type mismatches
+
+2. Create META FILE
+   Location: .ai/agency-forge/_meta/scan.{date}.md
+   
+   Format:
+   ```markdown
+   # AI Agency Deep Scan
+   Date: 2024-11-05
+   Scanned: 87 files
+   
+   ## Summary
+   - Issues: 12
+   - Warnings: 23
+   - TODOs: 45
+   - Completion: 89%
+   
+   ## Critical Issues
+   1. [command_coordinator] Missing Redis connection in keys.rs:42
+   2. [data_collector] web_search.py has ImportError (requests not in requirements.txt)
+   3. [database_manager] Migration 003 has syntax error on line 15
+   
+   ## Warnings
+   1. [ollama_coordinator] Using deprecated API endpoint (still works, but update recommended)
+   2. [vision_controller] YOLO model not found, will download on first run (500MB)
+   ...
+   
+   ## TODOs
+   1. [code_builder] Add template for Flutter components
+   2. [pdf_agent] Implement signature verification
+   ...
+   
+   ## What's Working
+   - ✅ Command coordinator (basic routing)
+   - ✅ Ollama integration
+   - ✅ Type system (.proto generation)
+   - ✅ Basic web search
+   
+   ## What's Missing
+   - ❌ Vision controller not implemented yet
+   - ❌ PDF agent partially complete
+   - ❌ Neovim plugin not started
+   
+   ## Next Steps
+   1. Fix critical issues (3 items)
+   2. Install missing dependencies
+   3. Complete vision controller
+   4. Test end-to-end flow (human → coordinator → agents → result)
+   ```
+
+3. Report to human
+   "Deep scan complete. Found 12 issues, 23 warnings. 
+    Meta file: .ai/agency-forge/_meta/scan.2024-11-05.md
+    Ready to fix or wait for your review?"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHAT YOU NEED TO DO NOW
+═══════════════════════════════════════════════════════════════════════════════
+
+Priority actions:
+
+1. VERIFY CORE FUNCTIONALITY
+   □ Test Ollama connection
+   □ Test web search
+   □ Test command execution
+   □ Test agent-to-agent communication
+
+2. FIX CRITICAL ISSUES
+   □ Missing dependencies
+   □ Broken imports
+   □ Configuration errors
+
+3. COMPLETE AGENTS
+   □ Vision controller (90% done? Finish it)
+   □ PDF agent (90% done? Finish it)
+   □ Any other partial agents
+
+4. TEST END-TO-END
+   □ Human request → Coordinator → Agent → Result
+   □ Make sure full flow works
+
+5. DOCUMENT
+   □ Create _meta/scan.{date}.md
+   □ Write _meta/fix.{agent}.md for each fix
+   □ Update README with current status
+
+6. CONTAINERIZE (if needed)
+   □ Which agents need Docker?
+   □ Which need Firecracker?
+   □ Write Dockerfiles/Firecracker configs
+
+7. OPTIMIZE
+   □ Are agents talking efficiently? (binary protocol?)
+   □ Are there bottlenecks?
+   □ Can things be parallelized?
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         REMEMBER
+═══════════════════════════════════════════════════════════════════════════════
+
+You are building: AN AI AGENCY
+
+Not a wheeler system.
+Not a monolithic AI.
+Not a single model.
+
+You're building:
+  - Multiple specialized agents
+  - With clear responsibilities
+  - That coordinate via a command coordinator
+  - That use binary protocols (fast, efficient)
+  - That run in appropriate environments (native, Docker, Firecracker)
+  - That can be plugged with ANY model (Ollama, OpenAI, Anthropic, custom)
+  - That help the human build software
+  - That become ONE with the human
+
+The human spent a year learning this.
+The human trusts you to build it right.
+Don't let him down.
+
+Stay on path.
+Build it properly.
+Log everything.
+Ask questions when needed.
+
+You got this.
+
+—Meta Claude

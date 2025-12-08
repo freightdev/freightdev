@@ -1,0 +1,2212 @@
+# OpenHWY Manifest
+# Version: 1.0.0
+# The Complete Blueprint for OpenHWY Ecosystem
+# Every agent, service, tool, pricing model, and integration point
+
+################################################################################
+#                           ECOSYSTEM OVERVIEW
+################################################################################
+
+ecosystem:
+  name: "OpenHWY"
+  tagline: "The Highway for the Autonomous Age"
+  mission: "Protect 3.5M truck driver jobs by making them irreplaceable for last-mile delivery"
+  
+  philosophy:
+    - "Infrastructure, not platform"
+    - "Protocol, not monopoly"
+    - "Open source at the core"
+    - "Driver sovereignty above all"
+  
+  timeline:
+    launch: "2025-Q1"
+    pilot: "2027-Q2"
+    scale: "2029-Q1"
+    standard: "2031+"
+  
+  target_users:
+    primary: "Professional truck drivers (CDL holders)"
+    secondary: "Last-mile delivery drivers"
+    tertiary: "Autonomous fleet operators"
+    ecosystem: "Logistics platforms, brokers, shippers"
+
+
+################################################################################
+#                         INFRASTRUCTURE LAYER
+################################################################################
+
+infrastructure:
+  boxes:
+    workbox:
+      role: "Primary orchestration and development"
+      specs:
+        os: "Debian 13 (Trixie)"
+        ram: "16GB"
+        cpu: "8 cores"
+        storage: "512GB NVMe"
+        display: "Hyprland (Wayland)"
+      
+      services:
+        - rust_backend
+        - hwy_agent
+        - fed_agent
+        - moon_env
+        - postgresql_primary
+        - redis_cache
+      
+      ports:
+        8080: "Rust Backend (HTTP/WebSocket)"
+        9001: "HWY Agent"
+        9002: "FED Agent"
+        5432: "PostgreSQL"
+        6379: "Redis"
+    
+    helpbox:
+      role: "AI/ML and content creation"
+      specs:
+        os: "Debian 13 (Trixie)"
+        ram: "8GB"
+        cpu: "6 cores"
+        storage: "256GB SSD"
+        display: "Headless"
+      
+      services:
+        - elda_agent
+        - ollama_service
+        - go_ollama_proxy
+        - moon_env
+      
+      ports:
+        9003: "ELDA Agent"
+        8084: "Ollama Proxy (Go)"
+        11434: "Ollama (Local LLM)"
+    
+    hostbox:
+      role: "Hosting and data services"
+      specs:
+        os: "Debian 13 (Trixie)"
+        ram: "8GB"
+        cpu: "4 cores"
+        storage: "1TB HDD"
+        display: "Headless"
+      
+      services:
+        - eco_agent
+        - caddy_reverse_proxy
+        - minio_storage
+        - postgresql_replica
+        - moon_env
+      
+      ports:
+        443: "Caddy (HTTPS)"
+        9004: "ECO Agent (gRPC)"
+        9000: "MinIO"
+        5433: "PostgreSQL Replica"
+    
+    callbox:
+      role: "Monitoring and tool orchestration"
+      specs:
+        os: "Debian 13 (Trixie)"
+        ram: "8GB"
+        cpu: "4 cores"
+        storage: "256GB SSD"
+        display: "Headless"
+      
+      services:
+        - traka_agent
+        - prometheus
+        - grafana
+        - moon_env
+      
+      ports:
+        9005: "TRAKA Agent"
+        9090: "Prometheus"
+        3000: "Grafana"
+    
+    safebox:
+      role: "Cloud backup and failover"
+      specs:
+        provider: "Oracle Cloud (Free Tier)"
+        os: "Debian 13 (Trixie)"
+        ram: "4GB"
+        cpu: "2 cores"
+        storage: "200GB"
+        display: "Headless"
+      
+      services:
+        - backup_service
+        - failover_coordinator
+        - moon_env
+      
+      ports:
+        9006: "Backup Service"
+
+
+################################################################################
+#                           CORE AGENTS
+################################################################################
+
+agents:
+  
+  # ============================================================================
+  # HWY - Heavy Wheel Yarddog
+  # ============================================================================
+  hwy:
+    full_name: "Heavy Wheel Yarddog"
+    tagline: "Security & Connections"
+    type: "Rust/WASM"
+    
+    primary_box: "workbox"
+    failover_box: "safebox"
+    
+    responsibilities:
+      - "P2P connection management between boxes"
+      - "OpenHWY License verification and issuance"
+      - "Intrusion detection and security monitoring"
+      - "System onboarding and authentication"
+      - "Network topology management"
+    
+    capabilities:
+      license_verification:
+        blockchain: "Solana (fast, low fees)"
+        verification_time: "<100ms"
+        offline_capable: true
+      
+      security:
+        intrusion_detection: "Real-time anomaly detection"
+        rate_limiting: "Token bucket algorithm"
+        firewall_rules: "Dynamic iptables updates"
+      
+      networking:
+        protocol: "libp2p (peer-to-peer)"
+        encryption: "TLS 1.3"
+        nat_traversal: "STUN/TURN servers"
+    
+    api:
+      internal:
+        - "POST /hwy/license/verify"
+        - "POST /hwy/license/issue"
+        - "GET  /hwy/network/topology"
+        - "POST /hwy/system/onboard"
+      
+      external:
+        - "GET  /api/license/validate/{license_id}"
+    
+    pricing:
+      model: "Infrastructure (free for ecosystem)"
+      cost_center: "Funded by platform revenue"
+    
+    dependencies:
+      - "moon_env"
+      - "redis (caching)"
+      - "postgresql (license database)"
+    
+    resources:
+      cpu: "0.5 cores"
+      memory: "512MB"
+      storage: "10GB"
+    
+    monitoring:
+      metrics:
+        - "license_verifications_per_second"
+        - "p2p_connections_active"
+        - "security_events_detected"
+      
+      alerts:
+        - "License verification failure rate > 1%"
+        - "P2P connection loss > 10%"
+        - "Intrusion attempts > 100/min"
+  
+  
+  # ============================================================================
+  # FED - Fleet Ecosystem Director
+  # ============================================================================
+  fed:
+    full_name: "Fleet Ecosystem Director"
+    tagline: "Orchestrator & Problem Solver"
+    type: "Python/Rust Hybrid"
+    
+    primary_box: "workbox"
+    failover_box: "hostbox"
+    
+    responsibilities:
+      - "Job matching (drivers ↔ loads)"
+      - "Workflow orchestration across platforms"
+      - "Business logic coordination"
+      - "Escalation handling and edge cases"
+      - "Market rate calculation"
+    
+    capabilities:
+      matching_engine:
+        algorithm: "ML-based (XGBoost)"
+        factors:
+          - "Driver skill level (OpenHWY License)"
+          - "Location proximity"
+          - "Historical performance"
+          - "Load requirements (hazmat, weight, etc.)"
+          - "Driver preferences"
+        
+        match_time: "<500ms"
+        accuracy: ">95%"
+      
+      orchestration:
+        workflow_engine: "Temporal.io"
+        max_concurrent_jobs: "10,000+"
+        retry_policy: "Exponential backoff (max 5 attempts)"
+      
+      rate_calculation:
+        data_sources:
+          - "DAT load board historical data"
+          - "FreightWaves SONAR real-time rates"
+          - "OpenHWY internal marketplace data"
+        
+        update_frequency: "Every 15 minutes"
+        factors:
+          - "Fuel prices"
+          - "Supply/demand ratio"
+          - "Route difficulty"
+          - "Seasonal adjustments"
+    
+    api:
+      rest:
+        - "POST /fed/jobs/match"
+        - "GET  /fed/jobs/{job_id}"
+        - "POST /fed/jobs/{job_id}/accept"
+        - "POST /fed/jobs/{job_id}/complete"
+        - "GET  /fed/rates/estimate"
+      
+      grpc:
+        - "MatchJob(MatchRequest) → MatchResponse"
+        - "CalculateRate(RateRequest) → RateResponse"
+    
+    pricing:
+      model: "Commission-based"
+      tiers:
+        basic:
+          fee: "10% per job"
+          features:
+            - "Basic job matching"
+            - "Standard support"
+            - "7-day payment terms"
+        
+        pro:
+          fee: "7% per job"
+          features:
+            - "Priority matching"
+            - "24/7 support"
+            - "Next-day payment"
+            - "Advanced analytics"
+        
+        enterprise:
+          fee: "5% per job (volume discounts)"
+          features:
+            - "Dedicated account manager"
+            - "Custom integration"
+            - "Same-day payment"
+            - "API access"
+            - "White-label option"
+    
+    dependencies:
+      - "moon_env"
+      - "postgresql (jobs, drivers, loads)"
+      - "redis (job queue)"
+      - "temporal (workflow orchestration)"
+    
+    resources:
+      cpu: "2 cores"
+      memory: "4GB"
+      storage: "50GB"
+    
+    monitoring:
+      metrics:
+        - "jobs_matched_per_minute"
+        - "match_accuracy_rate"
+        - "average_match_time_ms"
+        - "revenue_per_job"
+      
+      alerts:
+        - "Match accuracy < 90%"
+        - "Match time > 1s"
+        - "Job completion rate < 95%"
+  
+  
+  # ============================================================================
+  # ELDA - Enhanced Logistics Distribution Architect
+  # ============================================================================
+  elda:
+    full_name: "Enhanced Logistics Distribution Architect"
+    tagline: "Creator & Storyteller"
+    type: "Python (Multi-modal AI)"
+    
+    primary_box: "helpbox"
+    failover_box: null
+    
+    responsibilities:
+      - "Convert Trucker Tales into training data"
+      - "Generate VR/AR training scenarios"
+      - "Create 2D/3D visualizations"
+      - "Build educational content"
+      - "Code generation (apps, scripts, configs)"
+    
+    capabilities:
+      content_generation:
+        models:
+          text: "Llama 3.1 70B (via Ollama)"
+          image: "Stable Diffusion XL"
+          3d: "TripoSR (text-to-3D)"
+          code: "CodeLlama 34B"
+        
+        formats:
+          - "Training scenarios (JSON/YAML)"
+          - "VR scenes (Unity/Unreal assets)"
+          - "Documentation (Markdown/HTML)"
+          - "Code (Python/Rust/Go/JavaScript)"
+      
+      trucker_tales_processing:
+        pipeline:
+          1: "Ingest story (text/audio/video)"
+          2: "Extract key events and decisions"
+          3: "Identify training opportunities"
+          4: "Generate scenario variations"
+          5: "Create assessment criteria"
+        
+        output: "Training module with 5-10 scenarios per story"
+      
+      training_scenarios:
+        types:
+          - "Weather challenges (ice, rain, fog)"
+          - "Urban navigation (tight streets, low bridges)"
+          - "Customer interaction (difficult recipients)"
+          - "Emergency situations (brake failure, tire blowout)"
+          - "Regulatory compliance (weight stations, HOS)"
+        
+        platforms:
+          - "VR (Meta Quest)"
+          - "AR (smartphone/tablet)"
+          - "Desktop simulator"
+          - "Mobile app (scenario viewer)"
+    
+    api:
+      rest:
+        - "POST /elda/tales/submit"
+        - "GET  /elda/tales/{tale_id}"
+        - "POST /elda/scenarios/generate"
+        - "GET  /elda/scenarios/{scenario_id}"
+        - "POST /elda/code/generate"
+      
+      webhook:
+        - "tale.submitted"
+        - "scenario.generated"
+        - "training.completed"
+    
+    pricing:
+      model: "Freemium + Revenue Share"
+      
+      for_content_creators:
+        free:
+          - "Submit unlimited Trucker Tales"
+          - "Earn $5-50 per tale used in training"
+          - "Royalty: 2% of training revenue from your content"
+        
+        premium:
+          price: "$20/month"
+          features:
+            - "Priority tale review"
+            - "Royalty: 5% of training revenue"
+            - "Advanced analytics"
+            - "Co-branding on scenarios"
+      
+      for_learners:
+        free:
+          - "Access 10 training scenarios/month"
+          - "Basic progress tracking"
+        
+        basic:
+          price: "$10/month"
+          features:
+            - "Unlimited training scenarios"
+            - "Progress tracking & certificates"
+            - "Community access"
+        
+        pro:
+          price: "$50/month"
+          features:
+            - "All Basic features"
+            - "VR/AR scenarios"
+            - "1-on-1 mentorship (2 hours/month)"
+            - "Job placement assistance"
+      
+      for_training_providers:
+        enterprise:
+          price: "Custom (minimum $500/month)"
+          features:
+            - "White-label training platform"
+            - "Custom scenario development"
+            - "API access"
+            - "Dedicated support"
+    
+    dependencies:
+      - "moon_env"
+      - "ollama (LLM inference)"
+      - "minio (content storage)"
+      - "postgresql (tales, scenarios)"
+    
+    resources:
+      cpu: "4 cores"
+      memory: "8GB"
+      storage: "100GB"
+    
+    monitoring:
+      metrics:
+        - "tales_processed_per_day"
+        - "scenarios_generated_per_day"
+        - "training_completion_rate"
+        - "content_creator_earnings"
+      
+      alerts:
+        - "Scenario generation time > 5 minutes"
+        - "Training completion rate < 70%"
+        - "Content creator payout failures"
+  
+  
+  # ============================================================================
+  # ECO - Elastic Cargo Orchestrator
+  # ============================================================================
+  eco:
+    full_name: "Elastic Cargo Orchestrator"
+    tagline: "Load Board Matching Engine"
+    type: "Pure Rust (Actix-web + gRPC)"
+    
+    primary_box: "hostbox"
+    failover_box: "workbox"
+    
+    responsibilities:
+      - "Real-time load matching (ML-based)"
+      - "Driver availability tracking"
+      - "Route optimization"
+      - "Rate calculation"
+      - "Load board aggregation"
+    
+    capabilities:
+      load_aggregation:
+        sources:
+          - "DAT Load Board"
+          - "Truckstop.com"
+          - "123Loadboard"
+          - "OpenHWY internal marketplace"
+          - "Custom integrations"
+        
+        refresh_rate: "Every 60 seconds"
+        deduplication: "Fuzzy matching on origin/destination/weight"
+      
+      matching_algorithm:
+        type: "Hybrid (rule-based + ML)"
+        
+        factors:
+          driver_side:
+            - "Current location"
+            - "License level"
+            - "Vehicle type and capacity"
+            - "Availability window"
+            - "Preferred routes"
+            - "Historical performance"
+          
+          load_side:
+            - "Pickup location and time"
+            - "Delivery location and deadline"
+            - "Weight and dimensions"
+            - "Special requirements (hazmat, refrigerated)"
+            - "Rate offered"
+        
+        scoring:
+          distance: "40%"
+          rate: "25%"
+          compatibility: "20%"
+          urgency: "10%"
+          driver_preference: "5%"
+      
+      route_optimization:
+        algorithm: "Google OR-Tools (VRP solver)"
+        constraints:
+          - "HOS regulations (11-hour driving limit)"
+          - "Delivery time windows"
+          - "Fuel stops"
+          - "Weight station checks"
+          - "Rest area availability"
+        
+        optimization_goals:
+          1: "Minimize total distance"
+          2: "Maximize revenue per mile"
+          3: "Minimize empty miles"
+    
+    api:
+      grpc:
+        - "FindLoads(LoadSearchRequest) → LoadSearchResponse"
+        - "MatchDriver(MatchRequest) → MatchResponse"
+        - "OptimizeRoute(RouteRequest) → RouteResponse"
+        - "GetAvailability(AvailabilityRequest) → AvailabilityResponse"
+      
+      rest:
+        - "GET  /eco/loads"
+        - "GET  /eco/loads/{load_id}"
+        - "POST /eco/loads/{load_id}/book"
+        - "GET  /eco/drivers/available"
+    
+    pricing:
+      model: "Pay-per-use + Subscription"
+      
+      pay_as_you_go:
+        load_search: "$0.01 per search"
+        match_request: "$0.10 per match"
+        route_optimization: "$0.25 per route"
+      
+      subscription:
+        starter:
+          price: "$50/month"
+          includes:
+            - "1,000 load searches"
+            - "100 match requests"
+            - "50 route optimizations"
+          
+          overage: "Standard PAYG rates"
+        
+        professional:
+          price: "$200/month"
+          includes:
+            - "10,000 load searches"
+            - "1,000 match requests"
+            - "500 route optimizations"
+          
+          overage: "50% off PAYG rates"
+        
+        enterprise:
+          price: "$1,000/month"
+          includes:
+            - "Unlimited searches"
+            - "Unlimited matches"
+            - "Unlimited optimizations"
+            - "Dedicated infrastructure"
+            - "SLA: 99.9% uptime"
+    
+    dependencies:
+      - "moon_env"
+      - "postgresql (loads, drivers)"
+      - "redis (real-time availability)"
+      - "google_or_tools (route optimization)"
+    
+    resources:
+      cpu: "3 cores"
+      memory: "6GB"
+      storage: "50GB"
+    
+    monitoring:
+      metrics:
+        - "loads_indexed_per_minute"
+        - "matches_per_second"
+        - "route_optimization_time_ms"
+        - "match_quality_score"
+      
+      alerts:
+        - "Load ingestion lag > 2 minutes"
+        - "Match quality score < 0.8"
+        - "Route optimization time > 10s"
+  
+  
+  # ============================================================================
+  # TRAKA - Tracker/Tool Manager
+  # ============================================================================
+  traka:
+    full_name: "Tracker/Tool Manager"
+    tagline: "Tool Orchestration & Spawning"
+    type: "Go (Gin Framework)"
+    
+    primary_box: "callbox"
+    failover_box: null
+    
+    responsibilities:
+      - "Wheeler Tool orchestration"
+      - "Tool lifecycle management (spawn/kill)"
+      - "Payment tracking and processing"
+      - "Messaging system coordination"
+      - "Pet tracking (driver companion animals)"
+    
+    capabilities:
+      tool_spawning:
+        method: "Process isolation (systemd units)"
+        resources_per_tool:
+          cpu: "0.1 cores"
+          memory: "128MB"
+          storage: "10MB"
+        
+        lifecycle:
+          spawn: "<2 seconds"
+          heartbeat: "Every 30 seconds"
+          auto_restart: true
+          max_crashes: "3 before manual intervention"
+      
+      payment_processing:
+        providers:
+          primary: "Stripe"
+          fallback: "PayPal"
+        
+        methods:
+          - "Credit/Debit cards"
+          - "ACH (bank transfer)"
+          - "Crypto (USDC, SOL)"
+        
+        escrow:
+          provider: "Escrow.com API"
+          release_conditions:
+            - "Delivery confirmation (GPS + signature)"
+            - "48-hour dispute window"
+            - "Automatic release after 7 days"
+      
+      messaging:
+        channels:
+          - "SMS (Twilio)"
+          - "In-app notifications"
+          - "Email (SendGrid)"
+          - "Push notifications (FCM)"
+        
+        features:
+          - "Driver ↔ Dispatcher"
+          - "Driver ↔ Broker"
+          - "Driver ↔ Shipper"
+          - "Group channels (fleet communication)"
+    
+    api:
+      rest:
+        - "POST /traka/tools/spawn"
+        - "POST /traka/tools/{tool_id}/kill"
+        - "GET  /traka/tools/status"
+        - "POST /traka/payments/process"
+        - "GET  /traka/payments/history"
+        - "POST /traka/messages/send"
+        - "GET  /traka/messages/{channel_id}"
+      
+      websocket:
+        - "/traka/ws/messages" (real-time messaging)
+        - "/traka/ws/payments" (payment status updates)
+    
+    pricing:
+      model: "Freemium + Transaction Fees"
+      
+      tool_access:
+        free:
+          - "Basic tools (5 uses/day)"
+          - "Community support"
+        
+        wheeler_pass:
+          price: "$15/month"
+          features:
+            - "Unlimited tool usage"
+            - "Priority support"
+            - "Early access to new tools"
+      
+      payment_processing:
+        transaction_fee: "2.9% + $0.30"
+        crypto_fee: "1.5%"
+        
+        volume_discounts:
+          - "$0-10k/month: Standard rates"
+          - "$10k-50k/month: 2.7% + $0.30"
+          - "$50k+/month: 2.5% + $0.30"
+      
+      messaging:
+        free: "100 messages/month"
+        paid: "$0.01 per message"
+        unlimited: "$20/month"
+    
+    wheeler_tools:
+      packet_pilot:
+        name: "Packet Pilot"
+        function: "Paperwork automation"
+        features:
+          - "OCR scan receipts/BOLs"
+          - "Auto-fill forms"
+          - "Digital signature"
+          - "Cloud backup"
+        
+        pricing:
+          free: "10 scans/month"
+          premium: "$5/month (unlimited)"
+      
+      whisper_witness:
+        name: "Whisper Witness"
+        function: "Broker call monitoring"
+        features:
+          - "OpenAI Whisper transcription"
+          - "Manipulation pattern detection"
+          - "Call recording (with consent)"
+          - "Evidence export"
+        
+        pricing:
+          free: "5 calls/month"
+          premium: "$10/month (unlimited)"
+      
+      big_bear:
+        name: "Big Bear"
+        function: "Load finder"
+        features:
+          - "Multi-board search"
+          - "Smart filters (rate, distance, etc.)"
+          - "Push notifications for matches"
+          - "Historical rate comparison"
+        
+        pricing:
+          free: "10 searches/day"
+          premium: "$8/month (unlimited)"
+      
+      cargo_connect:
+        name: "Cargo Connect"
+        function: "Route planner"
+        features:
+          - "Multi-stop optimization"
+          - "HOS integration"
+          - "Fuel stop planning"
+          - "Weather alerts"
+        
+        pricing:
+          free: "3 routes/week"
+          premium: "$5/month (unlimited)"
+      
+      fuel_factor:
+        name: "Fuel Factor"
+        function: "Fuel price optimizer"
+        features:
+          - "Real-time fuel prices"
+          - "Route-based suggestions"
+          - "Fuel card integration"
+          - "MPG tracking"
+        
+        pricing: "Free (ad-supported)"
+      
+      iron_insight:
+        name: "Iron Insight"
+        function: "Maintenance tracker"
+        features:
+          - "Service schedule reminders"
+          - "Expense tracking"
+          - "Vendor recommendations"
+          - "Warranty management"
+        
+        pricing:
+          free: "Basic tracking"
+          premium: "$7/month (advanced analytics)"
+      
+      night_nexus:
+        name: "Night Nexus"
+        function: "Overnight parking finder"
+        features:
+          - "Truck stop availability (real-time)"
+          - "Safety ratings"
+          - "Amenity filters"
+          - "Reservation system"
+        
+        pricing:
+          free: "Basic search"
+          premium: "$3/month (advanced filters + reservations)"
+      
+      zone_zipper:
+        name: "Zone Zipper"
+        function: "Hazmat zone calculator"
+        features:
+          - "Route hazmat compliance"
+          - "Tunnel/bridge restrictions"
+          - "Permit requirements"
+          - "Alternative route suggestions"
+        
+        pricing:
+          free: "5 checks/month"
+          premium: "$10/month (unlimited)"
+      
+      legal_logger:
+        name: "Legal Logger"
+        function: "HOS compliance checker"
+        features:
+          - "ELD integration"
+          - "Violation warnings"
+          - "Logbook audit"
+          - "FMCSA compliance reports"
+        
+        pricing:
+          free: "Basic tracking"
+          premium: "$12/month (advanced compliance)"
+      
+      memory_mark:
+        name: "Memory MARK"
+        function: "Trip memory/notes"
+        features:
+          - "Voice notes"
+          - "Photo attachments"
+          - "Location tagging"
+          - "Searchable archive"
+        
+        pricing: "Free"
+      
+      ghost_guard:
+        name: "Ghost Guard"
+        function: "Load protection"
+        features:
+          - "Fraud detection (fake brokers)"
+          - "Load verification"
+          - "Contract review (AI-powered)"
+          - "Dispute assistance"
+        
+        pricing:
+          free: "Basic checks"
+          premium: "$15/month (full protection + insurance)"
+      
+      jackknife_jailer:
+        name: "Jackknife Jailer"
+        function: "Weather alerts"
+        features:
+          - "Route weather overlay"
+          - "Severe weather warnings"
+          - "Chain requirement alerts"
+          - "Safe haven suggestions"
+        
+        pricing: "Free"
+      
+      trakapay:
+        name: "Trakapay"
+        function: "Payment tracking"
+        features:
+          - "Invoice generation"
+          - "Payment status tracking"
+          - "Escrow management"
+          - "Tax reporting"
+        
+        pricing:
+          free: "Basic tracking"
+          transaction_fee: "2.9% + $0.30"
+      
+      trakapal:
+        name: "Trakapal"
+        function: "Messaging system"
+        features:
+          - "Multi-party chat"
+          - "File sharing"
+          - "Video calls"
+          - "Translation (15 languages)"
+        
+        pricing:
+          free: "100 messages/month"
+          premium: "$8/month (unlimited)"
+      
+      trakapaw:
+        name: "Trakapaw"
+        function: "Pet tracking"
+        features:
+          - "GPS collar integration"
+          - "Health monitoring"
+          - "Vet finder"
+          - "Pet-friendly stops"
+        
+        pricing:
+          free: "Basic tracking"
+          premium: "$5/month (health + alerts)"
+      
+      trakatale:
+        name: "Trakatale"
+        function: "Story/content tracking"
+        features:
+          - "Tale submission"
+          - "Earnings dashboard"
+          - "Royalty tracking"
+          - "Content analytics"
+        
+        pricing: "Free (earns money for users)"
+    
+    dependencies:
+      - "moon_env"
+      - "postgresql (tools, payments, messages)"
+      - "redis (real-time messaging)"
+      - "stripe (payment processing)"
+      - "twilio (SMS)"
+    
+    resources:
+      cpu: "1 core"
+      memory: "2GB"
+      storage: "20GB"
+    
+    monitoring:
+      metrics:
+        - "active_tools_count"
+        - "payments_processed_per_day"
+        - "messages_sent_per_minute"
+        - "tool_crash_rate"
+      
+      alerts:
+        - "Tool crash rate > 5%"
+        - "Payment processing failure > 1%"
+        - "Message delivery failure > 2%"
+
+
+################################################################################
+#                           BACKEND SERVICES
+################################################################################
+
+backend_services:
+  
+  # ============================================================================
+  # Rust Backend (Primary API)
+  # ============================================================================
+  rust_backend:
+    name: "OpenHWY Core Backend"
+    language: "Rust"
+    framework: "Actix-web 4.x"
+    
+    location: "workbox:8080"
+    
+    responsibilities:
+      - "Primary REST API"
+      - "WebSocket connections (real-time updates)"
+      - "System orchestration (SSH to boxes)"
+      - "Agent lifecycle management"
+      - "Authentication/Authorization"
+    
+    endpoints:
+      systems:
+        - "GET  /api/systems"
+        - "GET  /api/systems/{system_id}"
+        - "POST /api/systems/{system_id}/execute"
+      
+      agents:
+        - "GET  /api/agents"
+        - "POST /api/agents/launch"
+        - "POST /api/agents/{agent_id}/kill"
+        - "GET  /api/agents/{agent_id}/logs"
+      
+      websocket:
+        - "WS   /ws (system updates, agent updates, logs)"
+      
+      internal:
+        - "POST /internal/agent/register"
+        - "POST /internal/agent/heartbeat"
+    
+    features:
+      authentication:
+        method: "JWT (JSON Web Tokens)"
+        provider: "auth-service (Go)"
+        token_expiry: "24 hours"
+        refresh_token: "30 days"
+      
+      rate_limiting:
+        algorithm: "Token bucket"
+        limits:
+          anonymous: "10 req/min"
+          authenticated: "100 req/min"
+          premium: "1000 req/min"
+      
+      caching:
+        provider: "Redis"
+        ttl:
+          system_stats: "30 seconds"
+          agent_status: "10 seconds"
+          user_profile: "5 minutes"
+      
+      logging:
+        format: "JSON"
+        level: "INFO (DEBUG in development)"
+        destination: "stdout + file (/var/log/openhwy/backend.log)"
+    
+    database:
+      primary: "PostgreSQL (workbox:5432)"
+      replica: "PostgreSQL (hostbox:5433)"
+      
+      tables:
+        users:
+          - "id (UUID)"
+          - "email (VARCHAR)"
+          - "password_hash (VARCHAR)"
+          - "role (ENUM: driver, dispatcher, admin)"
+          - "openhwy_license_id (VARCHAR)"
+          - "created_at (TIMESTAMP)"
+        
+        systems:
+          - "id (UUID)"
+          - "name (VARCHAR)"
+          - "hostname (VARCHAR)"
+          - "status (ENUM: online, offline, error)"
+          - "cpu_usage (FLOAT)"
+          - "memory_usage (FLOAT)"
+          - "last_heartbeat (TIMESTAMP)"
+        
+        agents:
+          - "id (UUID)"
+          - "name (VARCHAR)"
+          - "type (ENUM: hwy, fed, elda, eco, traka)"
+          - "system_id (UUID FK → systems.id)"
+          - "status (ENUM: running, stopped, error)"
+          - "pid (INT)"
+          - "started_at (TIMESTAMP)"
+        
+        jobs:
+          - "id (UUID)"
+          - "shipper_id (UUID FK → users.id)"
+          - "driver_id (UUID FK → users.id)"
+          - "status (ENUM: pending, matched, in_progress, completed, cancelled)"
+          - "pickup_location (GEOGRAPHY)"
+          - "delivery_location (GEOGRAPHY)"
+          - "rate (DECIMAL)"
+          - "created_at (TIMESTAMP)"
+    
+    monitoring:
+      metrics:
+        - "http_requests_total"
+        - "http_request_duration_seconds"
+        - "websocket_connections_active"
+        - "database_queries_total"
+      
+      alerts:
+        - "HTTP error rate > 5%"
+        - "Response time p95 > 500ms"
+        - "Database connection pool exhausted"
+  
+  
+  # ============================================================================
+  # Go Microservices
+  # ============================================================================
+  go_services:
+    
+    auth_service:
+      name: "Authentication Service"
+      port: 8081
+      location: "workbox:8081"
+      
+      endpoints:
+        - "POST /auth/register"
+        - "POST /auth/login"
+        - "POST /auth/refresh"
+        - "POST /auth/logout"
+        - "GET  /auth/verify"
+      
+      features:
+        - "User registration"
+        - "Password hashing (bcrypt)"
+        - "JWT token issuance"
+        - "Token refresh"
+        - "Session management"
+      
+      database: "PostgreSQL (users table)"
+    
+    user_service:
+      name: "User Management Service"
+      port: 8082
+      location: "workbox:8082"
+      
+      endpoints:
+        - "GET  /users/profile"
+        - "PUT  /users/profile"
+        - "GET  /users/{user_id}"
+        - "GET  /users/{user_id}/license"
+        - "PUT  /users/{user_id}/license"
+      
+      features:
+        - "Profile management"
+        - "OpenHWY License linking"
+        - "Driver stats and history"
+      
+      database: "PostgreSQL (users table)"
+    
+    payment_service:
+      name: "Payment Processing Service"
+      port: 8083
+      location: "workbox:8083"
+      
+      endpoints:
+        - "POST /payments/charge"
+        - "GET  /payments/history"
+        - "POST /payments/refund"
+        - "POST /payments/escrow/create"
+        - "POST /payments/escrow/release"
+      
+      features:
+        - "Stripe integration"
+        - "Escrow management"
+        - "Refund processing"
+        - "Invoice generation"
+      
+      database: "PostgreSQL (payments table)"
+    
+    ollama_service:
+      name: "Ollama Proxy Service"
+      port: 8084
+      location: "helpbox:8084"
+      
+      endpoints:
+        - "POST /ollama/generate"
+        - "POST /ollama/chat"
+        - "GET  /ollama/models"
+      
+      features:
+        - "Proxy to Ollama (localhost:11434)"
+        - "Request queuing"
+        - "Rate limiting per user"
+        - "Usage tracking"
+      
+      ollama_models:
+        - "llama3.1:70b (general purpose)"
+        - "codellama:34b (code generation)"
+        - "mistral:7b (lightweight queries)"
+
+
+################################################################################
+#                           WEBSITES & PLATFORMS
+################################################################################
+
+websites:
+  
+  # ============================================================================
+  # open-hwy.com - Main Platform
+  # ============================================================================
+  open_hwy:
+    domain: "open-hwy.com"
+    subdomain_api: "api.open-hwy.com"
+    
+    description: "Primary OpenHWY dashboard and marketplace"
+    
+    tech_stack:
+      frontend: "Flutter Web"
+      backend: "Rust Backend (workbox:8080)"
+      hosting: "Caddy (hostbox:443)"
+    
+    pages:
+      home:
+        path: "/"
+        title: "OpenHWY - The Highway for the Autonomous Age"
+        features:
+          - "Hero section with mission statement"
+          - "Feature overview"
+          - "Driver testimonials"
+          - "Stats (drivers, jobs, earnings)"
+          - "CTA: Sign up / Learn more"
+      
+      dashboard:
+        path: "/dashboard"
+        auth: "Required"
+        features:
+          - "System status grid"
+          - "Agent status cards"
+          - "Real-time logs"
+          - "Wheeler Tools launcher"
+      
+      marketplace:
+        path: "/marketplace"
+        auth: "Required (drivers only)"
+        features:
+          - "Available jobs (ECO load board)"
+          - "Job filters (location, rate, type)"
+          - "Job acceptance"
+          - "In-progress jobs tracker"
+      
+      license:
+        path: "/license"
+        auth: "Optional"
+        features:
+          - "OpenHWY License overview"
+          - "License tiers explanation"
+          - "How to earn a license"
+          - "Verification checker"
+      
+      pricing:
+        path: "/pricing"
+        auth: "Optional"
+        features:
+          - "Agent pricing tiers"
+          - "Wheeler Tools pricing"
+          - "Enterprise options"
+          - "FAQ"
+      
+      docs:
+        path: "/docs"
+        auth: "Optional"
+        features:
+          - "API documentation"
+          - "Integration guides"
+          - "OpenHWY Protocol spec"
+          - "Developer resources"
+    
+    features:
+      responsive: true
+      pwa: true
+      offline_capable: false
+      dark_mode: true
+  
+  
+  # ============================================================================
+  # fedispatching.com - FED Dashboard
+  # ============================================================================
+  fedispatching:
+    domain: "fedispatching.com"
+    
+    description: "Logistics marketplace and job board"
+    
+    tech_stack:
+      frontend: "Flutter Web"
+      backend: "FED Agent (workbox:9002)"
+      hosting: "Caddy (hostbox:443)"
+    
+    pages:
+      home:
+        path: "/"
+        title: "FEDispatching - Smart Job Matching"
+        features:
+          - "Real-time load board"
+          - "Driver login"
+          - "Shipper login"
+      
+      driver_dashboard:
+        path: "/driver"
+        auth: "Required (driver)"
+        features:
+          - "Available jobs (personalized matches)"
+          - "Active jobs"
+          - "Earnings tracker"
+          - "Performance stats"
+      
+      shipper_dashboard:
+        path: "/shipper"
+        auth: "Required (shipper)"
+        features:
+          - "Post new job"
+          - "Active shipments"
+          - "Driver ratings"
+          - "Analytics"
+      
+      admin_panel:
+        path: "/admin"
+        auth: "Required (admin)"
+        features:
+          - "All jobs overview"
+          - "Dispute resolution"
+          - "User management"
+          - "System health"
+    
+    pricing:
+      model: "Commission-based (see FED agent pricing)"
+  
+  
+  # ============================================================================
+  # 8teenwheelers.com - Community & Training
+  # ============================================================================
+  eight_teen_wheelers:
+    domain: "8teenwheelers.com"
+    
+    description: "Trucker social network and training platform"
+    
+    tech_stack:
+      frontend: "Flutter Web"
+      backend: "ELDA Agent (helpbox:9003)"
+      hosting: "Caddy (hostbox:443)"
+    
+    pages:
+      home:
+        path: "/"
+        title: "18 Wheelers - Stories, Training, Community"
+        features:
+          - "Featured Trucker Tales"
+          - "Training courses showcase"
+          - "Community highlights"
+          - "Join CTA"
+      
+      tales:
+        path: "/tales"
+        auth: "Optional (required to submit)"
+        features:
+          - "Browse Trucker Tales"
+          - "Search and filter"
+          - "Submit new tale"
+          - "Upvote/comment"
+      
+      training:
+        path: "/training"
+        auth: "Required"
+        features:
+          - "Available courses"
+          - "My courses"
+          - "Progress tracker"
+          - "Certificates"
+      
+      community:
+        path: "/community"
+        auth: "Required"
+        features:
+          - "Forum"
+          - "Direct messaging (Trakapal)"
+          - "Events calendar"
+          - "Member directory"
+      
+      creator_dashboard:
+        path: "/creator"
+        auth: "Required (content creator)"
+        features:
+          - "Tale submissions"
+          - "Earnings from content"
+          - "Analytics (views, usage)"
+          - "Payout history"
+    
+    pricing:
+      for_learners:
+        - "Free: 10 scenarios/month"
+        - "Basic: $10/month (unlimited)"
+        - "Pro: $50/month (VR/AR + mentorship)"
+      
+      for_creators:
+        - "Free: Submit tales, earn $5-50 per tale"
+        - "Premium: $20/month (5% royalty vs 2%)"
+  
+  
+  # ============================================================================
+  # openhwy.dev - Developer Portal
+  # ============================================================================
+  openhwy_dev:
+    domain: "openhwy.dev"
+    
+    description: "Developer documentation and API access"
+    
+    tech_stack:
+      frontend: "Docusaurus (React)"
+      backend: "Rust Backend (API docs)"
+      hosting: "Caddy (hostbox:443)"
+    
+    pages:
+      home:
+        path: "/"
+        title: "OpenHWY Developer Portal"
+        features:
+          - "Getting started guide"
+          - "Protocol overview"
+          - "API reference"
+          - "SDKs (Rust, Go, Python, JavaScript)"
+      
+      docs:
+        path: "/docs"
+        sections:
+          - "Introduction"
+          - "OpenHWY Protocol"
+          - "Agent APIs"
+          - "Wheeler Tools"
+          - "Integration guides"
+      
+      api_reference:
+        path: "/api"
+        features:
+          - "Interactive API explorer"
+          - "Authentication guide"
+          - "Rate limits"
+          - "Webhooks"
+      
+      sdks:
+        path: "/sdks"
+        languages:
+          - "Rust (openhwy-rs)"
+          - "Go (openhwy-go)"
+          - "Python (openhwy-py)"
+          - "JavaScript (openhwy-js)"
+      
+      playground:
+        path: "/playground"
+        features:
+          - "Test API calls"
+          - "Code snippets"
+          - "Sample responses"
+    
+    pricing:
+      api_access:
+        free:
+          - "1,000 API calls/month"
+          - "Community support"
+        
+        developer:
+          price: "$50/month"
+          features:
+            - "10,000 API calls/month"
+            - "Priority support"
+            - "Webhooks"
+        
+        enterprise:
+          price: "Custom"
+          features:
+            - "Unlimited API calls"
+            - "SLA: 99.9% uptime"
+            - "Dedicated support"
+            - "Custom integrations"
+
+
+################################################################################
+#                         OPENHWY LICENSE SYSTEM
+################################################################################
+
+openhwy_license:
+  name: "OpenHWY License"
+  tagline: "Portable, Verifiable, Driver-Owned Credential"
+  
+  blockchain:
+    network: "Solana"
+    token_standard: "SPL Token (Non-Fungible)"
+    contract: "TBD (deploy on Solana mainnet)"
+  
+  structure:
+    license_id: "Unique UUID"
+    driver_name: "String"
+    issue_date: "Timestamp"
+    expiry_date: "Timestamp (3 years from issue)"
+    level: "Integer (1-5)"
+    
+    reputation:
+      total_deliveries: "Integer"
+      on_time_rate: "Float (0.0-1.0)"
+      customer_rating: "Float (0.0-5.0)"
+      safety_score: "Float (0.0-100.0)"
+    
+    certifications:
+      - "Hazmat"
+      - "Tanker"
+      - "Doubles/Triples"
+      - "Passenger"
+      - "School Bus"
+    
+    training_completed:
+      - "Array of scenario IDs from ELDA"
+    
+    metadata:
+      blockchain_address: "Solana public key"
+      ipfs_hash: "Immutable storage of full credential"
+  
+  levels:
+    level_1:
+      name: "Rookie"
+      requirements:
+        - "Complete basic training (10 scenarios)"
+        - "CDL verified"
+      
+      benefits:
+        - "Access to basic last-mile jobs"
+        - "Standard rates"
+    
+    level_2:
+      name: "Trucker"
+      requirements:
+        - "50+ completed deliveries"
+        - "95%+ on-time rate"
+        - "4.0+ customer rating"
+      
+      benefits:
+        - "Access to all standard jobs"
+        - "Priority matching"
+        - "5% rate premium"
+    
+    level_3:
+      name: "Veteran"
+      requirements:
+        - "200+ completed deliveries"
+        - "97%+ on-time rate"
+        - "4.5+ customer rating"
+        - "1+ specialty certification"
+      
+      benefits:
+        - "Access to premium jobs"
+        - "Top priority matching"
+        - "10% rate premium"
+        - "Training revenue share (ELDA)"
+    
+    level_4:
+      name: "Master"
+      requirements:
+        - "500+ completed deliveries"
+        - "98%+ on-time rate"
+        - "4.8+ customer rating"
+        - "3+ specialty certifications"
+        - "Mentor 10+ drivers"
+      
+      benefits:
+        - "Access to all jobs (including hazmat)"
+        - "VIP matching (first pick)"
+        - "15% rate premium"
+        - "Higher training revenue share"
+        - "Voice in protocol governance"
+    
+    level_5:
+      name: "Legend"
+      requirements:
+        - "1000+ completed deliveries"
+        - "99%+ on-time rate"
+        - "4.9+ customer rating"
+        - "All specialty certifications"
+        - "Mentor 50+ drivers"
+        - "Contribute significant training content"
+      
+      benefits:
+        - "Unrestricted access"
+        - "Custom rate negotiation"
+        - "20% rate premium"
+        - "Maximum training revenue share"
+        - "Protocol governance voting rights"
+        - "OpenHWY advisory board eligibility"
+  
+  verification:
+    method: "On-chain + off-chain hybrid"
+    
+    on_chain:
+      - "License ID"
+      - "Driver public key"
+      - "Level"
+      - "Issue date"
+      - "Expiry date"
+    
+    off_chain:
+      - "Personal information (name, CDL number)"
+      - "Detailed reputation metrics"
+      - "Training history"
+    
+    verification_api:
+      endpoint: "GET /api/license/verify/{license_id}"
+      response_time: "<100ms"
+      cached: true
+  
+  portability:
+    - "Works across all OpenHWY implementations"
+    - "Platform-agnostic (Uber Freight, DoorDash, etc. can integrate)"
+    - "Driver owns private key (can't be revoked without consensus)"
+    - "Reputation aggregated across all platforms"
+
+
+################################################################################
+#                         PROTOCOL & STANDARDS
+################################################################################
+
+protocol:
+  name: "OpenHWY Protocol"
+  version: "1.0.0"
+  license: "Apache 2.0 (open source)"
+  
+  specification:
+    format: "Protocol Buffers (protobuf)"
+    location: "https://github.com/openhwy/protocol"
+    
+    core_messages:
+      - "JobOffer"
+      - "JobAcceptance"
+      - "DeliveryConfirmation"
+      - "LicenseVerification"
+      - "PaymentInstruction"
+      - "DisputeResolution"
+  
+  implementations:
+    reference:
+      name: "OpenHWY Reference Implementation"
+      language: "Rust"
+      repository: "https://github.com/openhwy/openhwy-rs"
+    
+    expected_3rd_party:
+      - "Uber Freight (internal implementation)"
+      - "DoorDash Drive (SDK integration)"
+      - "C.H. Robinson (API adapter)"
+      - "70+ other logistics platforms (goal)"
+  
+  governance:
+    model: "OpenHWY Foundation (non-profit)"
+    voting_rights: "Level 4+ license holders"
+    
+    decisions:
+      - "Protocol upgrades"
+      - "New feature proposals"
+      - "Dispute resolution policies"
+      - "Rate floor enforcement"
+  
+  interoperability:
+    standards:
+      - "ISO 28000 (Supply chain security)"
+      - "FMCSA regulations (HOS, etc.)"
+      - "Blockchain: Solana"
+      - "APIs: REST, gRPC, WebSocket"
+
+
+################################################################################
+#                         DEPLOYMENT & INFRASTRUCTURE
+################################################################################
+
+deployment:
+  
+  containerization:
+    platform: "Docker"
+    
+    images:
+      - "openhwy/rust-backend:latest"
+      - "openhwy/go-auth-service:latest"
+      - "openhwy/go-user-service:latest"
+      - "openhwy/go-payment-service:latest"
+      - "openhwy/go-ollama-service:latest"
+      - "openhwy/hwy-agent:latest"
+      - "openhwy/fed-agent:latest"
+      - "openhwy/elda-agent:latest"
+      - "openhwy/eco-agent:latest"
+      - "openhwy/traka-agent:latest"
+    
+    registry: "Docker Hub (public) + private registry (hostbox)"
+  
+  orchestration:
+    tool: "systemd (simple, no K8s overhead)"
+    
+    units:
+      - "openhwy-backend.service"
+      - "openhwy-hwy.service"
+      - "openhwy-fed.service"
+      - "openhwy-elda.service"
+      - "openhwy-eco.service"
+      - "openhwy-traka.service"
+      - "openhwy-caddy.service"
+      - "openhwy-postgresql.service"
+      - "openhwy-redis.service"
+  
+  networking:
+    internal:
+      subnet: "10.0.0.0/24"
+      
+      boxes:
+        workbox: "10.0.0.1"
+        helpbox: "10.0.0.2"
+        hostbox: "10.0.0.3"
+        callbox: "10.0.0.4"
+        safebox: "(public IP, Oracle Cloud)"
+      
+      firewall:
+        default: "DENY"
+        
+        allowed:
+          - "SSH (port 22) from known IPs only"
+          - "HTTP/HTTPS (80, 443) public"
+          - "Internal services (8080-9006) within subnet only"
+    
+    external:
+      domains:
+        - "open-hwy.com → hostbox:443"
+        - "api.open-hwy.com → workbox:8080"
+        - "fedispatching.com → hostbox:443"
+        - "8teenwheelers.com → hostbox:443"
+        - "openhwy.dev → hostbox:443"
+      
+      dns:
+        provider: "Cloudflare"
+        features:
+          - "DDoS protection"
+          - "SSL/TLS (Let's Encrypt via Caddy)"
+          - "CDN (static assets)"
+  
+  monitoring:
+    metrics:
+      tool: "Prometheus + Grafana"
+      location: "callbox:9090 (Prometheus), callbox:3000 (Grafana)"
+      
+      targets:
+        - "Rust backend (workbox:8080/metrics)"
+        - "All agents (ports 9001-9005)"
+        - "PostgreSQL (node exporter)"
+        - "Redis (redis exporter)"
+        - "System stats (node exporter on all boxes)"
+      
+      retention: "30 days"
+    
+    logging:
+      tool: "Loki (Grafana)"
+      aggregation: "All boxes → callbox:3100"
+      
+      log_sources:
+        - "Systemd journal"
+        - "Application logs (/var/log/openhwy/)"
+        - "Nginx/Caddy access logs"
+      
+      retention: "14 days"
+    
+    alerting:
+      channels:
+        - "PagerDuty (critical)"
+        - "Slack (#openhwy-alerts)"
+        - "Email (admin@open-hwy.com)"
+      
+      critical_alerts:
+        - "Any box offline > 5 minutes"
+        - "Rust backend error rate > 5%"
+        - "Database connection failure"
+        - "Payment processing failure"
+        - "Agent crash loop"
+  
+  backups:
+    database:
+      frequency: "Every 6 hours"
+      retention: "30 days"
+      location: "safebox + S3 (Oracle Cloud)"
+      tool: "pg_dump + pg_basebackup"
+    
+    config:
+      frequency: "Daily"
+      retention: "90 days"
+      location: "safebox"
+      includes:
+        - "/etc/openhwy/"
+        - "/home/admin/WORKSPACE/openhwy/"
+        - "SSH keys"
+    
+    disaster_recovery:
+      rpo: "6 hours (Recovery Point Objective)"
+      rto: "2 hours (Recovery Time Objective)"
+      
+      procedure:
+        1: "Restore database from safebox"
+        2: "Deploy services from Docker images"
+        3: "Restore config from safebox"
+        4: "Update DNS to failover box"
+  
+  security:
+    ssh:
+      key_only: true
+      disable_root: true
+      fail2ban: "Enabled (10 failed attempts = 1 hour ban)"
+    
+    firewall:
+      tool: "ufw (Uncomplicated Firewall)"
+      rules:
+        - "Allow 22/tcp (SSH, whitelisted IPs)"
+        - "Allow 80,443/tcp (HTTP/HTTPS, public)"
+        - "Deny all other incoming"
+        - "Allow all outgoing"
+    
+    ssl:
+      provider: "Let's Encrypt"
+      manager: "Caddy (automatic renewal)"
+      grade: "A+ (SSL Labs)"
+    
+    secrets:
+      manager: "HashiCorp Vault"
+      location: "workbox:8200"
+      
+      stored_secrets:
+        - "Database passwords"
+        - "API keys (Stripe, Twilio, etc.)"
+        - "JWT signing key"
+        - "SSH private keys"
+        - "Blockchain private keys"
+
+
+################################################################################
+#                         REVENUE MODEL
+################################################################################
+
+revenue:
+  
+  sources:
+    
+    job_commissions:
+      description: "Commission from matched jobs (FED agent)"
+      rate: "5-10% per job"
+      estimated_revenue:
+        year_1: "$0 (pilot phase)"
+        year_2: "$500k (1000 jobs/week @ $100 avg × 10%)"
+        year_3: "$5M (10,000 jobs/week)"
+        year_5: "$50M (100,000 jobs/week)"
+    
+    tool_subscriptions:
+      description: "Wheeler Tools and premium features"
+      plans:
+        wheeler_pass: "$15/month × 10,000 users = $150k/month"
+        elda_training: "$10-50/month × 5,000 users = $150k/month"
+      
+      estimated_revenue:
+        year_1: "$50k"
+        year_2: "$1M"
+        year_3: "$5M"
+        year_5: "$20M"
+    
+    payment_processing:
+      description: "Transaction fees (Trakapay)"
+      rate: "2.9% + $0.30 per transaction"
+      
+      estimated_revenue:
+        year_1: "$0"
+        year_2: "$100k"
+        year_3: "$1M"
+        year_5: "$5M"
+    
+    enterprise_licensing:
+      description: "White-label platforms and API access"
+      pricing: "$1,000-10,000/month per implementation"
+      
+      estimated_revenue:
+        year_1: "$0"
+        year_2: "$500k (50 implementations)"
+        year_3: "$5M (70 implementations)"
+        year_5: "$20M (200+ implementations)"
+    
+    training_content:
+      description: "Revenue share from ELDA-generated training"
+      split: "50% to content creators, 30% to ELDA, 20% to OpenHWY"
+      
+      estimated_revenue:
+        year_1: "$10k"
+        year_2: "$200k"
+        year_3: "$2M"
+        year_5: "$10M"
+  
+  total_projections:
+    year_1: "$60k (break-even on operations)"
+    year_2: "$2.3M (early traction)"
+    year_3: "$18M (scaling phase)"
+    year_5: "$105M (network effects)"
+  
+  costs:
+    infrastructure:
+      year_1: "$50k (5 boxes, bandwidth)"
+      year_2: "$200k (scaling servers)"
+      year_3: "$1M (datacenter + CDN)"
+      year_5: "$5M (global infrastructure)"
+    
+    salaries:
+      year_1: "$0 (founder only)"
+      year_2: "$500k (5 employees)"
+      year_3: "$2M (15 employees)"
+      year_5: "$10M (50 employees)"
+    
+    marketing:
+      year_1: "$10k (community building)"
+      year_2: "$200k (driver acquisition)"
+      year_3: "$1M (brand awareness)"
+      year_5: "$5M (global expansion)"
+    
+    legal:
+      year_1: "$20k (incorporation, IP)"
+      year_2: "$100k (compliance, contracts)"
+      year_3: "$500k (regulatory, partnerships)"
+      year_5: "$2M (international expansion)"
+  
+  funding_strategy:
+    bootstrap:
+      phase: "Year 1-2"
+      amount: "$100k (personal + angel investors)"
+      goal: "Prove concept, build community"
+    
+    seed:
+      phase: "Year 2"
+      amount: "$2M"
+      investors: "Y Combinator, a16z, trucking-focused VCs"
+      goal: "Pilot program with autonomous fleet"
+    
+    series_a:
+      phase: "Year 3"
+      amount: "$10M"
+      goal: "Scale to 10,000 drivers, 70 implementations"
+    
+    series_b:
+      phase: "Year 4-5"
+      amount: "$50M"
+      goal: "Global expansion, 100,000+ drivers"
+
+
+################################################################################
+#                         ROADMAP
+################################################################################
+
+roadmap:
+  
+  q1_2025:
+    focus: "Foundation & Community"
+    
+    deliverables:
+      - "Incorporate OpenHWY Foundation (non-profit)"
+      - "Deploy 5-box infrastructure"
+      - "Launch 8teenwheelers.com (beta)"
+      - "Release Wheeler Tools (5 core tools)"
+      - "Begin OpenHWY License design"
+    
+    metrics:
+      - "500 users on 8teenwheelers.com"
+      - "100 Trucker Tales submitted"
+      - "10 Wheeler Tool installations"
+  
+  q2_2025:
+    focus: "Training Platform"
+    
+    deliverables:
+      - "ELDA agent operational"
+      - "First 10 training scenarios generated"
+      - "Launch ELDA training courses (paid)"
+      - "OpenHWY License v1.0 (design complete)"
+    
+    metrics:
+      - "1,000 users on 8teenwheelers.com"
+      - "50 paid training subscribers"
+      - "500 Trucker Tales submitted"
+  
+  q3_2025:
+    focus: "Marketplace Development"
+    
+    deliverables:
+      - "FED agent operational"
+      - "ECO agent operational"
+      - "Launch fedispatching.com (internal beta)"
+      - "OpenHWY License v1.0 deployed (Solana mainnet)"
+    
+    metrics:
+      - "5,000 users registered"
+      - "100 OpenHWY Licenses issued"
+      - "10 beta testers on fedispatching.com"
+  
+  q4_2025:
+    focus: "Pilot Preparation"
+    
+    deliverables:
+      - "All 5 agents operational"
+      - "Rust backend v1.0"
+      - "Flutter app (mobile + web) v1.0"
+      - "Approach autonomous fleet partners (Waymo, Tesla)"
+    
+    metrics:
+      - "10,000 users"
+      - "1,000 OpenHWY Licenses issued"
+      - "1 autonomous fleet partnership signed"
+  
+  q1_2026:
+    focus: "Marketing & Growth"
+    
+    deliverables:
+      - "Launch open-hwy.com (public)"
+      - "Launch openhwy.dev (developer portal)"
+      - "Release OpenHWY Protocol v1.0 (open source)"
+      - "Begin content marketing (YouTube, podcasts)"
+    
+    metrics:
+      - "20,000 users"
+      - "5,000 OpenHWY Licenses"
+      - "50 Wheeler Tool subscribers"
+  
+  q2_q4_2026:
+    focus: "Community Scaling"
+    
+    deliverables:
+      - "Expand Wheeler Tools (15 total tools)"
+      - "ELDA v2.0 (VR/AR scenarios)"
+      - "Partnerships with trucking schools"
+      - "OpenHWY conference (first annual)"
+    
+    metrics:
+      - "50,000 users"
+      - "10,000 OpenHWY Licenses"
+      - "500 training course subscribers"
+  
+  q1_q2_2027:
+    focus: "Pilot Launch"
+    
+    deliverables:
+      - "Launch fedispatching.com (public beta)"
+      - "First autonomous truck pilot (50 drivers)"
+      - "Phoenix → LA route operational"
+      - "Payment processing (Trakapay) live"
+    
+    metrics:
+      - "100 active drivers on pilot"
+      - "1,000 deliveries completed"
+      - "$50k in job commissions"
+  
+  q3_q4_2027:
+    focus: "Pilot Expansion"
+    
+    deliverables:
+      - "Expand to 3 routes (Phoenix, LA, SF)"
+      - "500 drivers on platform"
+      - "First 3rd-party implementation (partner platform)"
+    
+    metrics:
+      - "10,000 deliveries completed"
+      - "$500k in revenue"
+      - "99% on-time delivery rate"
+  
+  2028:
+    focus: "Scale & Partnerships"
+    
+    deliverables:
+      - "fedispatching.com (full public launch)"
+      - "10 autonomous fleet partnerships"
+      - "10 routes operational"
+      - "5,000 drivers on platform"
+    
+    metrics:
+      - "100,000 deliveries completed"
+      - "$5M in revenue"
+      - "10 3rd-party implementations"
+  
+  2029:
+    focus: "Network Effects"
+    
+    deliverables:
+      - "50 routes operational"
+      - "50,000 drivers on platform"
+      - "70+ 3rd-party implementations"
+      - "Uber Freight integration"
+    
+    metrics:
+      - "1M deliveries completed"
+      - "$50M in revenue"
+      - "Level 4+ drivers: 10,000"
+  
+  2030_and_beyond:
+    focus: "Standard Infrastructure"
+    
+    deliverables:
+      - "OpenHWY = THE protocol for last-mile"
+      - "200+ implementations globally"
+      - "500,000+ drivers protected"
+    
+    metrics:
+      - "10M+ deliveries per year"
+      - "$500M+ in ecosystem revenue"
+      - "3.5M drivers transitioned (goal)"
+
+
+################################################################################
+#                         LEGAL & COMPLIANCE
+################################################################################
+
+legal:
+  
+  entity:
+    name: "OpenHWY Foundation"
+    type: "501(c)(3) Non-Profit"
+    jurisdiction: "Delaware, USA"
+    
+    board:
+      - "Founder (you)"
+      - "2 industry experts (TBD)"
+      - "2 driver representatives (elected)"
+    
+    mission:
+      - "Develop and maintain OpenHWY Protocol"
+      - "Protect driver interests"
+      - "Ensure protocol remains open and free"
+  
+  subsidiary:
+    name: "OpenHWY Labs, Inc."
+    type: "Delaware C-Corp"
+    ownership: "Owned by OpenHWY Foundation"
+    
+    purpose:
+      - "Operate fedispatching.com"
+      - "Provide commercial services"
+      - "Generate revenue to fund foundation"
+  
+  compliance:
+    fmcsa:
+      - "Broker authority (MC number)"
+      - "Surety bond ($75,000)"
+      - "FMCSA registration"
+    
+    insurance:
+      general_liability: "$2M policy"
+      cyber_liability: "$1M policy"
+      errors_omissions: "$1M policy"
+    
+    data_protection:
+      gdpr: "Compliant (EU drivers)"
+      ccpa: "Compliant (CA drivers)"
+      
+      measures:
+        - "Encryption at rest and in transit"
+        - "Right to be forgotten (automated)"
+        - "Data portability (API exports)"
+        - "Privacy policy (transparent)"
+    
+    financial:
+      payments: "PCI-DSS Level 1 compliant"
+      taxes: "CPA firm (quarterly filing)"
+      payroll: "Gusto (automated)"
+
+
+################################################################################
+#                         METRICS & KPIs
+################################################################################
+
+kpis:
+  
+  platform_health:
+    - "System uptime (target: 99.9%)"
+    - "API response time p95 (target: <500ms)"
+    - "WebSocket connection stability (target: >95%)"
+    - "Agent crash rate (target: <1%)"
+  
+  user_growth:
+    - "Total registered users"
+    - "Active drivers (last 30 days)"
+    - "OpenHWY Licenses issued"
+    - "Level 3+ licenses (target: 20% of total)"
+  
+  marketplace:
+    - "Jobs posted per day"
+    - "Jobs matched per day"
+    - "Match quality score (target: >90%)"
+    - "Job completion rate (target: >95%)"
+    - "Average job value"
+  
+  financial:
+    - "Monthly Recurring Revenue (MRR)"
+    - "Commission revenue"
+    - "Tool subscription revenue"
+    - "Customer Acquisition Cost (CAC)"
+    - "Lifetime Value (LTV)"
+    - "LTV/CAC ratio (target: >3)"
+  
+  driver_satisfaction:
+    - "Average driver rating (target: 4.5+)"
+    - "Driver retention rate (target: >80%)"
+    - "Earnings per driver per month"
+    - "On-time payment rate (target: 100%)"
+  
+  training:
+    - "Tales submitted per week"
+    - "Scenarios generated per week"
+    - "Training completion rate (target: >70%)"
+    - "Content creator earnings"
+  
+  ecosystem:
+    - "3rd-party implementations (target: 70+)"
+    - "API usage (calls per day)"
+    - "SDK downloads"
+    - "GitHub stars (openhwy/protocol)"
+
+
+################################################################################
+#                         CONTACTS & RESOURCES
+################################################################################
+
+resources:
+  
+  github:
+    organization: "https://github.com/openhwy"
+    
+    repositories:
+      - "openhwy/protocol (Protocol specification)"
+      - "openhwy/openhwy-rs (Rust reference implementation)"
+      - "openhwy/backend (Rust backend)"
+      - "openhwy/dashboard (Flutter app)"
+      - "openhwy/moon-env (Agent runtime)"
+      - "openhwy/docs (Documentation)"
+  
+  communication:
+    slack: "openhwy.slack.com"
+    discord: "discord.gg/openhwy"
+    twitter: "@openhwy"
+    email: "contact@open-hwy.com"
+  
+  support:
+    drivers: "support@open-hwy.com"
+    developers: "dev@open-hwy.com"
+    partnerships: "partners@open-hwy.com"
+
+
+################################################################################
+#                         END OF MANIFEST
+################################################################################
+
+# This manifest is a living document and will evolve as OpenHWY grows.
+# Version: 1.0.0
+# Last updated: 2024-11-05
+# Maintained by: OpenHWY Foundation

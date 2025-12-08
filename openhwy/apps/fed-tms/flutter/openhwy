@@ -1,0 +1,89 @@
+#!/bin/bash
+# OpenHWY TTY Launcher
+# Quick access to all tools from TTY/ranger
+
+TOOL=$1
+
+case $TOOL in
+    marketeer|m)
+        echo "🚛 Launching Marketeer Dashboard..."
+        ~/bin/marketeer-dashboard ~/marketeer-workbox.toml
+        ;;
+    
+    agent|a)
+        echo "🤖 Launching Agent Builder..."
+        ~/bin/agent-builder
+        ;;
+    
+    moon)
+        if [ -z "$2" ]; then
+            echo "Usage: openhwy moon <config> [script]"
+            echo "Example: openhwy moon codriver.toml codriver.lua"
+            exit 1
+        fi
+        echo "🌙 Launching Moon Environment..."
+        ~/bin/moon-env "$2" "$3"
+        ;;
+    
+    ssh)
+        if [ -z "$2" ]; then
+            echo "Available systems:"
+            echo "  helpbox"
+            echo "  hostbox"
+            echo "  callbox"
+            echo "  safebox"
+            exit 1
+        fi
+        ssh admin@$2
+        ;;
+    
+    status)
+        echo "🚛 OpenHWY Infrastructure Status"
+        echo ""
+        for box in workbox helpbox hostbox callbox safebox; do
+            if [ "$box" = "workbox" ]; then
+                echo "[$box] (local)"
+                echo "  CPU: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}')%"
+                echo "  Agents: $(ps aux | grep -c moon-env)"
+            else
+                if ssh -o ConnectTimeout=3 admin@$box "echo ok" &>/dev/null; then
+                    echo "[$box] 🟢 online"
+                    ssh admin@$box "echo '  Agents: \$(ps aux | grep -c moon-env)'"
+                else
+                    echo "[$box] 🔴 offline"
+                fi
+            fi
+            echo ""
+        done
+        ;;
+    
+    help|*)
+        cat << 'HELP'
+🚛 OpenHWY Terminal Tools
+
+USAGE:
+  openhwy <command> [args]
+
+COMMANDS:
+  marketeer, m          Launch Marketeer Dashboard
+  agent, a              Launch Agent Builder
+  moon <cfg> [script]   Run agent in Moon Environment
+  ssh <box>             SSH to system (helpbox/hostbox/callbox/safebox)
+  status                Check all systems status
+  help                  Show this help
+
+EXAMPLES:
+  openhwy m                                 # Marketeer Dashboard
+  openhwy agent                             # Create new agent
+  openhwy moon codriver.toml codriver.lua   # Run agent
+  openhwy ssh helpbox                       # SSH to helpbox
+  openhwy status                            # Check all systems
+
+RANGER INTEGRATION:
+  In ranger, press 'r' and type:
+    :shell openhwy m
+    :shell openhwy agent
+    :shell openhwy status
+HELP
+        ;;
+esac

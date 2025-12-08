@@ -1,0 +1,1178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Invoicing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 32px;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    .tab-count {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    /* STATS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-trend {
+        font-size: 12px;
+        color: #10b981;
+    }
+
+    /* FILTERS */
+    .filters-bar {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .filter-select {
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* INVOICE TABLE */
+    .table-container {
+        background: #16213e;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    th {
+        padding: 16px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    td {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tbody tr {
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    tbody tr:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .invoice-number {
+        font-weight: 600;
+        color: #d946ef;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-draft {
+        background: rgba(100, 116, 139, 0.2);
+        color: #64748b;
+    }
+
+    .badge-sent {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .badge-overdue {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .badge-paid {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .badge-partial {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .amount {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        background: rgba(217, 70, 239, 0.1);
+        color: #d946ef;
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    /* INVOICE MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 90%;
+        max-width: 900px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 28px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .modal-body {
+        padding: 32px;
+    }
+
+    .form-section {
+        margin-bottom: 32px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* LINE ITEMS */
+    .line-items {
+        margin-top: 24px;
+    }
+
+    .line-item {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+        gap: 12px;
+        margin-bottom: 12px;
+        align-items: end;
+    }
+
+    .add-line-btn {
+        margin-top: 12px;
+        padding: 10px 16px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 8px;
+        color: #d946ef;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .add-line-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    .remove-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 6px;
+        color: #ef4444;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* INVOICE TOTALS */
+    .invoice-totals {
+        background: rgba(217, 70, 239, 0.05);
+        border: 1px solid rgba(217, 70, 239, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 24px;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 14px;
+    }
+
+    .total-row.grand-total {
+        border-top: 2px solid rgba(255, 255, 255, 0.1);
+        margin-top: 8px;
+        padding-top: 16px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .modal-footer {
+        padding: 24px 32px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .footer-left {
+        display: flex;
+        gap: 12px;
+    }
+
+    .footer-right {
+        display: flex;
+        gap: 12px;
+    }
+
+    /* INVOICE TYPE CARDS */
+    .invoice-type-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .type-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .type-card:hover {
+        border-color: #d946ef;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.3);
+    }
+
+    .type-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+
+    .type-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .type-description {
+        font-size: 13px;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item active">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title">Invoices</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📥 Import</button>
+                    <button class="btn btn-secondary">📤 Export</button>
+                    <button class="btn btn-primary" onclick="showNewInvoiceModal()">➕ Create Invoice</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">All Invoices <span class="tab-count">47</span></div>
+                <div class="tab">To Brokers <span class="tab-count">28</span></div>
+                <div class="tab">To Shippers <span class="tab-count">12</span></div>
+                <div class="tab">From Drivers <span class="tab-count">7</span></div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Outstanding</div>
+                    <div class="stat-value" style="color: #f59e0b;">$47,250</div>
+                    <div class="stat-trend">12 unpaid invoices</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Paid This Month</div>
+                    <div class="stat-value" style="color: #10b981;">$89,430</div>
+                    <div class="stat-trend">+18% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Overdue Amount</div>
+                    <div class="stat-value" style="color: #ef4444;">$8,900</div>
+                    <div class="stat-trend">3 overdue invoices</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Days to Pay</div>
+                    <div class="stat-value">28</div>
+                    <div class="stat-trend">Industry avg: 32 days</div>
+                </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search by invoice #, customer, load...">
+                </div>
+                <select class="filter-select">
+                    <option>All Statuses</option>
+                    <option>Draft</option>
+                    <option>Sent</option>
+                    <option>Overdue</option>
+                    <option>Paid</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Types</option>
+                    <option>To Brokers</option>
+                    <option>To Shippers</option>
+                    <option>From Drivers</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Dates</option>
+                    <option>This Week</option>
+                    <option>This Month</option>
+                    <option>Last 30 Days</option>
+                </select>
+            </div>
+
+            <!-- INVOICE TABLE -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Type</th>
+                            <th>Customer/Driver</th>
+                            <th>Load #</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Broker Invoice 1 -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1047</span></td>
+                            <td>To Broker</td>
+                            <td>FreightLink Logistics</td>
+                            <td>LD-2024-4527</td>
+                            <td>Dec 15, 2024</td>
+                            <td>Jan 14, 2025</td>
+                            <td><span class="amount">$2,450.00</span></td>
+                            <td><span class="badge badge-sent">Sent</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">📧 Send</button>
+                                    <button class="action-btn">💰 Record Payment</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Shipper Invoice -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1048</span></td>
+                            <td>To Shipper</td>
+                            <td>AutoParts Distribution Inc</td>
+                            <td>LD-2024-4529</td>
+                            <td>Dec 16, 2024</td>
+                            <td>Jan 15, 2025</td>
+                            <td><span class="amount">$4,400.00</span></td>
+                            <td><span class="badge badge-sent">Sent</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">📧 Send</button>
+                                    <button class="action-btn">💰 Record Payment</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Driver Dispatch Invoice -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1049</span></td>
+                            <td>From Driver</td>
+                            <td>John Smith (Dispatch Fee)</td>
+                            <td>LD-2024-4527</td>
+                            <td>Dec 15, 2024</td>
+                            <td>Dec 22, 2024</td>
+                            <td><span class="amount">$245.00</span></td>
+                            <td><span class="badge badge-paid">Paid</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">📥 Download</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Overdue Broker Invoice -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1025</span></td>
+                            <td>To Broker</td>
+                            <td>National Freight Solutions</td>
+                            <td>LD-2024-4501</td>
+                            <td>Nov 15, 2024</td>
+                            <td>Dec 15, 2024</td>
+                            <td><span class="amount">$3,200.00</span></td>
+                            <td><span class="badge badge-overdue">Overdue</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">📧 Send Reminder</button>
+                                    <button class="action-btn">💰 Record Payment</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Draft Invoice -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1050</span></td>
+                            <td>To Broker</td>
+                            <td>TransAmerica Brokerage</td>
+                            <td>LD-2024-4530</td>
+                            <td>Dec 17, 2024</td>
+                            <td>Jan 16, 2025</td>
+                            <td><span class="amount">$2,120.00</span></td>
+                            <td><span class="badge badge-draft">Draft</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">✏️ Edit</button>
+                                    <button class="action-btn">📧 Send</button>
+                                    <button class="action-btn">🗑️ Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Partial Payment -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1046</span></td>
+                            <td>To Shipper</td>
+                            <td>TechParts Manufacturing</td>
+                            <td>LD-2024-4522</td>
+                            <td>Dec 10, 2024</td>
+                            <td>Jan 9, 2025</td>
+                            <td><span class="amount">$3,850.00</span></td>
+                            <td><span class="badge badge-partial">Partial</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">💰 Record Payment</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Driver Dispatch Invoice 2 -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1051</span></td>
+                            <td>From Driver</td>
+                            <td>Maria Garcia (Dispatch Fee)</td>
+                            <td>LD-2024-4531</td>
+                            <td>Dec 17, 2024</td>
+                            <td>Dec 24, 2024</td>
+                            <td><span class="amount">$265.00</span></td>
+                            <td><span class="badge badge-sent">Sent</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">💰 Record Payment</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Paid Broker Invoice -->
+                        <tr>
+                            <td><span class="invoice-number">INV-2024-1044</span></td>
+                            <td>To Broker</td>
+                            <td>Midwest Logistics Group</td>
+                            <td>LD-2024-4518</td>
+                            <td>Dec 5, 2024</td>
+                            <td>Jan 4, 2025</td>
+                            <td><span class="amount">$2,890.00</span></td>
+                            <td><span class="badge badge-paid">Paid</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                    <button class="action-btn">📥 Download</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CREATE INVOICE MODAL -->
+<div class="modal" id="newInvoiceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Create New Invoice</div>
+            <button class="modal-close" onclick="hideModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <!-- INVOICE TYPE SELECTION -->
+            <div class="section-title">📋 Select Invoice Type</div>
+            <div class="invoice-type-grid">
+                <div class="type-card" onclick="selectInvoiceType('broker')">
+                    <div class="type-icon">🏢</div>
+                    <div class="type-title">Invoice to Broker</div>
+                    <div class="type-description">Bill broker/customer for completed loads</div>
+                </div>
+                <div class="type-card" onclick="selectInvoiceType('shipper')">
+                    <div class="type-icon">🏭</div>
+                    <div class="type-title">Invoice to Shipper</div>
+                    <div class="type-description">Bill shipper directly for services</div>
+                </div>
+                <div class="type-card" onclick="selectInvoiceType('driver')">
+                    <div class="type-icon">👤</div>
+                    <div class="type-title">Driver Dispatch Fee</div>
+                    <div class="type-description">Invoice driver for dispatch services (10%)</div>
+                </div>
+            </div>
+
+            <!-- INVOICE DETAILS FORM -->
+            <div class="form-section">
+                <div class="section-title">📄 Invoice Information</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Invoice Number</label>
+                        <input type="text" class="form-input" value="INV-2024-1052" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Invoice Date</label>
+                        <input type="date" class="form-input" value="2024-12-18">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bill To</label>
+                        <select class="form-select">
+                            <option>Select Customer/Driver...</option>
+                            <option>FreightLink Logistics</option>
+                            <option>National Freight Solutions</option>
+                            <option>AutoParts Distribution Inc</option>
+                            <option>John Smith (Driver)</option>
+                            <option>Maria Garcia (Driver)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Terms</label>
+                        <select class="form-select">
+                            <option>Net 30</option>
+                            <option>Net 15</option>
+                            <option>Net 45</option>
+                            <option>Due on Receipt</option>
+                            <option>Quick Pay (2% discount)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Related Load (Optional)</label>
+                        <select class="form-select">
+                            <option>Select Load...</option>
+                            <option>LD-2024-4527 - Houston to Austin</option>
+                            <option>LD-2024-4528 - Dallas to Springfield</option>
+                            <option>LD-2024-4529 - Raytown to Charlotte</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" class="form-input" value="2025-01-17">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Notes (Optional)</label>
+                        <textarea class="form-textarea" placeholder="Payment instructions, special terms, etc."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LINE ITEMS -->
+            <div class="form-section">
+                <div class="section-title">📝 Line Items</div>
+                <div class="line-items">
+                    <div class="line-item">
+                        <div>
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-input" placeholder="e.g., Line haul - Houston to Austin">
+                        </div>
+                        <div>
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-input" value="1">
+                        </div>
+                        <div>
+                            <label class="form-label">Rate</label>
+                            <input type="number" class="form-input" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" value="0.00" readonly>
+                        </div>
+                        <div>
+                            <label class="form-label" style="visibility: hidden;">X</label>
+                            <button class="remove-btn">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="line-item">
+                        <div>
+                            <input type="text" class="form-input" placeholder="e.g., Fuel surcharge">
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" value="1">
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" placeholder="0.00">
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" value="0.00" readonly>
+                        </div>
+                        <div>
+                            <button class="remove-btn">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="line-item">
+                        <div>
+                            <input type="text" class="form-input" placeholder="e.g., Detention">
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" value="1">
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" placeholder="0.00">
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" value="0.00" readonly>
+                        </div>
+                        <div>
+                            <button class="remove-btn">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-line-btn">➕ Add Line Item</button>
+            </div>
+
+            <!-- TOTALS -->
+            <div class="invoice-totals">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Tax (0%):</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Discount:</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>Total Amount:</span>
+                    <span style="color: #10b981;">$0.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="footer-left">
+                <button class="btn btn-secondary" onclick="hideModal()">Cancel</button>
+            </div>
+            <div class="footer-right">
+                <button class="btn btn-secondary">💾 Save as Draft</button>
+                <button class="btn btn-secondary">👁️ Preview</button>
+                <button class="btn btn-primary">✅ Create & Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showNewInvoiceModal() {
+        document.getElementById('newInvoiceModal').classList.add('show');
+    }
+
+    function hideModal() {
+        document.getElementById('newInvoiceModal').classList.remove('show');
+    }
+
+    function selectInvoiceType(type) {
+        console.log('Invoice type selected:', type);
+        // Here you would customize the form based on type
+    }
+
+    document.getElementById('newInvoiceModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideModal();
+        }
+    });
+</script>
+</body>
+</html>

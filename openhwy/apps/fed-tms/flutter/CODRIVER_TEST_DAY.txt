@@ -1,0 +1,409 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         CODRIVER TEST DAY                                    ║
+║                      Let's make sure this shit works                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+You spent a year learning. A week building. Now we test.
+
+═══════════════════════════════════════════════════════════════════════════════
+                         PRE-FLIGHT (5 MINUTES)
+═══════════════════════════════════════════════════════════════════════════════
+
+SSH into your main box (where codriver lives):
+
+cd ~/WORKSPACE/.ranger
+
+# 1. Verify directory structure
+ls -la ~/.codriver.d
+ls -la ~/.codriver.d/var/runtime/pids
+
+# 2. Clean stale PIDs (if any old processes died)
+find ~/.codriver.d/var/runtime/pids -name "*.pid" | while read pidfile; do
+    pid=$(cat "$pidfile" 2>/dev/null)
+    if ! ps -p $pid &> /dev/null; then
+        rm "$pidfile"
+        echo "Removed stale PID: $(basename $pidfile)"
+    fi
+done
+
+# 3. Check ports (make sure nothing is blocking)
+ss -tuln | grep -E ':(8000|8080|8081|8082|8083|8084|9999|11434)'
+
+# If anything is running, kill it:
+# sudo lsof -ti:PORT | xargs kill -9
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 1: START SURREALDB
+═══════════════════════════════════════════════════════════════════════════════
+
+# Start SurrealDB
+surreal start --log trace --user root --pass root file:~/.codriver.d/var/data/surrealdb &
+
+# Wait 3 seconds
+sleep 3
+
+# Test connection
+curl http://localhost:8000/health
+
+Expected: {"status":"ok"} or similar
+
+If it works: ✅ Database is up
+If it fails: ❌ Check logs
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 2: START COORDINATOR
+═══════════════════════════════════════════════════════════════════════════════
+
+cd ~/WORKSPACE/.ranger/src/coordinator
+
+# Make sure it's built
+cargo build --release
+
+# Start coordinator
+./target/release/coordinator &
+
+# Save PID
+echo $! > ~/.codriver.d/var/runtime/pids/coordinator.pid
+
+# Wait 3 seconds
+sleep 3
+
+# Test coordinator health
+curl http://localhost:9999/health
+
+Expected: {"status":"healthy"} or similar
+
+If it works: ✅ Coordinator is up
+If it fails: ❌ Check logs (check stderr or log file)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 3: START MICROSERVICES
+═══════════════════════════════════════════════════════════════════════════════
+
+# Auth Service
+cd ~/.codriver.d/srv/auth.todo
+go run cmd/server/main.go &
+echo $! > ~/.codriver.d/var/runtime/pids/auth.pid
+sleep 2
+curl http://localhost:8081/health
+
+# Email Service  
+cd ~/.codriver.d/srv/email.todo
+go run cmd/server/main.go &
+echo $! > ~/.codriver.d/var/runtime/pids/email.pid
+sleep 2
+curl http://localhost:8082/health
+
+# Payment Service
+cd ~/.codriver.d/srv/payment.todo
+go run cmd/server/main.go &
+echo $! > ~/.codriver.d/var/runtime/pids/payment.pid
+sleep 2
+curl http://localhost:8083/health
+
+# User Service
+cd ~/.codriver.d/srv/user.todo
+go run cmd/server/main.go &
+echo $! > ~/.codriver.d/var/runtime/pids/user.pid
+sleep 2
+curl http://localhost:8084/health
+
+If all 4 work: ✅ Microservices are up
+If any fail: ❌ Check which one failed, check logs
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 4: START API GATEWAY
+═══════════════════════════════════════════════════════════════════════════════
+
+cd ~/WORKSPACE/.ranger/src/api-gateway
+
+# Build if needed
+cargo build --release
+
+# Start gateway
+./target/release/api-gateway &
+echo $! > ~/.codriver.d/var/runtime/pids/api-gateway.pid
+
+# Wait 2 seconds
+sleep 2
+
+# Test gateway
+curl http://localhost:8080/health
+
+Expected: Gateway responds, maybe routes to services
+
+If it works: ✅ API Gateway is up
+If it fails: ❌ Check gateway logs
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 5: START INDIVIDUAL AGENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+Start ONE agent at a time. Test each one.
+
+# Web Search Agent
+cd ~/WORKSPACE/.ranger/src/ai-wheeler/web-searcher
+cargo build --release
+./target/release/web-searcher &
+echo $! > ~/.codriver.d/var/runtime/pids/web-search.pid
+sleep 2
+curl http://localhost:PORT/health  # (what port does it use?)
+
+# Data Collector
+cd ~/.codriver.d/srv/agent.todo/core/ai-tools/data-collector
+cargo build --release
+./target/release/data-collector &
+echo $! > ~/.codriver.d/var/runtime/pids/data-collector.pid
+
+# Lead Scraper
+cd ~/.codriver.d/srv/agent.todo/core/ai-tools/lead-scraper
+cargo build --release
+./target/release/lead-scraper &
+echo $! > ~/.codriver.d/var/runtime/pids/lead-scraper.pid
+
+# Repeat for each agent you want to test
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 6: END-TO-END COMMAND
+═══════════════════════════════════════════════════════════════════════════════
+
+Now send a REAL command through the system.
+
+# Test 1: Simple health check through coordinator
+curl -X POST http://localhost:9999/command \
+  -H "Content-Type: application/json" \
+  -d '{
+    "command": "status",
+    "user_id": "test_user"
+  }'
+
+Expected: Coordinator responds with system status
+
+# Test 2: Send command to agent
+curl -X POST http://localhost:9999/command \
+  -H "Content-Type: application/json" \
+  -d '{
+    "command": "search web for rust async patterns",
+    "user_id": "test_user"
+  }'
+
+Expected: Coordinator routes to web-search agent, returns results
+
+# Test 3: Test through API Gateway
+curl -X POST http://localhost:8080/api/command \
+  -H "Content-Type: application/json" \
+  -d '{
+    "command": "analyze lead data",
+    "user_id": "test_user"
+  }'
+
+Expected: Gateway → Coordinator → Agent → Response
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 7: CHECK LOGS
+═══════════════════════════════════════════════════════════════════════════════
+
+# Check coordinator logs
+tail -f ~/.codriver.d/var/logs/coordinator.log
+
+# Check agent logs
+ls ~/.codriver.d/var/logs/*.log
+
+# Check for errors
+grep -i error ~/.codriver.d/var/logs/*.log
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TEST 8: VERIFY DATABASE
+═══════════════════════════════════════════════════════════════════════════════
+
+# Connect to SurrealDB
+surreal sql --conn http://localhost:8000 --user root --pass root --ns test --db test
+
+# Check if tables exist
+INFO FOR DB;
+
+# Check if data was written
+SELECT * FROM commands LIMIT 10;
+SELECT * FROM agents LIMIT 10;
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHAT TO WATCH FOR
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ GOOD SIGNS:
+  - All health checks return 200 OK
+  - PIDs exist in ~/.codriver.d/var/runtime/pids/
+  - Logs show "started successfully" or similar
+  - Commands get routed correctly
+  - Agents respond within 1-2 seconds
+  - Database writes data
+
+❌ BAD SIGNS:
+  - Port already in use (kill old processes)
+  - Connection refused (service didn't start)
+  - Timeout (service crashed)
+  - "Address already in use" (port conflict)
+  - "No such file or directory" (path issue)
+  - "Permission denied" (file permissions)
+
+🤔 WEIRD SIGNS:
+  - Service starts but doesn't respond (check firewall)
+  - Logs show errors but service "works" (fix the errors)
+  - Slow responses (>5 seconds) (performance issue)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TESTING SCRIPT (RUN THIS)
+═══════════════════════════════════════════════════════════════════════════════
+
+Save this as test-codriver.sh and run it:
+
+#!/bin/bash
+set -e
+
+echo "🚛 CODRIVER TEST DAY"
+echo ""
+
+# 1. Clean slate
+echo "1. Cleaning stale PIDs..."
+find ~/.codriver.d/var/runtime/pids -name "*.pid" 2>/dev/null | while read pidfile; do
+    pid=$(cat "$pidfile" 2>/dev/null)
+    if ! ps -p $pid &> /dev/null 2>&1; then
+        rm "$pidfile"
+        echo "  Removed stale: $(basename $pidfile)"
+    fi
+done
+
+# 2. Start SurrealDB
+echo ""
+echo "2. Starting SurrealDB..."
+surreal start --log trace --user root --pass root \
+  file:~/.codriver.d/var/data/surrealdb > ~/.codriver.d/var/logs/surrealdb.log 2>&1 &
+sleep 3
+if curl -s http://localhost:8000/health > /dev/null; then
+    echo "  ✅ SurrealDB is up"
+else
+    echo "  ❌ SurrealDB failed"
+    exit 1
+fi
+
+# 3. Start Coordinator
+echo ""
+echo "3. Starting Coordinator..."
+cd ~/WORKSPACE/.ranger/src/coordinator
+./target/release/coordinator > ~/.codriver.d/var/logs/coordinator.log 2>&1 &
+echo $! > ~/.codriver.d/var/runtime/pids/coordinator.pid
+sleep 3
+if curl -s http://localhost:9999/health > /dev/null; then
+    echo "  ✅ Coordinator is up"
+else
+    echo "  ❌ Coordinator failed"
+    exit 1
+fi
+
+# 4. Start Microservices
+echo ""
+echo "4. Starting Microservices..."
+
+# Auth
+cd ~/.codriver.d/srv/auth.todo
+go run cmd/server/main.go > ~/.codriver.d/var/logs/auth.log 2>&1 &
+echo $! > ~/.codriver.d/var/runtime/pids/auth.pid
+sleep 2
+if curl -s http://localhost:8081/health > /dev/null; then
+    echo "  ✅ Auth service is up"
+else
+    echo "  ⚠️  Auth service failed (continuing...)"
+fi
+
+# Email
+cd ~/.codriver.d/srv/email.todo
+go run cmd/server/main.go > ~/.codriver.d/var/logs/email.log 2>&1 &
+echo $! > ~/.codriver.d/var/runtime/pids/email.pid
+sleep 2
+if curl -s http://localhost:8082/health > /dev/null; then
+    echo "  ✅ Email service is up"
+else
+    echo "  ⚠️  Email service failed (continuing...)"
+fi
+
+# 5. Test end-to-end
+echo ""
+echo "5. Testing end-to-end command..."
+response=$(curl -s -X POST http://localhost:9999/command \
+  -H "Content-Type: application/json" \
+  -d '{"command":"status","user_id":"test"}')
+
+if [ ! -z "$response" ]; then
+    echo "  ✅ Command succeeded"
+    echo "  Response: $response"
+else
+    echo "  ❌ Command failed"
+fi
+
+echo ""
+echo "🚛 Test complete! Check logs in ~/.codriver.d/var/logs/"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         STOP SCRIPT (WHEN DONE TESTING)
+═══════════════════════════════════════════════════════════════════════════════
+
+Save this as stop-codriver.sh:
+
+#!/bin/bash
+
+echo "🛑 Stopping Codriver..."
+
+# Kill all PIDs
+find ~/.codriver.d/var/runtime/pids -name "*.pid" 2>/dev/null | while read pidfile; do
+    pid=$(cat "$pidfile" 2>/dev/null)
+    name=$(basename "$pidfile" .pid)
+    if ps -p $pid &> /dev/null; then
+        kill $pid
+        echo "  Stopped: $name (PID $pid)"
+    fi
+    rm "$pidfile"
+done
+
+# Kill SurrealDB (might not have PID file)
+pkill -f "surreal start" 2>/dev/null && echo "  Stopped: SurrealDB"
+
+echo "🛑 All services stopped"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         YOUR TESTING PLAN
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Run test-codriver.sh
+2. Watch for ✅ or ❌
+3. If something fails:
+   - Check the log: tail ~/.codriver.d/var/logs/SERVICE.log
+   - Fix the issue
+   - Run stop-codriver.sh
+   - Run test-codriver.sh again
+4. Once everything is ✅:
+   - Test individual agents
+   - Send real commands
+   - Verify database
+5. Document what works, what doesn't
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Ready to test?
+
+Run:
+  chmod +x test-codriver.sh stop-codriver.sh
+  ./test-codriver.sh
+
+🚛 LET'S GO.

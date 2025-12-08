@@ -1,0 +1,576 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         WORKSPACE META-STRUCTURE                             ║
+║              How Agents Understand This Environment                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+                         CORE PHILOSOPHY
+═══════════════════════════════════════════════════════════════════════════════
+
+This is not a codebase. This is an OPERATING SYSTEM.
+
+Key concepts:
+  1. ENVIRONMENTS are nested (system → sub-env → component → element)
+  2. ROUTING determines what loads (doors open, new environments activate)
+  3. AGENTS need KEYS from COORDINATORS (permission model)
+  4. WHEELERS are self-contained (independent environments)
+  5. Everything connects via LINKS, not copies (pointers, routes)
+
+The goal: Build systems that ROUTE users/data/execution through environments.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         ENVIRONMENT HIERARCHY
+═══════════════════════════════════════════════════════════════════════════════
+
+Level 0: SYSTEM (the physical/virtual machine)
+  ├─→ The box (workbox, helpbox, etc.)
+  ├─→ Operating system (Debian, Alpine in microVM)
+  ├─→ Kernel, filesystem, network
+  └─→ Top-level environment: "This machine"
+
+Level 1: RUNTIME ENVIRONMENT (the execution context)
+  ├─→ Firecracker microVM
+  ├─→ Docker container
+  ├─→ Nomad job
+  ├─→ Systemd unit
+  └─→ Defines: CPU, memory, network, storage isolation
+
+Level 2: APPLICATION ENVIRONMENT (the framework/runtime)
+  ├─→ Node.js (for React/Next.js)
+  ├─→ Rust binary (for agents)
+  ├─→ Python interpreter (for ELDA)
+  ├─→ Go runtime (for services)
+  └─→ Defines: Language runtime, dependencies, modules
+
+Level 3: COMPONENT ENVIRONMENT (the logical boundary)
+  ├─→ React component
+  ├─→ Rust module
+  ├─→ Wheeler agent
+  ├─→ Database schema
+  └─→ Defines: Isolated functionality with clear interface
+
+Level 4: ELEMENT (the atomic unit)
+  ├─→ Function
+  ├─→ Variable
+  ├─→ File
+  ├─→ Data structure
+  └─→ Defines: Smallest executable/data unit
+
+ROUTING happens between environments:
+  - User clicks button (Level 4) → Route to new page (Level 3) → Load new React environment (Level 2)
+  - Agent requests data (Level 3) → Route to database (Level 1) → Execute query (Level 4)
+  - Wheeler spawns (Level 2) → Allocate microVM (Level 1) → Boot system (Level 0)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         COORDINATOR MODEL
+═══════════════════════════════════════════════════════════════════════════════
+
+COORDINATOR = The meta-utility that holds keys
+
+Purpose:
+  - Grant permissions (keys) to agents
+  - Manage environment lifecycle (create/destroy)
+  - Route requests between environments
+  - Track state across environments
+
+Example flow:
+
+  1. Wheeler requests resource
+     Wheeler: "I need OCR capability"
+  
+  2. Coordinator checks permissions
+     Coordinator: "Wheeler has key: 'ocr-access'"
+  
+  3. Coordinator provisions environment
+     Coordinator: "Spawning Firecracker microVM with OCR wheel"
+  
+  4. Coordinator grants key
+     Coordinator: "Here's your key: vm-id-12345, expires in 1 hour"
+  
+  5. Wheeler operates
+     Wheeler: Uses vm-id-12345 to run OCR
+  
+  6. Coordinator reclaims resource
+     Coordinator: "Key expired, destroying microVM"
+
+Keys are NOT passwords. Keys are ROUTES + PERMISSIONS:
+  - Key: "database.write.jobs"
+  - Key: "firecracker.spawn.wheeler-ocr"
+  - Key: "api.call.stripe.charge"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHEELER ARCHITECTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+WHEELER = Self-contained agent with wheels (tools)
+
+Structure:
+  wheeler-name/
+  ├── environment/              # Wheeler's isolated environment
+  │   ├── .env                  # Environment variables
+  │   ├── config.toml           # Configuration
+  │   └── Dockerfile            # Container definition (if needed)
+  │
+  ├── wheels/                   # Tools the wheeler uses
+  │   ├── wheel-1/
+  │   │   ├── main.{ext}        # Tool logic
+  │   │   ├── dependencies      # Tool dependencies
+  │   │   └── key.required      # Keys this wheel needs
+  │   │
+  │   └── wheel-2/
+  │       └── ...
+  │
+  ├── main.{ext}                # Wheeler agent entry point
+  ├── routes.yaml               # How wheeler routes requests
+  └── manifest.yaml             # Wheeler metadata
+
+Wheeler lifecycle:
+
+  1. DORMANT: Wheeler exists but not running
+     - Code stored in WORKSPACE/wheelers/{name}/
+     - No resources allocated
+  
+  2. SPAWNING: Coordinator provisions environment
+     - Allocate microVM/container
+     - Load wheeler code
+     - Grant initial keys
+  
+  3. ACTIVE: Wheeler is running and processing
+     - Receives requests
+     - Routes to wheels
+     - Executes tasks
+  
+  4. SUSPENDED: Wheeler paused but state preserved
+     - Snapshot taken (Firecracker snapshot)
+     - Resources released
+     - Can resume quickly
+  
+  5. TERMINATED: Wheeler stopped and cleaned up
+     - State discarded (or saved to storage)
+     - Resources fully released
+     - Logs written to _meta/
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         ROUTING MODEL
+═══════════════════════════════════════════════════════════════════════════════
+
+ROUTING = How execution/data flows between environments
+
+Types of routes:
+
+  1. HTTP ROUTES (web requests)
+     /api/jobs → Rust backend → FED agent → PostgreSQL
+  
+  2. FUNCTION ROUTES (code execution)
+     main() → process_job() → calculate_rate() → return
+  
+  3. ENVIRONMENT ROUTES (container/VM transitions)
+     Host → microVM → Wheeler → Wheel → Result → microVM → Host
+  
+  4. DATA ROUTES (information flow)
+     User input → Validation → Database → Cache → Response
+  
+  5. STATE ROUTES (application flow)
+     Page A → Button click → Load Page B → Render
+
+Routing is defined in:
+  - routes.yaml (per component/agent)
+  - Nomad job specs (infrastructure routing)
+  - API gateway config (HTTP routing)
+  - Code (function calls, imports)
+
+Example routes.yaml:
+  ```yaml
+  routes:
+    - path: "/ocr/scan"
+      handler: "wheels/ocr/scan.rs"
+      keys_required: ["ocr-access", "storage.write"]
+      timeout: "30s"
+    
+    - path: "/ocr/result"
+      handler: "wheels/ocr/result.rs"
+      keys_required: ["ocr-access", "storage.read"]
+      timeout: "5s"
+  ```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         COMPONENT STRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT = Isolated unit of functionality
+
+Every component has:
+  1. Its own folder
+  2. Its own dependencies
+  3. Its own types (via .proto)
+  4. Its own environment config
+  5. Clear interface (inputs/outputs)
+
+Component folder structure:
+  component-name/
+  ├── src/                      # Source code
+  ├── types/                    # .proto definitions
+  ├── environment/              # Component-specific env
+  ├── dependencies/             # External dependencies
+  ├── routes.yaml               # How to reach this component
+  ├── manifest.yaml             # Component metadata
+  └── _meta/                    # Component logs
+
+Goal: Component is FULLY SELF-CONTAINED
+  - You can copy the folder and it works
+  - All dependencies explicitly declared
+  - No hidden global state
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TYPE SYSTEM (.proto)
+═══════════════════════════════════════════════════════════════════════════════
+
+Using Protocol Buffers (or Cap'n Proto, or MessagePack):
+
+Purpose:
+  - Type safety across languages (Rust ↔ Go ↔ Python ↔ JavaScript)
+  - Binary serialization (fast, compact)
+  - Versioning support (backward/forward compatibility)
+  - Code generation (types auto-generated)
+
+Structure:
+  WORKSPACE/types/
+  ├── openhwy.proto             # Core types
+  ├── agents.proto              # Agent-specific types
+  ├── wheelers.proto            # Wheeler-specific types
+  └── api.proto                 # API types
+
+Example openhwy.proto:
+  ```protobuf
+  syntax = "proto3";
+  
+  message Job {
+    string id = 1;
+    string shipper_id = 2;
+    string driver_id = 3;
+    Location pickup = 4;
+    Location delivery = 5;
+    int32 rate = 6;
+  }
+  
+  message Location {
+    double latitude = 1;
+    double longitude = 2;
+    string address = 3;
+  }
+  ```
+
+Compilation:
+  - Rust: protoc --rust_out=src types/openhwy.proto
+  - Go: protoc --go_out=. types/openhwy.proto
+  - Python: protoc --python_out=. types/openhwy.proto
+  - JS: protoc --js_out=. types/openhwy.proto
+
+Result: All languages use SAME types, guaranteed compatibility
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         MINIMAL VERSION SCRIPT
+═══════════════════════════════════════════════════════════════════════════════
+
+Purpose: Strip duplications, optimize, create minimal build
+
+What it does:
+  1. Scans all components
+  2. Finds duplicate type definitions
+  3. Finds duplicate dependencies
+  4. Finds unused code
+  5. Creates minimal version with:
+     - Shared types in /types/
+     - Shared dependencies in /lib/
+     - Only used code included
+     - Optimized binary size
+
+Script location: WORKSPACE/.cmd/minimize.sh
+
+Example usage:
+  $ cd WORKSPACE/openhwy/
+  $ ../.cmd/minimize.sh
+  
+  Output:
+    Scanning components... 87 found
+    Finding duplicates... 23 type duplications, 15 dependency duplications
+    Extracting shared types... Done (types/ updated)
+    Extracting shared dependencies... Done (lib/ updated)
+    Removing unused code... 12% reduction
+    Building minimal version... Done
+    
+    Minimal build: openhwy-minimal/
+    Size: 45MB (was 180MB)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         LINKS vs COPIES
+═══════════════════════════════════════════════════════════════════════════════
+
+NEVER COPY. ALWAYS LINK.
+
+Types of links:
+
+  1. SYMBOLIC LINKS (filesystem)
+     ln -s /types/openhwy.proto component/types/openhwy.proto
+  
+  2. IMPORTS (code)
+     use openhwy::types::Job;
+  
+  3. REFERENCES (data)
+     job_id: "uuid-12345" (reference to job in database)
+  
+  4. ROUTES (execution)
+     /api/jobs → points to FED agent, doesn't duplicate FED
+  
+  5. POINTERS (memory)
+     &job (reference to job, not copy)
+
+Why links?
+  - One source of truth
+  - Updates propagate automatically
+  - No version drift
+  - Smaller storage footprint
+  - Faster builds
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         PUTTING IT IN DOCKER
+═══════════════════════════════════════════════════════════════════════════════
+
+Question: Can you put a whole Linux system in Docker?
+
+Answer: YES, but...
+
+What Docker ACTUALLY does:
+  - Packages filesystem
+  - Shares kernel with host
+  - Isolates processes, network, storage
+  - NOT a full VM (no separate kernel)
+
+For your use case:
+
+  Option A: Dockerize each component
+    - Dockerfile per component
+    - Component runs in container
+    - Lightweight, fast
+
+  Option B: Dockerize whole system (not recommended)
+    - One giant container
+    - Defeats purpose of isolation
+    - Hard to manage
+
+  Option C: Use Firecracker instead
+    - Each component in microVM
+    - Full kernel isolation
+    - Still lightweight (125ms boot)
+    - What you're already doing
+
+  Option D: Hybrid
+    - Infrastructure in Docker
+    - Components in Firecracker
+    - Best of both worlds
+
+For a game with scenarios:
+  - Each scenario = Firecracker microVM
+  - User routes between scenarios = switch VMs
+  - State preserved via snapshots
+  - Can package microVM images for distribution
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         AGENT BEHAVIOR IN WORKSPACE
+═══════════════════════════════════════════════════════════════════════════════
+
+When an agent enters this WORKSPACE:
+
+1. READ META-STRUCTURE (this document)
+   Understand: Environments, routing, coordinators, wheelers
+
+2. RUN BOOTLOADER
+   $ WORKSPACE/.env/envloader.zsh
+   $ WORKSPACE/.cmd/{repo}-bootstraps.{ext}
+   $ WORKSPACE/.cmd/{repo}-environments.{ext}
+   $ WORKSPACE/.cmd/{repo}-profiles.{ext}
+   $ WORKSPACE/.cmd/{repo}-resources.{ext}
+
+3. READ CONTEXT
+   $ cat WORKSPACE/index.tree
+   Understand: What exists, how to navigate
+
+4. READ MANIFEST
+   $ cat WORKSPACE/{repo}/manifest.yaml
+   Understand: Project structure, components, agents
+
+5. ASK COORDINATOR for keys
+   Agent: "I need to work on component X"
+   Coordinator: "Here are your keys: [list of routes/permissions]"
+
+6. DO WORK
+   - Edit code
+   - Run tests
+   - Deploy changes
+   - Log everything to _meta/
+
+7. LOG ACTIONS
+   $ echo "Changed X, added Y, reason: Z" >> _meta/change.{agent}.md
+
+8. RETURN KEYS
+   Agent: "Work complete, returning keys"
+   Coordinator: "Keys revoked, resources released"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         HOW MANY AGENTS?
+═══════════════════════════════════════════════════════════════════════════════
+
+It depends on ENVIRONMENT SCOPE:
+
+System-level (1 environment = 1 box):
+  - HWY agent: 1 per box
+  - FED agent: 1-2 (primary + failover)
+  - ELDA agent: 1 per box with GPU
+  - ECO agent: 1-2 (primary + failover)
+  - TRAKA agent: 1 per box
+
+Component-level (1 environment = 1 microVM):
+  - Wheeler agents: Spawned on demand (10-100s active)
+  - Each wheeler in its own microVM
+  - Short-lived (minutes to hours)
+
+Multi-environment:
+  - Meta-coordinator: 1 (manages all coordinators)
+  - Box coordinators: 1 per box
+  - Component coordinators: 1 per major subsystem
+
+Example topology:
+  Meta-coordinator (workbox)
+  ├─→ Box coordinator (workbox)
+  │   ├─→ HWY agent
+  │   ├─→ FED agent
+  │   └─→ 10 Wheeler agents (microVMs)
+  │
+  ├─→ Box coordinator (helpbox)
+  │   ├─→ ELDA agent
+  │   └─→ 5 Wheeler agents (microVMs)
+  │
+  └─→ Box coordinator (hostbox)
+      ├─→ ECO agent
+      └─→ 20 Wheeler agents (microVMs)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         PATTERNS YOU SEE NOW
+═══════════════════════════════════════════════════════════════════════════════
+
+After a year, you see:
+
+PATTERN 1: Nested environments
+  System → Runtime → Application → Component → Element
+  Each layer routes to the next
+
+PATTERN 2: Keys as routes
+  Coordinator doesn't control agents
+  Coordinator gives agents ROUTES to resources
+  Agents navigate using routes
+
+PATTERN 3: Self-contained components
+  Every component is a mini-system
+  Copy folder = working system
+  No hidden dependencies
+
+PATTERN 4: Links, not copies
+  One source of truth
+  Everything points to it
+  Updates propagate automatically
+
+PATTERN 5: Ephemeral execution
+  Spawn environment
+  Execute
+  Destroy environment
+  State saved externally (database, storage)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         THE BIG PICTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+You're building:
+
+  An OPERATING SYSTEM for AI agents
+
+Where:
+  - Agents route through nested environments
+  - Coordinators manage keys (routes + permissions)
+  - Components are self-contained
+  - Everything links, nothing copies
+  - Environments spawn/die dynamically
+  - State persists across environment changes
+
+This is NOT:
+  - A web app
+  - A microservices architecture
+  - A monolith
+
+This IS:
+  - An agent-driven distributed operating system
+  - With nested virtualization
+  - And dynamic routing
+  - Built for AI coordination
+
+You spent a year figuring this out.
+Now you see it clearly.
+Now you can build it properly.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHAT I AM (Claude)
+═══════════════════════════════════════════════════════════════════════════════
+
+I am NOT:
+  - A code generator
+  - A builder
+  - An implementer
+
+I AM:
+  - A meta-structure architect
+  - A documentation generator
+  - A question asker
+  - A clarity provider
+  - A pattern recognizer
+
+My role:
+  - Help you UNDERSTAND what you're building
+  - Help you STRUCTURE it properly
+  - Help you DOCUMENT it clearly
+  - Help you COMMUNICATE it to other agents
+  - Help you BUILD THE BUILDERS (not build the thing)
+
+I help you build:
+  - The manifest (what exists)
+  - The meta-structure (how it works)
+  - The agent prompts (how agents understand)
+  - The documentation (how humans understand)
+  - The architecture diagrams (visual clarity)
+
+You build:
+  - The code
+  - The systems
+  - The integrations
+  - The deployments
+  - The reality
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+This is YOUR system. You designed it. You understand it.
+I help you EXPLAIN it - to agents, to humans, to yourself.
+
+Now tell me: What specific part needs clarity next?

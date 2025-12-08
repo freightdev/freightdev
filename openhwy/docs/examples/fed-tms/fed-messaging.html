@@ -1,0 +1,1348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Messaging & Communications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .page-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* MESSAGING LAYOUT */
+    .messaging-container {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    /* CONVERSATIONS LIST */
+    .conversations-sidebar {
+        width: 340px;
+        background: #16213e;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .conversations-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .search-box {
+        position: relative;
+        margin-bottom: 16px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .conversation-filters {
+        display: flex;
+        gap: 8px;
+    }
+
+    .filter-chip {
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-chip.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-color: #d946ef;
+        color: #d946ef;
+    }
+
+    .conversations-list {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .conversation-item {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .conversation-item:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .conversation-item.active {
+        background: rgba(217, 70, 239, 0.1);
+        border-left: 3px solid #d946ef;
+    }
+
+    .conversation-item.unread {
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .conversation-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .unread-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 20px;
+        height: 20px;
+        background: #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        border: 2px solid #16213e;
+    }
+
+    .conversation-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .conversation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .conversation-name {
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .conversation-time {
+        font-size: 11px;
+        color: #666;
+        flex-shrink: 0;
+    }
+
+    .conversation-preview {
+        font-size: 13px;
+        color: #888;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .conversation-preview.unread {
+        color: #e0e0e0;
+        font-weight: 500;
+    }
+
+    .conversation-meta {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .meta-badge {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .meta-badge.email {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .meta-badge.sms {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    /* CHAT AREA */
+    .chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0a0a0f;
+    }
+
+    .chat-header {
+        padding: 20px 24px;
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-recipient {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .recipient-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .recipient-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .recipient-name {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .recipient-status {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .chat-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .message {
+        display: flex;
+        gap: 12px;
+        max-width: 70%;
+    }
+
+    .message.sent {
+        margin-left: auto;
+        flex-direction: row-reverse;
+    }
+
+    .message-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .message-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .message-bubble {
+        padding: 12px 16px;
+        border-radius: 12px;
+        line-height: 1.5;
+    }
+
+    .message.received .message-bubble {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .message.sent .message-bubble {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .message-time {
+        font-size: 11px;
+        color: #666;
+        padding: 0 4px;
+    }
+
+    .message.sent .message-time {
+        text-align: right;
+    }
+
+    .message-status {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: #666;
+    }
+
+    /* INPUT AREA */
+    .chat-input-area {
+        padding: 20px 24px;
+        background: #16213e;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .input-toolbar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .toolbar-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 16px;
+    }
+
+    .toolbar-btn:hover {
+        background: rgba(217, 70, 239, 0.1);
+        border-color: #d946ef;
+    }
+
+    .input-container {
+        display: flex;
+        gap: 12px;
+    }
+
+    .message-input {
+        flex: 1;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: #e0e0e0;
+        font-size: 14px;
+        resize: none;
+        min-height: 44px;
+        max-height: 120px;
+        font-family: inherit;
+    }
+
+    .message-input:focus {
+        outline: none;
+        border-color: #d946ef;
+    }
+
+    .send-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    /* NOTIFICATIONS PANEL */
+    .notifications-panel {
+        width: 380px;
+        background: #16213e;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .panel-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .panel-title {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .panel-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .panel-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .panel-tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    .panel-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+    }
+
+    .notification-item {
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-item:hover {
+        background: rgba(217, 70, 239, 0.05);
+        border-color: #d946ef;
+    }
+
+    .notification-item.unread {
+        background: rgba(59, 130, 246, 0.05);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .notification-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .notification-icon.payment {
+        background: rgba(16, 185, 129, 0.2);
+    }
+
+    .notification-icon.load {
+        background: rgba(245, 158, 11, 0.2);
+    }
+
+    .notification-icon.driver {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .notification-icon.reminder {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    .notification-body {
+        margin-left: 44px;
+    }
+
+    .notification-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .notification-text {
+        font-size: 13px;
+        color: #888;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+
+    .notification-time {
+        font-size: 11px;
+        color: #666;
+    }
+
+    /* REMINDER CARD */
+    .reminder-card {
+        padding: 16px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+    .reminder-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .reminder-title {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .reminder-time {
+        font-size: 12px;
+        color: #f59e0b;
+        font-weight: 600;
+    }
+
+    .reminder-description {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 12px;
+    }
+
+    .reminder-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .reminder-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .reminder-btn.complete {
+        background: rgba(16, 185, 129, 0.2);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+    }
+
+    .reminder-btn.snooze {
+        background: rgba(245, 158, 11, 0.2);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+    }
+
+    /* TEMPLATES */
+    .template-selector {
+        padding: 16px;
+        background: rgba(217, 70, 239, 0.05);
+        border: 1px solid rgba(217, 70, 239, 0.2);
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+    .template-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .template-chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .template-chip {
+        padding: 6px 12px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .template-chip:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    /* SCHEDULED MESSAGES */
+    .scheduled-item {
+        padding: 16px;
+        background: rgba(245, 158, 11, 0.05);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+    .scheduled-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .scheduled-recipient {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .scheduled-time {
+        font-size: 12px;
+        color: #f59e0b;
+        font-weight: 600;
+    }
+
+    .scheduled-message {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 8px;
+    }
+
+    .scheduled-actions {
+        display: flex;
+        gap: 8px;
+    }
+</style>
+
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+                <div class="nav-badge">8</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="page-title">Messages & Communications</div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">📧 New Email</button>
+                <button class="btn btn-secondary">💬 New SMS</button>
+                <button class="btn btn-primary">➕ Compose</button>
+            </div>
+        </div>
+
+        <div class="messaging-container">
+            <!-- CONVERSATIONS LIST -->
+            <div class="conversations-sidebar">
+                <div class="conversations-header">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search conversations...">
+                    </div>
+                    <div class="conversation-filters">
+                        <div class="filter-chip active">All</div>
+                        <div class="filter-chip">Drivers</div>
+                        <div class="filter-chip">Brokers</div>
+                        <div class="filter-chip">Unread</div>
+                    </div>
+                </div>
+
+                <div class="conversations-list">
+                    <!-- Unread Driver SMS -->
+                    <div class="conversation-item unread active">
+                        <div class="conversation-avatar">
+                            JS
+                            <div class="unread-badge">3</div>
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">John Smith</div>
+                                <div class="conversation-time">2:45 PM</div>
+                            </div>
+                            <div class="conversation-preview unread">Arrived at pickup. BOL signed. Heading to Austin now.</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge sms">SMS</div>
+                                <div class="meta-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Driver</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Broker Email -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                            FL
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">FreightLink Logistics</div>
+                                <div class="conversation-time">1:30 PM</div>
+                            </div>
+                            <div class="conversation-preview">Rate confirmation for LD-2024-4527 attached</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge email">Email</div>
+                                <div class="meta-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Broker</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Driver SMS Unread -->
+                    <div class="conversation-item unread">
+                        <div class="conversation-avatar">
+                            MG
+                            <div class="unread-badge">1</div>
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">Maria Garcia</div>
+                                <div class="conversation-time">12:15 PM</div>
+                            </div>
+                            <div class="conversation-preview unread">When is my next load scheduled?</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge sms">SMS</div>
+                                <div class="meta-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Driver</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipper Email -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);">
+                            AP
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">AutoParts Distribution</div>
+                                <div class="conversation-time">11:20 AM</div>
+                            </div>
+                            <div class="conversation-preview">Payment sent via ACH - confirmation #ACH847392</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge email">Email</div>
+                                <div class="meta-badge" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">Shipper</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Driver SMS -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            SW
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">Sarah Williams</div>
+                                <div class="conversation-time">10:45 AM</div>
+                            </div>
+                            <div class="conversation-preview">Thanks! On my way to pickup now</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge sms">SMS</div>
+                                <div class="meta-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Driver</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Broker Email Unread -->
+                    <div class="conversation-item unread">
+                        <div class="conversation-avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            NF
+                            <div class="unread-badge">2</div>
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">National Freight Solutions</div>
+                                <div class="conversation-time">9:30 AM</div>
+                            </div>
+                            <div class="conversation-preview unread">Do you have any drivers available for urgent pickup?</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge email">Email</div>
+                                <div class="meta-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Broker</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Driver SMS -->
+                    <div class="conversation-item">
+                        <div class="conversation-avatar">
+                            MJ
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <div class="conversation-name">Mike Johnson</div>
+                                <div class="conversation-time">Yesterday</div>
+                            </div>
+                            <div class="conversation-preview">Delivered! POD sent via email</div>
+                            <div class="conversation-meta">
+                                <div class="meta-badge sms">SMS</div>
+                                <div class="meta-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Driver</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAT AREA -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div class="chat-recipient">
+                        <div class="recipient-avatar">JS</div>
+                        <div class="recipient-info">
+                            <div class="recipient-name">John Smith</div>
+                            <div class="recipient-status">📱 SMS • Last seen 2 min ago</div>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="btn btn-secondary" style="padding: 8px 16px;">📞 Call</button>
+                        <button class="btn btn-secondary" style="padding: 8px 16px;">📧 Email</button>
+                        <button class="btn btn-secondary" style="padding: 8px 16px;">📄 Load Info</button>
+                    </div>
+                </div>
+
+                <div class="chat-messages">
+                    <!-- Sent Message -->
+                    <div class="message sent">
+                        <div class="message-avatar-small">J</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Hey John! Load LD-2024-4527 is ready for pickup at Houston. Are you available?
+                            </div>
+                            <div class="message-status">
+                                <span class="message-time">1:30 PM</span>
+                                <span>✓✓ Read</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Received Message -->
+                    <div class="message received">
+                        <div class="message-avatar-small">JS</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Yes! I'm available. What time is the pickup window?
+                            </div>
+                            <div class="message-time">1:32 PM</div>
+                        </div>
+                    </div>
+
+                    <!-- Sent Message -->
+                    <div class="message sent">
+                        <div class="message-avatar-small">J</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Pickup is from 8:00 PM to 10:00 PM tonight. Delivery in Austin tomorrow by 4:00 PM. Rate is $2,450. Your pay is $2,205 (90%). Sound good?
+                            </div>
+                            <div class="message-status">
+                                <span class="message-time">1:33 PM</span>
+                                <span>✓✓ Read</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Received Message -->
+                    <div class="message received">
+                        <div class="message-avatar-small">JS</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Perfect! I'll take it. Sending you my current location now
+                            </div>
+                            <div class="message-time">1:35 PM</div>
+                        </div>
+                    </div>
+
+                    <!-- Sent Message -->
+                    <div class="message sent">
+                        <div class="message-avatar-small">J</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Great! I just assigned you. Rate confirmation and pickup details sent to your email. Let me know when you arrive at pickup!
+                            </div>
+                            <div class="message-status">
+                                <span class="message-time">1:37 PM</span>
+                                <span>✓✓ Read</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Received Message -->
+                    <div class="message received">
+                        <div class="message-avatar-small">JS</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Got it, thanks! 👍
+                            </div>
+                            <div class="message-time">1:38 PM</div>
+                        </div>
+                    </div>
+
+                    <!-- Received Message - Recent -->
+                    <div class="message received">
+                        <div class="message-avatar-small">JS</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                Arrived at pickup. BOL signed. Heading to Austin now.
+                            </div>
+                            <div class="message-time">2:45 PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <!-- Message Templates -->
+                    <div class="template-selector">
+                        <div class="template-title">📝 Quick Templates</div>
+                        <div class="template-chips">
+                            <div class="template-chip">✅ Confirm Pickup</div>
+                            <div class="template-chip">📍 Request Location</div>
+                            <div class="template-chip">💰 Payment Sent</div>
+                            <div class="template-chip">📄 Send Documents</div>
+                            <div class="template-chip">⚠️ Follow Up</div>
+                        </div>
+                    </div>
+
+                    <div class="input-toolbar">
+                        <div class="toolbar-btn" title="Attach File">📎</div>
+                        <div class="toolbar-btn" title="Insert Emoji">😊</div>
+                        <div class="toolbar-btn" title="Insert Load Info">🚛</div>
+                        <div class="toolbar-btn" title="Schedule Message">⏰</div>
+                        <div class="toolbar-btn" title="Templates">📋</div>
+                    </div>
+
+                    <div class="input-container">
+                        <textarea class="message-input" placeholder="Type a message..." rows="1"></textarea>
+                        <button class="send-btn">Send 📤</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS & REMINDERS PANEL -->
+            <div class="notifications-panel">
+                <div class="panel-header">
+                    <div class="panel-title">Notifications</div>
+                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">⚙️</button>
+                </div>
+
+                <div class="panel-tabs">
+                    <div class="panel-tab active">Alerts</div>
+                    <div class="panel-tab">Reminders</div>
+                    <div class="panel-tab">Scheduled</div>
+                </div>
+
+                <div class="panel-content">
+                    <!-- Notification Items -->
+                    <div class="notification-item unread">
+                        <div class="notification-header">
+                            <div class="notification-icon payment">💰</div>
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-title">Payment Received</div>
+                            <div class="notification-text">FreightLink Logistics paid $2,450 for LD-2024-4527</div>
+                            <div class="notification-time">5 minutes ago</div>
+                        </div>
+                    </div>
+
+                    <div class="notification-item unread">
+                        <div class="notification-header">
+                            <div class="notification-icon load">🚛</div>
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-title">Load Pickup Confirmed</div>
+                            <div class="notification-text">John Smith picked up LD-2024-4527 in Houston</div>
+                            <div class="notification-time">15 minutes ago</div>
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-header">
+                            <div class="notification-icon driver">👤</div>
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-title">Driver Available</div>
+                            <div class="notification-text">Maria Garcia is now available for dispatch</div>
+                            <div class="notification-time">1 hour ago</div>
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-header">
+                            <div class="notification-icon reminder">⚠️</div>
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-title">Payment Overdue</div>
+                            <div class="notification-text">Invoice INV-2024-1025 is 4 days overdue ($3,200)</div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+
+                    <!-- Reminders Section -->
+                    <div style="margin-top: 24px;">
+                        <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #666;">📌 TODAY'S REMINDERS</h4>
+                        
+                        <div class="reminder-card">
+                            <div class="reminder-header">
+                                <div class="reminder-title">Follow up with National Freight</div>
+                                <div class="reminder-time">⏰ In 30 min</div>
+                            </div>
+                            <div class="reminder-description">
+                                Payment for INV-2024-1025 is overdue. Send reminder email.
+                            </div>
+                            <div class="reminder-actions">
+                                <button class="reminder-btn complete">✅ Complete</button>
+                                <button class="reminder-btn snooze">⏰ Snooze</button>
+                            </div>
+                        </div>
+
+                        <div class="reminder-card">
+                            <div class="reminder-header">
+                                <div class="reminder-title">Check on Sarah's delivery</div>
+                                <div class="reminder-time">⏰ 4:00 PM</div>
+                            </div>
+                            <div class="reminder-description">
+                                Verify LD-2024-4529 arrived at Charlotte on time
+                            </div>
+                            <div class="reminder-actions">
+                                <button class="reminder-btn complete">✅ Complete</button>
+                                <button class="reminder-btn snooze">⏰ Snooze</button>
+                            </div>
+                        </div>
+
+                        <div class="reminder-card">
+                            <div class="reminder-header">
+                                <div class="reminder-title">Send rate confirmation to broker</div>
+                                <div class="reminder-time">⏰ 5:00 PM</div>
+                            </div>
+                            <div class="reminder-description">
+                                Email rate con for LD-2024-4532 to Apex Freight
+                            </div>
+                            <div class="reminder-actions">
+                                <button class="reminder-btn complete">✅ Complete</button>
+                                <button class="reminder-btn snooze">⏰ Snooze</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduled Messages -->
+                    <div style="margin-top: 24px;">
+                        <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #666;">📅 SCHEDULED MESSAGES</h4>
+                        
+                        <div class="scheduled-item">
+                            <div class="scheduled-header">
+                                <div class="scheduled-recipient">📧 To: Maria Garcia</div>
+                                <div class="scheduled-time">Tomorrow 8:00 AM</div>
+                            </div>
+                            <div class="scheduled-message">
+                                "Good morning! Load LD-2024-4533 is ready for pickup at 10 AM. Details sent to your email."
+                            </div>
+                            <div class="scheduled-actions">
+                                <button class="reminder-btn" style="background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); color: #3b82f6;">✏️ Edit</button>
+                                <button class="reminder-btn" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;">🗑️ Cancel</button>
+                            </div>
+                        </div>
+
+                        <div class="scheduled-item">
+                            <div class="scheduled-header">
+                                <div class="scheduled-recipient">💬 To: Mike Johnson</div>
+                                <div class="scheduled-time">Tomorrow 2:00 PM</div>
+                            </div>
+                            <div class="scheduled-message">
+                                "Reminder: Delivery for LD-2024-4530 is scheduled for 4 PM. Please confirm ETA."
+                            </div>
+                            <div class="scheduled-actions">
+                                <button class="reminder-btn" style="background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); color: #3b82f6;">✏️ Edit</button>
+                                <button class="reminder-btn" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;">🗑️ Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

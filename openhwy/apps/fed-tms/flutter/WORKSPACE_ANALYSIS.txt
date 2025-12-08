@@ -1,0 +1,389 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    WORKSPACE ARCHITECTURE ANALYSIS                           ║
+║                  What You Actually Have Built                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Based on your agent prompt, here's what I understand:
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WORKSPACE STRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+WORKSPACE/
+├── .env/
+│   └── envloader.zsh                    # Minimal setup bootstrapper
+│
+├── .cmd/                                # Command scripts per repo
+│   ├── {repo-name}-bootstraps.{ext}    # Step 1: Bootstrap
+│   ├── {repo-name}-environments.{ext}  # Step 2: Environment setup
+│   ├── {repo-name}-profiles.{ext}      # Step 3: Profile configuration
+│   └── {repo-name}-resources.{ext}     # Step 4: Resource allocation
+│
+├── .ai/
+│   └── agency-forge/                    # AI development engine
+│       ├── candle/                      # Rust ML framework
+│       ├── llama.cpp/                   # C++ LLM runtime
+│       ├── burn/                        # Rust deep learning
+│       ├── pytorch/                     # Python ML
+│       └── huggingface/                 # Model hub integration
+│
+├── wheelers/                            # Wheeler agents (tools)
+│   ├── wheeler-name/
+│   │   ├── wheels/                      # "Wheel links" = tools
+│   │   │   ├── wheel-1/
+│   │   │   ├── wheel-2/
+│   │   │   └── wheel-n/
+│   │   └── main.{ext}                   # Wheeler agent code
+│   └── ...
+│
+├── commands/                            # Coordination commands
+│   └── ...
+│
+├── _meta/                               # Meta-logging (audit trail)
+│   ├── issue.{username}.md
+│   ├── todo.{username}.md
+│   ├── fix.{username}.md
+│   └── ...
+│
+├── TEMPLATES/                           # Project templates
+│   └── ...
+│
+└── index.tree                           # Workspace navigation index
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         BOOTLOADER SEQUENCE
+═══════════════════════════════════════════════════════════════════════════════
+
+When an agent enters the workspace:
+
+Step 0: Run minimal setup
+  $ WORKSPACE/.env/envloader.zsh
+
+Step 1: Bootstrap (initialize project)
+  $ WORKSPACE/.cmd/{repo-name}-bootstraps.{ext}
+  Purpose: Install dependencies, set up basic structure
+
+Step 2: Environment (configure environment)
+  $ WORKSPACE/.cmd/{repo-name}-environments.{ext}
+  Purpose: Set environment variables, paths, toolchain
+
+Step 3: Profile (load profile)
+  $ WORKSPACE/.cmd/{repo-name}-profiles.{ext}
+  Purpose: User-specific settings, preferences
+
+Step 4: Resources (allocate resources)
+  $ WORKSPACE/.cmd/{repo-name}-resources.{ext}
+  Purpose: CPU/memory limits, storage, networking
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         AI AGENCY FORGE
+═══════════════════════════════════════════════════════════════════════════════
+
+Purpose: AI-powered development engine
+
+Components:
+
+1. Inference Engines:
+   ├─→ candle (Rust ML framework by HuggingFace)
+   │   Fast, type-safe, GPU-accelerated
+   │
+   ├─→ llama.cpp (C++ LLM runtime)
+   │   CPU-optimized, quantized models
+   │
+   ├─→ burn (Rust deep learning)
+   │   Flexible backend (WGPU, CUDA, CPU)
+   │
+   ├─→ pytorch (Python ML)
+   │   Full-featured, research-friendly
+   │
+   └─→ huggingface (Model hub)
+       Pre-trained models, tokenizers
+
+2. Use Cases:
+   ├─→ Code generation (frontend & backend)
+   ├─→ Agent coordination (commands/)
+   ├─→ Wheeler tool development
+   └─→ Workspace automation
+
+3. Status: Under development (90% complete?)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHEELERS SYSTEM
+═══════════════════════════════════════════════════════════════════════════════
+
+Wheelers = Specialized AI agents with tools ("wheels")
+
+Structure:
+  wheeler-name/
+  ├── main.{ext}              # Wheeler agent logic
+  └── wheels/                 # Tools (wheel links)
+      ├── wheel-1/
+      ├── wheel-2/
+      └── wheel-n/
+
+Concept:
+  - Wheeler = Agent with specific capabilities
+  - Wheels = Tools/functions the wheeler uses
+  - Wheel links = Connections between tools
+
+Example Wheeler (hypothetical):
+  packet-pilot/               # Paperwork automation wheeler
+  ├── main.rs
+  └── wheels/
+      ├── ocr/                # OCR wheel
+      ├── form-filler/        # Form filling wheel
+      ├── signature/          # Digital signature wheel
+      └── uploader/           # Cloud upload wheel
+
+Integration with OpenHWY:
+  - Wheelers = Implementation of Wheeler Tools
+  - Each Wheeler Tool (from TRAKA) = Wheeler agent
+  - Wheels = Sub-capabilities of each tool
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         META-LOGGING SYSTEM
+═══════════════════════════════════════════════════════════════════════════════
+
+Purpose: Audit trail for all workspace changes
+
+Format: _meta/{type}.{username}.md
+
+Types:
+  ├─→ issue.{user}.md    # Problems discovered
+  ├─→ todo.{user}.md     # Tasks to complete
+  ├─→ fix.{user}.md      # Fixes applied
+  ├─→ change.{user}.md   # Changes made
+  └─→ log.{user}.md      # General log
+
+Why:
+  - Agents log their actions
+  - Humans know what happened
+  - Collaborative workspace transparency
+  - Debugging and auditing
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TOOLS ECOSYSTEM
+═══════════════════════════════════════════════════════════════════════════════
+
+Your workspace includes:
+
+1. ranger               # TUI file navigator
+2. git                  # Version control
+3. Hyprland             # Wayland compositor
+4. kitty                # Terminal emulator
+5. neovide              # Neovim GUI
+6. ssh                  # Remote execution
+7. tree                 # Directory visualization
+8. ollama               # Local LLM inference
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         AGENT BEHAVIOR RULES
+═══════════════════════════════════════════════════════════════════════════════
+
+When agents work in this workspace:
+
+1. Read Context:
+   ├─→ WORKSPACE/index.tree (navigation)
+   └─→ TEMPLATES/ (project templates)
+
+2. Follow Bootloader:
+   ├─→ Run .env/envloader.zsh
+   ├─→ Execute bootstrap script
+   ├─→ Execute environment script
+   ├─→ Execute profile script
+   └─→ Execute resource script
+
+3. Log Actions:
+   ├─→ Every write → _meta/{type}.{user}.md
+   ├─→ Every execution → logged
+   └─→ Every decision → documented
+
+4. Ask Questions:
+   ├─→ Learn about projects
+   ├─→ Understand architecture
+   └─→ Clarify requirements
+
+5. Help Organize:
+   ├─→ Most projects 90% complete
+   ├─→ Get them operational
+   └─→ Proper organization
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         OPENHWY INTEGRATION
+═══════════════════════════════════════════════════════════════════════════════
+
+How this WORKSPACE relates to OpenHWY:
+
+WORKSPACE/
+├── openhwy/                           # OpenHWY project root
+│   ├── .cmd/
+│   │   ├── openhwy-bootstraps.sh
+│   │   ├── openhwy-environments.sh
+│   │   ├── openhwy-profiles.sh
+│   │   └── openhwy-resources.sh
+│   │
+│   ├── backend/                       # Rust backend
+│   ├── frontend/                      # Next.js + Flutter
+│   ├── infra/                         # Infrastructure controllers
+│   │   ├── firecracker-controller/
+│   │   ├── lvm-controller/
+│   │   └── nomad-jobs/
+│   │
+│   ├── agents/                        # The 5 core agents
+│   │   ├── hwy/
+│   │   ├── fed/
+│   │   ├── elda/
+│   │   ├── eco/
+│   │   └── traka/
+│   │
+│   ├── wheelers/                      # Wheeler Tools
+│   │   ├── packet-pilot/
+│   │   ├── whisper-witness/
+│   │   ├── big-bear/
+│   │   └── ...
+│   │
+│   ├── _meta/                         # Project-specific logs
+│   │
+│   └── openhwy.manifest.yaml         # Your manifest (to be filled)
+│
+└── .ai/agency-forge/                  # AI development engine
+    └── (helps build OpenHWY components)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         KEY QUESTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+To properly map your architecture to the manifest, I need to understand:
+
+1. AI Agency Forge:
+   Q: What models are you running?
+      - Code generation: CodeLlama? StarCoder?
+      - General: Llama 3? Mistral?
+      - Specialized: Custom fine-tuned models?
+   
+   Q: How do agents coordinate?
+      - Message passing?
+      - Shared state?
+      - Queue system?
+   
+   Q: What's the 10% left to complete?
+      - Integration between candle/llama.cpp/burn?
+      - Model deployment pipeline?
+      - Agent orchestration?
+
+2. Wheelers System:
+   Q: How many wheelers exist?
+      - Just the 15 Wheeler Tools from the manifest?
+      - More specialized wheelers?
+   
+   Q: What's a "wheel link"?
+      - Is it an API?
+      - A function call?
+      - A data pipeline?
+   
+   Q: How do wheelers spawn?
+      - Via TRAKA agent?
+      - Directly from AI Agency?
+      - Nomad jobs?
+
+3. Infrastructure Integration:
+   Q: How does this workspace map to your 5 boxes?
+      - Does each box have a WORKSPACE clone?
+      - Is WORKSPACE on workbox only?
+      - Synchronized via git?
+   
+   Q: Where does AI Agency run?
+      - helpbox (has Ollama)?
+      - Dedicated box?
+      - Distributed across boxes?
+   
+   Q: How do Firecracker microVMs access WORKSPACE?
+      - Mounted filesystem?
+      - API calls?
+      - SSH?
+
+4. Development Workflow:
+   Q: When you work on OpenHWY, what's the flow?
+      - Edit code in neovide
+      - AI Agency generates code
+      - Wheelers test code
+      - Deploy via Nomad?
+   
+   Q: How do the bootloader scripts work?
+      - Do they set up entire environments?
+      - Do they start services?
+      - Do they configure networking?
+
+5. Meta-Logging:
+   Q: Who reads the _meta/ logs?
+      - Other AI agents?
+      - You?
+      - Automated systems?
+   
+   Q: What triggers log creation?
+      - Every git commit?
+      - Every file write?
+      - Explicit commands?
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         WHAT I NEED FROM YOU
+═══════════════════════════════════════════════════════════════════════════════
+
+To help you fill in the manifest properly, tell me:
+
+1. **AI Agency Forge status:**
+   - What's built? What's left?
+   - What models are you using?
+   - How does it integrate with OpenHWY?
+
+2. **Wheelers architecture:**
+   - List of all wheelers
+   - How wheels work
+   - Connection to TRAKA agent
+
+3. **Infrastructure mapping:**
+   - Which box runs what
+   - How WORKSPACE is distributed
+   - Network topology
+
+4. **Development workflow:**
+   - How you actually work day-to-day
+   - How agents help you code
+   - How code gets deployed
+
+5. **Bootloader details:**
+   - What each script does
+   - Example of a complete bootloader sequence
+   - How it ties to Nomad/Firecracker
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         NEXT STEPS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. You answer the questions above
+2. I help you map it all to the manifest
+3. We create specific sections for:
+   - AI Agency Forge
+   - Wheelers system
+   - Bootloader architecture
+   - Meta-logging standards
+4. We integrate it with OpenHWY architecture
+5. You have a complete, accurate manifest
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+I'm not guessing anymore. Tell me what you actually have.
+Then we'll document it properly.
+
+You spent a year building this. Let's map it correctly.
