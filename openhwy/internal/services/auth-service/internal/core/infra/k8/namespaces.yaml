@@ -1,0 +1,11 @@
+# kubernetes/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: auth-service
+    labels:
+        name: auth-service
+        environment: production
+
+---
+

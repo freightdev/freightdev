@@ -1,0 +1,5 @@
+## Ollama Control Service - OCS
+## Repo = github.com/freigthdev/main/services/ocs
+## Path = /core/config-manager/constants.yaml
+
+OCS_BIN: "/cmd/ocs/bin"

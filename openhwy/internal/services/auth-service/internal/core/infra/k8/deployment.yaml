@@ -1,0 +1,79 @@
+# kubernetes/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: auth-service
+    namespace: auth-service
+    labels:
+        app: auth-service
+        version: v1
+spec:
+    replicas: 3
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+    selector:
+        matchLabels:
+            app: auth-service
+    template:
+        metadata:
+            labels:
+                app: auth-service
+                version: v1
+        spec:
+            serviceAccountName: auth-service
+            securityContext:
+                runAsNonRoot: true
+                runAsUser: 1001
+                runAsGroup: 1001
+                fsGroup: 1001
+            containers:
+                - name: auth-service
+                  image: auth-service:latest
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 8080
+                        name: http
+                        protocol: TCP
+                  env:
+                      - name: DB_USERNAME
+                        value: "postgres"
+                  envFrom:
+                      - configMapRef:
+                            name: auth-service-config
+                      - secretRef:
+                            name: auth-service-secrets
+                  resources:
+                      requests:
+                          memory: "128Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "512Mi"
+                          cpu: "500m"
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: http
+                      initialDelaySeconds: 30
+                      periodSeconds: 30
+                      timeoutSeconds: 10
+                      failureThreshold: 3
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: http
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                      failureThreshold: 3
+                  securityContext:
+                      allowPrivilegeEscalation: false
+                      readOnlyRootFilesystem: true
+                      capabilities:
+                          drop:
+                              - ALL
+
+---
+

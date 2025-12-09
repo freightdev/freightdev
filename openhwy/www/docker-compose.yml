@@ -1,0 +1,11 @@
+services:
+  astro:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        ENV_FILE: ./.env
+    ports:
+      - '4173:4173'
+    env_file:
+      - ./.env
