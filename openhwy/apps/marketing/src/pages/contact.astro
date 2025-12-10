@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+const contactMethods = [
+  {
+    title: 'Sales',
+    icon: '💼',
+    description: 'Questions about pricing or features?',
+    contact: 'sales@hwy-tms.com',
+    availability: 'Mon-Fri, 8am-6pm EST',
+  },
+  {
+    title: 'Support',
+    icon: '🎧',
+    description: 'Need help with your account?',
+    contact: 'support@hwy-tms.com',
+    availability: '24/7 Support',
+  },
+  {
+    title: 'Phone',
+    icon: '📞',
+    description: 'Prefer to talk? Give us a call.',
+    contact: '1-800-HWY-TMS1',
+    availability: 'Mon-Fri, 8am-8pm EST',
+  },
+];
+---
+
+<BaseLayout title="Contact Us - HWY-TMS">
+  <Navbar />
+
+  <div class="pt-32 pb-20">
+    <!-- Hero -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-purple bg-clip-text text-transparent">
+          Get in Touch
+        </h1>
+        <p class="text-xl text-text-secondary max-w-3xl mx-auto">
+          Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+        </p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12">
+        <!-- Contact Form -->
+        <div class="bg-background-card rounded-2xl p-8 border border-background-elevated">
+          <h2 class="text-2xl font-bold mb-6">Send us a Message</h2>
+          <form class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label for="firstName" class="block text-sm font-medium mb-2">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  class="w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium mb-2">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  class="w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium mb-2">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="company" class="block text-sm font-medium mb-2">Company Name</label>
+              <input
+                type="text"
+                id="company"
+                name="company"
+                class="w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="subject" class="block text-sm font-medium mb-2">Subject</label>
+              <select
+                id="subject"
+                name="subject"
+                class="w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors"
+                required
+              >
+                <option value="">Select a subject</option>
+                <option value="sales">Sales Inquiry</option>
+                <option value="support">Technical Support</option>
+                <option value="demo">Request a Demo</option>
+                <option value="partnership">Partnership</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="message" class="block text-sm font-medium mb-2">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="6"
+                class="w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors resize-none"
+                required
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-gradient-purple text-white px-8 py-4 rounded-lg text-lg font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-purple-primary/50"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+
+        <!-- Contact Methods -->
+        <div class="space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold mb-6">Other Ways to Reach Us</h2>
+            <div class="space-y-6">
+              {contactMethods.map((method) => (
+                <div class="bg-background-card rounded-xl p-6 border border-background-elevated">
+                  <div class="flex items-start">
+                    <div class="text-4xl mr-4">{method.icon}</div>
+                    <div>
+                      <h3 class="text-xl font-semibold mb-1">{method.title}</h3>
+                      <p class="text-text-secondary mb-2">{method.description}</p>
+                      <p class="text-purple-primary font-medium mb-1">{method.contact}</p>
+                      <p class="text-text-tertiary text-sm">{method.availability}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Office Location -->
+          <div class="bg-background-card rounded-xl p-6 border border-background-elevated">
+            <h3 class="text-xl font-semibold mb-4">Our Office</h3>
+            <p class="text-text-secondary mb-2">HWY-TMS Headquarters</p>
+            <p class="text-text-secondary mb-2">123 Logistics Lane</p>
+            <p class="text-text-secondary mb-4">Dallas, TX 75201</p>
+            <div class="aspect-video bg-background-elevated rounded-lg flex items-center justify-center">
+              <div class="text-center">
+                <svg class="w-16 h-16 mx-auto mb-2 text-purple-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p class="text-text-secondary text-sm">Map View</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Link -->
+          <div class="bg-gradient-to-br from-purple-primary/20 to-purple-secondary/20 rounded-xl p-6 border border-purple-primary/30">
+            <h3 class="text-xl font-semibold mb-2">Have a Quick Question?</h3>
+            <p class="text-text-secondary mb-4">Check out our FAQ section for instant answers to common questions.</p>
+            <a
+              href="/pricing#faq"
+              class="inline-block bg-gradient-purple text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            >
+              View FAQ
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,47 @@
+[package]
+name = "payment_service"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fast & Easy Dispatching LLC"]
+description = "HWY-TMS Payment Webhook Service (Stripe Integration)"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# Web framework
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Database
+surrealdb = "1.1.1"
+
+# Stripe
+stripe-rust = { version = "0.28", features = ["async", "webhook"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "2.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Environment variables
+dotenvy = "0.15"
+
+# Crypto (for webhook verification)
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+
+[dev-dependencies]

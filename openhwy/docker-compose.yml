@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # DATABASE
+  # ============================================================================
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: hwytms-surrealdb
+    command: start --log debug --user root --pass root file://data/database.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./storage/surrealdb:/data
+    networks:
+      - hwytms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # BACKEND SERVICES
+  # ============================================================================
+
+  auth-service:
+    build:
+      context: ./services/auth_service
+      dockerfile: Dockerfile
+    container_name: hwytms-auth
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=surrealdb:8000
+      - JWT_SECRET=dev-secret-change-in-production
+      - RUST_LOG=auth_service=debug
+    depends_on:
+      surrealdb:
+        condition: service_healthy
+    networks:
+      - hwytms-network
+
+  payment-service:
+    build:
+      context: ./services/payment_service
+      dockerfile: Dockerfile
+    container_name: hwytms-payment
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=surrealdb:8000
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_xxx}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-whsec_xxx}
+      - RUST_LOG=payment_service=debug
+    depends_on:
+      surrealdb:
+        condition: service_healthy
+    networks:
+      - hwytms-network
+
+  nebula-ca-service:
+    build:
+      context: ./services/connection_service
+      dockerfile: Dockerfile
+    container_name: hwytms-nebula-ca
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=surrealdb:8000
+      - CA_CERT_PATH=/certs/ca.crt
+      - CA_KEY_PATH=/certs/ca.key
+      - LIGHTHOUSE_HOST=lighthouse.open-hwy.com:4242
+      - RUST_LOG=connection_service=debug
+    volumes:
+      - ./certs:/certs
+    depends_on:
+      surrealdb:
+        condition: service_healthy
+    networks:
+      - hwytms-network
+
+  invite-service:
+    build:
+      context: ./services/invite_service
+      dockerfile: Dockerfile
+    container_name: hwytms-invite
+    ports:
+      - "8004:8004"
+    environment:
+      - DATABASE_URL=surrealdb:8000
+      - NEBULA_CA_URL=http://nebula-ca-service:8003
+      - AUTH_URL=http://auth-service:8001
+      - BASE_URL=https://open-hwy.com
+      - RUST_LOG=invite_service=debug
+    depends_on:
+      - surrealdb
+      - auth-service
+      - nebula-ca-service
+    networks:
+      - hwytms-network
+
+  download-service:
+    build:
+      context: ./services/download_service
+      dockerfile: Dockerfile
+    container_name: hwytms-download
+    ports:
+      - "8005:8005"
+    environment:
+      - BINARIES_PATH=/binaries
+      - RUST_LOG=download_service=debug
+    volumes:
+      - ./storage/garage/app_binaries:/binaries
+    networks:
+      - hwytms-network
+
+  # ============================================================================
+  # FRONTEND (optional - for development)
+  # ============================================================================
+
+  marketing-site:
+    build:
+      context: ./apps/marketing
+      dockerfile: Dockerfile
+    container_name: hwytms-marketing
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - hwytms-network
+
+networks:
+  hwytms-network:
+    driver: bridge
+
+volumes:
+  surrealdb-data:

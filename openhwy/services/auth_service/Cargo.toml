@@ -1,0 +1,47 @@
+[package]
+name = "auth_service"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fast & Easy Dispatching LLC"]
+description = "HWY-TMS Authentication Service (Torii)"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# Web framework
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Database
+surrealdb = "1.1.1"
+
+# Authentication & JWT
+jsonwebtoken = "9.2"
+argon2 = "0.5"
+rand = "0.8"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "2.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Environment variables
+dotenvy = "0.15"
+
+# HTTP client (for external validation)
+reqwest = { version = "0.11", features = ["json"] }
+
+[dev-dependencies]
