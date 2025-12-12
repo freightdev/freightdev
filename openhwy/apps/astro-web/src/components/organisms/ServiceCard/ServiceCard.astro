@@ -1,0 +1,132 @@
+---
+import Badge from '@components/atoms/Badge';
+import Button from '@components/atoms/Button';
+import { GradientText } from '@components/atoms/Typegraphy';
+
+export interface Props {
+  title: string;
+  rate: string;
+  contract?: string;
+  description: string;
+  includes: string[];
+  ctaText: string;
+}
+
+const { title, rate, contract, description, includes, ctaText } = Astro.props;
+---
+
+<div class="service-card">
+  <div class="service-header">
+    <div>
+      <div class="service-title">{title}</div>
+      <GradientText variant="green" class="service-rate">{rate}</GradientText>
+      {contract && (
+        <Badge variant="contract">{contract}</Badge>
+      )}
+    </div>
+  </div>
+  <p class="service-description">{description}</p>
+  <div class="service-includes">
+    <div class="includes-title">
+      {title === 'Paperwork Handler' ? 'What We Handle:' : title === 'JIT Load Finder' ? 'What\'s Included:' : 'Everything Included:'}
+    </div>
+    <ul class="includes-list">
+      {includes.map(item => (
+        <li>
+          <span class="check-icon">✓</span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <Button variant="primary" class="service-cta-btn">
+    {ctaText}
+  </Button>
+</div>
+
+<style>
+  .service-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .service-card:hover {
+    border-color: #d946ef;
+    box-shadow: 0 20px 60px rgba(217, 70, 239, 0.3);
+    transform: translateY(-8px);
+  }
+
+  .service-header {
+    margin-bottom: 24px;
+  }
+
+  .service-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #e0e0e0;
+  }
+
+  .service-rate {
+    font-size: 56px;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .service-description {
+    font-size: 16px;
+    color: #888;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    flex: 1;
+  }
+
+  .service-includes {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .includes-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  .includes-list {
+    list-style: none;
+  }
+
+  .includes-list li {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #e0e0e0;
+  }
+
+  .check-icon {
+    color: #10b981;
+    font-size: 20px;
+  }
+
+  .service-cta-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+
+  .service-cta-btn:hover {
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+  }
+</style>

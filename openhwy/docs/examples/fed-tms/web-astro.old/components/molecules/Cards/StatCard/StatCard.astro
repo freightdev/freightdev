@@ -1,0 +1,15 @@
+---
+import type { Stat } from '../content/about';
+import type { CardRendererProps } from '../card.types';
+
+const { item } = Astro.props as CardRendererProps<Stat>;
+---
+
+<div class="text-center space-y-2">
+  {item.icon && <div class="text-5xl mb-2">{item.icon}</div>}
+  <div class="text-4xl font-bold bg-gradient-purple bg-clip-text text-transparent">
+    {item.value}
+  </div>
+  <div class="text-lg font-semibold">{item.label}</div>
+  {item.description && <p class="text-sm text-text-secondary">{item.description}</p>}
+</div>

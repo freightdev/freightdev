@@ -1,0 +1,100 @@
+---
+import Button from '@components/atoms/Button';
+
+export interface Props {
+  navLinks?: Array<{ href: string; label: string }>;
+}
+
+const { navLinks = [] } = Astro.props;
+---
+
+<nav id="navbar" class="navbar">
+  <div class="nav-container">
+    <div class="logo">FED</div>
+    <div class="nav-links">
+      {navLinks.map(link => (
+        <a href={link.href} class="nav-link">{link.label}</a>
+      ))}
+      <Button variant="primary" size="small" href="#cta">
+        Start Free Trial
+      </Button>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 48px;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    transition: all 0.3s;
+  }
+
+  .navbar.scrolled {
+    padding: 12px 48px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-size: 15px;
+  }
+
+  .nav-link:hover {
+    color: #d946ef;
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 16px 24px;
+    }
+
+    .nav-links {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    }
+  });
+</script>

@@ -1,0 +1,50 @@
+---
+import { page, site } from "../../routes";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Sign Up - HWY-TMS">
+  <section
+    class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-br from-purple-primary/20 via-background to-purple-secondary/20"
+  >
+    <div class="max-w-3xl w-full text-center space-y-6">
+      <div>
+        <h1
+          class="text-4xl md:text-5xl font-bold bg-gradient-purple bg-clip-text text-transparent"
+        >
+          Register inside the Flutter ecosystem
+        </h1>
+        <p class="mt-4 text-lg text-text-secondary">
+          The Flutter application is where account creation happens. Open it to
+          create your company, configure roles, and enjoy the same experience on
+          every platform you touch.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={site.app}
+          class="bg-gradient-purple text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-2xl shadow-purple-primary/40 hover:opacity-90 transition-opacity"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Launch Flutter App
+        </a>
+        <a
+          href={page.download}
+          class="bg-background-elevated text-white px-8 py-4 rounded-2xl text-lg font-semibold border border-background-card hover:border-purple-primary transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download Installer
+        </a>
+      </div>
+
+      <p class="text-sm text-text-tertiary">
+        The marketing site stays informative—everything else happens in the
+        Flutter application so you get one consistent login/registration path.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

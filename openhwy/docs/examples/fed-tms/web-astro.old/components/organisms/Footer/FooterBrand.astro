@@ -1,0 +1,20 @@
+---
+import type { FooterConfig } from './footer.configs';
+
+interface Props {
+  brand: FooterConfig['brand'];
+}
+
+const { brand } = Astro.props as Props;
+---
+
+<div class="flex items-center gap-2">
+  <div class="w-8 h-8 bg-gradient-purple rounded-lg flex items-center justify-center">
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+    </svg>
+  </div>
+  <span class="text-lg font-bold bg-gradient-purple bg-clip-text text-transparent">
+    {brand.name}
+  </span>
+</div>

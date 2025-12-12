@@ -1,0 +1,53 @@
+---
+import type { FormField } from './form-field.types';
+
+interface Props {
+  field: FormField;
+}
+
+const { field } = Astro.props as Props;
+const baseClasses =
+  'w-full px-4 py-3 bg-background-elevated border border-background-card rounded-lg focus:outline-none focus:border-purple-primary transition-colors';
+---
+
+<div>
+  <label for={field.name} class="block text-sm font-medium mb-2">
+    {field.label}
+  </label>
+
+{field.type === 'textarea' && (
+    <textarea
+      id={field.name}
+      name={field.name}
+      rows="6"
+      class={baseClasses + ' resize-none'}
+      placeholder={field.placeholder}
+      required={field.required}
+    />
+  )}
+
+  {field.type === 'select' && (
+    <select
+      id={field.name}
+      name={field.name}
+      class={baseClasses}
+      required={field.required}
+    >
+      <option value="">Select a subject</option>
+      {field.options?.map((option) => (
+        <option value={option.value}>{option.label}</option>
+      ))}
+    </select>
+  )}
+
+  {field.type !== 'textarea' && field.type !== 'select' && (
+    <input
+      type={field.type}
+      id={field.name}
+      name={field.name}
+      class={baseClasses}
+      placeholder={field.placeholder}
+      required={field.required}
+    />
+  )}
+</div>

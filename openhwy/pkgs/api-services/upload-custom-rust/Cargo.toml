@@ -1,0 +1,40 @@
+[package]
+name = "upload_service"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fast & Easy Dispatching LLC"]
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = { version = "0.7", features = ["multipart"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+thiserror = "1"
+
+# JWT
+jsonwebtoken = "9"
+
+# Database
+surrealdb = "1"
+
+# File handling
+multer = "3"
+mime = "0.3"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Image processing
+image = "0.24"
+
+# Environment
+dotenv = "0.15"
+
+[dev-dependencies]
+tower = { version = "0.4", features = ["util"] }
+http-body-util = "0.1"

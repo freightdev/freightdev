@@ -1,0 +1,87 @@
+---
+import Badge from '@components/atoms/Badge';
+import { FeatureCard } from '@components/molecules/Card';
+
+export interface Props {
+  badge: string;
+  title: string;
+  subtitle: string;
+  features: Array<{ icon: string; title: string; description: string }>;
+}
+
+const { badge, title, subtitle, features } = Astro.props;
+---
+
+<section class="section features-section" id="features">
+  <div class="container">
+    <div class="section-header">
+      <Badge variant="section">{badge}</Badge>
+      <h2 class="section-title" set:html={title} />
+      <p class="section-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="features-grid">
+      {features.map(feature => (
+        <FeatureCard
+          icon={feature.icon}
+          title={feature.title}
+          description={feature.description}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #e0e0e0;
+  }
+
+  .section-subtitle {
+    font-size: 20px;
+    color: #888;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  @media (max-width: 1024px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 36px;
+    }
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

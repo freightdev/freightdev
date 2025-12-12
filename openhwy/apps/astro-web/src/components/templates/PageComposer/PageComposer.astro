@@ -1,0 +1,12 @@
+---
+import ComposerList from './ComposerList.astro';
+import type { ComponentNode } from './composer.types';
+
+interface Props {
+  nodes: ComponentNode[];
+}
+
+const { nodes } = Astro.props as Props;
+---
+
+<ComposerList nodes={nodes} />

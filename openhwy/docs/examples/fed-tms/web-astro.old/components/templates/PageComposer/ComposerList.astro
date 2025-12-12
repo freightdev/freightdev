@@ -1,0 +1,14 @@
+---
+import type { ComponentNode } from './composer.types';
+import ComposerNode from './ComposerNode.astro';
+
+interface Props {
+  nodes?: ComponentNode[];
+}
+
+const { nodes = [] } = Astro.props as Props;
+---
+
+{nodes.map((node) => (
+  <ComposerNode node={node} />
+))}

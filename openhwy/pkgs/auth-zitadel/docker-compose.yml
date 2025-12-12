@@ -1,0 +1,46 @@
+# openhwy/services/auth/docker-compose.yml
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: openhwy-auth-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: zitadel
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - openhwy-network
+
+  zitadel:
+    image: ghcr.io/zitadel/zitadel:latest
+    container_name: openhwy-zitadel
+    restart: unless-stopped
+    command: "start-from-init --masterkeyFromEnv --tlsMode disabled"
+    environment:
+      - ZITADEL_MASTERKEY=${ZITADEL_MASTERKEY}
+      - ZITADEL_DATABASE_POSTGRES_HOST=postgres
+      - ZITADEL_DATABASE_POSTGRES_PORT=5432
+      - ZITADEL_DATABASE_POSTGRES_DATABASE=zitadel
+      - ZITADEL_DATABASE_POSTGRES_USER_USERNAME=postgres
+      - ZITADEL_DATABASE_POSTGRES_USER_PASSWORD=${DB_PASSWORD}
+      - ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE=disable
+      - ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME=postgres
+      - ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD=${DB_PASSWORD}
+      - ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE=disable
+      - ZITADEL_EXTERNALSECURE=false
+      - ZITADEL_EXTERNALPORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - openhwy-network
+
+networks:
+  openhwy-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

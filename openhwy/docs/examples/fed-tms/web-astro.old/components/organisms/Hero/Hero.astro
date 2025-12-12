@@ -1,0 +1,27 @@
+---
+import Container from '@components/atoms/Container';
+import HeroActions from './HeroActions.astro';
+import HeroHeading from './HeroHeading.astro';
+import HeroMedia from './HeroMedia.astro';
+import type { HeroProps } from './hero.types';
+import { getHeroLayoutClasses, getHeroWrapperClasses } from './hero.variants';
+
+const props = Astro.props as HeroProps;
+const wrapperClasses = getHeroWrapperClasses(props);
+const layoutClasses = getHeroLayoutClasses(props.alignment ?? 'center');
+---
+
+<section class={wrapperClasses} id={props.id} data-testid={props['data-testid']}>
+  <Container maxWidth="xl">
+    <div class={layoutClasses}>
+      <HeroHeading
+        title={props.title}
+        subtitle={props.subtitle}
+        description={props.description}
+        alignment={props.alignment}
+      />
+      <HeroActions primary={props.primaryCta} secondary={props.secondaryCta} alignment={props.alignment} />
+      <HeroMedia title={props.title} image={props.image} video={props.video} />
+    </div>
+  </Container>
+</section>

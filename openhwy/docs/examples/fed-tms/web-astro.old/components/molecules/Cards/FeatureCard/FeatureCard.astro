@@ -1,0 +1,17 @@
+---
+import type { SimpleFeature } from '../content/features';
+import type { CardRendererProps } from '../card.types';
+
+const { item } = Astro.props as CardRendererProps<SimpleFeature>;
+---
+
+<div class="space-y-3">
+  {item.icon && <div class="text-4xl">{item.icon}</div>}
+  <h3 class="text-xl font-semibold">{item.title}</h3>
+  <p class="text-text-secondary">{item.description}</p>
+  {item.link && (
+    <a href={item.link} class="inline-flex text-purple-primary hover:text-purple-secondary transition-colors">
+      Learn more →
+    </a>
+  )}
+</div>

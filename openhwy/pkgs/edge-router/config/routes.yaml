@@ -1,0 +1,141 @@
+# HWY-TMS Route Configuration
+
+routes:
+  # =========================================================================
+  # Marketing Site (Astro)
+  # =========================================================================
+  - name: marketing-site
+    match:
+      host: open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/marketing
+      spa: true
+      compression: true
+    middlewares:
+      - compression
+      - security-headers
+
+  - name: marketing-www
+    match:
+      host: www.open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/marketing
+      spa: true
+      compression: true
+    middlewares:
+      - compression
+      - security-headers
+
+  # =========================================================================
+  # API Routes
+  # =========================================================================
+
+  # Auth Service (Torii)
+  - name: auth-api
+    match:
+      host: api.open-hwy.com
+      path: /auth/*
+    backend:
+      type: service
+      service: torii
+      load_balancer: round_robin
+      health_check:
+        path: /health
+        interval: 10
+        timeout: 5
+    middlewares:
+      - rate-limit-auth
+      - cors-api
+      - security-headers
+
+  # Payment Webhook Service
+  - name: payment-webhook
+    match:
+      host: api.open-hwy.com
+      path: /webhook/*
+    backend:
+      type: service
+      service: payment
+      load_balancer: round_robin
+    middlewares:
+      - rate-limit-webhook
+      - security-headers
+
+  # Nebula CA Service
+  - name: nebula-ca
+    match:
+      host: api.open-hwy.com
+      path: /cert/*
+    backend:
+      type: service
+      service: nebula-ca
+      load_balancer: round_robin
+    middlewares:
+      - jwt-auth
+      - rate-limit-api
+      - cors-api
+      - security-headers
+
+  # Invite Service
+  - name: invite-service
+    match:
+      host: api.open-hwy.com
+      path: /invite/*
+    backend:
+      type: service
+      service: invite
+      load_balancer: round_robin
+    middlewares:
+      - jwt-auth
+      - rate-limit-api
+      - cors-api
+      - security-headers
+
+  # Download Service
+  - name: download-service
+    match:
+      host: download.open-hwy.com
+      path: /*
+    backend:
+      type: service
+      service: download
+      load_balancer: round_robin
+    middlewares:
+      - rate-limit-downloads
+      - cors-downloads
+      - security-headers
+
+  # =========================================================================
+  # Auth Portal (Astro)
+  # =========================================================================
+  - name: auth-portal
+    match:
+      host: portal.open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/portal
+      spa: true
+      compression: true
+    middlewares:
+      - compression
+      - security-headers
+
+  # =========================================================================
+  # Admin Panel (Future)
+  # =========================================================================
+  - name: admin-panel
+    match:
+      host: admin.open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/admin
+      spa: true
+    middlewares:
+      - jwt-auth
+      - security-headers

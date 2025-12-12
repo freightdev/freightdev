@@ -1,0 +1,31 @@
+---
+import { Typography } from '@components';
+import type { HeroProps } from './hero.types';
+import { cn } from '@utils';
+
+const { title, subtitle, description, alignment = 'center' } = Astro.props as Pick<
+  HeroProps,
+  'title' | 'subtitle' | 'description' | 'alignment'
+>;
+---
+
+<div>
+  {subtitle && <p class="eyebrow mb-4">{subtitle}</p>}
+  <Typography.Heading
+    level={1}
+    align={alignment}
+    class="text-5xl md:text-6xl lg:text-7xl bg-gradient-purple bg-clip-text text-transparent"
+  >
+    {title}
+  </Typography.Heading>
+  {description && (
+    <Typography.Text
+      size="lg"
+      tone="secondary"
+      align={alignment}
+      class={cn('md:text-2xl', alignment === 'center' && 'max-w-3xl mx-auto')}
+    >
+      {description}
+    </Typography.Text>
+  )}
+</div>

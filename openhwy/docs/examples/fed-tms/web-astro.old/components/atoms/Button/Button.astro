@@ -1,0 +1,47 @@
+---
+import type { ButtonProps } from './button.types';
+import { buildButtonAttributes, buildButtonClasses } from './button.utils';
+
+const {
+  variant = 'primary',
+  size = 'md',
+  type = 'button',
+  href,
+  external = false,
+  disabled = false,
+  loading = false,
+  fullWidth = false,
+  iconBefore,
+  iconAfter,
+  className,
+  id,
+  'data-testid': dataTestId,
+  ...rest
+} = Astro.props as ButtonProps;
+
+const classes = buildButtonClasses({
+  variant,
+  size,
+  fullWidth,
+  disabled,
+  loading,
+  className,
+});
+
+const { Tag, attributes } = buildButtonAttributes({
+  href,
+  external,
+  type,
+  disabled: disabled || loading,
+  loading,
+  id,
+  dataTestId,
+});
+---
+
+<Tag class={classes} {...attributes} {...rest}>
+  {loading && <span class="mr-2 animate-spin">⏳</span>}
+  {iconBefore && <span class="mr-2">{iconBefore}</span>}
+  <slot />
+  {iconAfter && <span class="ml-2">{iconAfter}</span>}
+</Tag>

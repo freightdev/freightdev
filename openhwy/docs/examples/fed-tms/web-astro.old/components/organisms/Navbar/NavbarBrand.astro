@@ -1,0 +1,20 @@
+---
+import type { NavigationConfig } from './navbar.configs';
+
+interface Props {
+  brand: NavigationConfig['brand'];
+}
+
+const { brand } = Astro.props as Props;
+---
+
+<a href={brand.href} class="flex items-center gap-2">
+  <div class="w-10 h-10 bg-gradient-purple rounded-lg flex items-center justify-center">
+    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+    </svg>
+  </div>
+  <span class="text-xl font-bold bg-gradient-purple bg-clip-text text-transparent">
+    {brand.name}
+  </span>
+</a>

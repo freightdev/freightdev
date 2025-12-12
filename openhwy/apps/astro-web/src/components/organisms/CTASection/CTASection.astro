@@ -1,0 +1,76 @@
+---
+import Button from '@components/atoms/Button';
+
+export interface Props {
+  title: string;
+  subtitle: string;
+  primaryCTA: { text: string; href: string };
+  secondaryCTA: { text: string; href: string };
+  note: string;
+}
+
+const { title, subtitle, primaryCTA, secondaryCTA, note } = Astro.props;
+---
+
+<section class="section cta-section-wrapper" id="cta">
+  <div class="container">
+    <div class="cta-section">
+      <h2 class="cta-title" set:html={title} />
+      <p class="cta-subtitle">{subtitle}</p>
+      <div class="cta-buttons">
+        <Button variant="white" size="large" href={primaryCTA.href}>
+          {primaryCTA.text}
+        </Button>
+        <Button variant="outline" size="large" href={secondaryCTA.href}>
+          {secondaryCTA.text}
+        </Button>
+      </div>
+      <p class="cta-note">{note}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .cta-section {
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    border-radius: 32px;
+    padding: 80px 60px;
+    text-align: center;
+  }
+
+  .cta-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+  }
+
+  .cta-subtitle {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 40px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-note {
+    margin-top: 24px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+import type { Testimonial } from '../content/testimonials';
+import type { CardRendererProps } from '../card.types';
+
+const { item } = Astro.props as CardRendererProps<Testimonial>;
+const stars = item.rating ? Array.from({ length: item.rating }) : [];
+---
+
+<div class="space-y-4">
+  {item.rating && (
+    <div class="flex gap-1">
+      {stars.map((_, idx) => (
+        <span class="text-yellow-400" key={idx}>⭐</span>
+      ))}
+    </div>
+  )}
+  <p class="text-lg text-text-primary italic">"{item.quote}"</p>
+  <div class="flex items-center gap-4">
+    {item.image && (
+      <img src={item.image} alt={item.author} class="w-12 h-12 rounded-full" loading="lazy" />
+    )}
+    <div>
+      <p class="font-semibold">{item.author}</p>
+      <p class="text-sm text-text-secondary">
+        {item.role}
+        {item.company && `, ${item.company}`}
+      </p>
+    </div>
+  </div>
+</div>

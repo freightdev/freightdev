@@ -1,0 +1,29 @@
+---
+import type { BaseComponentProps } from '@components/base';
+import { Typography, Button as ButtonAtom } from '@components';
+import FormField from '@components/molecules/FormField';
+import { contactFormCopy, contactFormSections } from './contact.configs';
+import { cn } from '@utils';
+
+const props = Astro.props as BaseComponentProps;
+const wrapperClass = cn(
+  'bg-background-card rounded-2xl p-8 border border-background-elevated space-y-6',
+  props.className
+);
+---
+
+<div class={wrapperClass} id={props.id} data-testid={props['data-testid']}>
+  <Typography.Heading level={3}>{contactFormCopy.title}</Typography.Heading>
+  <form class="space-y-6">
+    {contactFormSections.map((section) => (
+      <div class={section.gridClass ?? 'space-y-6'}>
+        {section.fields.map((field) => (
+          <FormField field={field} />
+        ))}
+      </div>
+    ))}
+    <ButtonAtom fullWidth size="lg" type="submit">
+      {contactFormCopy.submitLabel}
+    </ButtonAtom>
+  </form>
+</div>

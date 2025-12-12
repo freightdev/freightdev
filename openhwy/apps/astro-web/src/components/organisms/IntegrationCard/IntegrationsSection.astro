@@ -1,0 +1,114 @@
+---
+import Badge from '@components/atoms/Badge';
+import IntegrationCard from './IntegrationCard.astro';
+
+export interface Props {
+  badge: string;
+  title: string;
+  subtitle: string;
+  integrations: Array<{
+    name: string;
+    logo: string;
+    badge: string;
+    description: string;
+    tiers: Array<{ name: string; price: string; limits: string }>;
+  }>;
+}
+
+const { badge, title, subtitle, integrations } = Astro.props;
+---
+
+<section class="section integrations-section" id="integrations">
+  <div class="container">
+    <div class="section-header">
+      <Badge variant="section">{badge}</Badge>
+      <h2 class="section-title" set:html={title} />
+      <p class="section-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="integrations-grid">
+      {integrations.map(integration => (
+        <IntegrationCard {...integration} />
+      ))}
+    </div>
+
+    <div class="pro-tip">
+      <h3 class="pro-tip-title">💡 Pro Tip</h3>
+      <p class="pro-tip-text">
+        Bundle PacketPilot + CargoConnect with any software plan and save 20%. Get the complete automation stack for less.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .integrations-section {
+    background: #16213e;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #e0e0e0;
+  }
+
+  .section-subtitle {
+    font-size: 20px;
+    color: #888;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-top: 60px;
+  }
+
+  .pro-tip {
+    text-align: center;
+    margin-top: 60px;
+    padding: 32px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .pro-tip-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #3b82f6;
+  }
+
+  .pro-tip-text {
+    font-size: 16px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 1024px) {
+    .integrations-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

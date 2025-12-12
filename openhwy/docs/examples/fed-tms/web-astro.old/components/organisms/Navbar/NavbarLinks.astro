@@ -1,0 +1,22 @@
+---
+import type { NavLink } from './navbar.configs';
+
+interface Props {
+  links: NavLink[];
+}
+
+const { links } = Astro.props as Props;
+---
+
+<div class="hidden md:block">
+  <div class="flex items-center space-x-8">
+    {links.map((link) => (
+      <a
+        href={link.href}
+        class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors"
+      >
+        {link.label}
+      </a>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,17 @@
+---
+import type { Variant } from '@components/base';
+import { getCardClasses } from './card.variants';
+
+interface Props {
+  variant?: Variant;
+  hoverable?: boolean;
+  animated?: boolean;
+}
+
+const { variant = 'default', hoverable = true, animated = false } = Astro.props as Props;
+const surfaceClasses = getCardClasses(variant, hoverable, animated);
+---
+
+<div class={surfaceClasses}>
+  <slot />
+</div>

@@ -1,0 +1,56 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '@components/organisms/Header';
+import { Footer } from '@components/organisms/Footer';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+
+const navLinks = [
+  { href: '#features', label: 'Features' },
+  { href: '#software-pricing', label: 'Software' },
+  { href: '#services', label: 'Services' },
+  { href: '#integrations', label: 'Integrations' },
+  { href: '#testimonials', label: 'Reviews' },
+];
+
+const footerLinks = {
+  product: [
+    { label: 'Features', href: '#features' },
+    { label: 'Software Pricing', href: '#software-pricing' },
+    { label: 'Dispatch Services', href: '#services' },
+    { label: 'Integrations', href: '#integrations' },
+    { label: 'API Documentation', href: '#' },
+    { label: 'Changelog', href: '#' },
+  ],
+  company: [
+    { label: 'About Us', href: '#' },
+    { label: 'Careers', href: '#' },
+    { label: 'Contact', href: '#' },
+    { label: 'Blog', href: '#' },
+    { label: 'Reviews', href: '#testimonials' },
+    { label: 'Press Kit', href: '#' },
+  ],
+  resources: [
+    { label: 'Help Center', href: '#' },
+    { label: 'Training Videos', href: '#' },
+    { label: 'Community Forum', href: '#' },
+    { label: 'Webinars', href: '#' },
+    { label: 'Success Stories', href: '#' },
+    { label: 'System Status', href: '#' },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <Header navLinks={navLinks} />
+  <main>
+    <slot />
+  </main>
+  <Footer footerLinks={footerLinks} />
+</BaseLayout>

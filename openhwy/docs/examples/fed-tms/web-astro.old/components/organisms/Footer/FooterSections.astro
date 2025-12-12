@@ -1,0 +1,31 @@
+---
+import type { FooterConfig } from './footer.configs';
+
+interface Props {
+  sections: FooterConfig['sections'];
+}
+
+const { sections } = Astro.props as Props;
+---
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+  {sections.map((section) => (
+    <div>
+      <h3 class="text-text-primary font-semibold mb-4">{section.title}</h3>
+      <ul class="space-y-2">
+        {section.links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-text-secondary hover:text-text-primary text-sm transition-colors"
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
