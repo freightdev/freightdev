@@ -1,0 +1,355 @@
+# Marketeer Edge Router Configuration
+# HWY-TMS Production Setup
+
+server:
+  http:
+    - listen: 0.0.0.0:80
+      redirect_https: true
+
+  https:
+    - listen: 0.0.0.0:443
+      tls:
+        auto: true # Let's Encrypt automatic HTTPS
+        email: admin@open-hwy.com
+
+  graceful_shutdown: 30
+  max_connections: 10000
+
+admin:
+  enabled: true
+  listen: 127.0.0.1:9090
+
+logging:
+  level: info
+  format: json
+  access_log: /var/log/marketeer/access.log
+  error_log: /var/log/marketeer/error.log
+
+# =========================================================================
+# Routes
+# =========================================================================
+
+routes:
+  # Marketing Site (Astro)
+  - name: marketing-site
+    match:
+      host: open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/marketing
+      spa: true
+      compression: true
+    middlewares:
+      - compression
+      - security-headers
+
+  - name: marketing-www
+    match:
+      host: www.open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/marketing
+      spa: true
+      compression: true
+    middlewares:
+      - compression
+      - security-headers
+
+  # Auth Service (Torii)
+  - name: auth-api
+    match:
+      host: api.open-hwy.com
+      path: /auth/*
+    backend:
+      type: service
+      service: zitadel
+      load_balancer: round_robin
+      health_check:
+        path: /health
+        interval: 10
+        timeout: 5
+    middlewares:
+      - rate-limit-auth
+      - cors-api
+      - security-headers
+
+  # Payment Webhook Service
+  - name: payment-webhook
+    match:
+      host: api.open-hwy.com
+      path: /webhook/*
+    backend:
+      type: service
+      service: payment
+      load_balancer: round_robin
+    middlewares:
+      - rate-limit-webhook
+      - security-headers
+
+  # Nebula CA Service
+  - name: nebula-ca
+    match:
+      host: api.open-hwy.com
+      path: /cert/*
+    backend:
+      type: service
+      service: nebula-ca
+      load_balancer: round_robin
+    middlewares:
+      - jwt-auth
+      - rate-limit-api
+      - cors-api
+      - security-headers
+
+  # Invite Service
+  - name: invite-service
+    match:
+      host: api.open-hwy.com
+      path: /invite/*
+    backend:
+      type: service
+      service: invite
+      load_balancer: round_robin
+    middlewares:
+      - jwt-auth
+      - rate-limit-api
+      - cors-api
+      - security-headers
+
+  # Download Service
+  - name: download-service
+    match:
+      host: download.open-hwy.com
+      path: /*
+    backend:
+      type: service
+      service: download
+      load_balancer: round_robin
+    middlewares:
+      - rate-limit-downloads
+      - cors-downloads
+      - security-headers
+
+  # Upload Service
+  - name: upload-service
+    match:
+      host: api.open-hwy.com
+      path: /upload/*
+    backend:
+      type: service
+      service: upload
+      load_balancer: round_robin
+    middlewares:
+      - jwt-auth
+      - rate-limit-api
+      - cors-api
+      - security-headers
+
+  - name: upload-files
+    match:
+      host: api.open-hwy.com
+      path: /files/*
+    backend:
+      type: service
+      service: upload
+      load_balancer: round_robin
+    middlewares:
+      - cors-api
+      - security-headers
+
+  # Auth Portal (Astro)
+  - name: auth-portal
+    match:
+      host: portal.open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/portal
+      spa: true
+      compression: true
+    middlewares:
+      - compression
+      - security-headers
+
+  # Admin Panel (Future)
+  - name: admin-panel
+    match:
+      host: admin.open-hwy.com
+      path: /*
+    backend:
+      type: static
+      root: /var/www/hwy-tms/admin
+      spa: true
+    middlewares:
+      - jwt-auth
+      - security-headers
+
+# =========================================================================
+# Services
+# =========================================================================
+
+services:
+  # Auth Service (Torii) - Port 8001
+  torii:
+    endpoints:
+      - http://auth-service:8001
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Payment Webhook Service - Port 8002
+  payment:
+    endpoints:
+      - http://payment-service:8002
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Nebula CA Service - Port 8003
+  nebula-ca:
+    endpoints:
+      - http://nebula-ca-service:8003
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Invite Service - Port 8004
+  invite:
+    endpoints:
+      - http://invite-service:8004
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Download Service - Port 8005
+  download:
+    endpoints:
+      - http://download-service:8005
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Upload Service - Port 8006
+  upload:
+    endpoints:
+      - http://upload-service:8006
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+# =========================================================================
+# Middlewares
+# =========================================================================
+
+middlewares:
+  # Rate Limiting
+  rate-limit-auth:
+    type: rate_limit
+    requests_per_second: 10
+    burst: 20
+    key: ip
+
+  rate-limit-api:
+    type: rate_limit
+    requests_per_second: 100
+    burst: 200
+    key: ip
+
+  rate-limit-webhook:
+    type: rate_limit
+    requests_per_second: 50
+    burst: 100
+    key: ip
+
+  rate-limit-downloads:
+    type: rate_limit
+    requests_per_second: 10
+    burst: 20
+    key: ip
+
+  # JWT Authentication
+  jwt-auth:
+    type: jwt
+    secret: your-super-secret-key-here-change-in-production
+    header: Authorization
+    required_claims:
+      - sub
+      - exp
+
+  # CORS
+  cors-api:
+    type: cors
+    allow_origins:
+      - https://open-hwy.com
+      - https://www.open-hwy.com
+      - https://portal.open-hwy.com
+      - http://localhost:3000
+      - http://localhost:5173
+    allow_methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allow_headers:
+      - Authorization
+      - Content-Type
+      - X-Requested-With
+    max_age: 86400
+
+  cors-downloads:
+    type: cors
+    allow_origins:
+      - "*"
+    allow_methods:
+      - GET
+    allow_headers:
+      - Range
+      - Accept-Encoding
+
+  # Compression
+  compression:
+    type: compress
+    algorithms:
+      - brotli
+      - gzip
+    min_size: 1024
+
+  # Security Headers
+  security-headers:
+    type: headers
+    add:
+      X-Frame-Options: DENY
+      X-Content-Type-Options: nosniff
+      X-XSS-Protection: "1; mode=block"
+      Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+      Referrer-Policy: strict-origin-when-cross-origin
+      Permissions-Policy: "geolocation=(), microphone=(), camera=()"
+
+  # Cache (Future)
+  cache-static:
+    type: cache
+    ttl: 3600
+    key: request_uri
+    storage: memory
+    max_size: 1GB

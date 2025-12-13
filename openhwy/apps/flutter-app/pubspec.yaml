@@ -1,10 +1,10 @@
-name: flutter-app
+name: flutter_app
 description: HWY-TMS - Transportation Management System by Fast & Easy Dispatching LLC
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
