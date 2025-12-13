@@ -1,0 +1,1429 @@
+.
+├── apps
+│   ├── astro-web
+│   │   ├── ARCHITECTURE.md
+│   │   ├── .astro
+│   │   │   ├── collections
+│   │   │   │   ├── faqs.schema.json
+│   │   │   │   ├── features.schema.json
+│   │   │   │   ├── integrations.schema.json
+│   │   │   │   ├── pricing.schema.json
+│   │   │   │   ├── services.schema.json
+│   │   │   │   ├── stats.schema.json
+│   │   │   │   └── testimonials.schema.json
+│   │   │   ├── content-assets.mjs
+│   │   │   ├── content.d.ts
+│   │   │   ├── content-modules.mjs
+│   │   │   ├── data-store.json
+│   │   │   ├── settings.json
+│   │   │   └── types.d.ts
+│   │   ├── astro.config.mjs
+│   │   ├── docker-compose.yml
+│   │   ├── Dockerfile
+│   │   ├── .env
+│   │   ├── .env.example
+│   │   ├── .gitignore
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── .prettierrc
+│   │   ├── public
+│   │   │   └── favicon.svg
+│   │   ├── src
+│   │   │   ├── components
+│   │   │   │   ├── atoms
+│   │   │   │   │   ├── Badge
+│   │   │   │   │   │   ├── Badge.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── Button
+│   │   │   │   │   │   ├── Button.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── Icon
+│   │   │   │   │   ├── Input
+│   │   │   │   │   ├── Label
+│   │   │   │   │   ├── Link
+│   │   │   │   │   ├── Select
+│   │   │   │   │   └── Typegraphy
+│   │   │   │   │       ├── GradientText.astro
+│   │   │   │   │       └── index.ts
+│   │   │   │   ├── islands
+│   │   │   │   │   └── Counter.tsx
+│   │   │   │   ├── molecules
+│   │   │   │   │   ├── Card
+│   │   │   │   │   │   ├── FAQItem.astro
+│   │   │   │   │   │   ├── FeatureCard.astro
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   ├── StatCard.astro
+│   │   │   │   │   │   ├── TestimonialCard.astro
+│   │   │   │   │   │   └── TrustBadge.astro
+│   │   │   │   │   ├── Drawer
+│   │   │   │   │   ├── FormField
+│   │   │   │   │   ├── NavItem
+│   │   │   │   │   ├── SearchBar
+│   │   │   │   │   ├── Section
+│   │   │   │   │   └── SideBar
+│   │   │   │   ├── organisms
+│   │   │   │   │   ├── ContactForm
+│   │   │   │   │   ├── CTASection
+│   │   │   │   │   │   ├── CTASection.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── FAQSection
+│   │   │   │   │   │   ├── FAQSection.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── FeatureCard
+│   │   │   │   │   │   ├── FeatureSection.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── Footer
+│   │   │   │   │   │   ├── Footer.astro
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   └── TrustSection.astro
+│   │   │   │   │   ├── Header
+│   │   │   │   │   │   ├── Header.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── HeroSection
+│   │   │   │   │   │   ├── HeroSection.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── IntegrationCard
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   ├── IntegrationCard.astro
+│   │   │   │   │   │   └── IntegrationsSection.astro
+│   │   │   │   │   ├── PreviewCard
+│   │   │   │   │   ├── PricingCard
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   ├── PricingCard.astro
+│   │   │   │   │   │   └── PricingSection.astro
+│   │   │   │   │   ├── ReviewCard
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   └── TestimonialsSection.astro
+│   │   │   │   │   ├── ServiceCard
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   ├── ServiceCard.astro
+│   │   │   │   │   │   └── ServicesSection.astro
+│   │   │   │   │   └── SidePanel
+│   │   │   │   └── templates
+│   │   │   │       └── PageComposer
+│   │   │   │           ├── component-registry.ts
+│   │   │   │           ├── ComposerList.astro
+│   │   │   │           ├── ComposerNode.astro
+│   │   │   │           ├── composer.types.ts
+│   │   │   │           ├── index.ts
+│   │   │   │           └── PageComposer.astro
+│   │   │   ├── content
+│   │   │   │   ├── config.ts
+│   │   │   │   ├── faqs
+│   │   │   │   │   ├── 01-trial.json
+│   │   │   │   │   ├── 02-switching.json
+│   │   │   │   │   ├── 03-difference.json
+│   │   │   │   │   ├── 04-contracts.json
+│   │   │   │   │   ├── 05-start.json
+│   │   │   │   │   └── 06-support.json
+│   │   │   │   ├── features
+│   │   │   │   │   ├── 01-load-search.json
+│   │   │   │   │   ├── 02-driver-management.json
+│   │   │   │   │   ├── 03-dispatch-board.json
+│   │   │   │   │   ├── 04-eld-integration.json
+│   │   │   │   │   ├── 05-payment-tracking.json
+│   │   │   │   │   ├── 06-document-automation.json
+│   │   │   │   │   ├── 07-messaging.json
+│   │   │   │   │   ├── 08-ai-assistant.json
+│   │   │   │   │   └── 09-analytics.json
+│   │   │   │   ├── integrations
+│   │   │   │   │   ├── 01-packet-pilot.json
+│   │   │   │   │   └── 02-cargo-connect.json
+│   │   │   │   ├── pricing
+│   │   │   │   │   ├── 01-starter.json
+│   │   │   │   │   ├── 02-professional.json
+│   │   │   │   │   └── 03-enterprise.json
+│   │   │   │   ├── services
+│   │   │   │   │   ├── 01-full-dispatch.json
+│   │   │   │   │   ├── 02-jit-load-finder.json
+│   │   │   │   │   └── 03-paperwork-handler.json
+│   │   │   │   ├── stats
+│   │   │   │   │   ├── 01-loads.json
+│   │   │   │   │   ├── 02-dispatchers.json
+│   │   │   │   │   ├── 03-revenue.json
+│   │   │   │   │   └── 04-satisfaction.json
+│   │   │   │   └── testimonials
+│   │   │   │       ├── 01-tom.json
+│   │   │   │       ├── 02-sarah.json
+│   │   │   │       ├── 03-james.json
+│   │   │   │       ├── 04-maria.json
+│   │   │   │       ├── 05-david.json
+│   │   │   │       └── 06-alex.json
+│   │   │   ├── env.d.ts
+│   │   │   ├── layouts
+│   │   │   │   ├── AuthLayout.astro
+│   │   │   │   ├── BaseLayout.astro
+│   │   │   │   ├── MainLayout.astro
+│   │   │   │   └── PaymentLayout.astro
+│   │   │   ├── lib
+│   │   │   │   ├── api
+│   │   │   │   │   └── client.ts
+│   │   │   │   ├── constants.ts
+│   │   │   │   └── utils.ts
+│   │   │   ├── middleware
+│   │   │   │   └── index.ts
+│   │   │   ├── pages
+│   │   │   │   ├── about.astro
+│   │   │   │   ├── api
+│   │   │   │   │   ├── auth.astro
+│   │   │   │   │   ├── contact.astro
+│   │   │   │   │   └── payment.astro
+│   │   │   │   ├── docs.astro
+│   │   │   │   ├── features.astro
+│   │   │   │   ├── index.astro
+│   │   │   │   ├── inegrations.astro
+│   │   │   │   ├── services.astro
+│   │   │   │   └── software.astro
+│   │   │   ├── routes.ts
+│   │   │   ├── styles
+│   │   │   │   ├── global.css
+│   │   │   │   ├── typegraphy.css
+│   │   │   │   └── utilities.css
+│   │   │   └── types
+│   │   │       ├── api.ts
+│   │   │       ├── content.ts
+│   │   │       └── index.ts
+│   │   ├── tailwind.config.mjs
+│   │   └── tsconfig.json
+│   ├── axum-api
+│   └── flutter-app
+│       ├── analysis_options.yaml
+│       ├── android
+│       │   ├── app
+│       │   │   ├── build.gradle.kts
+│       │   │   └── src
+│       │   │       ├── debug
+│       │   │       │   └── AndroidManifest.xml
+│       │   │       ├── main
+│       │   │       │   ├── AndroidManifest.xml
+│       │   │       │   ├── java
+│       │   │       │   │   └── io
+│       │   │       │   │       └── flutter
+│       │   │       │   │           └── plugins
+│       │   │       │   │               └── GeneratedPluginRegistrant.java
+│       │   │       │   ├── kotlin
+│       │   │       │   │   └── com
+│       │   │       │   │       └── example
+│       │   │       │   │           └── app
+│       │   │       │   │               └── MainActivity.kt
+│       │   │       │   └── res
+│       │   │       │       ├── drawable
+│       │   │       │       │   └── launch_background.xml
+│       │   │       │       ├── drawable-v21
+│       │   │       │       │   └── launch_background.xml
+│       │   │       │       ├── mipmap-hdpi
+│       │   │       │       │   └── ic_launcher.png
+│       │   │       │       ├── mipmap-mdpi
+│       │   │       │       │   └── ic_launcher.png
+│       │   │       │       ├── mipmap-xhdpi
+│       │   │       │       │   └── ic_launcher.png
+│       │   │       │       ├── mipmap-xxhdpi
+│       │   │       │       │   └── ic_launcher.png
+│       │   │       │       ├── mipmap-xxxhdpi
+│       │   │       │       │   └── ic_launcher.png
+│       │   │       │       ├── values
+│       │   │       │       │   └── styles.xml
+│       │   │       │       └── values-night
+│       │   │       │           └── styles.xml
+│       │   │       └── profile
+│       │   │           └── AndroidManifest.xml
+│       │   ├── app_android.iml
+│       │   ├── build.gradle.kts
+│       │   ├── .gitignore
+│       │   ├── gradle
+│       │   │   └── wrapper
+│       │   │       ├── gradle-wrapper.jar
+│       │   │       └── gradle-wrapper.properties
+│       │   ├── gradle.properties
+│       │   ├── gradlew
+│       │   ├── gradlew.bat
+│       │   ├── local.properties
+│       │   └── settings.gradle.kts
+│       ├── app.iml
+│       ├── assets
+│       │   ├── fonts
+│       │   └── images
+│       │       └── .gitkeep
+│       ├── devtools_options.yaml
+│       ├── docker-compose.yml
+│       ├── Dockerfile
+│       ├── .env.dev
+│       ├── .env.prod
+│       ├── .gitignore
+│       ├── .idea
+│       │   ├── libraries
+│       │   │   ├── Dart_SDK.xml
+│       │   │   └── KotlinJavaRuntime.xml
+│       │   ├── modules.xml
+│       │   ├── runConfigurations
+│       │   │   └── main_dart.xml
+│       │   └── workspace.xml
+│       ├── ios
+│       │   ├── Flutter
+│       │   │   ├── AppFrameworkInfo.plist
+│       │   │   ├── Debug.xcconfig
+│       │   │   ├── ephemeral
+│       │   │   │   ├── flutter_lldb_helper.py
+│       │   │   │   └── flutter_lldbinit
+│       │   │   ├── flutter_export_environment.sh
+│       │   │   ├── Generated.xcconfig
+│       │   │   └── Release.xcconfig
+│       │   ├── .gitignore
+│       │   ├── Runner
+│       │   │   ├── AppDelegate.swift
+│       │   │   ├── Assets.xcassets
+│       │   │   │   ├── AppIcon.appiconset
+│       │   │   │   │   ├── Contents.json
+│       │   │   │   │   ├── Icon-App-1024x1024@1x.png
+│       │   │   │   │   ├── Icon-App-20x20@1x.png
+│       │   │   │   │   ├── Icon-App-20x20@2x.png
+│       │   │   │   │   ├── Icon-App-20x20@3x.png
+│       │   │   │   │   ├── Icon-App-29x29@1x.png
+│       │   │   │   │   ├── Icon-App-29x29@2x.png
+│       │   │   │   │   ├── Icon-App-29x29@3x.png
+│       │   │   │   │   ├── Icon-App-40x40@1x.png
+│       │   │   │   │   ├── Icon-App-40x40@2x.png
+│       │   │   │   │   ├── Icon-App-40x40@3x.png
+│       │   │   │   │   ├── Icon-App-60x60@2x.png
+│       │   │   │   │   ├── Icon-App-60x60@3x.png
+│       │   │   │   │   ├── Icon-App-76x76@1x.png
+│       │   │   │   │   ├── Icon-App-76x76@2x.png
+│       │   │   │   │   └── Icon-App-83.5x83.5@2x.png
+│       │   │   │   └── LaunchImage.imageset
+│       │   │   │       ├── Contents.json
+│       │   │   │       ├── LaunchImage@2x.png
+│       │   │   │       ├── LaunchImage@3x.png
+│       │   │   │       ├── LaunchImage.png
+│       │   │   │       └── README.md
+│       │   │   ├── Base.lproj
+│       │   │   │   ├── LaunchScreen.storyboard
+│       │   │   │   └── Main.storyboard
+│       │   │   ├── GeneratedPluginRegistrant.h
+│       │   │   ├── GeneratedPluginRegistrant.m
+│       │   │   ├── Info.plist
+│       │   │   └── Runner-Bridging-Header.h
+│       │   ├── RunnerTests
+│       │   │   └── RunnerTests.swift
+│       │   ├── Runner.xcodeproj
+│       │   │   ├── project.pbxproj
+│       │   │   ├── project.xcworkspace
+│       │   │   │   ├── contents.xcworkspacedata
+│       │   │   │   └── xcshareddata
+│       │   │   │       ├── IDEWorkspaceChecks.plist
+│       │   │   │       └── WorkspaceSettings.xcsettings
+│       │   │   └── xcshareddata
+│       │   │       └── xcschemes
+│       │   │           └── Runner.xcscheme
+│       │   └── Runner.xcworkspace
+│       │       ├── contents.xcworkspacedata
+│       │       └── xcshareddata
+│       │           ├── IDEWorkspaceChecks.plist
+│       │           └── WorkspaceSettings.xcsettings
+│       ├── lib
+│       │   ├── app.dart
+│       │   ├── core
+│       │   │   ├── bootstraps
+│       │   │   │   └── bootstrap.dart
+│       │   │   ├── configs
+│       │   │   │   ├── env.dart
+│       │   │   │   └── flavors.dart
+│       │   │   ├── errors
+│       │   │   │   ├── exception.dart
+│       │   │   │   └── failure.dart
+│       │   │   ├── services
+│       │   │   │   ├── http_client.dart
+│       │   │   │   └── logger.dart
+│       │   │   ├── theme
+│       │   │   │   ├── app_theme.dart
+│       │   │   │   ├── colors.dart
+│       │   │   │   ├── theme.dart
+│       │   │   │   └── typography.dart
+│       │   │   └── widgets
+│       │   │       └── main_navigation.dart
+│       │   ├── main.dart
+│       │   ├── router.dart
+│       │   └── src
+│       │       ├── pages
+│       │       │   ├── accounting_page.dart
+│       │       │   ├── compliance_page.dart
+│       │       │   ├── dispatch_page.dart
+│       │       │   ├── onboarding_page.dart
+│       │       │   ├── settings_page.dart
+│       │       │   └── training_page.dart
+│       │       ├── screens
+│       │       │   ├── accounting
+│       │       │   │   ├── invoice_details_screen.dart
+│       │       │   │   ├── invoices_list_screen.dart
+│       │       │   │   ├── invoices_screen.dart
+│       │       │   │   ├── invoicing_screen.dart
+│       │       │   │   └── payments_screen.dart
+│       │       │   ├── compliance
+│       │       │   │   ├── documents_manager_screen.dart
+│       │       │   │   ├── documents_screen.dart
+│       │       │   │   ├── eld_screen.dart
+│       │       │   │   ├── hos_screen.dart
+│       │       │   │   ├── hos_tracking_screen.dart
+│       │       │   │   └── reports_screen.dart
+│       │       │   ├── dashboard
+│       │       │   │   ├── calendar_dispatch_screen.dart
+│       │       │   │   ├── calendar_screen.dart
+│       │       │   │   ├── create_load_screen.dart
+│       │       │   │   ├── dashboard_screen.dart
+│       │       │   │   ├── dashboardv2_screen.dart
+│       │       │   │   ├── driver_details_screen.dart
+│       │       │   │   ├── drivers_screen.dart
+│       │       │   │   ├── loadboard_screen.dart
+│       │       │   │   ├── load_detail_screen.dart
+│       │       │   │   ├── load_details_screen.dart
+│       │       │   │   ├── loads_list_screen.dart
+│       │       │   │   ├── loads_screen.dart
+│       │       │   │   └── tracking_screen.dart
+│       │       │   ├── notifications
+│       │       │   │   ├── messages_screen.dart
+│       │       │   │   ├── messaging_screen.dart
+│       │       │   │   ├── notifications_screen.dart
+│       │       │   │   └── response_model.dart
+│       │       │   ├── onboarding
+│       │       │   │   └── company_screen.dart
+│       │       │   ├── reports
+│       │       │   │   └── analytics_screen.dart
+│       │       │   ├── settings
+│       │       │   │   ├── company_screen.dart
+│       │       │   │   ├── profile_screen.dart
+│       │       │   │   └── settings_main_screen.dart
+│       │       │   ├── splash
+│       │       │   │   └── splash_screen.dart
+│       │       │   └── training
+│       │       │       └── courses_screen.dart
+│       │       └── widgets
+│       │           ├── app_button.dart
+│       │           ├── app_card.dart
+│       │           ├── app_drawer.dart
+│       │           ├── app_empty_state.dart
+│       │           ├── app_icon.dart
+│       │           ├── app_loader.dart
+│       │           ├── app_search_bar.dart
+│       │           ├── app_stat_card.dart
+│       │           ├── app_text_field.dart
+│       │           ├── detail_card.dart
+│       │           ├── driver_card.dart
+│       │           ├── driver_detail_card.dart
+│       │           ├── load_card.dart
+│       │           ├── load_status_badge.dart
+│       │           ├── notification_tile.dart
+│       │           ├── rate_confirmation_form.dart
+│       │           ├── setup_card.dart
+│       │           └── video_card.dart
+│       ├── linux
+│       │   ├── CMakeLists.txt
+│       │   ├── flutter
+│       │   │   ├── CMakeLists.txt
+│       │   │   ├── ephemeral
+│       │   │   │   ├── flutter_linux
+│       │   │   │   │   ├── fl_application.h
+│       │   │   │   │   ├── fl_basic_message_channel.h
+│       │   │   │   │   ├── fl_binary_codec.h
+│       │   │   │   │   ├── fl_binary_messenger.h
+│       │   │   │   │   ├── fl_dart_project.h
+│       │   │   │   │   ├── fl_engine.h
+│       │   │   │   │   ├── fl_event_channel.h
+│       │   │   │   │   ├── fl_json_message_codec.h
+│       │   │   │   │   ├── fl_json_method_codec.h
+│       │   │   │   │   ├── fl_message_codec.h
+│       │   │   │   │   ├── fl_method_call.h
+│       │   │   │   │   ├── fl_method_channel.h
+│       │   │   │   │   ├── fl_method_codec.h
+│       │   │   │   │   ├── fl_method_response.h
+│       │   │   │   │   ├── fl_pixel_buffer_texture.h
+│       │   │   │   │   ├── fl_plugin_registrar.h
+│       │   │   │   │   ├── fl_plugin_registry.h
+│       │   │   │   │   ├── fl_standard_message_codec.h
+│       │   │   │   │   ├── fl_standard_method_codec.h
+│       │   │   │   │   ├── fl_string_codec.h
+│       │   │   │   │   ├── fl_texture_gl.h
+│       │   │   │   │   ├── fl_texture.h
+│       │   │   │   │   ├── fl_texture_registrar.h
+│       │   │   │   │   ├── flutter_linux.h
+│       │   │   │   │   ├── fl_value.h
+│       │   │   │   │   └── fl_view.h
+│       │   │   │   ├── generated_config.cmake
+│       │   │   │   ├── icudtl.dat
+│       │   │   │   ├── libflutter_linux_gtk.so
+│       │   │   │   └── .plugin_symlinks
+│       │   │   │       ├── file_picker -> /home/admin/.pub-cache/hosted/pub.dev/file_picker-10.3.7/
+│       │   │   │       ├── geolocator_linux -> /home/admin/.pub-cache/hosted/pub.dev/geolocator_linux-0.2.3/
+│       │   │   │       ├── package_info_plus -> /home/admin/.pub-cache/hosted/pub.dev/package_info_plus-8.3.1/
+│       │   │   │       ├── path_provider_linux -> /home/admin/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+│       │   │   │       ├── printing -> /home/admin/.pub-cache/hosted/pub.dev/printing-5.14.2/
+│       │   │   │       └── shared_preferences_linux -> /home/admin/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
+│       │   │   ├── generated_plugin_registrant.cc
+│       │   │   ├── generated_plugin_registrant.h
+│       │   │   └── generated_plugins.cmake
+│       │   ├── .gitignore
+│       │   └── runner
+│       │       ├── CMakeLists.txt
+│       │       ├── main.cc
+│       │       ├── my_application.cc
+│       │       └── my_application.h
+│       ├── macos
+│       │   ├── Flutter
+│       │   │   ├── ephemeral
+│       │   │   │   ├── flutter_export_environment.sh
+│       │   │   │   └── Flutter-Generated.xcconfig
+│       │   │   ├── Flutter-Debug.xcconfig
+│       │   │   ├── Flutter-Release.xcconfig
+│       │   │   └── GeneratedPluginRegistrant.swift
+│       │   ├── .gitignore
+│       │   ├── Runner
+│       │   │   ├── AppDelegate.swift
+│       │   │   ├── Assets.xcassets
+│       │   │   │   └── AppIcon.appiconset
+│       │   │   │       ├── app_icon_1024.png
+│       │   │   │       ├── app_icon_128.png
+│       │   │   │       ├── app_icon_16.png
+│       │   │   │       ├── app_icon_256.png
+│       │   │   │       ├── app_icon_32.png
+│       │   │   │       ├── app_icon_512.png
+│       │   │   │       ├── app_icon_64.png
+│       │   │   │       └── Contents.json
+│       │   │   ├── Base.lproj
+│       │   │   │   └── MainMenu.xib
+│       │   │   ├── Configs
+│       │   │   │   ├── AppInfo.xcconfig
+│       │   │   │   ├── Debug.xcconfig
+│       │   │   │   ├── Release.xcconfig
+│       │   │   │   └── Warnings.xcconfig
+│       │   │   ├── DebugProfile.entitlements
+│       │   │   ├── Info.plist
+│       │   │   ├── MainFlutterWindow.swift
+│       │   │   └── Release.entitlements
+│       │   ├── RunnerTests
+│       │   │   └── RunnerTests.swift
+│       │   ├── Runner.xcodeproj
+│       │   │   ├── project.pbxproj
+│       │   │   ├── project.xcworkspace
+│       │   │   │   └── xcshareddata
+│       │   │   │       └── IDEWorkspaceChecks.plist
+│       │   │   └── xcshareddata
+│       │   │       └── xcschemes
+│       │   │           └── Runner.xcscheme
+│       │   └── Runner.xcworkspace
+│       │       ├── contents.xcworkspacedata
+│       │       └── xcshareddata
+│       │           └── IDEWorkspaceChecks.plist
+│       ├── pubspec.lock
+│       ├── pubspec.yaml
+│       ├── README.md
+│       ├── test
+│       │   └── widget_test.dart
+│       ├── web
+│       │   ├── favicon.png
+│       │   ├── icons
+│       │   │   ├── Icon-192.png
+│       │   │   ├── Icon-512.png
+│       │   │   ├── Icon-maskable-192.png
+│       │   │   └── Icon-maskable-512.png
+│       │   ├── index.html
+│       │   └── manifest.json
+│       └── windows
+│           ├── CMakeLists.txt
+│           ├── flutter
+│           │   ├── CMakeLists.txt
+│           │   ├── ephemeral
+│           │   │   └── .plugin_symlinks
+│           │   │       ├── file_picker -> /home/admin/.pub-cache/hosted/pub.dev/file_picker-10.3.7/
+│           │   │       ├── geolocator_windows -> /home/admin/.pub-cache/hosted/pub.dev/geolocator_windows-0.2.5/
+│           │   │       ├── package_info_plus -> /home/admin/.pub-cache/hosted/pub.dev/package_info_plus-8.3.1/
+│           │   │       ├── path_provider_windows -> /home/admin/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+│           │   │       ├── printing -> /home/admin/.pub-cache/hosted/pub.dev/printing-5.14.2/
+│           │   │       └── shared_preferences_windows -> /home/admin/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
+│           │   ├── generated_plugin_registrant.cc
+│           │   ├── generated_plugin_registrant.h
+│           │   └── generated_plugins.cmake
+│           ├── .gitignore
+│           └── runner
+│               ├── CMakeLists.txt
+│               ├── flutter_window.cpp
+│               ├── flutter_window.h
+│               ├── main.cpp
+│               ├── resource.h
+│               ├── resources
+│               │   └── app_icon.ico
+│               ├── runner.exe.manifest
+│               ├── Runner.rc
+│               ├── utils.cpp
+│               ├── utils.h
+│               ├── win32_window.cpp
+│               └── win32_window.h
+├── docker
+│   └── zitadel
+│       ├── docker-compose.yml
+│       └── .env.examples
+├── docs
+│   ├── ARCHITECTURE_DIAGRAM.md
+│   ├── completions
+│   │   └── agents
+│   │       ├── bigbear.tar.gz
+│   │       ├── cargoconnect.tar.gz
+│   │       ├── legallogger.tar.gz
+│   │       ├── packetpilot.tar.gz
+│   │       ├── truckers-tales.tar.gz
+│   │       ├── wheeler-agents-complete.tar.gz
+│   │       ├── WHEELER-AGENTS-README.md
+│   │       └── whisperwitness.tar.gz
+│   ├── content
+│   │   ├── CONTENT-GOLDMINE.md
+│   │   ├── CONTENT-INDEX.md
+│   │   ├── courses
+│   │   │   ├── E.L.D.A. Assistant Course.docx
+│   │   │   ├── E.L.D.A. Dispatching Course.docx
+│   │   │   ├── E.L.D.A. Dispatching Course INFO.docx
+│   │   │   ├── E.L.D.A. Effortless Course.docx
+│   │   │   └── E.L.D.A. Logistics Course.docx
+│   │   ├── legal-templates
+│   │   │   ├── Carrier Agreement Packet.docx
+│   │   │   ├── Carrier Agreement Packet.pdf
+│   │   │   ├── Dispatcher Agreement.docx
+│   │   │   ├── Dispatcher Agreement.pdf
+│   │   │   ├── Full Dispatcher Agreement.docx
+│   │   │   ├── Full Dispatcher Agreement.pdf
+│   │   │   ├── GENERIC Full Dispatcher Agreement.pdf
+│   │   │   ├── GENERIC Load Finder Agreement.pdf
+│   │   │   ├── GENERIC Paperwork Only Agreement.pdf
+│   │   │   ├── GENERIC Rate Agreement.pdf
+│   │   │   ├── Half Dispatcher Agreement for Ray C. Williams.docx
+│   │   │   ├── Load Finder Agreement Carrier Package.docx
+│   │   │   ├── Load Finder Agreement.docx
+│   │   │   ├── Load Finder Agreement.pdf
+│   │   │   ├── Operating Agreement - Fast&Easy Dispatching LLC(1).docx
+│   │   │   ├── Operating Agreement - Fast&Easy Dispatching LLC.docx
+│   │   │   ├── Paperwork Only Agreement Carrier Package.docx
+│   │   │   ├── Paperwork Only Agreement.docx
+│   │   │   ├── Paperwork Only Agreement.pdf
+│   │   │   ├── Rate Agreement(1).docx
+│   │   │   ├── Rate Agreement(2).docx
+│   │   │   ├── Rate Agreement.docx
+│   │   │   ├── Rate Agreement for Ray C. Williams.docx
+│   │   │   ├── Rate Agreement.pdf
+│   │   │   └── Terms and Agreements_.docx
+│   │   ├── load-boards
+│   │   │   ├── Broker Carrier Packet Preview(1).pdf
+│   │   │   ├── Broker Carrier Packet Preview.pdf
+│   │   │   ├── Brokers for NEW MC(1).docx
+│   │   │   ├── Brokers for NEW MC.docx
+│   │   │   ├── Brokers INFO(1).docx
+│   │   │   ├── Brokers INFO.docx
+│   │   │   ├── Broker Training.png
+│   │   │   ├── CargoVan Sprinter Van Load Boards and Contacts(1).pdf
+│   │   │   ├── CargoVan Sprinter Van Load Boards and Contacts.pdf
+│   │   │   ├── DAT.eml
+│   │   │   ├── DAT Load Board(1).png
+│   │   │   ├── DAT Load Board (2).pdf
+│   │   │   ├── DAT Load Board.pdf
+│   │   │   ├── DAT Load Board.png
+│   │   │   ├── load board log ins(1).pdf
+│   │   │   ├── load board log ins.pdf
+│   │   │   ├── Questions for Brokers.docx
+│   │   │   └── _VM-ADDTRAN1_DATA_VISUALLP_DOCUMENTS_380605A.PDF
+│   │   ├── media
+│   │   │   ├── audio
+│   │   │   │   ├── 5097941_1615238204.mp3
+│   │   │   │   ├── 5097977_1615238308.mp3
+│   │   │   │   ├── Pitch 10.mp3
+│   │   │   │   ├── Pitch 12.mp3
+│   │   │   │   ├── Pitch 1.mp3
+│   │   │   │   ├── Pitch 2.mp3
+│   │   │   │   ├── Pitch 4.mp3
+│   │   │   │   ├── Pitch 5.mp3
+│   │   │   │   ├── Pitch 6.mp3
+│   │   │   │   ├── Pitch 7.mp3
+│   │   │   │   ├── Pitch 8.mp3
+│   │   │   │   └── Pitch 9.mp3
+│   │   │   ├── images
+│   │   │   │   ├── Adobe Reader(1).png
+│   │   │   │   ├── Adobe Reader.png
+│   │   │   │   ├── Billing.png
+│   │   │   │   ├── Broker Training.png
+│   │   │   │   ├── Carriers.png
+│   │   │   │   ├── Constant Contact.png
+│   │   │   │   ├── Daily Process.png
+│   │   │   │   ├── DAT Load Board(1).png
+│   │   │   │   ├── DAT Load Board.png
+│   │   │   │   ├── Dispatcher Training.png
+│   │   │   │   ├── Docusign.png
+│   │   │   │   ├── Doodly (2).png
+│   │   │   │   ├── Doodly.png
+│   │   │   │   ├── E-Fax(1).png
+│   │   │   │   ├── E-Fax.png
+│   │   │   │   ├── Facebook Ads.png
+│   │   │   │   ├── Facebook Group Agreements (3).png
+│   │   │   │   ├── Facebook Group Agreements.png
+│   │   │   │   ├── FAST & EASY (6).png
+│   │   │   │   ├── Flash Drive for Work Documents.png
+│   │   │   │   ├── Flatbed Trailer.png
+│   │   │   │   ├── Footer.png
+│   │   │   │   ├── have lesson title at top.png
+│   │   │   │   ├── IMG_2097.jpg
+│   │   │   │   ├── Knowledge.png
+│   │   │   │   ├── Landing Page(1).png
+│   │   │   │   ├── Landing Page.png
+│   │   │   │   ├── Laptop for Work and Personal Use.png
+│   │   │   │   ├── Laptop Protection Plan.png
+│   │   │   │   ├── MJK Business Plan 8 Steps(1).png
+│   │   │   │   ├── MJK Business Plan 8 Steps.png
+│   │   │   │   ├── PDFEscape.png
+│   │   │   │   ├── Reefer Trailer.png
+│   │   │   │   ├── Screenshot (10).png
+│   │   │   │   ├── Screenshot (1.5).png
+│   │   │   │   ├── Screenshot (227).png
+│   │   │   │   ├── Screenshot (228).png
+│   │   │   │   ├── Screenshot (229).png
+│   │   │   │   ├── Screenshot (230).png
+│   │   │   │   ├── Screenshot (231).png
+│   │   │   │   ├── Screenshot (232).png
+│   │   │   │   ├── Screenshot (233).png
+│   │   │   │   ├── Screenshot (234).png
+│   │   │   │   ├── Screenshot (235).png
+│   │   │   │   ├── Screenshot (236).png
+│   │   │   │   ├── Screenshot (237).png
+│   │   │   │   ├── Screenshot (45).png
+│   │   │   │   ├── Screenshot (46).png
+│   │   │   │   ├── Screenshot (51).png
+│   │   │   │   ├── Screenshot (52).png
+│   │   │   │   ├── Screenshot (64).png
+│   │   │   │   ├── Screenshot (75).png
+│   │   │   │   ├── Screenshot (7).png
+│   │   │   │   ├── Screenshot (85).png
+│   │   │   │   ├── Screenshot (88).png
+│   │   │   │   ├── Screenshot (89).png
+│   │   │   │   ├── Screenshot (92).png
+│   │   │   │   ├── Screenshot (9).png
+│   │   │   │   ├── Speechelo (1).png
+│   │   │   │   ├── Speechelo (2).png
+│   │   │   │   ├── Speechelo (3).png
+│   │   │   │   ├── TotalAV Viris Protection.png
+│   │   │   │   ├── Traffic and Funnels(1).png
+│   │   │   │   ├── Traffic and Funnels.png
+│   │   │   │   ├── Trucking Industry.png
+│   │   │   │   ├── Upsell Script for Purchase Screen.png
+│   │   │   │   ├── Van Trailer.png
+│   │   │   │   ├── What is a Dispatcher.png
+│   │   │   │   └── Your Business.png
+│   │   │   └── screenshots
+│   │   │       └── .gitkeep
+│   │   ├── operations
+│   │   │   ├── BOL sample(1).pdf
+│   │   │   ├── BOL sample.pdf
+│   │   │   ├── Broker Carrier Packet Preview(1).pdf
+│   │   │   ├── Broker Carrier Packet Preview.pdf
+│   │   │   ├── Carrier Agreement Packet.docx
+│   │   │   ├── Carrier Agreement Packet.pdf
+│   │   │   ├── Carrier Profile.docx
+│   │   │   ├── Carrier Profile Sheet - Master Copy.docx
+│   │   │   ├── Credit Card Authorization(1).docx
+│   │   │   ├── Credit Card Authorization.docx
+│   │   │   ├── Credit Card Authorization.pdf
+│   │   │   ├── EIN # - Fast&Easy Dispatching LLC(1).pdf
+│   │   │   ├── EIN # - Fast&Easy Dispatching LLC.pdf
+│   │   │   ├── Factoring and Bond Info(1).pdf
+│   │   │   ├── Factoring and Bond Info.pdf
+│   │   │   ├── Factoring Company - Payment Deduction(1).docx
+│   │   │   ├── Factoring Company - Payment Deduction.docx
+│   │   │   ├── Factoring Company - Payment Deduction.pdf
+│   │   │   ├── Form_W-9 2020.pdf
+│   │   │   ├── GENERIC Factoring Company - Payment Deduction.pdf
+│   │   │   ├── Packet Pilot (PP) Workflow Overview.docx
+│   │   │   ├── Quickbooks (1).PDF
+│   │   │   └── Quickbooks .PDF
+│   │   ├── presentations
+│   │   │   ├── Intro Slide.pptx
+│   │   │   ├── Text Into Script.pptx
+│   │   │   ├── Untitled presentation(1).pptx
+│   │   │   └── Untitled presentation.pptx
+│   │   ├── raw
+│   │   │   └── .gitkeep
+│   │   ├── references
+│   │   │   ├── 8 STEPS MARK J. KOHLER.eml
+│   │   │   ├── Chat GPT Memory.docx
+│   │   │   ├── DAT.eml
+│   │   │   ├── Elda AI Builder & AI Builds.docx
+│   │   │   ├── Elda_AI_Builder.docx
+│   │   │   ├── Form_W-9 2020.pdf
+│   │   │   ├── PressPlay (Special Offer - Toonly) Receipt Order # PK-PRLO03JK9E.eml
+│   │   │   ├── Quickbooks (1).PDF
+│   │   │   ├── Quickbooks .PDF
+│   │   │   ├── Thumbnail Blaster (2).eml
+│   │   │   ├── Thumbnail Blaster.eml
+│   │   │   ├── ThumpBlaster.eml
+│   │   │   ├── Toonly Enterprise (1-time) Receipt Order # PK-P6EJKDDN6L.eml
+│   │   │   ├── Toonly Standard (in app) Receipt Order # PK-PMWQ079D9W.eml
+│   │   │   ├── Toonplates book Receipt Order # PK-PKE3R8Q39L.eml
+│   │   │   ├── WIX - Epic Form Builder(1).pdf
+│   │   │   └── WIX - Epic Form Builder.pdf
+│   │   ├── spreadsheets
+│   │   │   ├── Book of Business.xlsx
+│   │   │   ├── Business Expances .xlsx
+│   │   │   ├── Drivers and Emails.xlsx
+│   │   │   ├── Email_s For Constants Contact.xlsx
+│   │   │   ├── Personal & Business Monthly & Annual Bills.xlsx
+│   │   │   ├── Things To Do.xlsx
+│   │   │   └── Untitled spreadsheet.xlsx
+│   │   └── training-materials
+│   │       ├── 3 Equipment Types Cheat Sheet(1).docx
+│   │       ├── 3 Equipment Types Cheat Sheet.docx
+│   │       ├── Billing FD101.docx
+│   │       ├── Broker Training.png
+│   │       ├── Carriers FD101.docx
+│   │       ├── Cold Call Cheat Sheet(1).docx
+│   │       ├── Cold Call Cheat Sheet.docx
+│   │       ├── Course Descriptions and Seminar_.docx
+│   │       ├── Daily Process FD101.docx
+│   │       ├── Dispatcher Training(1).pdf
+│   │       ├── Dispatcher Training 4(1).pdf
+│   │       ├── Dispatcher Training 4.pdf
+│   │       ├── Dispatcher Training.pdf
+│   │       ├── Dispatcher Training.png
+│   │       ├── E.L.D.A. Assistant Course.docx
+│   │       ├── E.L.D.A. Dispatching Course.docx
+│   │       ├── E.L.D.A. Dispatching Course INFO.docx
+│   │       ├── E.L.D.A. Effortless Course.docx
+│   │       ├── E.L.D.A. Logistics Course.docx
+│   │       ├── Knowledge FD101.docx
+│   │       ├── Load Cheat Sheet(1).docx
+│   │       ├── Load Cheat Sheet.docx
+│   │       ├── Seminar Training Script_.docx
+│   │       ├── What is a Dispatcher FD101.docx
+│   │       └── Your Business FD101.docx
+│   ├── DOMAIN
+│   ├── examples
+│   │   ├── fed-tms
+│   │   │   ├── fed-calendar.html
+│   │   │   ├── fed-cargo-connect.html
+│   │   │   ├── fed-dashboard.html
+│   │   │   ├── fed-dispatch-board.html
+│   │   │   ├── fed-documents.html
+│   │   │   ├── fed-drivers.html
+│   │   │   ├── fed-elda.html
+│   │   │   ├── fed-eld.html
+│   │   │   ├── fed-invoicing.html
+│   │   │   ├── fed-landing-page.html
+│   │   │   ├── fed-live-tracking.html
+│   │   │   ├── fed-loads.html
+│   │   │   ├── fed-messaging.html
+│   │   │   ├── fed-packet-pilot.html
+│   │   │   ├── fed-payments.html
+│   │   │   ├── fed-training-center.html
+│   │   │   └── flutter-app.old
+│   │   │       ├── main.dart
+│   │   │       ├── models
+│   │   │       │   ├── company.dart
+│   │   │       │   ├── document.dart
+│   │   │       │   ├── driver.dart
+│   │   │       │   ├── invoice.dart
+│   │   │       │   ├── load.dart
+│   │   │       │   ├── message.dart
+│   │   │       │   ├── payment.dart
+│   │   │       │   └── user.dart
+│   │   │       ├── providers
+│   │   │       │   ├── auth_provider.dart
+│   │   │       │   ├── document_provider.dart
+│   │   │       │   ├── driver_provider.dart
+│   │   │       │   ├── invoice_provider.dart
+│   │   │       │   ├── load_provider.dart
+│   │   │       │   ├── message_provider.dart
+│   │   │       │   └── payment_provider.dart
+│   │   │       ├── services
+│   │   │       │   ├── api_client.dart
+│   │   │       │   ├── auth_service.dart
+│   │   │       │   ├── cloud_storage_service.dart
+│   │   │       │   ├── database_service.dart
+│   │   │       │   ├── document_service.dart
+│   │   │       │   ├── driver_service.dart
+│   │   │       │   ├── invoice_service.dart
+│   │   │       │   ├── load_service.dart
+│   │   │       │   ├── local_storage_service.dart
+│   │   │       │   ├── message_service.dart
+│   │   │       │   └── payment_service.dart
+│   │   │       ├── utils
+│   │   │       │   └── theme.dart
+│   │   │       └── widgets
+│   │   │           └── app_drawer.dart
+│   │   ├── openhwy-dispatching.html
+│   │   ├── openhwy-dispatching-v1.html
+│   │   ├── openhwy-dispatching-v2.html
+│   │   ├── openhwy-dispatching-v3.html
+│   │   └── README.md
+│   ├── FLUTTER_APP_ANALYSIS.md
+│   ├── PROMPT.md
+│   ├── QUICK_REFERENCE.md
+│   ├── README.md
+│   ├── web-astro.old
+│   │   ├── components
+│   │   │   ├── atoms
+│   │   │   │   ├── Button
+│   │   │   │   │   ├── Button.astro
+│   │   │   │   │   ├── button.types.ts
+│   │   │   │   │   ├── button.utils.ts
+│   │   │   │   │   ├── button.variants.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Card
+│   │   │   │   │   ├── Card.astro
+│   │   │   │   │   ├── CardSurface.astro
+│   │   │   │   │   ├── card.types.ts
+│   │   │   │   │   ├── card.utils.ts
+│   │   │   │   │   ├── card.variants.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Container
+│   │   │   │   │   ├── Container.astro
+│   │   │   │   │   ├── container.types.ts
+│   │   │   │   │   ├── container.utils.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   └── Typography
+│   │   │   │       ├── Heading.astro
+│   │   │   │       ├── index.ts
+│   │   │   │       └── Text.astro
+│   │   │   ├── index.ts
+│   │   │   ├── islands
+│   │   │   │   └── Counter.tsx
+│   │   │   ├── layouts
+│   │   │   │   ├── BaseLayout.astro
+│   │   │   │   └── BaseLayout.configs.ts
+│   │   │   ├── molecules
+│   │   │   │   ├── Cards
+│   │   │   │   │   ├── ContactCard
+│   │   │   │   │   │   ├── ContactCard.astro
+│   │   │   │   │   │   └── contact.ts
+│   │   │   │   │   ├── FAQCard
+│   │   │   │   │   │   ├── FAQCard.astro
+│   │   │   │   │   │   └── faqs.ts
+│   │   │   │   │   ├── FeatureCard
+│   │   │   │   │   │   ├── FeatureCard.astro
+│   │   │   │   │   │   ├── FeatureCategoryCard.astro
+│   │   │   │   │   │   ├── FeatureCategoryFeature.astro
+│   │   │   │   │   │   └── features.ts
+│   │   │   │   │   ├── LinkCard
+│   │   │   │   │   │   ├── FaqLinkCard.astro
+│   │   │   │   │   │   └── index.ts
+│   │   │   │   │   ├── MapCard
+│   │   │   │   │   │   ├── index.ts
+│   │   │   │   │   │   └── MapCard.astro
+│   │   │   │   │   ├── PricingCard
+│   │   │   │   │   │   ├── PricingCard.astro
+│   │   │   │   │   │   ├── PricingFeature.astro
+│   │   │   │   │   │   └── pricing.ts
+│   │   │   │   │   ├── StatCard
+│   │   │   │   │   │   ├── StatCard.astro
+│   │   │   │   │   │   └── statCard.configs.ts
+│   │   │   │   │   ├── TeamCard
+│   │   │   │   │   │   ├── TeamCard.astro
+│   │   │   │   │   │   └── teamCard.configs.ts
+│   │   │   │   │   ├── TestimonialCard
+│   │   │   │   │   │   ├── TestimonialCard.astro
+│   │   │   │   │   │   └── testimonials.ts
+│   │   │   │   │   └── ValueCard
+│   │   │   │   │       ├── ValueCard.astro
+│   │   │   │   │       └── value.configs.ts
+│   │   │   │   └── Fields
+│   │   │   │       └── FormField
+│   │   │   │           ├── FormField.astro
+│   │   │   │           ├── form-field.types.ts
+│   │   │   │           └── index.ts
+│   │   │   ├── organisms
+│   │   │   │   ├── ContactSection
+│   │   │   │   │   ├── contact.configs.ts
+│   │   │   │   │   ├── ContactForm.astro
+│   │   │   │   │   ├── ContactSection.astro
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── CTA
+│   │   │   │   │   ├── CTA.astro
+│   │   │   │   │   ├── cta.configs.ts
+│   │   │   │   │   ├── cta.types.ts
+│   │   │   │   │   ├── cta.variants.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Footer
+│   │   │   │   │   ├── Footer.astro
+│   │   │   │   │   ├── FooterBrand.astro
+│   │   │   │   │   ├── footer.configs.ts
+│   │   │   │   │   ├── FooterSections.astro
+│   │   │   │   │   ├── FooterSocial.astro
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Hero
+│   │   │   │   │   ├── HeroActions.astro
+│   │   │   │   │   ├── Hero.astro
+│   │   │   │   │   ├── hero.configs.ts
+│   │   │   │   │   ├── HeroHeading.astro
+│   │   │   │   │   ├── HeroMedia.astro
+│   │   │   │   │   ├── hero.types.ts
+│   │   │   │   │   ├── hero.variants.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── Navbar
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── NavbarActions.astro
+│   │   │   │   │   ├── Navbar.astro
+│   │   │   │   │   ├── NavbarBrand.astro
+│   │   │   │   │   ├── navbar.configs.ts
+│   │   │   │   │   ├── NavbarLinks.astro
+│   │   │   │   │   ├── NavbarMobileMenu.astro
+│   │   │   │   │   └── navbar.scripts.ts
+│   │   │   │   └── Section
+│   │   │   │       ├── index.ts
+│   │   │   │       ├── Section.astro
+│   │   │   │       ├── SectionHeading.astro
+│   │   │   │       ├── section.types.ts
+│   │   │   │       ├── section.utils.ts
+│   │   │   │       └── section.variants.ts
+│   │   │   └── templates
+│   │   │       └── PageComposer
+│   │   │           ├── component-registry.ts
+│   │   │           ├── ComposerList.astro
+│   │   │           ├── ComposerNode.astro
+│   │   │           ├── composer.types.ts
+│   │   │           ├── index.ts
+│   │   │           └── PageComposer.astro
+│   │   ├── pages
+│   │   │   ├── auth
+│   │   │   │   ├── login.astro
+│   │   │   │   └── signup.astro
+│   │   │   ├── home
+│   │   │   │   ├── about
+│   │   │   │   │   ├── about.astro
+│   │   │   │   │   └── about.configs.ts
+│   │   │   │   ├── contact
+│   │   │   │   │   ├── contact.astro
+│   │   │   │   │   └── contact.configs.ts
+│   │   │   │   ├── features
+│   │   │   │   │   ├── features.astro
+│   │   │   │   │   └── features.configs.ts
+│   │   │   │   ├── home.configs.ts
+│   │   │   │   └── pricing
+│   │   │   │       ├── pricing.astro
+│   │   │   │       └── pricing.configs.ts
+│   │   │   ├── index.astro
+│   │   │   ├── index.ts
+│   │   │   └── page.types.ts
+│   │   ├── routes.ts
+│   │   ├── styles
+│   │   │   ├── global.css
+│   │   │   ├── typography.css
+│   │   │   └── utilities.css
+│   │   └── utils
+│   │       ├── classNames.ts
+│   │       ├── cn.ts
+│   │       ├── index.ts
+│   │       ├── props.ts
+│   │       └── ui.ts
+│   ├── web-nextjs.old
+│   │   ├── (auth)
+│   │   │   ├── layout.tsx
+│   │   │   ├── login
+│   │   │   │   └── page.tsx
+│   │   │   ├── oauth
+│   │   │   │   ├── callback
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── register
+│   │   │   │   └── page.tsx
+│   │   │   └── reset_password
+│   │   │       └── page.tsx
+│   │   ├── (dashboard)
+│   │   │   ├── aitools
+│   │   │   │   └── page.tsx
+│   │   │   ├── analytics
+│   │   │   │   └── page.tsx
+│   │   │   ├── documents
+│   │   │   │   ├── forms
+│   │   │   │   │   ├── ach-authorization
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── bol
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── broker-agreement
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── carrier-agreement-packet
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── carrier-profile-sheet
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── certificate-insurance
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── credit-card-auth
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── full-dispatcher
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── half-dispatcher
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── insurance-requirements
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── load-finder
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── mc-authority
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   ├── paperwork-only
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── pod
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── rate-agreement
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── rate-confirmation
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── w9
+│   │   │   │   │       └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── [id]
+│   │   │   │   ├── course
+│   │   │   │   │   ├── community
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   ├── leaderboard
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── learning
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   └── status
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── profile
+│   │   │   │   │   ├── clients
+│   │   │   │   │   │   ├── [clientId]
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── drivers
+│   │   │   │   │   │   │   ├── [id]
+│   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── documents
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   ├── loads
+│   │   │   │   │   │   ├── [loadId]
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── settings
+│   │   │   │       ├── account
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── badges
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── connectors
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── datacontrol
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── general
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── layout.tsx
+│   │   │   │       ├── licenses
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── notifications
+│   │   │   │       │   ├── page.tsx
+│   │   │   │       │   └── preferences
+│   │   │   │       │       └── page.tsx
+│   │   │   │       ├── page.tsx
+│   │   │   │       ├── payments
+│   │   │   │       │   ├── history
+│   │   │   │       │   │   └── page.tsx
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── personalization
+│   │   │   │       │   └── page.tsx
+│   │   │   │       └── security
+│   │   │   │           └── page.tsx
+│   │   │   ├── invoicing
+│   │   │   │   ├── billing
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── loadboard
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── messages
+│   │   │   │   └── page.tsx
+│   │   │   ├── reports
+│   │   │   │   ├── carriers
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── commission
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── insurance
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── loads
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── page.tsx
+│   │   │   │   ├── revenue
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── safety
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── schedule
+│   │   │   │       └── page.tsx
+│   │   │   └── tracking
+│   │   │       └── page.tsx
+│   │   ├── layout.tsx
+│   │   └── (marketing)
+│   │       ├── about
+│   │       │   └── page.tsx
+│   │       ├── careers
+│   │       │   └── page.tsx
+│   │       ├── contact
+│   │       │   └── page.tsx
+│   │       ├── feedback
+│   │       │   └── page.tsx
+│   │       ├── layout.tsx
+│   │       ├── page.tsx
+│   │       ├── pricing
+│   │       │   └── page.tsx
+│   │       └── testimonial
+│   │           └── page.tsx
+│   └── WORDS_FROM_OPENAI.md
+├── edge
+│   └── marketeer
+│       ├── Cargo.toml
+│       ├── config
+│       │   ├── marketeer.yaml
+│       │   ├── middlewares.yaml
+│       │   ├── registration.yaml
+│       │   ├── routes.yaml
+│       │   └── services.yaml
+│       ├── Dockerfile
+│       ├── .env.example
+│       ├── .github
+│       ├── README.md
+│       ├── scripts
+│       │   └── init.lua
+│       ├── src
+│       │   ├── adaptor
+│       │   │   └── innernet
+│       │   │       ├── client.rs
+│       │   │       ├── config.rs
+│       │   │       ├── controller.rs
+│       │   │       └── mod.rs
+│       │   ├── admin
+│       │   │   ├── mod.rs
+│       │   │   └── server.rs
+│       │   ├── config
+│       │   │   ├── loader.rs
+│       │   │   ├── mod.rs
+│       │   │   ├── types.rs
+│       │   │   └── validator.rs
+│       │   ├── egress
+│       │   ├── ingress
+│       │   │   ├── middleware
+│       │   │   │   ├── auth.rs
+│       │   │   │   ├── cors.rs
+│       │   │   │   ├── mod.rs
+│       │   │   │   └── rate_limit.rs
+│       │   │   ├── proxy
+│       │   │   │   ├── mod.rs
+│       │   │   │   ├── server.rs
+│       │   │   │   └── upstream.rs
+│       │   │   ├── router
+│       │   │   │   ├── matcher.rs
+│       │   │   │   └── mod.rs
+│       │   │   ├── static_serve
+│       │   │   │   └── mod.rs
+│       │   │   └── tls
+│       │   │       └── mod.rs
+│       │   ├── lib.rs
+│       │   └── main.rs
+│       └── store
+│           ├── certs
+│           └── logs
+├── .gitignore
+├── index.tree
+├── .openhwy
+│   └── gen
+│       └── dart
+├── pkgs
+│   ├── agent-rig
+│   │   ├── agent-service
+│   │   │   ├── big_bear
+│   │   │   │   ├── bigbear.tar.gz
+│   │   │   │   ├── Cargo.toml
+│   │   │   │   ├── README.md
+│   │   │   │   └── src
+│   │   │   │       ├── alert_engine.rs
+│   │   │   │       ├── alert_system.rs
+│   │   │   │       ├── geo_cache.rs
+│   │   │   │       ├── geo_mapper.rs
+│   │   │   │       ├── incident_feed.rs
+│   │   │   │       ├── main.rs
+│   │   │   │       ├── report_collector.rs
+│   │   │   │       └── weigh_station_tracker.rs
+│   │   │   ├── cargo_connect
+│   │   │   │   ├── cargoconnect.tar.gz
+│   │   │   │   ├── Cargo.toml
+│   │   │   │   ├── README.md
+│   │   │   │   └── src
+│   │   │   │       ├── credential_vault.rs
+│   │   │   │       ├── filter_engine.rs
+│   │   │   │       ├── load_boards.rs
+│   │   │   │       ├── load_fetcher.rs
+│   │   │   │       ├── main.rs
+│   │   │   │       ├── score_ranker.rs
+│   │   │   │       └── session_manager.rs
+│   │   │   ├── legal_logger
+│   │   │   │   ├── Cargo.toml
+│   │   │   │   ├── legallogger.tar.gz
+│   │   │   │   ├── README.md
+│   │   │   │   └── src
+│   │   │   │       ├── compression.rs
+│   │   │   │       ├── encryption_module.rs
+│   │   │   │       ├── ledger_writer.rs
+│   │   │   │       ├── main.rs
+│   │   │   │       ├── signature_engine.rs
+│   │   │   │       └── timestamp_engine.rs
+│   │   │   ├── packet_pilot
+│   │   │   │   ├── Cargo.toml
+│   │   │   │   ├── packetpilot.tar.gz
+│   │   │   │   ├── README.md
+│   │   │   │   └── src
+│   │   │   │       ├── email_monitor.rs
+│   │   │   │       ├── form_filler.rs
+│   │   │   │       ├── main.rs
+│   │   │   │       ├── pdf_processor.rs
+│   │   │   │       ├── protocol_detector.rs
+│   │   │   │       └── signature_handler.rs
+│   │   │   ├── _schemas
+│   │   │   │   ├── bigbear.agent.yaml
+│   │   │   │   ├── cargoconnect.agent.yaml
+│   │   │   │   ├── legallogger.agent.yaml
+│   │   │   │   ├── packetpilot.agent.yaml
+│   │   │   │   ├── truckertales.agent.yaml
+│   │   │   │   └── whisperwitness.agent.yaml
+│   │   │   ├── _TODO.agents
+│   │   │   │   ├── auto_assist
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── diesel_driver
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── error_echo
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── fuel_factor
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── ghost_guard
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── highway_helper
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── iron_insight
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── jackknife_jailer
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── key_keeper
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── memory_mark
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── night_nexus
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── oversize_overseer
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── quick_quote
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── radar_reach
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── secret_safe
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── unit_usage
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── voice_validator
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── xeno_xeno
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── yes_yes
+│   │   │   │   │   └── README.md
+│   │   │   │   └── zone_zipper
+│   │   │   │       └── README.md
+│   │   │   ├── trucker_tales
+│   │   │   │   ├── Cargo.toml
+│   │   │   │   ├── README.md
+│   │   │   │   ├── src
+│   │   │   │   │   ├── emotion_enhancer.rs
+│   │   │   │   │   ├── format_converter.rs
+│   │   │   │   │   ├── main.rs
+│   │   │   │   │   ├── publishing.rs
+│   │   │   │   │   ├── story_structurer.rs
+│   │   │   │   │   └── tale_listener.rs
+│   │   │   │   └── truckers-tales.tar.gz
+│   │   │   └── whisper_witness
+│   │   │       ├── Cargo.toml
+│   │   │       ├── README.md
+│   │   │       ├── src
+│   │   │       │   ├── audio_listener.rs
+│   │   │       │   ├── broker_tactics.rs
+│   │   │       │   ├── main.rs
+│   │   │       │   ├── tactic_detector.rs
+│   │   │       │   ├── transcript_summarizer.rs
+│   │   │       │   └── whisper_engine.rs
+│   │   │       └── whisperwitness.tar.gz
+│   │   ├── connection-service
+│   │   │   ├── Cargo.toml
+│   │   │   ├── Dockerfile
+│   │   │   ├── .env.example
+│   │   │   ├── README.md
+│   │   │   └── src
+│   │   │       ├── ca.rs
+│   │   │       ├── db.rs
+│   │   │       ├── handlers.rs
+│   │   │       ├── ip_allocator.rs
+│   │   │       ├── main.rs
+│   │   │       └── models.rs
+│   │   ├── download-service
+│   │   │   ├── Cargo.toml
+│   │   │   ├── Dockerfile
+│   │   │   ├── .env.example
+│   │   │   ├── README.md
+│   │   │   └── src
+│   │   │       └── main.rs
+│   │   ├── invite-service
+│   │   │   ├── Cargo.toml
+│   │   │   ├── Dockerfile
+│   │   │   ├── .env.example
+│   │   │   ├── README.md
+│   │   │   └── src
+│   │   │       ├── db.rs
+│   │   │       ├── handlers.rs
+│   │   │       ├── main.rs
+│   │   │       └── models.rs
+│   │   ├── payment-service
+│   │   │   ├── Cargo.toml
+│   │   │   ├── Dockerfile
+│   │   │   ├── .env.example
+│   │   │   ├── README.md
+│   │   │   └── src
+│   │   │       ├── db.rs
+│   │   │       ├── handlers.rs
+│   │   │       ├── main.rs
+│   │   │       ├── models.rs
+│   │   │       └── stripe_verify.rs
+│   │   └── upload-service
+│   │       ├── Cargo.lock
+│   │       ├── Cargo.toml
+│   │       ├── Dockerfile
+│   │       ├── .env.example
+│   │       ├── README.md
+│   │       ├── src
+│   │       │   ├── auth.rs
+│   │       │   ├── main.rs
+│   │       │   ├── routes.rs
+│   │       │   └── storage.rs
+│   │       └── store
+│   │           ├── documents
+│   │           ├── images
+│   │           ├── other
+│   │           └── thumbnails
+│   ├── design-system
+│   │   ├── colors.json
+│   │   ├── shadows.json
+│   │   ├── spacing.json
+│   │   └── typegraphy.json
+│   ├── shared-libs
+│   │   ├── cache
+│   │   ├── db
+│   │   ├── events
+│   │   └── queue
+│   └── shared-types
+│       └── openapi.json
+├── PROMPT.md
+├── README.md
+└── storage
+    ├── ai_models
+    ├── app_binaries
+    └── backups
+
+404 directories, 1023 files
