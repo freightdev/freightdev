@@ -1,0 +1,212 @@
+{
+  // ============================================
+  // RECOMMENDED SETTINGS FOR YOUR PROJECT
+  // ============================================
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "printWidth": 100,
+  "endOfLine": "lf",
+
+  // ============================================
+  // HTML/ASTRO SPECIFIC
+  // ============================================
+  "htmlWhitespaceSensitivity": "css",
+  // "htmlWhitespaceSensitivity": "strict", // No whitespace collapsing
+  // "htmlWhitespaceSensitivity": "ignore", // Collapse all whitespace
+
+    // ============================================
+  // FILE-SPECIFIC OVERRIDES
+  // ============================================
+  
+  "overrides": [
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 80,
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.md",
+      "options": {
+        "proseWrap": "always",
+        "printWidth": 80
+      }
+    }
+    // Add more file-specific overrides as needed
+    // {
+    //   "files": "*.css",
+    //   "options": {
+    //     "singleQuote": false
+    //   }
+    // }
+  ]
+
+  // ============================================
+  // ALL PRETTIER OPTIONS (Commented Out)
+  // ============================================
+
+  // --- BASIC FORMATTING ---
+  
+  // "printWidth": 80,
+  // Max line length before wrapping. Default: 80
+  // Common values: 80, 100, 120
+  
+  // "tabWidth": 2,
+  // Number of spaces per indentation level. Default: 2
+  
+  // "useTabs": false,
+  // Indent with tabs instead of spaces. Default: false
+  
+  // "semi": true,
+  // Add semicolons at end of statements. Default: true
+  
+  // "singleQuote": false,
+  // Use single quotes instead of double quotes. Default: false
+  
+  // "quoteProps": "as-needed",
+  // When to quote object properties
+  // Options: "as-needed" | "consistent" | "preserve"
+  // Default: "as-needed"
+  
+  // "jsxSingleQuote": false,
+  // Use single quotes in JSX. Default: false
+  
+  // "trailingComma": "es5",
+  // Print trailing commas wherever possible in multi-line comma-separated
+  // Options: "none" | "es5" | "all"
+  // Default: "es5"
+  
+  // "bracketSpacing": true,
+  // Print spaces between brackets in object literals
+  // true: { foo: bar }
+  // false: {foo: bar}
+  // Default: true
+  
+  // "bracketSameLine": false,
+  // Put > of multi-line HTML/JSX on same line as last attribute
+  // Default: false (was called jsxBracketSameLine)
+  
+  // "arrowParens": "always",
+  // Include parentheses around arrow function parameters
+  // Options: "always" | "avoid"
+  // "always": (x) => x
+  // "avoid": x => x
+  // Default: "always"
+
+  // --- HTML SPECIFIC ---
+  
+  // "htmlWhitespaceSensitivity": "css",
+  // How to handle whitespace in HTML
+  // Options: "css" | "strict" | "ignore"
+  // "css": Respect CSS display property
+  // "strict": All whitespace is significant
+  // "ignore": All whitespace is insignificant
+  // Default: "css"
+
+  // --- VUE SPECIFIC ---
+  
+  // "vueIndentScriptAndStyle": false,
+  // Indent <script> and <style> tags in Vue files
+  // Default: false
+
+  // --- PROSE (MARKDOWN, ETC) ---
+  
+  // "proseWrap": "preserve",
+  // How to wrap prose (markdown, etc)
+  // Options: "always" | "never" | "preserve"
+  // Default: "preserve"
+
+  // --- LINE ENDINGS ---
+  
+  // "endOfLine": "lf",
+  // Line ending style
+  // Options: "lf" | "crlf" | "cr" | "auto"
+  // "lf": Linux/Mac (\n)
+  // "crlf": Windows (\r\n)
+  // "cr": Old Mac (\r)
+  // "auto": Maintain existing line endings
+  // Default: "lf"
+
+  // --- EMBEDDED LANGUAGE FORMATTING ---
+  
+  // "embeddedLanguageFormatting": "auto",
+  // Control formatting of quoted code in other languages
+  // Options: "auto" | "off"
+  // Default: "auto"
+
+  // --- RANGE FORMATTING ---
+  
+  // "rangeStart": 0,
+  // Format only a segment of a file (start). Default: 0
+  
+  // "rangeEnd": Infinity,
+  // Format only a segment of a file (end). Default: Infinity
+
+  // --- PARSER ---
+  
+  // "parser": "",
+  // Specify which parser to use
+  // Prettier auto-detects, but you can force:
+  // "babel" | "babel-flow" | "babel-ts" | "flow" | "typescript"
+  // "espree" | "meriyah" | "css" | "scss" | "less" | "json"
+  // "json5" | "json-stringify" | "graphql" | "markdown" | "mdx"
+  // "html" | "vue" | "angular" | "lwc" | "yaml"
+
+  // --- FILE PATH ---
+  
+  // "filepath": "",
+  // Specify file path for parser inference
+  // Useful when formatting via API
+
+  // --- REQUIRE PRAGMA ---
+  
+  // "requirePragma": false,
+  // Only format files with special comment at top
+  // Comment: /** @format */ or /** @prettier */
+  // Default: false
+
+  // --- INSERT PRAGMA ---
+  
+  // "insertPragma": false,
+  // Insert @format pragma at top of formatted files
+  // Default: false
+
+  // --- SINGLE ATTRIBUTE PER LINE ---
+  
+  // "singleAttributePerLine": false,
+  // Enforce single attribute per line in HTML/JSX
+  // Default: false
+
+  // ============================================
+  // TIPS FOR YOUR PROJECT
+  // ============================================
+  
+  // 1. Install Prettier extension in VSCode
+  // 2. Enable "Format on Save" in VSCode settings
+  // 3. Add to settings.json:
+  //    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  //    "editor.formatOnSave": true
+  //
+  // 4. Add .prettierignore file to exclude:
+  //    node_modules/
+  //    dist/
+  //    build/
+  //    *.min.js
+  //    *.min.css
+  //
+  // 5. Run manually: npx prettier --write .
+  // 6. Check files: npx prettier --check .
+  //
+}

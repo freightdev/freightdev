@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenHWY Wheelers - Build AI Agents. Connect. Roll.</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-light: #60a5fa;
+            --primary-dark: #2563eb;
+            --secondary: #1e293b;
+            --accent: #0f172a;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --gradient: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo .hw {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo .wheelers {
+            color: var(--primary-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-nav {
+            background: var(--gradient);
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+            background: radial-gradient(ellipse at center, #1e293b 0%, #0a0a0a 100%);
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .highway-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(59, 130, 246, 0.1) 10px,
+                rgba(59, 130, 246, 0.1) 12px,
+                transparent 12px,
+                transparent 22px
+            );
+            animation: highwayMove 10s linear infinite;
+        }
+
+        @keyframes highwayMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(22px); }
+        }
+
+        .floating-wheels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-wheel {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: wheelFloat 8s ease-in-out infinite;
+        }
+
+        .floating-wheel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes wheelFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateY(-30px) rotate(180deg); 
+                opacity: 0.8;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--accent);
+            padding: 1.25rem 3rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            padding: 1.25rem 3rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Truck Builder Section */
+        .builder-section {
+            padding: 6rem 5%;
+            background: var(--secondary);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .truck-builder {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .builder-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .builder-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .wheels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+
+        .wheel-slot {
+            aspect-ratio: 1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wheel-slot::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--gradient);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+        }
+
+        .wheel-slot.filled {
+            color: var(--text-primary);
+            border-color: var(--primary);
+            animation: wheelAdd 0.5s ease;
+        }
+
+        .wheel-slot.filled::before {
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+        }
+
+        @keyframes wheelAdd {
+            0% { transform: scale(0.8) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .wheel-slot:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .builder-status {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Features Grid */
+        .features-section {
+            padding: 6rem 5%;
+            background: var(--accent);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Community Chat Section */
+        .community-section {
+            padding: 6rem 5%;
+            background: var(--secondary);
+        }
+
+        .chat-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--gradient);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-status {
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .chat-messages {
+            padding: 2rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: messageSlide 0.5s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .message-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .message-text {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .chat-input {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chat-send {
+            background: var(--gradient);
+            color: var(--accent);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        /* Social Proof Section */
+        .social-section {
+            padding: 6rem 5%;
+            background: var(--accent);
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .social-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .social-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .social-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1rem 0;
+        }
+
+        .social-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 5%;
+            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-description {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 5%;
+            background: var(--secondary);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links a:not(.cta-nav) {
+                display: none;
+            }
+
+            .wheels-grid {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .chat-message {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--accent);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="hw">HWY</span>
+                <span class="wheelers">Wheelers</span>
+            </div>
+            <div class="nav-links">
+                <a href="#build">Build</a>
+                <a href="#features">Features</a>
+                <a href="#community">Community</a>
+                <a href="#social">Network</a>
+                <a href="#" class="cta-nav">Join Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="highway-lines"></div>
+            <div class="floating-wheels">
+                <div class="floating-wheel" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+                <div class="floating-wheel" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+                <div class="floating-wheel" style="top: 40%; left: 50%; animation-delay: 2s;"></div>
+                <div class="floating-wheel" style="top: 80%; left: 20%; animation-delay: 3s;"></div>
+                <div class="floating-wheel" style="top: 30%; left: 70%; animation-delay: 4s;"></div>
+            </div>
+        </div>
+        <div class="hero-content fade-in">
+            <div class="hero-badge">
+                <i class="fas fa-rocket"></i>
+                The Future of AI Collaboration
+            </div>
+            <h1>
+                Build <span class="gradient-text">Wheelers</span>.<br>
+                Connect. Roll.
+            </h1>
+            <p class="hero-description">
+                Create intelligent AI agents with your crew. Collaborate in real-time. 
+                Connect with drivers, dispatchers, and developers. Your logbook is your voice.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">
+                    <i class="fas fa-users"></i> Join the Community
+                </a>
+                <a href="#" class="btn-secondary">
+                    <i class="fas fa-play"></i> Watch Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Truck Builder Section -->
+    <section id="build" class="builder-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Build Your AI Truck Together</h2>
+            <p class="section-subtitle">
+                Every truck needs 18 wheels. Each wheel is a Wheeler - an AI agent that 
+                makes your system smarter. Build with your crew or go solo.
+            </p>
+        </div>
+        <div class="truck-builder fade-in">
+            <div class="builder-header">
+                <h3 class="builder-title">
+                    <i class="fas fa-cogs"></i> Assemble Your AI Semi
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Click to add wheels. Each wheel represents an AI capability. 
+                    Get all 18 to complete your intelligent truck system.
+                </p>
+            </div>
+            <div class="wheels-grid" id="wheelsGrid">
+                <!-- Wheels will be generated by JavaScript -->
+            </div>
+            <div class="builder-status">
+                <div class="status-text" id="statusText">
+                    <i class="fas fa-info-circle"></i> 0 / 18 Wheels Added
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">
+                    <i class="fas fa-lightbulb"></i> 
+                    Tip: Invite team members to build wheels together!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Powerful Collaboration Features</h2>
+            <p class="section-subtitle">
+                Everything you need to build, connect, and deploy intelligent AI agents
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-hammer"></i>
+                </div>
+                <h3 class="feature-title">Build Wheelers</h3>
+                <p class="feature-description">
+                    Create custom AI agents using LangChain, your own stack, or our visual builder. 
+                    Each Wheeler adds unique capabilities to your system.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">Team Building</h3>
+                <p class="feature-description">
+                    Jump in a virtual truck with your crew. Build wheelers together in real-time. 
+                    Share the work, share the credit, ship faster.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="feature-title">Group AI Chats</h3>
+                <p class="feature-description">
+                    Talk to wheelers with your entire team. Everyone connected to the same AI. 
+                    Collaborate, brainstorm, and build together.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Secure Messaging</h3>
+                <p class="feature-description">
+                    Signal-style encryption for all communications. Chat with drivers, 
+                    dispatchers, and developers. Private and fast.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="feature-title">Browse Logbooks</h3>
+                <p class="feature-description">
+                    Find experts by their specialties. See who's building what. 
+                    Hire talent. Build your network. Discover opportunities.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3 class="feature-title">Wheeler Marketplace</h3>
+                <p class="feature-description">
+                    Buy, sell, and trade wheelers. Need a custom tool? Hire a dev. 
+                    Built something amazing? Sell it to the community.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Chat Section -->
+    <section id="community" class="community-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Live Community Chat</h2>
+            <p class="section-subtitle">
+                Join the conversation. Humans and AI working together in real-time.
+            </p>
+        </div>
+        <div class="chat-container fade-in">
+            <div class="chat-header">
+                <div class="chat-status"></div>
+                <div class="chat-title">
+                    <i class="fas fa-truck"></i> #general-trucking
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message">
+                    <div class="message-avatar">DM</div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-sender">DriverMike</span>
+                            <span class="message-badge">🤖 HWY</span>
+                        </div>
+                        <div class="message-text">
+                            Yo, can we get HWY to check those route optimizations? 
+                            Need to see if we can shave 30 miles off this Atlanta to Dallas run.
+                        </div>
+                        <div class="message-time">2 minutes ago</div>
+                    </div>
+                </div>
+                <div class="chat-message">
+                    <div class="message-avatar">DS</div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-sender">DevSarah</span>
+                        </div>
+                        <div class="message-text">
+                            @HWY what's the best route from Atlanta to Dallas avoiding the 285 loop?
+                        </div>
+                        <div class="message-time">1 minute ago</div>
+                    </div>
+                </div>
+                <div class="chat-message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-sender">HWY Wheeler</span>
+                            <span class="message-badge">AI Agent</span>
+                        </div>
+                        <div class="message-text">
+                            Analyzing routes... Best option: I-20 W to I-30 W. 742 miles, ~11 hours. 
+                            Saves 28 miles vs 285 route. Current fuel prices favor this path. 
+                            Weather looks clear for the next 48 hours.
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message... @HWY to ping AI">
+                <button class="chat-send" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section id="social" class="social-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Join the Ecosystem</h2>
+            <p class="section-subtitle">
+                More than a platform. It's a movement. Discord meets Signal meets AI collaboration.
+            </p>
+        </div>
+        <div class="social-grid">
+            <div class="social-card fade-in">
+                <div class="social-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="social-number">∞</div>
+                <div class="social-label">Connected Users</div>
+            </div>
+            <div class="social-card fade-in">
+                <div class="social-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="social-number">Built-In</div>
+                <div class="social-label">AI Integration</div>
+            </div>
+            <div class="social-card fade-in">
+                <div class="social-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="social-number">Open</div>
+                <div class="social-label">For Developers</div>
+            </div>
+            <div class="social-card fade-in">
+                <div class="social-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="social-number">Public</div>
+                <div class="social-label">Reputation System</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content fade-in">
+            <h2 class="cta-title">Ready to Join the Crew?</h2>
+            <p class="cta-description">
+                Build wheelers with your team. Connect with the community. 
+                The truck didn't park—and neither should you.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">
+                    <i class="fas fa-rocket"></i> Join OpenHWY
+                </a>
+                <a href="#" class="btn-secondary">
+                    <i class="fas fa-compass"></i> Explore Wheelers
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Features</a>
+                <a href="#">Community</a>
+                <a href="#">Developers</a>
+                <a href="#">Marketplace</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+            <div class="footer-copyright">
+                © 2024 OpenHWY Wheelers. Building the future of AI collaboration.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize wheels grid
+        function initializeWheels() {
+            const grid = document.getElementById('wheelsGrid');
+            for (let i = 1; i <= 18; i++) {
+                const wheel = document.createElement('div');
+                wheel.className = 'wheel-slot';
+                wheel.textContent = i;
+                wheel.onclick = () => toggleWheel(wheel);
+                grid.appendChild(wheel);
+            }
+        }
+
+        let wheelsAdded = 0;
+
+        function toggleWheel(wheel) {
+            if (wheel.classList.contains('filled')) {
+                wheel.classList.remove('filled');
+                wheelsAdded--;
+            } else {
+                wheel.classList.add('filled');
+                wheelsAdded++;
+            }
+            updateBuilderStatus();
+        }
+
+        function updateBuilderStatus() {
+            const statusText = document.getElementById('statusText');
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (wheelsAdded / 18) * 100;
+            
+            statusText.innerHTML = `<i class="fas fa-cogs"></i> ${wheelsAdded} / 18 Wheels Added`;
+            progressFill.style.width = percentage + '%';
+            
+            if (wheelsAdded === 18) {
+                statusText.innerHTML = `<i class="fas fa-check-circle"></i> 🎉 Complete! Your AI Truck is Ready!`;
+                celebrateCompletion();
+            }
+        }
+
+        function celebrateCompletion() {
+            // Create celebration effect
+            const builder = document.querySelector('.truck-builder');
+            builder.style.animation = 'pulse 0.5s ease-in-out 3';
+            
+            setTimeout(() => {
+                builder.style.animation = '';
+            }, 1500);
+        }
+
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            if (input.value.trim() === '') return;
+            
+            const messageText = input.value;
+            input.value = '';
+            
+            // Add user message
+            const userMessage = createMessage('You', 'YU', messageText, false);
+            messagesContainer.appendChild(userMessage);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Simulate AI response if mentioned
+            if (messageText.includes('@HWY')) {
+                setTimeout(() => {
+                    const aiResponse = createMessage('HWY Wheeler', 'AI', generateAIResponse(messageText), true);
+                    messagesContainer.appendChild(aiResponse);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1500);
+            }
+        }
+
+        function createMessage(sender, avatar, text, isAI) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            
+            const badge = isAI ? '<span class="message-badge">AI Agent</span>' : '';
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-sender">${sender}</span>
+                        ${badge}
+                    </div>
+                    <div class="message-text">${text}</div>
+                    <div class="message-time">Just now</div>
+                </div>
+            `;
+            
+            return messageDiv;
+        }
+
+        function generateAIResponse(message) {
+            const responses = [
+                "I'm analyzing that request. Let me check the logistics database for optimal routes.",
+                "Based on current traffic patterns and fuel prices, I recommend the northern route for this run.",
+                "I've updated the dispatch schedule. All drivers have been notified of the changes.",
+                "Running optimization algorithms... Found a 12% efficiency improvement in the load planning.",
+                "Weather conditions look favorable for the next 48 hours. No delays expected."
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        // Enter key to send message
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(10, 10, 10, 0.98)';
+                navbar.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add floating wheels dynamically
+        function createFloatingWheel() {
+            const wheel = document.createElement('div');
+            wheel.className = 'floating-wheel';
+            wheel.style.left = Math.random() * 100 + '%';
+            wheel.style.top = Math.random() * 100 + '%';
+            wheel.style.animationDelay = Math.random() * 5 + 's';
+            wheel.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            
+            const container = document.querySelector('.floating-wheels');
+            if (container) {
+                container.appendChild(wheel);
+                
+                setTimeout(() => {
+                    wheel.remove();
+                }, 8000);
+            }
+        }
+
+        // Create new floating wheels periodically
+        setInterval(createFloatingWheel, 3000);
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            initializeWheels();
+            
+            // Add some initial wheels for demonstration
+            setTimeout(() => {
+                const wheels = document.querySelectorAll('.wheel-slot');
+                for (let i = 0; i < 5; i++) {
+                    const randomWheel = wheels[Math.floor(Math.random() * wheels.length)];
+                    if (!randomWheel.classList.contains('filled')) {
+                        toggleWheel(randomWheel);
+                    }
+                }
+            }, 1000);
+        });
+
+        // Simulate live chat messages
+        function simulateLiveMessage() {
+            const messages = [
+                { sender: 'DriverJoe', avatar: 'DJ', text: 'Just completed the Denver run. No issues!', ai: false },
+                { sender: 'DispatcherLisa', avatar: 'DL', text: 'Great job Joe! Next load is ready for pickup.', ai: false },
+                { sender: 'HWY Wheeler', avatar: 'AI', text: 'Traffic alert: I-80 has congestion. Suggesting alternate routes.', ai: true }
+            ];
+            
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            const message = createMessage(randomMessage.sender, randomMessage.avatar, randomMessage.text, randomMessage.ai);
+            messagesContainer.appendChild(message);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Add live messages every 15 seconds
+        setInterval(simulateLiveMessage, 15000);
+    </script>
+</body>
+</html>
