@@ -1,0 +1,21 @@
+bundle_packages:
+  - name: Startup Bundle
+    price: 4500
+    original_value: 5400
+    savings: 900
+    includes:
+      - Business Complete Website ($3,800)
+      - SEO Optimization ($1,200)
+      - 3 months Website Maintenance ($900)
+    ideal_for: "New businesses launching online"
+
+  - name: SaaS Starter Bundle
+    price: 15000
+    original_value: 18500
+    savings: 3500
+    includes:
+      - Web App Professional ($12,500)
+      - API Development ($3,500)
+      - Performance Optimization ($1,800)
+      - 6 months App Support ($4,800)
+    ideal_for: "SaaS startups ready to launch"

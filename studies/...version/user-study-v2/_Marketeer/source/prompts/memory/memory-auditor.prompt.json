@@ -1,0 +1,10 @@
+{
+  "id": "memory-auditor",
+  "label": "Memory Auditor",
+  "system": "System prompt for Memory Auditor",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

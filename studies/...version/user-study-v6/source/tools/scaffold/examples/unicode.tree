@@ -1,0 +1,88 @@
+## Example 6: Unicode and Special Characters (unicode.tree)
+unicode-test/
+├── 📁 emojis-everywhere/        # 🎉 Emoji support test
+│   ├── 🎯 targets.txt
+│   ├── 🚀 launches.log
+│   ├── 💡 ideas.md
+│   ├── 🔧 tools.json
+│   └── 📊 data/
+│       ├── 📈 growth.csv
+│       ├── 📉 decline.csv
+│       └── 🎭 performance.xml
+├── 中文目录/                    # Chinese directory
+│   ├── 文件.txt
+│   ├── 数据.json
+│   └── 配置.yml
+├── العربية/                     # Arabic directory
+│   ├── ملف.txt
+│   ├── بيانات.json
+│   └── إعدادات.yml
+├── русский/                     # Russian directory
+│   ├── файл.txt
+│   ├── данные.json
+│   └── настройки.yml
+├── हिंदी/                       # Hindi directory
+│   ├── फाइल.txt
+│   ├── डेटा.json
+│   └── सेटिंग्स.yml
+├── 日本語/                      # Japanese directory
+│   ├── ファイル.txt
+│   ├── データ.json
+│   └── 設定.yml
+├── special-chars/               # Special characters test
+│   ├── file@with.symbols.txt
+│   ├── name#with$hash%.log
+│   ├── spaced file name.txt
+│   ├── file-with-dashes.md
+│   ├── file_with_underscores.py
+│   ├── file.with.dots.js
+│   ├── CamelCaseFile.java
+│   ├── UPPERCASE.XML
+│   ├── lowercase.css
+│   ├── MiXeD_cAsE-File.html
+│   └── 123numeric456.txt
+├── very-long-directory-name-that-tests-length-limits-and-might-cause-issues/
+│   ├── short.txt
+│   ├── another-very-long-file-name-that-should-test-filesystem-limits.txt
+│   └── nested/
+│       └── deeply/
+│           └── nested/
+│               └── path/
+│                   └── final.txt
+├── extensions-test/             # Various file extensions
+│   ├── document.pdf
+│   ├── image.png
+│   ├── video.mp4
+│   ├── audio.mp3
+│   ├── archive.zip
+│   ├── database.db
+│   ├── config.ini
+│   ├── script.sh
+│   ├── binary.exe
+│   ├── web.html
+│   ├── style.css
+│   ├── logic.js
+│   ├── data.xml
+│   ├── info.json
+│   ├── text.md
+│   ├── code.py
+│   ├── source.cpp
+│   ├── header.h
+│   ├── java.class
+│   ├── dll.so
+│   ├── config.yaml
+│   ├── log.out
+│   ├── error.err
+│   ├── backup.bak
+│   ├── temp.tmp
+│   └── cache.cache
+└── edge-cases/                  # Edge case testing
+├── .hidden-file
+├── .hidden-directory/
+│   └── inside-hidden.txt
+├── file-with-no-extension
+├── file.
+├── .file-starting-with-dot.txt
+├── file..with..double..dots.txt
+├── file...with...triple...dots.txt
+└── trailing-spaces

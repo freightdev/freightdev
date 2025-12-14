@@ -1,0 +1,10 @@
+{
+  "id": "newsletter-drafter",
+  "label": "Newsletter Drafter",
+  "system": "System prompt for Newsletter Drafter",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,85 @@
+build-environments/
+├── bazel/
+│   ├── bin/
+│   ├── cache/
+│   ├── config/
+│   ├── third_party/
+│   └── logs/
+├── podman/
+│   ├── bin/
+│   ├── containers/
+│   ├── images/
+│   └── volumes/
+├── rbe/
+│   ├── workers/
+│   ├── configs/
+│   ├── certs/
+│   └── logs/
+├── python/
+│   ├── pyvenv/
+│   │   ├── tf/
+│   │   ├── torch/
+│   │   └── common/
+│   ├── conda/
+│   │   ├── envs/
+│   │   │   ├── tf/
+│   │   │   └── torch/
+│   │   └── pkgs/
+│   └── pip-cache/
+├── compilers/
+│   ├── gcc/
+│   ├── clang/
+│   └── nvcc/
+├── cuda/
+│   ├── 13.0/
+│   │   ├── lib/
+│   │   ├── include/
+│   │   └── bin/
+│   └── cudnn/
+├── rust/
+│   ├── rustup/                  # Rust toolchain manager
+│   │   ├── toolchains/
+│   │   │   ├── stable-x86_64-unknown-linux-gnu/
+│   │   │   ├── nightly-x86_64-unknown-linux-gnu/
+│   │   │   └── custom/
+│   │   └── override/            # per-project overrides
+│   ├── cargo/                    # cargo binaries
+│   │   ├── bin/
+│   │   ├── registry/             # downloaded crates
+│   │   └── git/                  # git-based dependencies
+│   └── build-scripts/            # custom build.rs scripts
+├── go/
+│   ├── go/                       # go binaries (multiple versions)
+│   ├── pkg/                       # compiled packages
+│   ├── bin/                       # compiled binaries
+│   ├── mod/                       # go module cache
+│   └── build-scripts/             # custom build scripts for Go projects
+├── scripts/
+│   ├── build-tf.sh
+│   ├── build-torch.sh
+│   ├── setup-env.sh
+│   └── cleanup.sh
+├── tools/
+│   ├── cmake/
+│   ├── ninja/
+│   ├── make/
+│   ├── git-lfs/
+│   └── protobuf/                 # common dependency for Go/Rust/ML
+├── logging/
+│   ├── build-logs/
+│   └── container-logs/
+├── benchmarks/
+│   ├── tf/
+│   ├── torch/
+│   ├── rust/
+│   └── go/
+├── sandbox/
+│   ├── tf/
+│   ├── torch/
+│   ├── rust/
+│   └── go/
+└── docs/
+    ├── setup/
+    ├── rbe/
+    ├── containers/
+    └── lang-guides/

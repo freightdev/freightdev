@@ -1,0 +1,31 @@
+#! ModelsDB (MinIO + PostgreSQL)
+
+services:
+  modelsdb_postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: model_admin
+      POSTGRES_PASSWORD: strongpassword    #? <===== Change Before Production
+      POSTGRES_DB: models_meta
+    volumes:
+      - /var/modelsdb:/var/lib/postgresql/data
+    networks:
+      - platform-net
+
+  minio_models:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: strongpassword    #? <===== Change Before Production
+    volumes:
+      - /srv/models:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - platform-net
+
+#* - Metadata in PostgreSQL, files in MinIO
+#* - Versioning enabled for safe rollback
+#* - S3-compatible for portability

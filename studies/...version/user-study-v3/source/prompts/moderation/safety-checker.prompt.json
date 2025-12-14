@@ -1,0 +1,10 @@
+{
+  "id": "safety-checker",
+  "label": "Safety Checker",
+  "system": "System prompt for Safety Checker",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

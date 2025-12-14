@@ -1,0 +1,36 @@
+mobile_packages:
+  - name: Mobile MVP
+    price: 8500
+    timeline: "4-5 weeks"
+    tier: Validation
+    description: >
+      Simple mobile app to test your concept. iOS OR Android, core features only.
+      Perfect for validating ideas before bigger investment.
+    includes:
+      - iOS OR Android (your choice)
+      - 3-4 core screens
+      - Basic API integration
+      - App store submission help
+      - Source code included
+    excludes:
+      - Both iOS AND Android
+      - Complex features
+      - Backend development
+    ideal_for: "First-time app creators, concept validation, simple tools"
+
+  - name: Mobile Professional
+    price: 18500
+    timeline: "6-8 weeks"
+    tier: Business
+    description: >
+      Complete mobile app for iOS AND Android with user accounts, data sync,
+      and professional polish. Ready for serious users.
+    includes:
+      - iOS AND Android versions
+      - User registration & profiles
+      - Data synchronization
+      - Push notifications
+      - In-app analytics
+      - App store optimization
+      - 3 months bug fixes
+    ideal_for: "Serious app businesses, user-focused products, data-driven apps"

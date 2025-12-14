@@ -1,0 +1,10 @@
+{
+  "id": "verbose-instructor",
+  "label": "Verbose Instructor",
+  "system": "System prompt for Verbose Instructor",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

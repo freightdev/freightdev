@@ -1,0 +1,10 @@
+{
+  "id": "humorist",
+  "label": "Humorist",
+  "system": "System prompt for Humorist",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

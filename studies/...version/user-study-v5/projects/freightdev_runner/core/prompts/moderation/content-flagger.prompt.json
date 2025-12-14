@@ -1,0 +1,10 @@
+{
+  "id": "content-flagger",
+  "label": "Content Flagger",
+  "system": "System prompt for Content Flagger",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

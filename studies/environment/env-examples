@@ -1,0 +1,461 @@
+# ==============================================================================
+# ENTERPRISE WORKSPACE ENVIRONMENT CONFIGURATION
+# ==============================================================================
+# Parser Rules:
+# - No spaces around '=' sign
+# - Use SCREAMING_SNAKE_CASE for all variables
+# - Quote values with spaces or special chars
+# - Comments start with '#'
+# - Blank lines ignored
+# - Export not needed (handled by dotenv loaders)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# SYSTEM CORE
+# ------------------------------------------------------------------------------
+APP_NAME="WorkspaceOS"
+APP_ENV=production
+APP_VERSION=2.1.0
+APP_DEBUG=false
+APP_TIMEZONE=UTC
+
+# Base Installation Paths
+WORKSPACE_ROOT=/opt/workspace
+WORKSPACE_DATA_ROOT=/var/workspace/data
+WORKSPACE_LOG_ROOT=/var/log/workspace
+WORKSPACE_CACHE_ROOT=/var/cache/workspace
+WORKSPACE_TEMP_ROOT=/tmp/workspace
+
+# ------------------------------------------------------------------------------
+# PATH TEMPLATES (Used for dynamic path generation)
+# ------------------------------------------------------------------------------
+# Available variables: {username}, {user_id}, {role}, {workspace_id}, {project_id}, {timestamp}
+
+# User Home Directories
+USER_HOME_TEMPLATE="${WORKSPACE_DATA_ROOT}/users/{username}"
+USER_CONFIG_TEMPLATE="${WORKSPACE_DATA_ROOT}/users/{username}/.config"
+USER_CACHE_TEMPLATE="${WORKSPACE_CACHE_ROOT}/users/{user_id}"
+USER_TEMP_TEMPLATE="${WORKSPACE_TEMP_ROOT}/users/{user_id}"
+
+# Workspace Paths
+WORKSPACE_BASE_TEMPLATE="${WORKSPACE_DATA_ROOT}/workspaces/{workspace_id}"
+WORKSPACE_PROJECT_TEMPLATE="${WORKSPACE_DATA_ROOT}/workspaces/{workspace_id}/projects/{project_id}"
+WORKSPACE_SHARED_TEMPLATE="${WORKSPACE_DATA_ROOT}/workspaces/{workspace_id}/shared"
+
+# Role-Based Paths
+ROLE_CONFIG_TEMPLATE="${WORKSPACE_ROOT}/config/roles/{role}.yaml"
+ROLE_PERMISSIONS_TEMPLATE="${WORKSPACE_ROOT}/config/permissions/{role}.json"
+ROLE_TEMPLATES_DIR="${WORKSPACE_ROOT}/templates/roles/{role}"
+
+# Logs by User/Role
+LOG_USER_TEMPLATE="${WORKSPACE_LOG_ROOT}/users/{username}/{timestamp}.log"
+LOG_ROLE_TEMPLATE="${WORKSPACE_LOG_ROOT}/roles/{role}/{timestamp}.log"
+LOG_WORKSPACE_TEMPLATE="${WORKSPACE_LOG_ROOT}/workspaces/{workspace_id}/{timestamp}.log"
+
+# ------------------------------------------------------------------------------
+# ROLE DEFINITIONS
+# ------------------------------------------------------------------------------
+# Comma-separated list of available roles (hierarchical order)
+AVAILABLE_ROLES=super_admin,admin,manager,developer,analyst,viewer,guest
+
+# Default role for new users
+DEFAULT_ROLE=viewer
+
+# Role hierarchy (used for permission inheritance)
+# Format: role:inherits_from
+ROLE_HIERARCHY_SUPER_ADMIN=
+ROLE_HIERARCHY_ADMIN=super_admin
+ROLE_HIERARCHY_MANAGER=admin
+ROLE_HIERARCHY_DEVELOPER=manager
+ROLE_HIERARCHY_ANALYST=manager
+ROLE_HIERARCHY_VIEWER=analyst
+ROLE_HIERARCHY_GUEST=
+
+# ------------------------------------------------------------------------------
+# ROLE-SPECIFIC CONFIGURATIONS
+# ------------------------------------------------------------------------------
+
+# Super Admin
+SUPER_ADMIN_HOME_BASE=/opt/workspace/admin
+SUPER_ADMIN_CONFIG_DIR=/etc/workspace/admin
+SUPER_ADMIN_MAX_WORKSPACES=unlimited
+SUPER_ADMIN_STORAGE_QUOTA=unlimited
+SUPER_ADMIN_CAN_MODIFY_SYSTEM=true
+SUPER_ADMIN_ACCESS_ALL_WORKSPACES=true
+
+# Admin
+ADMIN_HOME_BASE="${WORKSPACE_DATA_ROOT}/admins"
+ADMIN_CONFIG_DIR=/etc/workspace/admins
+ADMIN_MAX_WORKSPACES=50
+ADMIN_STORAGE_QUOTA=500GB
+ADMIN_CAN_CREATE_USERS=true
+ADMIN_CAN_DELETE_USERS=true
+ADMIN_ACCESS_ALL_LOGS=true
+
+# Manager
+MANAGER_HOME_BASE="${WORKSPACE_DATA_ROOT}/managers"
+MANAGER_CONFIG_DIR="${WORKSPACE_ROOT}/config/managers"
+MANAGER_MAX_WORKSPACES=20
+MANAGER_STORAGE_QUOTA=200GB
+MANAGER_CAN_CREATE_WORKSPACES=true
+MANAGER_CAN_INVITE_USERS=true
+MANAGER_CAN_ASSIGN_ROLES=developer,analyst,viewer
+
+# Developer
+DEVELOPER_HOME_BASE="${WORKSPACE_DATA_ROOT}/developers"
+DEVELOPER_CONFIG_DIR="${WORKSPACE_ROOT}/config/developers"
+DEVELOPER_MAX_WORKSPACES=10
+DEVELOPER_STORAGE_QUOTA=100GB
+DEVELOPER_CAN_CREATE_PROJECTS=true
+DEVELOPER_CAN_DEPLOY=true
+DEVELOPER_HAS_SUDO_IN_WORKSPACE=true
+
+# Analyst
+ANALYST_HOME_BASE="${WORKSPACE_DATA_ROOT}/analysts"
+ANALYST_CONFIG_DIR="${WORKSPACE_ROOT}/config/analysts"
+ANALYST_MAX_WORKSPACES=5
+ANALYST_STORAGE_QUOTA=50GB
+ANALYST_CAN_CREATE_REPORTS=true
+ANALYST_CAN_EXPORT_DATA=true
+ANALYST_READ_ONLY_CODE=true
+
+# Viewer
+VIEWER_HOME_BASE="${WORKSPACE_DATA_ROOT}/viewers"
+VIEWER_CONFIG_DIR="${WORKSPACE_ROOT}/config/viewers"
+VIEWER_MAX_WORKSPACES=3
+VIEWER_STORAGE_QUOTA=10GB
+VIEWER_READ_ONLY=true
+VIEWER_CAN_COMMENT=true
+
+# Guest
+GUEST_HOME_BASE="${WORKSPACE_TEMP_ROOT}/guests"
+GUEST_CONFIG_DIR="${WORKSPACE_TEMP_ROOT}/guest-configs"
+GUEST_MAX_WORKSPACES=1
+GUEST_STORAGE_QUOTA=1GB
+GUEST_SESSION_TIMEOUT=3600
+GUEST_AUTO_CLEANUP=true
+
+# ------------------------------------------------------------------------------
+# USER PROFILE MANIFEST
+# ------------------------------------------------------------------------------
+# These define what gets created when a user is provisioned
+
+# Directories to create for each user (comma-separated, supports templates)
+USER_MANIFEST_DIRS="${USER_HOME_TEMPLATE},${USER_HOME_TEMPLATE}/projects,${USER_HOME_TEMPLATE}/shared,${USER_HOME_TEMPLATE}/downloads,${USER_HOME_TEMPLATE}/uploads,${USER_CONFIG_TEMPLATE},${USER_CACHE_TEMPLATE}"
+
+# Files to create from templates
+USER_MANIFEST_FILES="${USER_CONFIG_TEMPLATE}/profile.yaml:user_profile_template.yaml,${USER_CONFIG_TEMPLATE}/preferences.json:user_preferences_template.json,${USER_HOME_TEMPLATE}/.bashrc:bashrc_template.sh"
+
+# Symlinks to create (target:link_path)
+USER_MANIFEST_SYMLINKS="${WORKSPACE_SHARED_TEMPLATE}:${USER_HOME_TEMPLATE}/shared-workspace,${WORKSPACE_ROOT}/bin:${USER_HOME_TEMPLATE}/bin"
+
+# Environment variables to set for user sessions
+USER_MANIFEST_ENV_VARS="PATH,HOME,USER,WORKSPACE_ID,ROLE,USER_ID,WORKSPACE_ROOT"
+
+# ------------------------------------------------------------------------------
+# WORKSPACE PROVISIONING
+# ------------------------------------------------------------------------------
+
+# Default workspace structure
+WORKSPACE_MANIFEST_DIRS="src,docs,tests,config,data,logs,tmp,deployments,.git"
+WORKSPACE_MANIFEST_FILES="README.md:readme_template.md,config/settings.yaml:workspace_settings_template.yaml,.gitignore:gitignore_template"
+
+# Workspace template sources
+WORKSPACE_TEMPLATE_PYTHON="${WORKSPACE_ROOT}/templates/workspaces/python"
+WORKSPACE_TEMPLATE_RUST="${WORKSPACE_ROOT}/templates/workspaces/rust"
+WORKSPACE_TEMPLATE_NODE="${WORKSPACE_ROOT}/templates/workspaces/node"
+WORKSPACE_TEMPLATE_DATA_SCIENCE="${WORKSPACE_ROOT}/templates/workspaces/data-science"
+WORKSPACE_TEMPLATE_FULLSTACK="${WORKSPACE_ROOT}/templates/workspaces/fullstack"
+
+# Auto-provisioning settings
+WORKSPACE_AUTO_GIT_INIT=true
+WORKSPACE_AUTO_CREATE_VENV=true
+WORKSPACE_AUTO_INSTALL_DEPS=false
+
+# ------------------------------------------------------------------------------
+# DATABASE CONFIGURATION
+# ------------------------------------------------------------------------------
+DB_CONNECTION=postgresql
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=workspace_os
+DB_USERNAME=workspace_user
+DB_PASSWORD=change_this_in_production
+
+# Connection pool
+DB_POOL_MIN=2
+DB_POOL_MAX=10
+DB_POOL_TIMEOUT=30
+
+# Tables for multi-user system
+DB_TABLE_USERS=users
+DB_TABLE_ROLES=roles
+DB_TABLE_WORKSPACES=workspaces
+DB_TABLE_PERMISSIONS=permissions
+DB_TABLE_SESSIONS=sessions
+DB_TABLE_AUDIT_LOGS=audit_logs
+
+# ------------------------------------------------------------------------------
+# AUTHENTICATION & AUTHORIZATION
+# ------------------------------------------------------------------------------
+AUTH_DRIVER=jwt
+AUTH_SESSION_LIFETIME=720
+AUTH_SESSION_ABSOLUTE_TIMEOUT=43200
+AUTH_PASSWORD_MIN_LENGTH=12
+AUTH_REQUIRE_MFA=true
+AUTH_MFA_METHODS=totp,sms,email
+
+# JWT Settings
+JWT_SECRET=your-256-bit-secret-change-this
+JWT_ALGO=HS256
+JWT_ACCESS_TOKEN_LIFETIME=900
+JWT_REFRESH_TOKEN_LIFETIME=86400
+
+# LDAP/AD Integration (if enabled)
+LDAP_ENABLED=false
+LDAP_HOST=ldap.company.com
+LDAP_PORT=389
+LDAP_BASE_DN="dc=company,dc=com"
+LDAP_USER_DN="ou=users,dc=company,dc=com"
+LDAP_BIND_DN="cn=admin,dc=company,dc=com"
+LDAP_BIND_PASSWORD=change_this
+
+# SSO Configuration
+SSO_ENABLED=false
+SSO_PROVIDER=okta
+SSO_CLIENT_ID=your_client_id
+SSO_CLIENT_SECRET=your_client_secret
+SSO_REDIRECT_URI=https://workspace.company.com/auth/callback
+
+# ------------------------------------------------------------------------------
+# PERMISSIONS & ACCESS CONTROL
+# ------------------------------------------------------------------------------
+# Permission format: resource:action (e.g., workspace:create, user:delete)
+
+PERMISSIONS_SUPER_ADMIN="*:*"
+PERMISSIONS_ADMIN="user:*,workspace:*,role:read,role:assign,system:read"
+PERMISSIONS_MANAGER="workspace:create,workspace:read,workspace:update,user:invite,user:read,project:*"
+PERMISSIONS_DEVELOPER="workspace:read,project:*,deployment:create,deployment:read"
+PERMISSIONS_ANALYST="workspace:read,project:read,data:read,data:export,report:create"
+PERMISSIONS_VIEWER="workspace:read,project:read,file:read,comment:create"
+PERMISSIONS_GUEST="workspace:read"
+
+# Default permissions for new workspaces
+WORKSPACE_DEFAULT_PERMISSIONS="owner:*,member:read,member:write"
+
+# ------------------------------------------------------------------------------
+# FILE SYSTEM QUOTAS & LIMITS
+# ------------------------------------------------------------------------------
+QUOTA_ENFORCEMENT=true
+QUOTA_CHECK_INTERVAL=3600
+QUOTA_WARN_THRESHOLD=0.90
+QUOTA_BLOCK_THRESHOLD=0.98
+
+# Per-role storage quotas (bytes or human-readable)
+QUOTA_SUPER_ADMIN=0
+QUOTA_ADMIN=536870912000
+QUOTA_MANAGER=214748364800
+QUOTA_DEVELOPER=107374182400
+QUOTA_ANALYST=53687091200
+QUOTA_VIEWER=10737418240
+QUOTA_GUEST=1073741824
+
+# File upload limits
+MAX_UPLOAD_SIZE=5GB
+MAX_UPLOAD_SIZE_GUEST=100MB
+ALLOWED_FILE_TYPES="*"
+BLOCKED_FILE_TYPES=".exe,.dll,.bat,.cmd,.sh,.ps1"
+
+# ------------------------------------------------------------------------------
+# LOGGING & AUDIT
+# ------------------------------------------------------------------------------
+LOG_LEVEL=info
+LOG_FORMAT=json
+LOG_ROTATION=daily
+LOG_RETENTION_DAYS=90
+LOG_MAX_SIZE=100MB
+
+# Audit logging
+AUDIT_ENABLED=true
+AUDIT_LOG_PATH="${WORKSPACE_LOG_ROOT}/audit"
+AUDIT_LOG_ACTIONS="login,logout,create,delete,update,permission_change,role_change"
+AUDIT_RETENTION_DAYS=365
+
+# Per-user logging
+USER_LOG_ENABLED=true
+USER_LOG_COMMANDS=true
+USER_LOG_FILE_ACCESS=true
+
+# ------------------------------------------------------------------------------
+# SECURITY
+# ------------------------------------------------------------------------------
+SECURITY_ENCRYPTION_KEY=your-encryption-key-change-this
+SECURITY_HASH_ALGORITHM=sha256
+SECURITY_ALLOW_SHELL_ACCESS=false
+SECURITY_RESTRICT_NETWORK=false
+SECURITY_ALLOWED_IPS=
+SECURITY_BLOCKED_IPS=
+
+# Rate limiting
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_REQUESTS_PER_MINUTE=60
+RATE_LIMIT_REQUESTS_PER_HOUR=1000
+
+# ------------------------------------------------------------------------------
+# NOTIFICATION SYSTEM
+# ------------------------------------------------------------------------------
+NOTIFICATIONS_ENABLED=true
+NOTIFICATIONS_CHANNELS=email,slack,webhook
+
+# Email notifications
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.company.com
+MAIL_PORT=587
+MAIL_USERNAME=noreply@company.com
+MAIL_PASSWORD=change_this
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@company.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+# Slack notifications
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+SLACK_CHANNEL=#workspace-notifications
+
+# Custom webhook
+WEBHOOK_URL=https://your-webhook-endpoint.com/notifications
+WEBHOOK_SECRET=your_webhook_secret
+
+# ------------------------------------------------------------------------------
+# CACHE & SESSIONS
+# ------------------------------------------------------------------------------
+CACHE_DRIVER=redis
+CACHE_PREFIX=workspace_
+CACHE_TTL=3600
+
+SESSION_DRIVER=redis
+SESSION_LIFETIME=720
+SESSION_COOKIE_NAME=workspace_session
+SESSION_COOKIE_SECURE=true
+SESSION_COOKIE_HTTP_ONLY=true
+
+# Redis configuration
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+REDIS_CACHE_DB=1
+REDIS_SESSION_DB=2
+
+# ------------------------------------------------------------------------------
+# QUEUE & BACKGROUND JOBS
+# ------------------------------------------------------------------------------
+QUEUE_DRIVER=redis
+QUEUE_CONNECTION=default
+QUEUE_FAILED_DRIVER=database
+
+# Job types and priorities
+QUEUE_PROVISION_USER=high
+QUEUE_PROVISION_WORKSPACE=high
+QUEUE_CLEANUP_TEMP=low
+QUEUE_GENERATE_REPORT=medium
+QUEUE_SEND_NOTIFICATION=medium
+
+# ------------------------------------------------------------------------------
+# BACKUP & DISASTER RECOVERY
+# ------------------------------------------------------------------------------
+BACKUP_ENABLED=true
+BACKUP_SCHEDULE="0 2 * * *"
+BACKUP_RETENTION_DAYS=30
+BACKUP_PATH=/backup/workspace
+BACKUP_INCLUDE_DB=true
+BACKUP_INCLUDE_USER_DATA=true
+BACKUP_COMPRESSION=gzip
+
+# ------------------------------------------------------------------------------
+# MONITORING & METRICS
+# ------------------------------------------------------------------------------
+MONITORING_ENABLED=true
+METRICS_ENDPOINT=http://localhost:9090
+METRICS_INTERVAL=60
+
+# Health check endpoints
+HEALTH_CHECK_ENABLED=true
+HEALTH_CHECK_PATH=/health
+HEALTH_CHECK_TOKEN=your_health_check_token
+
+# ------------------------------------------------------------------------------
+# FEATURE FLAGS
+# ------------------------------------------------------------------------------
+FEATURE_USER_REGISTRATION=true
+FEATURE_WORKSPACE_TEMPLATES=true
+FEATURE_COLLABORATIVE_EDITING=true
+FEATURE_VERSION_CONTROL=true
+FEATURE_AI_ASSISTANT=false
+FEATURE_MARKETPLACE=false
+
+# ------------------------------------------------------------------------------
+# INTEGRATION SETTINGS
+# ------------------------------------------------------------------------------
+# Git integration
+GIT_ENABLED=true
+GIT_DEFAULT_BRANCH=main
+GIT_AUTO_COMMIT=false
+
+# Cloud storage integration
+CLOUD_STORAGE_ENABLED=false
+CLOUD_STORAGE_PROVIDER=s3
+S3_BUCKET=workspace-storage
+S3_REGION=us-east-1
+S3_ACCESS_KEY=
+S3_SECRET_KEY=
+
+# Container orchestration
+KUBERNETES_ENABLED=false
+KUBERNETES_NAMESPACE=workspace
+KUBERNETES_CONFIG_PATH=/etc/kubernetes/config
+
+# ------------------------------------------------------------------------------
+# DEVELOPMENT & DEBUGGING (Should be false in production)
+# ------------------------------------------------------------------------------
+DEV_MODE=false
+DEV_HOT_RELOAD=false
+DEV_SHOW_ERRORS=false
+DEV_PROFILING=false
+DEV_QUERY_LOGGING=false
+
+# ==============================================================================
+# USAGE NOTES
+# ==============================================================================
+#
+# 1. PATH TEMPLATES:
+#    - Use {variable_name} for substitution
+#    - Available: username, user_id, role, workspace_id, project_id, timestamp
+#    - Example: "${WORKSPACE_DATA_ROOT}/users/{username}/projects/{project_id}"
+#
+# 2. ROLE HIERARCHY:
+#    - Roles inherit permissions from parent roles
+#    - Define in ROLE_HIERARCHY_* variables
+#    - Higher roles have all permissions of lower roles
+#
+# 3. MANIFESTS:
+#    - USER_MANIFEST_*: Defines what gets created for new users
+#    - WORKSPACE_MANIFEST_*: Defines workspace structure
+#    - Use comma-separated lists for multiple items
+#
+# 4. PERMISSIONS:
+#    - Format: "resource:action,resource:action"
+#    - Use "*" for wildcard (e.g., "workspace:*" or "*:*")
+#    - Checked against role-based access control
+#
+# 5. QUOTAS:
+#    - Use bytes or human-readable (GB, MB, TB)
+#    - 0 = unlimited (for super admins)
+#    - Enforced if QUOTA_ENFORCEMENT=true
+#
+# 6. SECURITY:
+#    - NEVER commit secrets to git
+#    - Use .env.example as template
+#    - Rotate JWT_SECRET and SECURITY_ENCRYPTION_KEY regularly
+#    - Enable SECURITY_ALLOWED_IPS in production
+#
+# ==============================================================================

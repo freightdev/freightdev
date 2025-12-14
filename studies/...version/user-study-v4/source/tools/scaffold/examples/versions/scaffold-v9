@@ -1,0 +1,459 @@
+#!/usr/bin/env bash
+
+# Fixed scaffold script - creates directory structure from tree files
+# Usage: ./script.sh <input_file> <output_path> [--dry] [--debug]
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+DRY_RUN=false
+DEBUG=false
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_debug() { [[ "$DEBUG" == "true" ]] && echo -e "${CYAN}[DEBUG]${NC} $1"; }
+
+show_usage() {
+    echo "Usage: $0 <input_file> <output_path> [--dry] [--debug]"
+    echo "Example: $0 structure.tree ./output --dry"
+    echo ""
+    echo "Input file should contain a tree structure like:"
+    echo "project/"
+    echo "├── src/"
+    echo "│   ├── main.py"
+    echo "│   └── utils.py"
+    echo "└── README.md"
+}
+
+# Clean extraction of names - handles various tree formats
+extract_name() {
+    local line="$1"
+    
+    # First pass: remove leading whitespace and tree drawing characters
+    local cleaned=$(echo "$line" | sed -E 's/^[[:space:]]*[│├└─┐┌┘┗┓┏┛┣┫┳┻╋╭╮╯╰╱╲╳┃━]+[[:space:]]*//')
+    
+    # Second pass: remove any remaining tree characters at the start
+    cleaned=$(echo "$cleaned" | sed -E 's/^[├└─]+[[:space:]]*//')
+    
+    # Remove trailing comments (anything after #)
+    cleaned=$(echo "$cleaned" | sed 's/#.*$//')
+    
+    # Remove emojis (common Unicode ranges)
+    cleaned=$(echo "$cleaned" | sed 's/[🤖🧠📚📝🦙💾📁📄⚙️🔧🎯🚀💡🔍⭐🎨🛠️📊🎭🔒🌟💻🎪]//g')
+    
+    # Remove extra whitespace and trailing slashes for directories
+    cleaned=$(echo "$cleaned" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's|/*$||')
+    
+    echo "$cleaned"
+}
+
+# Calculate depth based on indentation
+get_depth() {
+    local line="$1"
+    local depth=0
+    local i=0
+    
+    # Count leading whitespace characters
+    while [[ $i -lt ${#line} ]]; do
+        char="${line:$i:1}"
+        case "$char" in
+            ' ') ((depth++)) ;;
+            $'\t') ((depth += 4)) ;;
+            '│'|'├'|'└') ((depth += 4)) ;;
+            '─') ;;  # Skip horizontal lines
+            *) break ;;
+        esac
+        ((i++))
+    done
+    
+    # Convert to logical depth (4 chars = 1 level)
+    echo $((depth / 4))
+}
+# Check if a name represents a file (has extension)
+is_file() {
+    local name="$1"
+    [[ "$name" =~ \.[a-zA-Z0-9]+$ ]]
+}
+
+main() {
+    local input_file=""
+    local output_path=""
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --dry|--preview) 
+                DRY_RUN=true
+                shift 
+                ;;
+            --debug) 
+                DEBUG=true
+                shift 
+                ;;
+            --help|-h) 
+                show_usage
+                exit 0 
+                ;;
+            -*) 
+                log_error "Unknown option: $1"
+                show_usage
+                exit 1 
+                ;;
+            *)
+                if [[ -z "$input_file" ]]; then
+                    input_file="$1"
+                elif [[ -z "$output_path" ]]; then
+                    output_path="$1"
+                else
+                    log_error "Too many arguments"
+                    show_usage
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate arguments
+    if [[ -z "$input_file" || -z "$output_path" ]]; then
+        log_error "Missing required arguments"
+        show_usage
+        exit 1
+    fi
+    
+    if [[ ! -f "$input_file" ]]; then
+        log_error "Input file not found: $input_file"
+        exit 1
+    fi
+    
+    # Initialize
+    local start_time=$(date +%s)
+    log_info "Processing: $input_file -> $output_path"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "DRY RUN MODE - No files will be created"
+    else
+        mkdir -p "$output_path"
+        log_info "Created base directory: $output_path"
+    fi
+    
+    # Track directory stack for proper nesting
+    local -a dir_stack=()
+    local created_dirs=0
+    local created_files=0
+    local line_num=0
+    local total_lines=$(wc -l < "$input_file")
+    
+    log_info "Processing $total_lines lines..."
+    
+    # Process each line
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        ((line_num++))
+        
+        # Show progress for large files
+        if [[ $total_lines -gt 50 ]] && [[ $((line_num % 20)) -eq 0 ]]; then
+            echo "Progress: $line_num/$total_lines lines"
+        fi
+        
+        # Skip empty lines, comments, and title lines
+        local trimmed=$(echo "$line" | sed 's/^[[:space:]│├└─]*[[:space:]]*$//')
+        if [[ -z "$trimmed" ]]; then
+            log_debug "Line $line_num: Skipping empty/tree-only line"
+            continue
+        fi
+        
+        # Skip obvious title/header lines (lines without tree structure indicators)
+        if [[ ! "$line" =~ [│├└─/] ]] && [[ $line_num -lt 5 ]]; then
+            log_debug "Line $line_num: Skipping title/header line: '$line'"
+            continue
+        fi
+        
+        # Extract name and depth
+        local name=$(extract_name "$line")
+        if [[ -z "$name" ]]; then
+            log_debug "Line $line_num: No name found in '$line'"
+            continue
+        fi
+        
+        local depth=$(get_depth "$line")
+        log_debug "Line $line_num: name='$name', depth=$depth"
+        
+        # Adjust directory stack to current depth
+        while [[ ${#dir_stack[@]} -gt $depth ]]; do
+            unset 'dir_stack[-1]'
+            log_debug "Popped directory from stack, new length: ${#dir_stack[@]}"
+        done
+        
+        # Build full path
+        local full_path="$output_path"
+        for dir in "${dir_stack[@]}"; do
+            full_path="$full_path/$dir"
+        done
+        full_path="$full_path/$name"
+        
+        # Create file or directory
+        if is_file "$name"; then
+            # Create file
+            if [[ "$DRY_RUN" == "true" ]]; then
+                echo "FILE: $full_path"
+            else
+                # Ensure parent directory exists
+                local parent_dir=$(dirname "$full_path")
+                mkdir -p "$parent_dir" 2>/dev/null
+                
+                if touch "$full_path" 2>/dev/null; then
+                    ((created_files++))
+                    log_debug "Created file: $full_path"
+                else
+                    log_error "Failed to create file: $full_path"
+                fi
+            fi
+        else
+            # Create directory
+            if [[ "$DRY_RUN" == "true" ]]; then
+                echo "DIR:  $full_path/"
+            else
+                if mkdir -p "$full_path" 2>/dev/null; then
+                    ((created_dirs++))
+                    log_debug "Created directory: $full_path"
+                else
+                    log_error "Failed to create directory: $full_path"
+                fi
+            fi
+            
+            # Add to directory stack for nesting
+            dir_stack+=("$name")
+            log_debug "Added '$name' to stack, new length: ${#dir_stack[@]}"
+        fi
+        
+    done < "$input_file"
+    
+    # Summary
+    local end_time=$(date +%s)
+    local elapsed=$((end_time - start_time))
+    
+    echo
+    log_success "Completed processing $line_num lines in ${elapsed}s"
+    
+    if [[ "$DRY_RUN" != "true" ]]; then
+        log_success "Created $created_dirs directories and $created_files files"
+        
+        # Show final structure if tree command is available
+        if command -v tree >/dev/null 2>&1; then
+            echo
+            log_info "Final structure:"
+            tree "$output_path" 2>/dev/null || ls -la "$output_path"
+        else
+            echo
+            log_info "Directory contents:"
+            ls -la "$output_path"
+        fi
+    fi
+}
+
+# Run main function with all arguments
+main "$@"\t' ]]; then
+            ((depth += 4))
+        else
+            ((depth++))
+        fi
+        ((i++))
+    done
+    
+    # Count tree characters as depth indicators
+    while [[ $i -lt ${#line} ]]; do
+        case "${line:$i:1}" in
+            '│') ((depth += 4)); ((i++)) ;;  # Vertical line = continue depth
+            '├'|'└') ((depth += 4)); ((i++)) ;;  # Branch characters
+            '─') ((i++)) ;;  # Horizontal line, skip but don't add depth
+            *) break ;;  # Hit actual content
+        esac
+    done
+    
+    # Convert to logical depth level (every 4 chars = 1 level)
+    echo $((depth / 4))
+}
+
+# Check if a name represents a file (has extension)
+is_file() {
+    local name="$1"
+    [[ "$name" =~ \.[a-zA-Z0-9]+$ ]]
+}
+
+main() {
+    local input_file=""
+    local output_path=""
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --dry|--preview) 
+                DRY_RUN=true
+                shift 
+                ;;
+            --debug) 
+                DEBUG=true
+                shift 
+                ;;
+            --help|-h) 
+                show_usage
+                exit 0 
+                ;;
+            -*) 
+                log_error "Unknown option: $1"
+                show_usage
+                exit 1 
+                ;;
+            *)
+                if [[ -z "$input_file" ]]; then
+                    input_file="$1"
+                elif [[ -z "$output_path" ]]; then
+                    output_path="$1"
+                else
+                    log_error "Too many arguments"
+                    show_usage
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate arguments
+    if [[ -z "$input_file" || -z "$output_path" ]]; then
+        log_error "Missing required arguments"
+        show_usage
+        exit 1
+    fi
+    
+    if [[ ! -f "$input_file" ]]; then
+        log_error "Input file not found: $input_file"
+        exit 1
+    fi
+    
+    # Initialize
+    local start_time=$(date +%s)
+    log_info "Processing: $input_file -> $output_path"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "DRY RUN MODE - No files will be created"
+    else
+        mkdir -p "$output_path"
+        log_info "Created base directory: $output_path"
+    fi
+    
+    # Track directory stack for proper nesting
+    local -a dir_stack=()
+    local created_dirs=0
+    local created_files=0
+    local line_num=0
+    local total_lines=$(wc -l < "$input_file")
+    
+    log_info "Processing $total_lines lines..."
+    
+    # Process each line
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        ((line_num++))
+        
+        # Show progress for large files
+        if [[ $total_lines -gt 50 ]] && [[ $((line_num % 20)) -eq 0 ]]; then
+            echo "Progress: $line_num/$total_lines lines"
+        fi
+        
+        # Skip empty lines and lines with only whitespace/tree chars
+        local trimmed=$(echo "$line" | sed 's/^[[:space:]│├└─]*[[:space:]]*$//')
+        if [[ -z "$trimmed" ]]; then
+            log_debug "Line $line_num: Skipping empty/tree-only line"
+            continue
+        fi
+        
+        # Extract name and depth
+        local name=$(extract_name "$line")
+        if [[ -z "$name" ]]; then
+            log_debug "Line $line_num: No name found in '$line'"
+            continue
+        fi
+        
+        local depth=$(get_depth "$line")
+        log_debug "Line $line_num: name='$name', depth=$depth"
+        
+        # Adjust directory stack to current depth
+        while [[ ${#dir_stack[@]} -gt $depth ]]; do
+            unset 'dir_stack[-1]'
+            log_debug "Popped directory from stack, new length: ${#dir_stack[@]}"
+        done
+        
+        # Build full path
+        local full_path="$output_path"
+        for dir in "${dir_stack[@]}"; do
+            full_path="$full_path/$dir"
+        done
+        full_path="$full_path/$name"
+        
+        # Create file or directory
+        if is_file "$name"; then
+            # Create file
+            if [[ "$DRY_RUN" == "true" ]]; then
+                echo "FILE: $full_path"
+            else
+                # Ensure parent directory exists
+                local parent_dir=$(dirname "$full_path")
+                mkdir -p "$parent_dir" 2>/dev/null
+                
+                if touch "$full_path" 2>/dev/null; then
+                    ((created_files++))
+                    log_debug "Created file: $full_path"
+                else
+                    log_error "Failed to create file: $full_path"
+                fi
+            fi
+        else
+            # Create directory
+            if [[ "$DRY_RUN" == "true" ]]; then
+                echo "DIR:  $full_path/"
+            else
+                if mkdir -p "$full_path" 2>/dev/null; then
+                    ((created_dirs++))
+                    log_debug "Created directory: $full_path"
+                else
+                    log_error "Failed to create directory: $full_path"
+                fi
+            fi
+            
+            # Add to directory stack for nesting
+            dir_stack+=("$name")
+            log_debug "Added '$name' to stack, new length: ${#dir_stack[@]}"
+        fi
+        
+    done < "$input_file"
+    
+    # Summary
+    local end_time=$(date +%s)
+    local elapsed=$((end_time - start_time))
+    
+    echo
+    log_success "Completed processing $line_num lines in ${elapsed}s"
+    
+    if [[ "$DRY_RUN" != "true" ]]; then
+        log_success "Created $created_dirs directories and $created_files files"
+        
+        # Show final structure if tree command is available
+        if command -v tree >/dev/null 2>&1; then
+            echo
+            log_info "Final structure:"
+            tree "$output_path" 2>/dev/null || ls -la "$output_path"
+        else
+            echo
+            log_info "Directory contents:"
+            ls -la "$output_path"
+        fi
+    fi
+}
+
+# Run main function with all arguments
+main "$@"

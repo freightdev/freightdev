@@ -1,0 +1,28 @@
+# Marker Schema — defines an executable logic writer
+
+marker_id: "marker-001"
+name: "PacketPilot"
+creator: "FedAI"
+
+beat_type: "dispatching"       # Category or beat it's tied to
+marker_type: "agent"           # agent | tool | module | daemon
+
+permissions:
+  allowed_marks: ["dispatch", "routing"]
+  allowed_books: ["book-fed", "book-logistics"]
+  allowed_ribbons: true
+  requires_signature: true     # Auth required before execution
+
+limits:
+  max_strokes: 1000            # Number of actions per mark
+  cache_policy: "ephemeral"    # ephemeral | persistent | none
+  trail_required: true
+
+security:
+  encrypted_trails: true
+  burn_protected: true         # Marker’s strokes cannot be altered after burn
+
+status: "active"
+
+created_at: ""
+last_used: ""

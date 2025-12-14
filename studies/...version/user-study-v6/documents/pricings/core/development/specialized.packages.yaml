@@ -1,0 +1,57 @@
+specialized_packages:
+  - name: E-commerce Setup
+    price: 4500
+    timeline: "2-3 weeks"
+    description: >
+      Complete online store with payment processing, inventory management,
+      and order fulfillment. Ready to start selling immediately.
+    includes:
+      - Product catalog (up to 50 products)
+      - Payment processing (Stripe/PayPal)
+      - Order management
+      - Shipping calculations
+      - Admin dashboard
+      - Mobile-responsive design
+
+  - name: API Development
+    price: 3500
+    timeline: "2-3 weeks"
+    description: >
+      Custom API for your mobile app or third-party integrations.
+      Includes documentation, testing, and deployment.
+    includes:
+      - RESTful API development
+      - Database design & setup
+      - Authentication system
+      - API documentation
+      - Testing suite
+      - Deployment & hosting setup
+
+  - name: Database Design
+    price: 2500
+    timeline: "1-2 weeks"
+    description: >
+      Scalable database architecture designed for growth. Proper relationships,
+      indexing, and optimization from day one.
+    includes:
+      - Database schema design
+      - Performance optimization
+      - Backup procedures
+      - Documentation
+      - Migration scripts (if needed)
+
+  - name: AI Integration Basic
+    price: 5500
+    timeline: "2-3 weeks"
+    description: >
+      Add AI features to your existing application. Chatbots, content generation,
+      or data analysis using proven APIs like OpenAI.
+    includes:
+      - AI feature integration
+      - Custom prompts & fine-tuning
+      - User interface design
+      - Cost optimization
+      - Usage monitoring
+    excludes:
+      - Custom model training
+      - Complex AI workflows

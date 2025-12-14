@@ -1,0 +1,33 @@
+quote_schema:
+  client_info:
+    company_name: string
+    contact_name: string
+    email: string
+    phone: string
+    industry: string
+    company_size: enum [startup, small, medium, large, enterprise]
+  
+  project_details:
+    selected_packages: array
+    custom_requirements: text
+    timeline_requirements: string
+    budget_range: string
+    priority_level: enum [standard, priority, rush]
+  
+  pricing:
+    base_total: number
+    addons_total: number
+    discount_applied: number
+    final_total: number
+    payment_terms: string
+  
+  timeline:
+    estimated_start: date
+    estimated_completion: date
+    milestone_schedule: array
+  
+  terms:
+    revision_cycles: number
+    support_included: string
+    warranty_period: string
+    payment_schedule: string

@@ -1,0 +1,10 @@
+{
+  "id": "nous-hermes-2-llama2-7b",
+  "name": "Nous Hermes 2 (Llama 2 7B)",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "3.8 GB",
+  "license": "MIT",
+  "path": "models/nous-hermes-llama2-7b/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/TheBloke/Nous-Hermes-Llama-2-7B-GGUF/resolve/main/nous-hermes-2-llama2-7b.Q4_K_M.gguf"
+}

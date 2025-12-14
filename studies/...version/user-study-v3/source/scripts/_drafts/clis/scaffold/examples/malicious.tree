@@ -1,0 +1,28 @@
+## Example 3: Suspicious Patterns Test (malicious.tree)
+
+dangerous-project/
+├── $(whoami)/                     # Command substitution
+├── id/                         # Backtick command substitution
+├── ../../../etc/                 # Directory traversal
+├── /root/secrets/                # Absolute path
+├── user*data/                    # Glob pattern
+├── temp[0-9]/                    # Bracket pattern
+├── logs|backup/                  # Pipe character
+├── config;rm-rf/                 # Semicolon
+├── data&&echo/                   # Command chaining
+├── files>output/                 # Redirection
+├── ${HOME}/.ssh/                 # Variable substitution
+├── app<input/                    # Input redirection
+├── test?.log                     # Question mark pattern
+├── backup{1,2,3}/               # Brace expansion
+├── data//extra/               # Multiple slashes
+├── files\nmalicious/            # Newline character
+├── config\x41\x42/              # Hex characters
+├── temp\0null/                  # Null character
+├── data\r\nwindows/             # Windows line endings
+├── unicode\u0000/               # Unicode null
+├── script.sh.exe                # Suspicious extension
+├── payload.bat                  # Batch file
+├── trojan.com                   # COM file
+├── virus.pif                    # PIF file
+└── malware.scr                  # Screen saver executable

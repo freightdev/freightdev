@@ -1,0 +1,31 @@
+# 🎲 bet.yaml — Defines a wager or outcome-based execution constraint
+bet_id: "bet-001"
+name: "summary-challenge"
+issued_by: "marker-001"
+
+stakes:
+  tokens: 100
+  trails_required: true
+  ribbon_retention: 3
+
+conditions:
+  must_complete: "summary of 500+ words"
+  within: "30 seconds"
+  beat: "dispatching"
+  retries_allowed: 1
+
+rewards:
+  ink_burn: true
+  page_unlock: true
+  memory_ribbon: true
+
+failure_penalty:
+  ink_revoke: false
+  log_trail_only: true
+  ribbon_discard: true
+
+visibility:
+  public: false
+  keeper_audit: true
+
+timestamp: "2025-07-23T21:42:00Z"

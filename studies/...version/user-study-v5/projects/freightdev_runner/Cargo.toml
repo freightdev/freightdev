@@ -1,0 +1,78 @@
+[package]
+name = "freightdev_runner"
+version = "0.1.0"
+edition = "2024"
+authors = ["Jesse E.E.W. Conley <jesse.freightdev@gmail.com>"]
+description = ""
+license = "MIT"
+repository = "https://github.com/freightdev/main/freightdev_runner"
+keywords = [
+    "llm", "llama", "inference", "agents", "ai",
+    "ffi", "bindings", "tokenization", "rust",
+    "neural-network"
+]
+categories = [
+    "api-bindings", "science",
+    "artificial-intelligence",
+    "natural-language-processing"
+]
+readme = "README.md"
+
+[[bin]]
+name = "freightdev-runner"
+path = "src/main.rs"
+
+[lib]
+name = "freightdev_runner"
+path = "src/lib.rs"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"]}
+serde_json = { version = "1.0"}
+thiserror = "2.0.16"
+regex = "1"
+
+[build-dependencies]
+bindgen = { version = "0.72", features = ["runtime"] }
+cc = "1.0"
+
+[dev-dependencies]
+tempfile = "3.8"
+criterion = "0.7"
+
+[features]
+default = []
+cuda = []
+metal = []
+blas = []
+openmp = []
+regen-bindings = []
+
+# Performance optimizations for release builds
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+opt-level = 3
+
+# Slightly optimized dev builds for faster iteration
+[profile.dev]
+opt-level = 1
+
+# Benchmarking profile
+[profile.bench]
+lto = true
+codegen-units = 1
+
+# Package metadata
+[package.metadata.docs.rs]
+features = ["regen-bindings"]
+rustdoc-args = ["--cfg", "docsrs"]
+
+#[[bench]]
+#name = "inference_bench"
+#path = "benches/inference_bench.rs"
+#harness = false
+#required-features = []

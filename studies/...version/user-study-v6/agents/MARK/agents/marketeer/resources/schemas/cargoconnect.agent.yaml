@@ -1,0 +1,219 @@
+identity:
+  id: CC
+  name: CargoConnect
+  description: |
+    CargoConnect links users to their own freight data by securely logging into and retrieving loads
+    from their connected load board accounts. It is not a load board itself. Instead, it enables
+    dispatchers and agents to view, filter, and interact with the loads they already have access to
+    through platforms they’re subscribed to. It acts as a bridge between the user's account and
+    their dispatching interface.
+  tagline: "Connect your own freight. No middleman. No scraping games."
+  owned_by: Fast & Easy Dispatching LLC
+  version: 0.0.1
+  license: Proprietary
+  visibility: public
+
+roles:
+  primary: Securely connects users to their own freight data from load board accounts.
+  secondary:
+    - Load visibility routing
+    - Freight analysis interface
+  fallback:
+    - Offline load cache browser
+    - Manual credential entry system
+
+capabilities:
+  input_types:
+    - credentials
+    - load board queries
+    - filters
+    - dispatch rules
+  output_types:
+    - load listings
+    - load metadata
+    - filter results
+  tasks:
+    - connect_account
+    - fetch_loads
+    - apply_filters
+    - extract_metadata
+    - rank_results
+  limits:
+    memory: 256MB
+    runtime: 10m
+    rate_limit: 60_queries_per_hour_per_user
+    threads: 2
+    timeout: 60s
+
+tools:
+  - credential_vault
+  - session_manager
+  - load_fetcher
+  - filter_engine
+  - score_ranker
+  - html_parser
+  - error_notifier
+
+dependencies:
+  - headless_browser
+  - secure_storage
+  - html_query_parser
+  - browser_automation_lib
+
+apis:
+  - loadboard/auth
+  - loadboard/fetch
+  - fed/ui_bridge
+
+models:
+  - ranking.score_model
+  - classification.load_type
+
+bindings:
+  - rust-browser-bindings
+  - vault-connector
+  - selector-engine
+
+triggers:
+  on_start:
+    - prompt_user_to_connect_account
+  on_request:
+    - fetch_user_loads
+    - rerank_and_filter
+  on_timer:
+    - refresh_active_sessions
+    - clear_stale_credentials
+  on_event:
+    - user_changes_filter
+    - account_connected
+
+intents:
+  default: show_connected_loads
+  fallback: prompt_for_credentials
+  allowed:
+    - fetch_loads
+    - reconnect_account
+    - apply_filters
+    - rank_loads
+  denied:
+    - post_load
+    - book_freight
+    - modify_load
+
+protocols:
+  communication:
+    - https
+    - iframe_bridge
+  transport:
+    - TLSv1.3
+  security:
+    - credential_tokenization
+    - vault_encryption
+    - password_auth
+  storage:
+    - encrypted_cache
+    - session_vault
+
+rules:
+  ethics:
+    - user must authorize credential use
+    - never store plaintext passwords
+  permissions:
+    - can only access user's own account
+    - cannot modify broker or load data
+  restrictions:
+    - deny access to blocked IPs or regions
+    - auto-expire old sessions
+
+workflow:
+  bootstrap:
+    - prompt_for_login
+    - test_connection
+    - store_token
+  routine:
+    - fetch_current_loads
+    - apply_filters
+    - display_results
+  shutdown:
+    - revoke_tokens
+    - clear_session
+    - flush cache
+
+memory:
+  type: vault + runtime session
+  scope: per_user
+  persistence: secure_session_storage
+  indexing: board_name + user + timestamp
+
+data:
+  sources:
+    - external_loadboard
+  sinks:
+    - FED interface
+    - user dashboard
+  formats:
+    - json
+    - html
+
+logging:
+  level: info
+  path: /var/log/cargoconnect.log
+  rotation: daily
+  retention: 7d
+
+ui:
+  cli_flags:
+    - --connect
+    - --fetch
+    - --filter
+    - --logout
+  dashboard: fedispatching.com/dashboard/cargoconnect
+  webhooks:
+    - /api/cargoconnect/connect
+    - /api/cargoconnect/fetch
+    - /api/cargoconnect/logout
+
+metrics:
+  telemetry:
+    - loads_fetched
+    - fetch_latency
+    - failed_logins
+  heartbeat: 5m
+  alerts:
+    - login_failed
+    - session_expired
+    - load_fetch_error
+
+env:
+  vars:
+    ENV: production
+    ENABLE_LIVE_RANKING: true
+  secrets:
+    - VAULT_KEY
+    - LOADBOARD_SESSIONS
+
+auth:
+  methods:
+    - password
+    - oauth2 (planned)
+  token_scope:
+    - fetch_loads
+    - view_dashboard
+  encryption: AES256-GCM
+
+tenants:
+  scope: per_company
+  isolation: full
+  permissions:
+    - view_own_loads
+    - manage_credentials
+
+containers:
+  image: ghcr.io/fedispatching/cargoconnect:latest
+  runtime: docker
+  entrypoint: ["./start-agent", "--mode", "connect"]
+
+meta:
+  created_at: 2025-07-26
+  updated_at: TODO
+  schema_version: 1.0.0

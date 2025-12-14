@@ -1,0 +1,10 @@
+{
+  "id": "voice-coach",
+  "label": "Voice Coach",
+  "system": "System prompt for Voice Coach",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

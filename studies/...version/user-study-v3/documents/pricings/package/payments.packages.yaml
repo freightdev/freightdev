@@ -1,0 +1,55 @@
+payments_packages:
+  - name: Payments Basic
+    price: 4500
+    timeline: "1-2 weeks"
+    tier: Essential
+    description: >
+      Secure payment processing with the essentials. Accept cards, handle refunds,
+      and manage basic subscription billing.
+    includes:
+      - Stripe/PayPal integration
+      - One-time payment processing
+      - Refund management
+      - Basic subscription billing
+      - Payment security compliance
+      - Transaction reporting
+    excludes:
+      - Multi-currency support
+      - Complex billing scenarios
+      - Payment analytics
+
+  - name: Payments Professional
+    price: 9500
+    timeline: "2-3 weeks"
+    tier: Professional
+    description: >
+      Advanced payment system with subscriptions, multi-currency, and detailed analytics.
+      Perfect for SaaS and e-commerce businesses with complex billing needs.
+    includes:
+      - Everything in Payments Basic
+      - Advanced subscription management
+      - Multi-currency support
+      - Payment analytics dashboard
+      - Dunning management
+      - Webhook handling
+      - Tax calculation integration
+    ideal_for:
+      - SaaS businesses
+      - International sales
+      - Subscription models
+
+  - name: Payments Enterprise
+    price: 22000+
+    timeline: "4-6 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise payment infrastructure with custom flows, compliance, and advanced features.
+      Built for complex billing scenarios and high-volume transactions.
+    includes:
+      - Everything in Professional
+      - Custom payment flows
+      - Enterprise compliance (PCI DSS)
+      - Multi-provider redundancy
+      - Advanced fraud protection
+      - Custom reporting & BI
+      - Dedicated payments specialist (3 months)

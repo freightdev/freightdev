@@ -1,0 +1,45 @@
+## Enable syntax highlighting
+include "~/.nano/*.nanorc"
+
+## Better colors for important parts
+set titlecolor green,black
+set statuscolor white,blue
+set selectedcolor black,yellow
+set numbercolor cyan,black
+set keycolor cyan,black
+
+## Optional - Themes
+syntax "python" "\.py$"
+color brightyellow "def|class"
+color brightgreen "import|from"
+color red "TODO|FIXME"
+
+## Show line numbers
+set linenumbers
+
+## Soft wrapping of long lines
+set softwrap
+
+## Highlight search matches
+set smarthome
+
+## Case-insensitive search by default
+set casesensitive false
+
+## Enable mouse support
+set mouse
+
+## Save backups with a ~ suffix
+set backup
+
+## Show cursor position in status bar
+set constantshow
+
+## Auto-indent new lines
+set autoindent
+
+## Convert tabs to spaces
+set tabstospaces
+
+## Tab size
+set tabsize 4

@@ -1,0 +1,10 @@
+{
+  "id": "minimalist-system",
+  "label": "Minimalist System",
+  "system": "System prompt for Minimalist System",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

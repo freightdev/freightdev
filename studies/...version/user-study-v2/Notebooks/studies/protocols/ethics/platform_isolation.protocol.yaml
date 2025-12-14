@@ -1,0 +1,1 @@
+# Platform Isolation Protocol – Each customer gets their own fully sandboxed environment (via Docker, Podman, Containerd)

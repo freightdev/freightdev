@@ -1,0 +1,60 @@
+ai_packages:
+  - name: AI Proof of Concept
+    price: 12500
+    timeline: "3-4 weeks"
+    tier: Validation
+    description: >
+      Test your AI idea without massive investment. We build a working prototype
+      to validate feasibility, accuracy, and user value before full development.
+    includes:
+      - Problem analysis & solution design
+      - Data requirements assessment
+      - Working AI prototype
+      - Accuracy testing & benchmarks
+      - Integration roadmap
+      - Technical feasibility report
+    ideal_for:
+      - First-time AI implementation
+      - Validating AI business cases
+      - Securing stakeholder buy-in
+
+  - name: AI Integration
+    price: 25000
+    timeline: "6-8 weeks"
+    tier: Professional  
+    description: >
+      Add intelligent features to your existing systems. Custom AI models
+      trained on your data, with API integration and monitoring dashboards.
+    includes:
+      - Everything in PoC
+      - Custom model training
+      - API development & integration
+      - Performance monitoring dashboard
+      - Data pipeline setup
+      - Model versioning & rollback
+      - 90-day optimization period
+    ideal_for:
+      - Adding AI to existing products
+      - Automating business processes
+      - Improving user experience
+
+  - name: AI Platform
+    price: 75000+
+    timeline: "12-16 weeks"
+    tier: Enterprise
+    description: >
+      Full-scale AI-powered platform with multiple models, real-time processing,
+      and enterprise security. Built for AI-first businesses and complex workflows.
+    includes:
+      - Everything in AI Integration
+      - Multiple AI model types
+      - Real-time processing pipeline  
+      - Advanced analytics & insights
+      - A/B testing framework
+      - Enterprise security & compliance
+      - Scalable cloud infrastructure
+      - 6-month support & optimization
+    ideal_for:
+      - AI-first product companies
+      - Complex multi-model systems
+      - High-volume processing needs

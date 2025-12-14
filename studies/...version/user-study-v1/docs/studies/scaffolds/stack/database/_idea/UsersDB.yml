@@ -1,0 +1,19 @@
+#! UsersDB (PostgreSQL)
+
+version: "3.9"
+services:
+  usersdb:
+    image: postgres:15
+    container_name: usersdb
+    restart: always
+    environment:
+      POSTGRES_USER: user_admin
+      POSTGRES_PASSWORD: strongpassword    #? <===== Change Before Production
+      POSTGRES_DB: users
+    volumes:
+      - /var/usersdb:/var/lib/postgresql/data
+    networks:
+      - platform-net
+
+#* - Extensions: `uuid-ossp`, `pgcrypto`, `jsonb`, `pgvector`
+#* - High availability: Streaming replica, WAL archivin

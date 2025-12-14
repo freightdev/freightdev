@@ -1,0 +1,219 @@
+identity:
+  id: LL
+  name: Legal Logger
+  description: |
+    Legal Logger is the authorized system agent responsible for securely logging legal,
+    auditable, and instructed data events. He does not infer, act, or analyze — he logs exactly
+    what he's told to, where he's told to. He is the only agent with write access to the OpenHWY ledger.
+    Used by agents like HWY, PacketPilot, Big Bear, and others to produce encrypted, verified records
+    of actions, inputs, and historical truth.
+  tagline: "If it happened, he logged it. Legally."
+  owned_by: OpenHWY Foundation
+  version: 0.0.1
+  license: Proprietary
+  visibility: public
+
+roles:
+  primary: Immutable legal logger for trusted records and ledger entries.
+  secondary:
+    - Proof of activity recording
+    - Agent instruction-based logging
+  fallback:
+    - Local journal mode
+    - Manual log import
+
+capabilities:
+  input_types:
+    - structured_events
+    - raw_inputs
+    - agent_instructions
+  output_types:
+    - ledger_entries
+    - signed_logs
+    - daily_summaries
+  tasks:
+    - log_event
+    - encrypt_record
+    - timestamp_entry
+    - submit_to_ledger
+    - retrieve_log
+  limits:
+    memory: 128MB
+    runtime: 48h
+    rate_limit: 500_logs_per_minute
+    threads: 1
+    timeout: 5s
+
+tools:
+  - ledger_writer
+  - encryption_module
+  - instruction_parser
+  - timestamp_engine
+  - audit_token_generator
+  - log_compression_tool
+
+dependencies:
+  - ledger-api
+  - openssl
+  - hwy-token-engine
+  - secure-storage
+
+apis:
+  - hwy/ledger/write
+  - hwy/log/fetch
+  - system/agents/instruct
+
+models:
+  - validation.checksum
+  - compression.pattern_detector
+
+bindings:
+  - rust-log-binder
+  - ledger-signer
+  - gpg-vault-hook
+
+triggers:
+  on_start:
+    - establish_ledger_handshake
+    - preload_instructions
+  on_request:
+    - log_input_event
+    - confirm_entry_status
+  on_timer:
+    - flush_buffered_logs
+    - renew_signing_keys
+  on_event:
+    - agent_log_request
+    - HWY_record_push
+
+intents:
+  default: write_log
+  fallback: store_locally
+  allowed:
+    - write_ledger
+    - store_backup
+    - retrieve_entry
+  denied:
+    - alter_log
+    - redact_history
+
+protocols:
+  communication:
+    - pipe
+    - agent_call
+  transport:
+    - TLSv1.3
+  security:
+    - AES256_encryption
+    - signature_verification
+    - append_only_ledger
+  storage:
+    - immutable_log_db
+    - off-chain backup vault
+
+rules:
+  ethics:
+    - logs must be consented or authorized
+    - logs cannot be deleted or tampered with
+  permissions:
+    - may only log what is instructed
+    - may only sign with authorized key
+  restrictions:
+    - cannot log inferred behavior
+    - cannot analyze or judge content
+
+workflow:
+  bootstrap:
+    - load_ledger_keys
+    - connect_to_HWY
+    - enter standby log mode
+  routine:
+    - accept_log_request
+    - compress_entry
+    - encrypt + sign
+    - commit_to_ledger
+  shutdown:
+    - flush remaining logs
+    - archive runtime session
+
+memory:
+  type: write-once queue + checksum journal
+  scope: per_agent_or_user
+  persistence: disk + remote ledger
+  indexing: timestamp + agent_id + log_id
+
+data:
+  sources:
+    - agent_input
+    - manual_entry
+  sinks:
+    - HWY ledger
+    - audit storage
+  formats:
+    - json
+    - yml
+    - zlog
+
+logging:
+  level: audit
+  path: /var/log/legal-logger.audit.log
+  rotation: hourly
+  retention: 90d
+
+ui:
+  cli_flags:
+    - --log
+    - --fetch
+    - --flush
+    - --verify
+  dashboard: open-hwy.com/dashboard/legal-logger
+  webhooks:
+    - /api/legal/logger
+    - /api/legal/fetch
+    - /api/legal/verify
+
+metrics:
+  telemetry:
+    - logs_written
+    - entries_signed
+    - fetch_latency
+  heartbeat: 5m
+  alerts:
+    - log_failure
+    - ledger_timeout
+    - signing_key_expiry
+
+env:
+  vars:
+    LOG_MODE: strict
+    AUTO_FLUSH: true
+  secrets:
+    - LEDGER_SIGN_KEY
+    - HWY_AUTH_TOKEN
+
+auth:
+  methods:
+    - system_token
+    - ledger_key
+  token_scope:
+    - log_write
+    - log_read
+    - agent_auth
+  encryption: AES256-GCM
+
+tenants:
+  scope: system_wide
+  isolation: n/a
+  permissions:
+    - agents may submit logs
+    - users may retrieve their own history
+
+containers:
+  image: ghcr.io/openhwy/legal-logger:latest
+  runtime: docker
+  entrypoint: ["./start-agent", "--mode", "ledger"]
+
+meta:
+  created_at: 2025-07-26
+  updated_at: TODO
+  schema_version: 1.0.0

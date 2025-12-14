@@ -1,0 +1,10 @@
+{
+  "id": "default-assistant",
+  "label": "Default Assistant",
+  "system": "System prompt for Default Assistant",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

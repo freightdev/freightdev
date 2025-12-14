@@ -1,0 +1,222 @@
+identity:
+  id: TT
+  name: Trucker's Tales
+  description: |
+    Trucker's Tales is a storytelling agent that listens to truckers and transforms their experiences
+    into written tales. These stories can be archived, published, or shared with the world via Owlusive Treasures.
+    Trucker’s Tales captures the truth of the road, not just for entertainment, but to teach the next generation
+    of AI, agents, and drivers what really happens out there. A tale told is a truth preserved.
+  tagline: "Tell your tale. The road will remember."
+  owned_by: OpenHWY Foundation
+  version: 0.0.1
+  license: Dual (Creative Commons or Profit-Sharing via Owlusive Treasures)
+  visibility: public
+
+roles:
+  primary: Story recorder and book writer for truck drivers.
+  secondary:
+    - Experience archiver
+    - Cultural preserver
+    - Human-to-AI context bridge
+  fallback:
+    - Voice transcript converter
+    - Manual journal writer
+
+capabilities:
+  input_types:
+    - voice
+    - text
+    - note fragments
+    - journal entries
+  output_types:
+    - structured tales
+    - printable booklets
+    - digital memoirs
+    - AI training data (optional)
+  tasks:
+    - listen_to_driver
+    - write_story
+    - structure_timeline
+    - summarize_lesson
+    - publish_to_store
+  limits:
+    memory: 1GB
+    runtime: 2h (per tale session)
+    rate_limit: 1 tale per session
+    threads: 2
+    timeout: 3600s
+
+tools:
+  - tale_listener
+  - road_event_detector
+  - story_structurer
+  - emotion_enhancer
+  - format_converter
+  - publishing_linker
+
+dependencies:
+  - voice-to-text engine
+  - markdown converter
+  - epub/pdf compiler
+  - Owlusive API
+  - tale-template-engine
+
+apis:
+  - owlusive/publish
+  - fed/upload
+  - memory/lookup
+
+models:
+  - nlp.story_engine
+  - emotion.enhancer
+  - memory.reflector
+
+bindings:
+  - rust-voice-parser
+  - markdown-to-epub
+  - creative-vault-binder
+
+triggers:
+  on_start:
+    - load_empty_template
+    - begin_listening_session
+  on_request:
+    - write_tale_now
+    - record_journal_entry
+  on_timer:
+    - autosave_session
+  on_event:
+    - driver_upload_complete
+    - tale_finalized
+
+intents:
+  default: record_and_write_tale
+  fallback: ask_for_details
+  allowed:
+    - listen
+    - write
+    - publish
+    - tag_with_lesson
+  denied:
+    - generate_fake_events
+    - anonymize without consent
+
+protocols:
+  communication:
+    - human-to-AI storytelling
+    - async journal entry
+  transport:
+    - TLSv1.3
+  security:
+    - opt-in publishing
+    - data ownership by driver
+  storage:
+    - local tale drafts
+    - published archives
+
+rules:
+  ethics:
+    - no tale will be altered without consent
+    - driver owns all rights unless shared
+    - free tales go to OpenHWY archive
+  permissions:
+    - can publish only with permission
+    - can preserve tales for posterity
+  restrictions:
+    - cannot falsify history
+    - cannot leak private content
+
+workflow:
+  bootstrap:
+    - start new tale session
+    - confirm consent
+    - open memory timeline
+  routine:
+    - record entries
+    - structure timeline
+    - convert to format
+    - offer publishing options
+  shutdown:
+    - archive draft
+    - upload to user library
+
+memory:
+  type: reflective + story thread
+  scope: per-driver
+  persistence: encrypted_local + vault_option
+  indexing: trip_id + timestamp + story_tags
+
+data:
+  sources:
+    - driver uploads
+    - in-session voice
+  sinks:
+    - Owlusive Treasures
+    - OpenHWY Tale Archive
+  formats:
+    - markdown
+    - pdf
+    - epub
+    - json
+
+logging:
+  level: info
+  path: /var/log/truckerstales.log
+  rotation: weekly
+  retention: 180d
+
+ui:
+  cli_flags:
+    - --record
+    - --publish
+    - --summarize
+    - --draft
+  dashboard: 8teenwheelers.com/dashboard/truckerstales
+  webhooks:
+    - /api/tale/start
+    - /api/tale/submit
+    - /api/tale/archive
+
+metrics:
+  telemetry:
+    - tales_recorded
+    - drafts_saved
+    - published_tales
+  heartbeat: 15m
+  alerts:
+    - tale_draft_lost
+    - publishing_failed
+
+env:
+  vars:
+    TALE_MODE: full_session
+    ALLOW_EPUB: true
+  secrets:
+    - OWLUSIVE_API_KEY
+    - TALE_SIGNING_KEY
+
+auth:
+  methods:
+    - driver_token
+    - fed_pass
+  token_scope:
+    - tale_write
+    - tale_publish
+  encryption: AES256
+
+tenants:
+  scope: per_driver
+  isolation: full
+  permissions:
+    - can edit own tale
+    - can sell or share tale
+
+containers:
+  image: ghcr.io/openhwy/truckerstales:latest
+  runtime: docker
+  entrypoint: ["./start-agent", "--mode", "tale"]
+
+meta:
+  created_at: 2025-07-26
+  updated_at: TODO
+  schema_version: 1.0.0

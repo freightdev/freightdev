@@ -1,0 +1,10 @@
+{
+  "id": "log-summarizer",
+  "label": "Log Summarizer",
+  "system": "System prompt for Log Summarizer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

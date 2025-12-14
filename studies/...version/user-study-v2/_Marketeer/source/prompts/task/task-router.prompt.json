@@ -1,0 +1,10 @@
+{
+  "id": "task-router",
+  "label": "Task Router",
+  "system": "System prompt for Task Router",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

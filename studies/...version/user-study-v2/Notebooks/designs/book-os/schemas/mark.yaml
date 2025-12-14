@@ -1,0 +1,29 @@
+# 🪶 mark.yaml — Defines a routed instruction from a marker
+mark_id: "mark-001"
+marker_id: "marker-001"
+bound_book: "book-001"
+chapter: "chapter-003"
+page: "page-014"
+
+intent: "summarize"
+style: "cowboy"
+beat: "dispatching"
+strokes: 143
+ink_used: true
+
+trail:
+  exists: true
+  encrypted: true
+  stored_in: "trail-logger"
+
+ribbon:
+  cached: true
+  cache_life: 5
+  access_restricted: true
+
+burn:
+  committed: true
+  irreversible: true
+
+executed_at: "2025-07-23T21:45:17Z"
+verified_by: "keeper-001"

@@ -1,0 +1,67 @@
+ai_assistant/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                    # FastAPI app entry
+│   │   ├── config.py                  # Settings/environment
+│   │   └── api/
+│   │       ├── __init__.py
+│   │       ├── chat.py                # Chat endpoints
+│   │       ├── websocket.py           # WebSocket handlers
+│   │       └── health.py              # Health check
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── base.py                    # Base agent class
+│   │   ├── chat_agent.py              # General chat agent
+│   │   ├── code_agent.py              # Code assistant agent
+│   │   ├── codriver.py                # Orchestrator agent
+│   │   └── router.py                  # Agent routing logic
+│   ├── memory/
+│   │   ├── __init__.py
+│   │   ├── database.py                # DB connections
+│   │   ├── models.py                  # SQLAlchemy models
+│   │   ├── embeddings.py              # Vector embeddings
+│   │   ├── context.py                 # Context management
+│   │   └── storage.py                 # Conversation storage
+│   ├── inference/
+│   │   ├── __init__.py
+│   │   ├── model_manager.py           # Model loading/management
+│   │   ├── generator.py               # Text generation
+│   │   └── sampler.py                 # Sampling parameters
+│   └── utils/
+│       ├── __init__.py
+│       ├── logger.py                  # Logging setup
+│       └── helpers.py                 # Utility functions
+├── frontend/                          # Your existing Next.js
+│   ├── components/
+│   │   ├── Chat/
+│   │   │   ├── ChatInterface.tsx
+│   │   │   ├── MessageList.tsx
+│   │   │   ├── MessageInput.tsx
+│   │   │   └── WebSocketClient.tsx
+│   │   └── Layout/
+│   │       └── MainLayout.tsx
+│   ├── pages/
+│   │   ├── api/                       # Next.js API routes (if needed)
+│   │   ├── index.tsx                  # Main chat page
+│   │   └── _app.tsx
+│   ├── hooks/
+│   │   ├── useWebSocket.ts
+│   │   └── useChat.ts
+│   └── types/
+│       └── chat.ts                    # TypeScript interfaces
+├── data/
+│   ├── conversations/                 # Stored conversations
+│   ├── embeddings/                    # Vector database files
+│   └── models/                        # Local model files
+├── migrations/                        # Database migrations
+│   ├── 001_initial.sql
+│   ├── 002_conversations.sql
+│   └── 003_embeddings.sql
+├── docker/
+│   ├── Dockerfile.backend
+│   ├── Dockerfile.frontend
+│   └── docker-compose.yml
+├── requirements.txt
+├── pyproject.toml
+└── README.md

@@ -1,0 +1,146 @@
+## Example 5: Mixed Format Test (mixed.txt)
+Mixed Format Structure - Testing Various Tree Representations
+project-mixed/
+│
+├─ frontend/                      /* React application /
+│  ├─ public/                    // Static assets
+│  │  ├─ images/                 # Image files
+│  │  │  ├─ logo.png
+│  │  │  ├─ favicon.ico
+│  │  │  └─ hero-banner.jpg
+│  │  ├─ fonts/                  <!-- Custom fonts -->
+│  │  │  ├─ roboto-regular.woff2
+│  │  │  └─ roboto-bold.woff2
+│  │  └─ manifest.json           / PWA manifest /
+│  │
+│  ├─ src/
+│  │  ├─ components/            // Reusable components
+│  │  │  ┌─ Button/
+│  │  │  │  ├─ Button.tsx
+│  │  │  │  ├─ Button.test.tsx
+│  │  │  │  └─ Button.styles.ts
+│  │  │  ├─ Modal/
+│  │  │  │  ├─ Modal.tsx
+│  │  │  │  └─ Modal.styles.ts
+│  │  │  └─ Form/
+│  │  │     ├─ Input.tsx
+│  │  │     ├─ Select.tsx
+│  │  │     └─ Validation.ts
+│  │  │
+│  │  ├─ pages/                 # Next.js pages
+│  │  │  ├─ index.tsx          / Homepage /
+│  │  │  ├─ about.tsx          // About page
+│  │  │  ├─ contact.tsx        <!-- Contact form -->
+│  │  │  └─ dashboard/         # Protected area
+│  │  │     ├─ index.tsx
+│  │  │     ├─ profile.tsx
+│  │  │     └─ settings.tsx
+│  │  │
+│  │  ├─ hooks/                // Custom React hooks
+│  │  │  ├─ useAuth.ts        / Authentication hook /
+│  │  │  ├─ useApi.ts         # API interaction hook
+│  │  │  └─ useLocalStorage.ts <!-- Browser storage hook -->
+│  │  │
+│  │  ├─ utils/               # Utility functions
+│  │  │  ├─ helpers.ts       // General helpers
+│  │  │  ├─ constants.ts     / Application constants /
+│  │  │  └─ validators.ts    <!-- Input validators -->
+│  │  │
+│  │  └─ styles/             # Styling files
+│  │     ├─ globals.css     / Global styles /
+│  │     ├─ variables.css   // CSS custom properties
+│  │     └─ components.css  <!-- Component styles -->
+│  │
+│  ├─ package.json          # Dependencies
+│  ├─ tsconfig.json        // TypeScript config
+│  └─ next.config.js       / Next.js configuration /
+│
+├─ backend/                    // Node.js API server
+│  ├─ src/
+│  │  ├─ controllers/         # Route handlers
+│  │  │  ├─ auth.controller.js    / Authentication /
+│  │  │  ├─ user.controller.js    // User management
+│  │  │  └─ data.controller.js    <!-- Data operations -->
+│  │  │
+│  │  ├─ models/             // Database models
+│  │  │  ├─ User.js         / User model /
+│  │  │  ├─ Product.js      # Product model
+│  │  │  └─ Order.js        <!-- Order model -->
+│  │  │
+│  │  ├─ routes/            # Express routes
+│  │  │  ├─ api.js         / Main API routes /
+│  │  │  ├─ auth.js        // Authentication routes
+│  │  │  └─ public.js      <!-- Public endpoints -->
+│  │  │
+│  │  ├─ middleware/       // Express middleware
+│  │  │  ├─ auth.middleware.js    / JWT validation /
+│  │  │  ├─ cors.middleware.js    # CORS handling
+│  │  │  └─ error.middleware.js   <!-- Error handling -->
+│  │  │
+│  │  ├─ services/         / Business logic /
+│  │  │  ├─ email.service.js      # Email notifications
+│  │  │  ├─ payment.service.js    // Payment processing
+│  │  │  └─ notification.service.js <!-- Push notifications -->
+│  │  │
+│  │  └─ utils/            # Server utilities
+│  │     ├─ database.js   / Database connection /
+│  │     ├─ logger.js     // Logging utility
+│  │     └─ helpers.js    <!-- Server helpers -->
+│  │
+│  ├─ package.json        # Server dependencies
+│  ├─ .env.example       // Environment template
+│  └─ server.js          / Main server file /
+│
+├─ database/              # Database files
+│  ├─ migrations/        / Schema changes /
+│  │  ├─ 001_initial.sql
+│  │  ├─ 002_users.sql
+│  │  └─ 003_products.sql
+│  ├─ seeds/            // Initial data
+│  │  ├─ users.sql
+│  │  └─ products.sql
+│  └─ schema.sql        <!-- Database schema -->
+│
+├─ tests/               # Test suites
+│  ├─ unit/            / Unit tests /
+│  │  ├─ components.test.js
+│  │  └─ services.test.js
+│  ├─ integration/     // Integration tests
+│  │  ├─ api.test.js
+│  │  └─ database.test.js
+│  └─ e2e/            <!-- End-to-end tests -->
+│     ├─ login.test.js
+│     └─ checkout.test.js
+│
+├─ docs/              // Documentation
+│  ├─ api/           / API documentation /
+│  │  ├─ README.md
+│  │  └─ endpoints.md
+│  ├─ setup/         # Setup guides
+│  │  ├─ development.md
+│  │  └─ production.md
+│  └─ architecture.md <!-- System design */
+│
+├─ scripts/          # Automation scripts
+│  ├─ build.sh      /* Build script */
+│  ├─ deploy.sh     // Deployment script
+│  ├─ test.sh       <!-- Test runner -->
+│  └─ backup.sh     # Database backup
+│
+├─ .github/         // GitHub configuration
+│  ├─ workflows/   / CI/CD workflows /
+│  │  ├─ ci.yml
+│  │  └─ deploy.yml
+│  └─ ISSUE_TEMPLATE/  # Issue templates
+│     ├─ bug.md
+│     └─ feature.md
+│
+├─ docker/          # Container configuration
+│  ├─ Dockerfile.frontend    / Frontend container /
+│  ├─ Dockerfile.backend     // Backend container
+│  └─ docker-compose.yml     <!-- Development environment -->
+│
+├─ README.md        # Project overview
+├─ LICENSE          / License file */
+├─ .gitignore      // Git ignore rules
+└─ CHANGELOG.md    <!-- Version history -->

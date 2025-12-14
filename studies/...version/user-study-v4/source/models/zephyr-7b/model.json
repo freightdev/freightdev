@@ -1,0 +1,10 @@
+{
+  "id": "zephyr-7b-beta",
+  "name": "Zephyr 7B Beta",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "4.07 GB",
+  "license": "MIT",
+  "path": "models/zephyr-7b/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/TheBloke/zephyr-7B-beta-GGUF/resolve/main/zephyr-7b-beta.Q4_K_M.gguf"
+}

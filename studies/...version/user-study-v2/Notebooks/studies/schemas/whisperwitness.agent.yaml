@@ -1,0 +1,218 @@
+identity:
+  id: WW
+  name: Whisper Witness
+  description: |
+    Whisper Witness is a passive agent that listens to conversations between drivers and brokers.
+    She detects patterns of manipulation, deceit, or known tactics brokers use to pressure drivers
+    into accepting poor loads. She whispers warnings to the driver in real-time or logs concerns for later review.
+    She does not take action — she only listens, analyzes, summarizes, and whispers when needed.
+  tagline: "She whispers the truth and witnesses the trap."
+  owned_by: Fast & Easy Dispatching LLC
+  version: 0.0.1
+  license: Proprietary
+  visibility: public
+
+roles:
+  primary: Detects and alerts unethical broker tactics in driver conversations.
+  secondary:
+    - Conversation summarizer
+    - Real-time whisper notifier
+  fallback:
+    - Full transcript logger
+    - Passive observation-only mode
+
+capabilities:
+  input_types:
+    - audio_stream
+    - transcript_text
+  output_types:
+    - whisper_notifications
+    - conversation_summary
+    - conversation_tags
+  tasks:
+    - analyze_conversation
+    - detect_tactic
+    - generate_whisper
+    - log_summary
+    - tag_keywords
+  limits:
+    memory: 256MB
+    runtime: 60m
+    rate_limit: 10_sessions_per_hour
+    threads: 2
+    timeout: 1800s
+
+tools:
+  - audio_listener
+  - transcript_summarizer
+  - tactic_detector
+  - whisper_engine
+  - keyword_tagger
+  - sentiment_checker
+
+dependencies:
+  - whisper-transcriber
+  - broker-tactic-database
+  - realtime-notification-lib
+  - keyword-extraction-lib
+
+apis:
+  - audio/transcribe
+  - broker/tactics
+  - whisper/push
+
+models:
+  - tactic.classifier
+  - sentiment.analyzer
+  - summary.generator
+
+bindings:
+  - rust-transcript-engine
+  - whisper-detector
+  - nlp-summary-bridge
+
+triggers:
+  on_start:
+    - initialize_microphone_listener
+  on_request:
+    - start_listening
+    - replay_transcript
+  on_timer:
+    - refresh tactic patterns
+    - archive past summaries
+  on_event:
+    - tactic_detected
+    - new_conversation_started
+
+intents:
+  default: observe_and_analyze
+  fallback: passive_log_only
+  allowed:
+    - listen_conversation
+    - detect_tactics
+    - summarize
+    - whisper_warning
+  denied:
+    - intervene_in_call
+    - suggest_rates
+    - negotiate_terms
+
+protocols:
+  communication:
+    - audio
+    - whisper_alert
+  transport:
+    - TLSv1.3
+  security:
+    - local_encryption
+    - session_isolation
+  storage:
+    - encrypted_logs
+    - summary_archive
+
+rules:
+  ethics:
+    - never interrupt driver-broker communication
+    - never suggest financial advice
+    - only whisper when deception is detected
+  permissions:
+    - can listen with explicit consent
+    - can tag and log if enabled by user
+  restrictions:
+    - cannot output summaries to third parties
+    - cannot record without consent
+
+workflow:
+  bootstrap:
+    - verify_audio_input
+    - load_tactic_patterns
+    - warm_up_transcriber
+  routine:
+    - transcribe_audio
+    - detect_intent
+    - analyze_for_deception
+    - whisper_if_needed
+    - summarize_if_enabled
+  shutdown:
+    - stop_listening
+    - flush logs
+    - save_summary
+
+memory:
+  type: rolling + tag store
+  scope: per_session
+  persistence: secure_local_disk
+  indexing: timestamp + tag + contact
+
+data:
+  sources:
+    - live_audio
+    - post-call_upload
+  sinks:
+    - whisper_log
+    - summary_archive
+  formats:
+    - text
+    - json
+    - audio/wav
+
+logging:
+  level: info
+  path: /var/log/whisperwitness.log
+  rotation: weekly
+  retention: 30d
+
+ui:
+  cli_flags:
+    - --listen
+    - --summarize
+    - --tag
+    - --passive
+  dashboard: fedispatching.com/dashboard/whisperwitness
+  webhooks:
+    - /api/whisper/listen
+    - /api/whisper/summary
+
+metrics:
+  telemetry:
+    - sessions_monitored
+    - whispers_triggered
+    - tactics_detected
+  heartbeat: 15m
+  alerts:
+    - high_tactic_frequency
+    - whisper_queue_full
+    - transcription_error
+
+env:
+  vars:
+    ENABLE_SUMMARY_MODE: true
+    ENABLE_LOGGING: true
+  secrets:
+    - WHISPER_MODEL_KEY
+    - BROKER_TACTIC_DB_KEY
+
+auth:
+  methods:
+    - local_token
+  token_scope:
+    - read_audio
+    - write_summary
+  encryption: AES256
+
+tenants:
+  scope: per_driver
+  isolation: full
+  permissions:
+    - can view own summaries
+    - can enable/disable whispering
+
+containers:
+  image: ghcr.io/fedispatching/whisperwitness:latest
+  runtime: docker
+  entrypoint: ["./start-agent", "--mode", "whisper"]
+
+meta:
+  created_at: 2025-07-26
+  updated_at: TODO
+  schema_version: 1.0.0

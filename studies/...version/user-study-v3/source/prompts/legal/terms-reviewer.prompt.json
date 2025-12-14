@@ -1,0 +1,10 @@
+{
+  "id": "terms-reviewer",
+  "label": "Terms Reviewer",
+  "system": "System prompt for Terms Reviewer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

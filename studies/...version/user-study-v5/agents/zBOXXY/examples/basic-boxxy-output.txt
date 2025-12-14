@@ -1,0 +1,100 @@
+╔══════════════════════════════════════════════════════════════╗
+║                  🚀 ZSH MASTER CHEAT SHEET                   ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔═══════════════════╦══════════════════════════════════════════╗
+║ 🔖 Shell Flags    ║ 💡 Options & Safety                      ║
+╠═══════════════════╬══════════════════════════════════════════╣
+║ i  → Interactive  ║ setopt extended_glob → enable ext glob   ║
+║ v  → Verbose      ║ setopt nullglob      → empty if no match ║
+║ x  → Xtrace       ║ setopt globdots     → include dotfiles   ║
+║ e  → Exit on fail ║ setopt noclobber    → prevent overwrite  ║
+║ n  → Parse only   ║ setopt autocd       → cd to dirs easily  ║
+║ f  → No glob      ║ setopt correct      → spell correct cmds ║
+║ h  → Hash cmds    ║ setopt promptsubst  → eval in prompt     ║
+║ B  → Brace expand ║ setopt interactivecomments → comments    ║
+║ H  → History !    ║                                          ║
+╚═══════════════════╩══════════════════════════════════════════╝
+
+╔═════════════════════╦══════════════════════════════════════════╗
+║ 🎨 Colors & Styles  ║ 🌍 Globbing                              ║
+╠═════════════════════╬══════════════════════════════════════════╣
+║ Reset 0             ║ *        → any string                    ║
+║ Bold 1              ║ ?        → single char                   ║
+║ Dim 2               ║ [abc]    → one char in set               ║
+║ Italic 3            ║ [!abc]   → not in set                    ║
+║ Underline 4         ║ {a,b}    → alternatives                  ║
+║ Reverse 7           ║ **       → recursive dirs                ║
+║ Strike 9            ║ **/*.txt → all .txt recursively          ║
+║ FG Red 31 / BG 41   ║ (.)      → regular files                 ║
+║ FG Green 32 / BG42  ║ (/)      → directories                   ║
+║ FG Blue 34 / BG44   ║ (@)      → symlinks                      ║
+║ 256-color: 38;5;n   ║ *(D)     → include dotfiles              ║
+║ 256-color BG:48;5;n ║ *(om)   → sort by mtime desc             ║
+╚═════════════════════╩══════════════════════════════════════════╝
+
+╔═══════════════════╦══════════════════════════════════════════╗
+║ ⚡ Expansions     ║ 🔢 Arithmetic                            ║
+╠═══════════════════╬══════════════════════════════════════════╣
+║ ${var:-def}       ║ $(( i++ ))     → post-increment          ║
+║ ${var:=def}       ║ $(( ++i ))     → pre-increment           ║
+║ ${var:+alt}       ║ $(( i+=5 ))    → add 5                   ║
+║ ${var:?err}       ║ $(( i<j?i:j )) → ternary                 ║
+║ ${#var}           ║                                          ║
+║ ${var%pat}        ║                                          ║
+║ ${var%%pat}       ║                                          ║
+║ ${var#pat}        ║                                          ║
+║ ${var##pat}       ║                                          ║
+║ ${(u)var}         ║                                          ║
+║ ${(l)var}         ║                                          ║
+║ ${(s/:/)var}      ║                                          ║
+║ ${(j/:/)arr}      ║                                          ║
+╚═══════════════════╩══════════════════════════════════════════╝
+
+╔═══════════════════╦══════════════════════════════════════════╗
+║ 📜 Command Subst  ║ ⏩ Redirections                          ║
+╠═══════════════════╬══════════════════════════════════════════╣
+║ $(cmd)            ║ > file      → overwrite                  ║
+║ `cmd`             ║ >> file     → append                     ║
+║ $(<file)          ║ 2> file     → stderr                     ║
+║                   ║ | pipe stdout                            ║
+║                   ║ |& pipe stdout+stderr                    ║
+║                   ║ <<< "txt" → here-string                  ║
+║                   ║ <<EOF ... EOF → here-doc                 ║
+╚═══════════════════╩══════════════════════════════════════════╝
+
+╔═══════════════════╦══════════════════════════════════════════╗
+║ 🛠️ Builtins       ║ 📦 Arrays                                ║
+╠═══════════════════╬══════════════════════════════════════════╣
+║ typeset           ║ arr=(a b c)                              ║
+║ declare           ║ arr+=(d) → append                        ║
+║ autoload          ║ ${arr[1]} → first element                ║
+║ compinit          ║ ${arr[-1]} → last element                ║
+║ pushd/popd        ║ ${#arr[@]} → length                      ║
+║ eval              ║ ${arr[@]} → all elements                 ║
+║ fc                ║ ${arr[@]:1:2} → slice                    ║
+║ hash              ║ unset arr[2] → remove                    ║
+╚═══════════════════╩══════════════════════════════════════════╝
+
+╔═══════════════════╦══════════════════════════════════════════╗
+║ 🔎 History        ║ 💡 Prompt Escapes                        ║
+╠═══════════════════╬══════════════════════════════════════════╣
+║ !! → last cmd     ║ %n → user                                ║
+║ !n → cmd #n       ║ %m → hostname (first dot)                ║
+║ !-n → nth prev    ║ %M → full hostname                       ║
+║ !str → last cmd   ║ %~ → dir (~ for home)                    ║
+║ !?str? → contains ║ %d → dir (no ~)                          ║
+║ ^old^new^ → subst ║ %t → time HH:MM:SS                       ║
+║ !:0 → cmd name    ║ %# → prompt char                         ║
+║ !:1-$ → all args  ║ %% → literal %                           ║
+╚═══════════════════╩══════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════════╗
+║ 💡 Tips / Quick Combos                                         ║
+╠════════════════════════════════════════════════════════════════╣
+║ **All hidden files recursively:** **/.*(.D)                    ║
+║ **Executable hidden files:** **/.*(.x~.git*(.))                ║
+║ **Bold Red on Yellow:** echo -e "\e[1;31;43mTEXT\e[0m"         ║
+║ **Underline + Cyan:** echo -e "\e[4;36mTEXT\e[0m"              ║
+║ **Reverse Green on White:** echo -e "\e[7;32mTEXT\e[0m"        ║
+╚════════════════════════════════════════════════════════════════╝

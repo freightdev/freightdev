@@ -1,0 +1,61 @@
+dev_packages:
+  - name: Dev Environment Basic
+    price: 3500
+    timeline: "1-2 weeks"
+    tier: Essential
+    description: >
+      Standardized development environment with consistent tooling and workflows.
+      Perfect for small teams wanting to eliminate "works on my machine" issues.
+    includes:
+      - Standardized dev environment setup
+      - Docker development containers
+      - Code formatting & linting
+      - Basic debugging configuration
+      - Environment variable management
+      - Simple deployment scripts
+      - Team documentation
+    excludes:
+      - Advanced debugging tools
+      - Performance profiling
+      - Complex orchestration
+
+  - name: Dev Environment Professional
+    price: 8500
+    timeline: "2-3 weeks"
+    tier: Professional
+    description: >
+      Advanced development platform with debugging, profiling, and team collaboration tools.
+      Built for professional teams focused on productivity and code quality.
+    includes:
+      - Everything in Basic
+      - Advanced debugging & profiling
+      - Integrated testing frameworks
+      - Code quality automation
+      - Team collaboration workflows
+      - Performance monitoring tools
+      - Advanced IDE integration
+      - Developer productivity analytics
+    ideal_for:
+      - Professional development teams
+      - Quality-focused organizations
+      - Performance-critical applications
+
+  - name: Dev Environment Enterprise
+    price: 22000+
+    timeline: "4-6 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise development platform with security, compliance, and advanced automation.
+      Built for large organizations with strict security and governance requirements.
+    includes:
+      - Everything in Professional
+      - Security scanning & compliance
+      - Advanced automation & workflows
+      - Enterprise tool integrations
+      - Custom tooling development
+      - Team management & analytics
+      - Dedicated developer experience engineer (2 months)
+    ideal_for:
+      - Large enterprises
+      - Regulated industries
+      - Complex development workflows

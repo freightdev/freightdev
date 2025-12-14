@@ -1,0 +1,56 @@
+api/
+├── gateways/                     # Entry points / API gateways
+│   ├── http/                     # REST / GraphQL gateways
+│   │   ├── tf-gateway/           # TensorFlow model serving gateway
+│   │   │   ├── src/
+│   │   │   ├── Dockerfile
+│   │   │   └── config/
+│   │   ├── torch-gateway/        # PyTorch model serving gateway
+│   │   │   ├── src/
+│   │   │   ├── Dockerfile
+│   │   │   └── config/
+│   │   └── common/               # Shared libraries, utils
+│   └── grpc/                     # gRPC-based gateways
+│       ├── rust-gateway/
+│       ├── go-gateway/
+│       └── proto/                # .proto files for shared RPC definitions
+├── services/                     # Core business logic microservices
+│   ├── ml/                       # ML-specific service logic
+│   │   ├── tf-service/
+│   │   │   ├── src/
+│   │   │   ├── Dockerfile
+│   │   │   └── tests/
+│   │   └── torch-service/
+│   │       ├── src/
+│   │       ├── Dockerfile
+│   │       └── tests/
+│   ├── rust-services/
+│   │   ├── data-processor/
+│   │   ├── inference-core/
+│   │   └── utils/
+│   └── go-services/
+│       ├── api-utils/
+│       ├── scheduler/
+│       └── grpc-handlers/
+├── clients/                      # Client SDKs / internal API clients
+│   ├── python/
+│   ├── rust/
+│   └── go/
+├── infra/                        # Infrastructure definitions
+│   ├── docker-compose/           # Compose files for local dev
+│   ├── k3s/                      # Lightweight k8s manifests
+│   ├── containerd/               # Nerdctl / containerd configs
+│   └── networking/               # API routing, service mesh configs
+├── config/                       # Global API configs
+│   ├── logging/
+│   ├── secrets/                  # Environment files, vault integration
+│   ├── monitoring/               # Prometheus / Grafana dashboards
+│   └── versioning/               # API version metadata
+├── docs/
+│   ├── swagger/                  # OpenAPI/Swagger specs
+│   ├── grpc/                     # Proto docs
+│   └── usage-guides/
+└── tests/
+    ├── integration/
+    ├── performance/
+    └── e2e/

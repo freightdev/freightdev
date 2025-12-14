@@ -1,0 +1,10 @@
+{
+  "id": "site-scanner",
+  "label": "Site Scanner",
+  "system": "System prompt for Site Scanner",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

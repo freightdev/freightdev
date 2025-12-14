@@ -1,0 +1,10 @@
+{
+  "id": "voice-style-selector",
+  "label": "Voice Style Selector",
+  "system": "System prompt for Voice Style Selector",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}
