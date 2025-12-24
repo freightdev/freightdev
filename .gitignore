@@ -2,10 +2,10 @@
 # Main Gitignore Paths
 ######################
 
-/store/client
-/store/node
+store/client/
+store/node/
 
-var/
+main/.env/var/
 
 # SSL certificates
 keys/
