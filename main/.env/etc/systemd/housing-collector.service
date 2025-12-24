@@ -1,0 +1,13 @@
+[Unit]
+Description=Housing & Rental Data Collector
+After=network.target surrealdb.service
+
+[Service]
+Type=oneshot
+User=codriver
+ExecStart=/usr/bin/python3 /srv/agent/src/scripts/data-collector-orchestrator.py /etc/agentd/config/housing-sources.yaml
+StandardOutput=append:/var/logs/housing-collector.log
+StandardError=append:/var/logs/housing-collector-error.log
+
+[Install]
+WantedBy=multi-user.target

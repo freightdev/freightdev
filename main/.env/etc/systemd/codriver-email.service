@@ -1,0 +1,21 @@
+[Unit]
+Description=CoDriver Email Service
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/email.todo
+EnvironmentFile=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/email.todo/.env
+ExecStart=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/email.todo/bin/email-service
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/email.log
+StandardError=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/email-error.log
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

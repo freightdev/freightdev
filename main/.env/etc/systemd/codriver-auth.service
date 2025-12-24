@@ -1,0 +1,22 @@
+[Unit]
+Description=CoDriver Auth Service
+After=network.target postgresql.service redis.service
+Wants=postgresql.service redis.service
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/auth.todo
+EnvironmentFile=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/auth.todo/.env
+ExecStart=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/auth.todo/bin/auth-service
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/auth.log
+StandardError=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/auth-error.log
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

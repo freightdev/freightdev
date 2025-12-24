@@ -1,0 +1,6 @@
+[agent.codriver]
+name = "CoDriver"
+version = "0.1.0"
+brain_node = []
+brain_model = []
+idle_check_interval_ms = 500     # How often to check for work (milliseconds)

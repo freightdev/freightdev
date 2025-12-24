@@ -1,0 +1,12 @@
+# ============================================================================
+# AUDIT & LOGGING
+# ============================================================================
+
+[audit]
+enabled = true
+log_dir = ".ai/data/logs"
+log_level = "info"               # debug, info, warn, error
+log_tasks = true
+log_decisions = true
+log_generations = true
+log_leads = true

@@ -1,0 +1,22 @@
+[Unit]
+Description=CoDriver User Service
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/user.todo
+EnvironmentFile=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/user.todo/.env
+ExecStart=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/srv/user.todo/bin/user-service
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/user.log
+StandardError=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/user-error.log
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

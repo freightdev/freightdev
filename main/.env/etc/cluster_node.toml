@@ -1,0 +1,46 @@
+# Main local cluster nodes
+
+[cluster]
+name = "nodes"
+node = [
+  "workbox",    # Main Development Machine
+  "hostbox",   # Main Hosting Machine
+  "helpbox",   # Main Worker Machine
+  "callbox"    # Main Monitoring Machine
+]
+
+[cluster.node01]
+name = "workbox"
+hostname = "workbox"
+ip = [192.168.1.23]
+models = [
+  "mistrallite:7b"
+  "duckdb-nsql:7b"
+  "llava-phi3:3.8b",
+  "llava-llama3:8b"
+]
+
+[cluster.node02]
+name = "hostbox"
+hostname = "hostbox"
+ip = [192.168.1.70]
+models = [
+  "nexusraven:13b",
+  "qwen2.5:14b",
+  "gemma3:12b"
+]
+
+[cluster.node03]
+name = "helpbox"
+hostname = "helpbox"
+ip = [192.168.1.40]
+models = [
+  "qwen2.5-coder:14b-instruct-q4_K_M",
+  "qwen2.5-coder:32b-instruct-q4_K_M"
+]
+
+[cluster.node04]
+name = "callbox"
+hostname = "callbox"
+ip = [192.168.1.170]
+models = []

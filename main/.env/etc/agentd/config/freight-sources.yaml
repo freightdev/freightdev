@@ -1,0 +1,134 @@
+# Data Collection Sources Configuration
+
+# Trucking Industry Sources
+trucking:
+  rss_feeds:
+    - name: "Transport Topics"
+      url: "https://www.ttnews.com/rss/xml/home"
+      category: "industry_news"
+
+    - name: "Overdrive Online"
+      url: "https://www.overdriveonline.com/feed/"
+      category: "owner_operator"
+
+    - name: "FreightWaves"
+      url: "https://www.freightwaves.com/feed"
+      category: "freight_rates"
+
+    - name: "Commercial Carrier Journal"
+      url: "https://www.ccjdigital.com/feed/"
+      category: "fleet_management"
+
+    - name: "Land Line Magazine"
+      url: "https://landline.media/feed/"
+      category: "driver_news"
+
+  web_sources:
+    - name: "DAT Freight Rates"
+      url: "https://www.dat.com/industry-trends/trendlines"
+      selector: ".rate-trends"
+      category: "market_rates"
+      type: "html"
+
+    - name: "FMCSA Regulations"
+      url: "https://www.fmcsa.dot.gov/newsroom"
+      selector: ".news-list"
+      category: "regulations"
+      type: "html"
+
+  search_queries:
+    - "trucking industry news {today}"
+    - "freight rates update {today}"
+    - "ELD mandate changes {month}"
+    - "truck driver shortage {year}"
+
+# Housing & Rental Sources
+housing:
+  location:
+    # Configure your search location
+    city: "your-city"
+    state: "your-state"
+    zip_codes: []
+    max_distance_miles: 25
+
+  rss_feeds:
+    - name: "Zillow Rentals"
+      # Note: Zillow RSS may require customization per location
+      url: "https://www.zillow.com/homes/for_rent/"
+      category: "rentals"
+
+    - name: "Realtor.com Listings"
+      url: "https://www.realtor.com/news/"
+      category: "market_news"
+
+  web_sources:
+    - name: "Apartments.com"
+      base_url: "https://www.apartments.com"
+      search_path: "/{city}-{state}/"
+      category: "apartments"
+      type: "dynamic"
+
+    - name: "Craigslist Housing"
+      base_url: "https://craigslist.org"
+      search_path: "/search/apa"
+      category: "craigslist"
+      type: "html"
+
+    - name: "Facebook Marketplace"
+      base_url: "https://www.facebook.com/marketplace"
+      category: "marketplace"
+      type: "dynamic"
+      requires_auth: true
+
+  search_queries:
+    - "apartments for rent {city} {state}"
+    - "houses for rent {city} {state}"
+    - "rental prices {city} {month}"
+    - "{city} neighborhood guide"
+    - "cost of living {city}"
+
+  filters:
+    price_min: 0
+    price_max: 3000
+    bedrooms_min: 1
+    bedrooms_max: 4
+    pet_friendly: true
+
+# Collection Schedule
+schedule:
+  trucking:
+    frequency: "daily"
+    time: "08:00"  # 8 AM
+    retention_days: 30
+
+  housing:
+    frequency: "twice_daily"
+    times: ["09:00", "18:00"]  # 9 AM and 6 PM
+    retention_days: 14
+
+# Output Configuration
+output:
+  base_path: "/var/data/collections"
+  formats:
+    - markdown
+    - json
+
+  markdown:
+    template: "digest"
+    include_metadata: true
+    group_by: "category"
+
+  database:
+    enabled: true
+    endpoint: "http://192.168.12.66:9000"
+    namespace: "openhwy"
+    database: "data_collections"
+
+# Notification Settings
+notifications:
+  enabled: true
+  channels:
+    - type: "file"
+      path: "/var/data/collections/digest.md"
+    - type: "database"
+      table: "daily_digests"

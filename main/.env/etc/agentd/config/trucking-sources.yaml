@@ -1,0 +1,80 @@
+# Trucking Industry Data Sources
+---
+title: "Trucking Industry Daily Intelligence Report"
+
+sources:
+  # RSS Feeds - News & Updates
+  rss_feeds:
+    - id: transport-topics
+      name: "Transport Topics - Industry News"
+      url: "https://www.ttnews.com/rss/xml/home"
+      category: industry_news
+      schedule: "0 8 * * *"  # Daily at 8 AM
+
+    - id: freightwaves
+      name: "FreightWaves - Market Intelligence"
+      url: "https://www.freightwaves.com/feed"
+      category: freight_rates
+      schedule: "0 8,18 * * *"  # Twice daily
+
+    - id: overdrive
+      name: "Overdrive - Owner Operator News"
+      url: "https://www.overdriveonline.com/feed/"
+      category: owner_operator
+      schedule: "0 9 * * *"
+
+    - id: ccj
+      name: "Commercial Carrier Journal"
+      url: "https://www.ccjdigital.com/feed/"
+      category: fleet_management
+      schedule: "0 10 * * *"
+
+    - id: landline
+      name: "Land Line Magazine - Driver News"
+      url: "https://landline.media/feed/"
+      category: driver_issues
+      schedule: "0 11 * * *"
+
+  # Web Scraping Targets
+  web_scrapes:
+    - id: dat-freight-rates
+      name: "DAT Freight & Analytics - Spot Rates"
+      url: "https://www.dat.com/industry-trends/trendlines"
+      selectors:
+        van_rate: ".rate-van .rate-value"
+        reefer_rate: ".rate-reefer .rate-value"
+        flatbed_rate: ".rate-flatbed .rate-value"
+      category: market_rates
+      schedule: "0 */6 * * *"  # Every 6 hours
+
+    - id: fmcsa-regulations
+      name: "FMCSA - Regulatory Updates"
+      url: "https://www.fmcsa.dot.gov/newsroom"
+      selectors:
+        headlines: ".view-content .views-row .field-content a"
+      category: regulations
+      schedule: "0 12 * * *"  # Daily at noon
+
+  # Search Queries (for web-search agent)
+  search_queries:
+    - query: "trucking industry news today"
+      category: daily_news
+      schedule: "0 7 * * *"
+
+    - query: "freight rates update {date}"
+      category: market_intel
+      schedule: "0 8 * * *"
+
+    - query: "ELD mandate updates {month}"
+      category: regulations
+      schedule: "0 0 1 * *"  # Monthly
+
+    - query: "truck driver shortage statistics {year}"
+      category: industry_trends
+      schedule: "0 0 1 1 *"  # Yearly
+
+output:
+  format: markdown
+  path: "/home/admin/.ai/data/trucking/{date}/{category}.md"
+  database: true
+  database_table: "trucking_intel"

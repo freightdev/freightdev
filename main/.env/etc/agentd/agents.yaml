@@ -1,0 +1,73 @@
+# Agent Configuration
+# Codriver Agency Team
+
+coordinator:
+  name: "Codriver"
+  model: "qwen2.5:32b"
+  node: "192.168.12.106"
+  port: "11434"
+  role: "Primary decision maker and orchestrator"
+  capabilities:
+    - task_decomposition
+    - quality_control
+    - complex_reasoning
+    - design_decisions
+  state:
+    type: "persistent"
+    context_window: 32768
+    storage: "surrealdb"
+    table: "coordinator_state"
+  generation_params:
+    max_tokens: 2048
+    temperature: 0.7
+    top_p: 0.9
+    top_k: 40
+
+assistant:
+  - name: "Code Assistant"
+    model: "qwen2.5-coder:32b"
+    node: "192.168.12.66"
+    port: "11434"
+    role: "General-purpose coding assistant"
+    capabilities:
+      - code_implementation
+      - boilerplate_generation
+      - code_transformation
+      - refactoring
+    state:
+      type: "stateful"
+      context_window: 32768
+      storage: "surrealdb"
+      table: "assistant_state"
+    generation_params:
+      max_tokens: 2048
+      temperature: 0.7
+      top_p: 0.9
+      top_k: 40
+
+# Inter-agent communication
+communication:
+  protocol:
+   - http
+   - gRB
+  timeout_seconds: 30
+  retry_attempts: 3
+  retry_delay_ms: 1000
+
+# Resource limits
+resources:
+  coordinator:
+    max_memory_gb: 24
+    max_context_tokens: 32768
+    threads: 20
+  assistant:
+    max_memory_gb: 32
+    max_context_tokens: 32768
+    threads: 8
+
+# Health monitoring
+monitoring:
+  health_check_interval: 300
+  restart_on_failure: true
+  max_restart_attempts: 3
+  restart_delay_seconds: 10

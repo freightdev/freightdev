@@ -1,0 +1,13 @@
+[Unit]
+Description=Trucking Industry Data Collector
+After=network.target surrealdb.service
+
+[Service]
+Type=oneshot
+User=codriver
+ExecStart=/usr/bin/python3 /srv/agent/src/scripts/data-collector-orchestrator.py /etc/agentd/config/trucking-sources.yaml
+StandardOutput=append:/var/logs/trucking-collector.log
+StandardError=append:/var/logs/trucking-collector-error.log
+
+[Install]
+WantedBy=multi-user.target

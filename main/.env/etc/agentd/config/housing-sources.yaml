@@ -1,0 +1,108 @@
+# Housing & Rental Data Sources
+---
+title: "Housing & Rental Market Intelligence Report"
+
+# Configure your location
+location:
+  city: "Galion"
+  state: "Ohio"
+  zip_codes: ["44833", "12346"]
+  radius_miles: 60
+
+filters:
+  price_min: 800
+  price_max: 3000
+  bedrooms: [1, 2, 3]
+  bathrooms: [1, 2, 3, 4, 5]
+  pet_friendly: true
+  parking: true
+
+sources:
+  # Rental Listing Sites
+  web_scrapes:
+    - id: apartments-com
+      name: "Apartments.com Listings"
+      url_template: "https://www.apartments.com/{city}-{state}/"
+      selectors:
+        listing_title: ".property-title"
+        price: ".property-pricing"
+        address: ".property-address"
+        beds_baths: ".property-beds"
+        amenities: ".property-amenities"
+      category: apartment_listings
+      schedule: "0 9,18 * * *"  # Twice daily: 9 AM & 6 PM
+
+    - id: zillow-rentals
+      name: "Zillow Rental Listings"
+      url_template: "https://www.zillow.com/homes/for_rent/{zip}/"
+      selectors:
+        address: ".list-card-addr"
+        price: ".list-card-price"
+        details: ".list-card-details"
+        link: ".list-card-link"
+      category: rentals
+      schedule: "0 10,19 * * *"
+
+    - id: realtor-listings
+      name: "Realtor.com Rentals"
+      url_template: "https://www.realtor.com/apartments/{city}_{state}"
+      selectors:
+        card: ".property-card"
+        price: ".price"
+        address: ".address"
+      category: rentals
+      schedule: "0 11,20 * * *"
+
+    - id: craigslist-housing
+      name: "Craigslist Housing"
+      url_template: "https://{city}.craigslist.org/search/apa"
+      selectors:
+        result: ".result-row"
+        title: ".result-title"
+        price: ".result-price"
+        location: ".result-hood"
+      category: craigslist_listings
+      schedule: "0 */4 * * *"  # Every 4 hours
+
+  # Market Data & Research
+  search_queries:
+    - query: "apartments for rent {city} {state}"
+      category: rental_search
+      schedule: "0 10 * * *"
+      max_results: 20
+
+    - query: "{city} {state} rental prices {month} {year}"
+      category: market_rates
+      schedule: "0 0 1 * *"  # Monthly
+
+    - query: "{city} neighborhood guide"
+      category: neighborhood_intel
+      schedule: "0 0 * * 0"  # Weekly on Sunday
+
+    - query: "cost of living {city} {state}"
+      category: cost_analysis
+      schedule: "0 0 1 * *"  # Monthly
+
+    - query: "{city} moving tips {year}"
+      category: moving_prep
+      schedule: "0 12 * * 0"  # Weekly
+
+  # RSS Feeds
+  rss_feeds:
+    - id: realtor-news
+      name: "Realtor.com Market News"
+      url: "https://www.realtor.com/news/feed/"
+      category: market_news
+      schedule: "0 14 * * *"
+
+output:
+  format: markdown
+  path: "/home/admin/.ai/data/housing/{date}/{category}.md"
+  database: true
+  database_table: "housing_intel"
+
+  # Daily digest combining all sources
+  daily_digest:
+    enabled: true
+    path: "/home/admin/.ai/data/housing/daily-digest-{date}.md"
+    schedule: "0 21 * * *"  # 9 PM daily summary

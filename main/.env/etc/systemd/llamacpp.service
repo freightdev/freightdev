@@ -1,0 +1,23 @@
+[Unit]
+Description=Llama.cpp LLM Server - CoDriver
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d
+ExecStart=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/opt/llama.cpp/build/bin/llama-server \
+  --model /home/admin/devbelt/models/tinyllama-1.1b/Q4_K_M/model.gguf \
+  --host 0.0.0.0 \
+  --port 11435 \
+  --ctx-size 4096 \
+  --n-gpu-layers 0 \
+  --threads 8
+Restart=always
+RestartSec=10
+Environment="RUST_LOG=info"
+StandardOutput=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/llamacpp.log
+StandardError=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/llamacpp-error.log
+
+[Install]
+WantedBy=multi-user.target

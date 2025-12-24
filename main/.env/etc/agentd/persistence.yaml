@@ -1,0 +1,104 @@
+# State Persistence Configuration
+# Auto-save and recovery settings
+
+schedule:
+  # High priority: Active conversation and current tasks
+  high_priority:
+    interval_seconds: 300  # 5 minutes
+    targets:
+      - coordinator_state
+      - active_tasks
+      - current_context
+
+  # Medium priority: Agent states and work products
+  medium_priority:
+    interval_seconds: 900  # 15 minutes
+    targets:
+      - assistant_state
+      - vision_cache
+      - partial_work
+
+  # Low priority: Full snapshots and logs
+  low_priority:
+    interval_seconds: 3600  # 1 hour
+    targets:
+      - full_snapshot
+      - operation_logs
+      - metrics
+
+snapshot:
+  # Snapshot storage
+  storage_path: "/var/data/recovery/snapshots"
+
+  # Compression settings
+  compress: true
+  compression_format: "zstd"
+  compression_level: 3
+
+  # Retention
+  keep_high_priority_days: 7
+  keep_medium_priority_days: 30
+  keep_low_priority_days: 90
+
+  # Auto-cleanup
+  auto_cleanup: true
+  cleanup_schedule: "0 2 * * *"  # 2 AM daily
+
+recovery:
+  # Recovery behavior
+  auto_recover_on_start: true
+  recovery_timeout_seconds: 120
+
+  # What to restore
+  restore_coordinator_context: true
+  restore_agent_states: true
+  restore_pending_tasks: true
+  restore_conversation_history: true
+
+  # Recovery strategies
+  strategies:
+    - name: "warm"
+      description: "Restore from last 5-min snapshot"
+      max_age_seconds: 600
+
+    - name: "cold"
+      description: "Restore from last hourly snapshot"
+      max_age_seconds: 7200
+
+    - name: "disaster"
+      description: "Restore from any available snapshot"
+      max_age_seconds: 604800  # 7 days
+
+  # Fallback behavior
+  on_recovery_failure:
+    action: "start_fresh"
+    notify_user: true
+    log_error: true
+
+database:
+  # Database backup settings
+  backup_enabled: true
+  backup_interval_hours: 24
+  backup_retention_days: 30
+  backup_path: "/var/data/recovery/db-backups"
+
+monitoring:
+  # Monitor persistence health
+  check_interval_seconds: 60
+  alert_on_failure: true
+  max_consecutive_failures: 3
+
+  # Metrics to track
+  metrics:
+    - persistence_lag
+    - snapshot_size
+    - recovery_time
+    - failure_rate
+
+logging:
+  # Persistence logging
+  log_path: "/var/logs/persistence"
+  log_level: "info"
+  log_format: "json"
+  rotate_size_mb: 100
+  rotate_keep_files: 10

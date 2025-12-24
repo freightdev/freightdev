@@ -1,0 +1,29 @@
+# ============================================================================
+# CODE GENERATION SETTINGS
+# ============================================================================
+
+[code_generation]
+default_node = []
+default_model = []
+fallback_model = []
+
+# What CoDriver can build
+capabilities = [
+    "react_components",
+    "nextjs_pages",
+    "flutter_screens",
+    "flutter_widgets",
+    "api_endpoints",
+    "database_schemas",
+    "typescript_types",
+    "tailwind_styles",
+    "ui_libraries",
+    "backend_services",
+    "automation_scripts"
+]
+
+# Output directories
+output_base = ".ai/jobs"
+in_progress = ".ai/jobs/in-progress"
+complete = ".ai/jobs/complete"
+templates = ".ai/jobs/templates"

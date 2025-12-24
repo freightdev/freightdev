@@ -1,0 +1,5 @@
+[database]
+primary = "surrealdb"            # Main database
+analytics = "duckdb"             # For data analysis
+surreal_endpoint = []
+duckdb_path = ".ai/data/analytics.duckdb"

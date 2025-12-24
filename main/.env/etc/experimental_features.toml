@@ -1,0 +1,9 @@
+# ============================================================================
+# EXPERIMENTAL FEATURES
+# ============================================================================
+
+[experimental]
+vision_analysis = true
+pdf_processing = true
+web_automation = false
+voice_interface = false

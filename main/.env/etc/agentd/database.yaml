@@ -1,0 +1,66 @@
+# SurrealDB Configuration
+# Location: helpbox (192.168.12.66)
+
+connection:
+  host: "192.168.12.66"
+  port: "8000"
+  protocol: "http"
+  endpoint: "http://192.168.12.66:8000"
+
+auth:
+  namespace: "openhwy"
+  database: "codriver_agency"
+  # Credentials will be set during installation
+  username: "codriver"
+  # password: stored in environment variable SURREALDB_PASSWORD
+
+tables:
+  # State persistence
+  coordinator_state:
+    name: "coordinator_state"
+    description: "CoDriver coordinator conversation and task state"
+
+  assistant_state:
+    name: "assistant_state"
+    description: "Assistant agent contexts and memory"
+
+  # Prompt management
+  prompts:
+    name: "prompts"
+    description: "Versioned system prompts"
+
+  # Logs and monitoring
+  operation_logs:
+    name: "operation_logs"
+    description: "All agent operations and events"
+
+  recovery_checkpoints:
+    name: "recovery_checkpoints"
+    description: "Recovery snapshots"
+
+settings:
+  # Auto-commit every write
+  auto_commit: true
+
+  # Connection pool size
+  pool_size: 10
+
+  # Query timeout (seconds)
+  timeout: 30
+
+  # Enable strict mode
+  strict: true
+
+persistence:
+  # Snapshot schedule
+  high_priority_interval: 300    # 5 minutes
+  medium_priority_interval: 900  # 15 minutes
+  low_priority_interval: 3600    # 1 hour
+
+  # Retention policy
+  keep_snapshots_days: 30
+  keep_logs_days: 90
+
+  # Compression
+  compress_old_snapshots: true
+  compression_threshold_days: 7

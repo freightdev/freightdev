@@ -1,0 +1,14 @@
+[user]
+	name = freightdev
+	email = jesse.freightdev@gmail.com
+	signingkey = jesse.freightdev@gmail.com
+[init]
+	defaultBranch = main
+[pull]
+	rebase = false
+[color]
+	ui = auto
+[core]
+	editor = nano
+[commit]
+	gpgsign = false

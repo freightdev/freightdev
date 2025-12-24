@@ -1,0 +1,11 @@
+# FINDA Configuration
+FINDA_MAX_DEPTH=10
+FINDA_CASE_SENSITIVE=false
+FINDA_FOLLOW_SYMLINKS=false
+FINDA_SHOW_HIDDEN=false
+FINDA_USE_COLORS=true
+FINDA_MAX_RESULTS=100
+FINDA_EXCLUDE_DIRS=".git,node_modules,.venv,__pycache__,.cache,dist,build,.next,target"
+FINDA_EXCLUDE_FILES=".DS_Store,*.pyc,*.swp,*.swo,*~"
+FINDA_CODE_EXTENSIONS="js,jsx,ts,tsx,py,go,rs,java,c,cpp,h,hpp,rb,php,sh,zsh,bash"
+FINDA_SAVE_HISTORY=true

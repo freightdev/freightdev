@@ -2,8 +2,8 @@
 # Main Gitignore Paths
 ######################
 
-.env/
-store/
+/store
+var/
 
 # SSL certificates
 keys/
@@ -13,9 +13,9 @@ certs/
 *.crt
 
 # Project builds
-build/
 node_modules/
 __pycache__/
+build/
 target/
 *.lock
 .next/

@@ -1,0 +1,14 @@
+[Unit]
+Description=Lead Scraper Agent
+After=network.target surrealdb.service
+
+[Service]
+Type=simple
+ExecStart=/bin/lead-scraper
+Restart=always
+RestartSec=10
+Environment="DATABASE_MANAGER_URL=http://localhost:9012"
+Environment="RUST_LOG=info"
+
+[Install]
+WantedBy=default.target

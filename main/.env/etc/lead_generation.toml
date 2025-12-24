@@ -1,0 +1,178 @@
+# ============================================================================
+# LEAD GENERATION - Find paid development work
+# ============================================================================
+
+[leads]
+enabled = true
+search_interval_minutes = 60     # How often to search for leads
+min_score = 30                   # Minimum score to qualify (0-100)
+min_budget = 300                 # Minimum budget in USD
+max_concurrent_searches = 5      # Don't hammer APIs
+
+# Where to save leads
+output_dir = ".ai/data/leads"
+qualified_dir = ".ai/data/leads/qualified"
+research_dir = ".ai/data/leads/research"
+archive_dir = ".ai/data/leads/archive"
+
+[leads.sources]
+# Social media
+twitter = true                   # Search #freelance #hiring #remotework
+linkedin = true                  # Job posts visible without premium
+reddit = true                    # r/forhire, r/freelance_forhire, r/hiring
+facebook_groups = false          # Requires login
+discord = false                  # Requires join
+
+# Public job boards
+indeed = true                    # No account needed to search
+google_jobs = true               # Aggregator, free
+remote_ok = true                 # Free job board
+weworkremotely = true            # Free to view listings
+hackernews_hiring = true         # Monthly "Who's Hiring" threads
+
+# Developer communities
+devto = true                     # dev.to job posts
+hashnode = false                 # Smaller audience
+indiehackers = true              # Forum jobs section
+
+# Direct scraping (free)
+company_career_pages = true      # Scrape trucking company websites
+google_maps_businesses = true    # Find businesses, check for "careers"
+industry_directories = true      # Public directories
+
+# ============================================================================
+# LEAD SEARCH QUERIES - What kind of work to find
+# ============================================================================
+
+[[leads.queries]]
+category = "web_development"
+keywords = [
+    "react developer needed",
+    "typescript full stack",
+    "web application development",
+    "SaaS platform development"
+]
+budget_range = [500, 10000]
+priority = "high"
+
+[[leads.queries]]
+category = "mobile_development"
+keywords = [
+    "react native app",
+    "flutter native app",
+    "mobile app development",
+    "iOS android developer",
+    "cross-platform mobile"
+]
+budget_range = [500, 15000]
+priority = "high"
+
+[[leads.queries]]
+category = "backend_api"
+keywords = [
+    "REST API development",
+    "GraphQL API",
+    "backend developer",
+    "microservices architecture",
+    "Node.js API",
+    "Go backend developer",
+    "Rust backend developer"
+]
+budget_range = [500, 20000]
+priority = "medium"
+
+[[leads.queries]]
+category = "automation"
+keywords = [
+    "web scraping",
+    "automation script",
+    "data extraction",
+    "workflow automation",
+    "Python automation"
+]
+budget_range = [500, 5000]
+priority = "medium"
+
+[[leads.queries]]
+category = "ai_ml"
+keywords = [
+    "AI integration",
+    "chatbot development",
+    "machine learning",
+    "LLM integration",
+    "RAG system"
+]
+budget_range = [500, 20000]
+priority = "high"
+
+[[leads.queries]]
+category = "quick_gigs"
+keywords = [
+    "landing page",
+    "simple website",
+    "portfolio website",
+    "bug fix",
+    "small feature"
+]
+budget_range = [300, 2000]
+priority = "low"
+
+# ============================================================================
+# TRUCKING SPECIFIC LEADS (FED TMS opportunities)
+# ============================================================================
+
+[[leads.queries]]
+category = "trucking_tms"
+keywords = [
+    "trucking company needs TMS",
+    "fleet management software",
+    "dispatch software",
+    "transportation management system",
+    "logistics software development"
+]
+budget_range = [1000, 100000]
+priority = "highest"
+
+[[leads.queries]]
+category = "trucking_tools"
+keywords = [
+    "load board integration",
+    "ELD integration",
+    "driver app",
+    "dispatcher tools",
+    "trucking automation"
+]
+budget_range = [500, 20000]
+priority = "high"
+
+# ============================================================================
+# LEAD QUALIFICATION CRITERIA
+# ============================================================================
+
+[leads.qualification]
+# Score factors (0-100 points total)
+budget_weight = 30               # Higher budget = higher score
+description_quality_weight = 20  # Detailed description = serious client
+client_history_weight = 20       # Repeat client = reliable
+tech_stack_match_weight = 15     # Our stack = easier/faster
+timeline_weight = 10             # Reasonable timeline
+response_rate_weight = 5         # Client responds fast
+
+# Our tech stack (score higher if client wants these)
+preferred_tech = [
+    "React", "Next.js", "TypeScript",
+    "Node.js", "Go", "Rust",
+    "PostgreSQL", "MongoDB", "SurrealDB",
+    "Docker", "AWS", "Vercel",
+    "Tailwind CSS", "Shadcn UI"
+]
+
+# Red flags (reduce score)
+red_flags = [
+    "work for free",
+    "exposure",
+    "profit sharing only",
+    "no budget",
+    "spec work",
+    "unrealistic timeline"
+]

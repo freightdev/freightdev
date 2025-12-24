@@ -1,0 +1,15 @@
+[Unit]
+Description=Lead Analyzer Agent
+After=network.target surrealdb.service llamacpp.service
+
+[Service]
+Type=simple
+ExecStart=/bin/lead-analyzer
+Restart=always
+RestartSec=10
+Environment="LLM_SERVER_URL=http://localhost:11435"
+Environment="DATABASE_MANAGER_URL=http://localhost:9012"
+Environment="RUST_LOG=info"
+
+[Install]
+WantedBy=default.target

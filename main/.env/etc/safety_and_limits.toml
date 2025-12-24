@@ -1,0 +1,13 @@
+# ============================================================================
+# SAFETY & LIMITS
+# ============================================================================
+
+[safety]
+max_cost_per_task_usd = 0
+require_approval_for_spending = true
+sandbox_code_execution = true
+verify_before_deploy = true
+
+# Rate limiting
+max_requests_per_minute = 30
+max_concurrent_tasks = 5

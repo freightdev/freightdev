@@ -1,0 +1,43 @@
+# ============================================================================
+# COMMUNICATION SETTINGS
+# ============================================================================
+
+[server]
+host = "127.0.0.1"
+port = 9000
+
+[database]
+url = "ws://127.0.0.1:8000"
+namespace = "agency"
+database = "conversations"
+username = "root"
+password = "root"
+
+[analysis]
+# Default analysis depth: quick, standard, thorough, deep
+default_depth = "standard"
+
+# Default passes to run
+default_passes = [
+    "EntityExtraction",
+    "TopicModeling",
+    "IntentDetection",
+    "PatternAnalysis",
+    "CrossReferencing",
+    "KnowledgeSynthesis"
+]
+
+[parser]
+# Maximum file size to parse (in MB)
+max_file_size_mb = 100
+
+[communication]
+chat_dir = ".ai/chats"
+user_chat = ".ai/chats/codriver.txt"
+claude_log = ".ai/chats/claude.txt"
+gemini_log = ".ai/chats/gemini.txt"
+openai_log = ".ai/chats/openai.txt"
+
+# Fast inter-agent communication (MessagePack)
+messagepack_enabled = true
+messagepack_port = 7878

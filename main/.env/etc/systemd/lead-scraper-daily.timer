@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily Lead Scraping Timer
+Requires=lead-scraper-daily.service
+
+[Timer]
+# Run every day at 9 AM
+OnCalendar=daily
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

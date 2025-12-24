@@ -1,0 +1,21 @@
+# ============================================================================
+# AUTONOMOUS BEHAVIOR
+# ============================================================================
+
+[autonomous]
+# When idle (no user tasks), what should CoDriver do?
+idle_activities = [
+    "find_leads",                 # Search for paid work
+    "health_check",               # Check cluster health
+    "optimize_prompts",           # Improve prompt templates
+    "analyze_metrics",            # Review performance
+    "build_tools",                # Build new capabilities
+    "research_ideas"              # Find profitable ideas
+]
+
+# How aggressive should lead generation be?
+lead_search_aggressiveness = "moderate"  # conservative, moderate, aggressive
+
+# Should CoDriver apply to jobs automatically?
+auto_apply = false
+notify_on_qualified_lead = true

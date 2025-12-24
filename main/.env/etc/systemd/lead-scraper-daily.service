@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily Lead Scraping Job
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/scrape-leads.sh all 30
+StandardOutput=journal
+StandardError=journal

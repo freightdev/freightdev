@@ -1,0 +1,15 @@
+[Unit]
+Description=Trucking Data Collection Timer
+Requires=trucking-collector.service
+
+[Timer]
+# Run twice daily: 9 AM and 6 PM
+OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 18:00:00
+# Also run 20 minutes after boot
+OnBootSec=20min
+# If missed, run immediately
+Persistent=true
+
+[Install]
+WantedBy=timers.target

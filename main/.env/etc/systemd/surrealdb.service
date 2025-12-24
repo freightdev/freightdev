@@ -1,0 +1,26 @@
+[Unit]
+Description=SurrealDB - CoDriver Agency Database
+After=network.target
+Documentation=https://surrealdb.com/docs
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d
+ExecStart=/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/opt/surrealdb/surreal start \
+  --log info \
+  --user codriver \
+  --pass changeme \
+  --bind 0.0.0.0:8000 \
+  file:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/data/surrealdb
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/surrealdb.log
+StandardError=append:/home/admin/WORKSPACE/projects/ACTIVE/codriver/.codriver.d/var/logs/surrealdb-error.log
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

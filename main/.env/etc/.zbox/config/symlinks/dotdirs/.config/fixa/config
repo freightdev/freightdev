@@ -1,0 +1,9 @@
+# FIXA Configuration
+FIXA_AUTO_BACKUP=true
+FIXA_BACKUP_DIR="${HOME}/.fixa-backups"
+FIXA_CONFIRM_DESTRUCTIVE=true
+FIXA_SHOW_DIFF=true
+FIXA_LOG_FIXES=true
+FIXA_MAX_FILE_SIZE=10M
+FIXA_EXCLUDE_DIRS=".git,node_modules,.venv,__pycache__"
+FIXA_DRY_RUN=false
