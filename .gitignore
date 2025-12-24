@@ -4,8 +4,7 @@
 
 store/client/
 store/node/
-
-main/.env/var/
+.env/
 
 # SSL certificates
 keys/
