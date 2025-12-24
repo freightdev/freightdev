@@ -5,7 +5,7 @@
 /store/client
 /store/node
 
-.env/var/
+/.env/var/
 
 # SSL certificates
 keys/
