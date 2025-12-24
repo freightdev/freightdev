@@ -1,0 +1,55 @@
+# Restic Configuration
+NAMESPACE: restic
+NODE_TYPE: master
+RESTIC_VERSION: 0.16.2
+
+# Storage Settings
+REPO_STORAGE_SIZE: 200Gi
+REPO_PATH: /data/restic-repo
+CACHE_STORAGE_SIZE: 10Gi
+CACHE_PATH: /data/restic-cache
+
+# Credentials
+RESTIC_PASSWORD: YourSecureResticPassword123!
+AWS_ACCESS_KEY: your-aws-access-key
+AWS_SECRET_KEY: your-aws-secret-key
+B2_ACCOUNT_ID: your-b2-account-id
+B2_ACCOUNT_KEY: your-b2-account-key
+
+# Repository Settings
+# Options: local path, s3:s3.amazonaws.com/bucket, b2:bucket-name, sftp:user@host:/path
+RESTIC_REPOSITORY: /repo
+
+# Backup Configuration
+BACKUP_SOURCE_PATH: /data
+BACKUP_PATHS: /data
+BACKUP_TAG: automated
+BACKUP_EXCLUDES: "*.tmp,*.log"
+BACKUP_VERBOSE: "1"
+RESTORE_TARGET: /restore
+RESTORE_VERBOSE: "1"
+
+# Backup Schedules (Cron format)
+BACKUP_SCHEDULE: "0 2 * * *"
+CHECK_SCHEDULE: "0 4 * * 0"
+
+# Retention Policy
+KEEP_LAST: 7
+KEEP_DAILY: 14
+KEEP_WEEKLY: 8
+KEEP_MONTHLY: 12
+KEEP_YEARLY: 3
+
+# Check Settings
+CHECK_SUBSET: "5%"
+
+# Job Settings
+SUCCESSFUL_JOBS_HISTORY: 3
+FAILED_JOBS_HISTORY: 3
+JOB_BACKOFF_LIMIT: 3
+
+# Resource Limits
+CPU_REQUEST: 500m
+MEMORY_REQUEST: 512Mi
+CPU_LIMIT: 1000m
+MEMORY_LIMIT: 1Gi

@@ -1,0 +1,93 @@
+# Keycloak Configuration
+NAMESPACE: keycloak
+NODE_TYPE: master
+KEYCLOAK_VERSION: 23.0
+STORAGE_SIZE: 10Gi
+HOST_PATH: /data/keycloak
+
+# Admin Credentials
+KEYCLOAK_ADMIN_USER: admin
+KEYCLOAK_ADMIN_PASSWORD: YourSecureKeycloakPassword123!
+
+# Database Settings (use postgres for production, dev-file for development)
+DB_VENDOR: dev-file
+DB_HOST: postgres.postgres.svc.cluster.local
+DB_DATABASE: keycloak
+DB_PORT: 5432
+DB_USERNAME: keycloak
+DB_PASSWORD: YourDatabasePassword123!
+DB_SCHEMA: public
+DB_POOL_INITIAL_SIZE: 5
+DB_POOL_MIN_SIZE: 5
+DB_POOL_MAX_SIZE: 20
+
+# Network Settings
+HTTP_ENABLED: "true"
+HTTP_HOST: 0.0.0.0
+HTTP_PORT: 8080
+HTTPS_PORT: 8443
+HTTP_NODEPORT: 30880
+HTTPS_NODEPORT: 30843
+HTTP_RELATIVE_PATH: /
+
+# Hostname Settings
+HOSTNAME: keycloak.local
+HOSTNAME_STRICT: "false"
+HOSTNAME_STRICT_HTTPS: "false"
+
+# Proxy Settings (edge, reencrypt, passthrough, none)
+PROXY_MODE: edge
+
+# Logging
+LOG_LEVEL: info
+LOG_CONSOLE_OUTPUT: default
+
+# Health & Metrics
+HEALTH_ENABLED: "true"
+METRICS_ENABLED: "true"
+
+# Cache Settings
+CACHE_TYPE: ispn
+CACHE_STACK: kubernetes
+
+# Features (comma-separated)
+FEATURES: token-exchange,admin-fine-grained-authz
+
+# Java Options
+JAVA_OPTS: -Xms512m -Xmx2048m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m
+
+# Realm Configuration
+REALM_NAME: myrealm
+REALM_DISPLAY_NAME: My Realm
+REGISTRATION_ALLOWED: false
+REGISTRATION_EMAIL_AS_USERNAME: false
+REMEMBER_ME: true
+VERIFY_EMAIL: false
+LOGIN_WITH_EMAIL: true
+DUPLICATE_EMAILS_ALLOWED: false
+RESET_PASSWORD_ALLOWED: true
+EDIT_USERNAME_ALLOWED: false
+
+# Brute Force Protection
+BRUTE_FORCE_PROTECTED: true
+PERMANENT_LOCKOUT: false
+MAX_FAILURE_WAIT_SECONDS: 900
+MINIMUM_QUICK_LOGIN_WAIT_SECONDS: 60
+WAIT_INCREMENT_SECONDS: 60
+QUICK_LOGIN_CHECK_MILLISECONDS: 1000
+MAX_DELTA_TIME_SECONDS: 43200
+FAILURE_FACTOR: 30
+
+# Token & Session Settings
+DEFAULT_SIGNATURE_ALGORITHM: RS256
+OFFLINE_SESSION_IDLE_TIMEOUT: 2592000
+ACCESS_TOKEN_LIFESPAN: 300
+ACCESS_TOKEN_LIFESPAN_IMPLICIT: 900
+SSO_SESSION_IDLE_TIMEOUT: 1800
+SSO_SESSION_MAX_LIFESPAN: 36000
+
+# Resource Limits
+CPU_REQUEST: 500m
+MEMORY_REQUEST: 1Gi
+CPU_LIMIT: 1000m
+MEMORY_LIMIT: 2Gi

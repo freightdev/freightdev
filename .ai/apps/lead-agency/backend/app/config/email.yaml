@@ -1,0 +1,78 @@
+# Lead Agency v2 - Email Configuration
+# Settings for sending outreach emails
+
+smtp:
+  # SMTP server settings
+  host: "smtp.gmail.com"
+  port: 587
+  use_tls: true
+
+  # Credentials (use environment variables)
+  username: "${EMAIL_USERNAME}"
+  password: "${EMAIL_PASSWORD}"
+
+  # From address
+  from_email: "${EMAIL_FROM}"
+  from_name: "Jesse Conley"
+
+outreach:
+  # When to send
+  auto_send: false  # Manual approval required
+
+  # Daily limit
+  max_per_day: 20
+
+  # Delay between emails (seconds)
+  delay_between: 60
+
+  # Follow-up settings
+  followup:
+    enabled: true
+    delay_days: 3
+    max_followups: 2
+
+templates:
+  # Outreach email template
+  initial:
+    subject: "Re: {title}"
+    template: |
+      Hi,
+
+      I saw your post about {title} and wanted to reach out.
+
+      {custom_intro}
+
+      I'm a full-stack developer specializing in {tech_stack}. I've built similar projects for {relevant_experience}.
+
+      {value_proposition}
+
+      Would you be open to a quick call this week to discuss the project in more detail?
+
+      Best regards,
+      Jesse Conley
+      {portfolio_link}
+
+  # Follow-up template
+  followup:
+    subject: "Re: {title} - Following up"
+    template: |
+      Hi,
+
+      I wanted to follow up on my message from {days_ago} days ago about {title}.
+
+      I'm still very interested in this project and would love to learn more about your requirements.
+
+      Let me know if you'd like to discuss.
+
+      Best,
+      Jesse
+
+tracking:
+  # Track email opens
+  track_opens: true
+
+  # Track link clicks
+  track_clicks: true
+
+  # Store responses
+  store_responses: true

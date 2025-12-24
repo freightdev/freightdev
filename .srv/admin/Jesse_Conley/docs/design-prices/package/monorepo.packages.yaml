@@ -1,0 +1,68 @@
+monorepo_packages:
+  - name: Monorepo Setup
+    price: 6500
+    timeline: "2-3 weeks"
+    tier: Foundation
+    description: >
+      Modern monorepo architecture with shared tooling, consistent builds, and efficient workflows.
+      Perfect for teams managing multiple related projects or microservices.
+    includes:
+      - Monorepo architecture design
+      - Build system setup (Nx, Lerna, or Rush)
+      - Shared configuration & tooling
+      - Code sharing strategies
+      - Basic CI/CD pipeline
+      - Developer workflow optimization
+      - Documentation & best practices
+    excludes:
+      - Advanced deployment strategies
+      - Complex dependency management
+      - Multi-team workflows
+    ideal_for:
+      - Growing development teams
+      - Multiple related projects
+      - Microservices architectures
+
+  - name: Monorepo Professional
+    price: 15500
+    timeline: "4-5 weeks"
+    tier: Professional
+    description: >
+      Advanced monorepo with sophisticated build optimization, dependency management, and team workflows.
+      Built for larger teams needing efficient collaboration and deployment strategies.
+    includes:
+      - Everything in Monorepo Setup
+      - Advanced build caching & optimization
+      - Sophisticated dependency management
+      - Multi-environment deployment
+      - Code ownership & review workflows
+      - Automated testing strategies
+      - Performance monitoring
+      - Team collaboration tools
+      - Migration assistance from existing repos
+    ideal_for:
+      - Medium to large development teams
+      - Complex project dependencies
+      - Multiple deployment environments
+
+  - name: Monorepo Enterprise
+    price: 42000+
+    timeline: "6-10 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise monorepo platform with advanced governance, security, and scale optimization.
+      Built for large organizations with complex development workflows and strict compliance needs.
+    includes:
+      - Everything in Professional
+      - Advanced governance & security
+      - Multi-team workflow management
+      - Custom tooling development
+      - Performance at scale optimization
+      - Compliance & audit capabilities
+      - Advanced analytics & reporting
+      - Dedicated monorepo architect (3 months)
+      - Training & change management
+    ideal_for:
+      - Large enterprises
+      - Multiple development teams
+      - Strict governance requirements

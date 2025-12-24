@@ -1,0 +1,98 @@
+#############################
+# zBoxxy Isolation Configuration
+# Defines isolation boundaries for agents
+#############################
+
+# Isolation levels
+levels:
+  none:
+    description: "No isolation - full system access"
+    filesystem: "full"
+    network: "full"
+    process: "full"
+
+  low:
+    description: "Minimal isolation - development friendly"
+    filesystem: "monitored"
+    network: "full"
+    process: "monitored"
+
+  medium:
+    description: "Moderate isolation - recommended for agents"
+    filesystem: "restricted"
+    network: "filtered"
+    process: "sandboxed"
+
+  high:
+    description: "Strong isolation - untrusted agents"
+    filesystem: "strict"
+    network: "whitelist_only"
+    process: "containerized"
+
+  strict:
+    description: "Maximum isolation - experimental/dangerous code"
+    filesystem: "chroot"
+    network: "blocked"
+    process: "fully_isolated"
+
+# Default isolation policies per agent type
+defaults:
+  development: "low"
+  sandbox: "medium"
+  untrusted: "high"
+  experimental: "strict"
+
+# Filesystem restrictions
+filesystem:
+  # Global read-only paths (all agents)
+  global_readonly:
+    - "/etc"
+    - "/usr"
+    - "/bin"
+    - "/sbin"
+
+  # Global blocked paths (all agents)
+  global_blocked:
+    - "$HOME/.ssh/private_keys"
+    - "$HOME/.gnupg"
+    - "/root"
+
+  # Writable directories (requires explicit grant)
+  writable_requires_grant:
+    - "$HOME"
+    - "/tmp"
+    - "/var"
+
+# Network restrictions
+network:
+  # Default policy
+  default_policy: "allow"
+
+  # Port restrictions
+  ports:
+    blocked:
+      - 22    # SSH
+      - 3306  # MySQL
+      - 5432  # PostgreSQL
+
+    requires_grant:
+      - 80    # HTTP
+      - 443   # HTTPS
+
+# Process restrictions
+process:
+  # Commands that require elevation
+  requires_sudo: []
+
+  # Blocked commands (per isolation level)
+  blocked:
+    high:
+      - "rm -rf /"
+      - "dd"
+      - "mkfs"
+
+    strict:
+      - "sudo"
+      - "su"
+      - "chown"
+      - "chmod 777"

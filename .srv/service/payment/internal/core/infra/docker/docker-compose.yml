@@ -1,0 +1,76 @@
+# docker/docker-compose.yml
+version: '3.8'
+
+services:
+    payment-service:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+        ports:
+            - '8080:8080'
+        environment:
+            - DB_HOST=postgres
+            - DB_PASSWORD=password
+            - REDIS_HOST=redis
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        networks:
+            - payment-network
+        restart: unless-stopped
+
+    postgres:
+        image: postgres:15-alpine
+        environment:
+            POSTGRES_DB: payment_service
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ../migrations:/docker-entrypoint-initdb.d
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U postgres']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        networks:
+            - payment-network
+        restart: unless-stopped
+
+    redis:
+        image: redis:7-alpine
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis_data:/data
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 5s
+            timeout: 3s
+            retries: 5
+        networks:
+            - payment-network
+        restart: unless-stopped
+
+    # Optional: Database administration tool
+    adminer:
+        image: adminer:4-standalone
+        ports:
+            - '8081:8080'
+        environment:
+            ADMINER_DEFAULT_SERVER: postgres
+        networks:
+            - payment-network
+        restart: unless-stopped
+
+volumes:
+    postgres_data:
+    redis_data:
+
+networks:
+    payment-network:
+        driver: bridge

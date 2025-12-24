@@ -1,0 +1,50 @@
+starter_packages:
+  - name: Landing Page Pro
+    price: 1200
+    timeline: "3-5 days"
+    tier: Launch
+    description: >
+      Get online fast with a conversion-focused landing page. Perfect for testing 
+      ideas, product launches, or capturing leads. Built for speed and results.
+    includes:
+      - 1 custom landing page
+      - Mobile-responsive design
+      - Contact form with email notifications
+      - Basic SEO setup
+      - 1 round of revisions
+      - 30-day bug fixes
+    ideal_for: "Product launches, service validation, lead capture"
+
+  - name: Business Starter
+    price: 2200
+    timeline: "1 week"
+    tier: Professional
+    description: >
+      Complete small business website with everything you need to look professional
+      and capture leads. Includes legal pages and basic SEO.
+    includes:
+      - 3-5 pages (Home, About, Services, Contact, etc.)
+      - Contact forms with email routing
+      - Basic SEO & meta tags
+      - Legal pages (Privacy, Terms)
+      - Google Analytics setup
+      - 2 rounds of revisions
+    ideal_for: "Small businesses, consultants, service providers"
+
+  - name: Business Complete
+    price: 3800
+    timeline: "2-3 weeks"
+    tier: Professional
+    description: >
+      Full-featured business website with blog, CMS, and basic e-commerce capability.
+      Everything you need to run your business online.
+    includes:
+      - 5-8 pages
+      - Simple CMS for content updates
+      - Blog system
+      - Basic e-commerce (up to 10 products)
+      - Email newsletter signup
+      - Analytics dashboard
+      - 3 rounds of revisions
+      - Training session (1 hour)
+    ideal_for: "Established businesses, online stores, content creators"

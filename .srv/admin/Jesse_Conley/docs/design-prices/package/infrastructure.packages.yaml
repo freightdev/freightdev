@@ -1,0 +1,69 @@
+infra_packages:
+  - name: Cloud Foundation
+    price: 12500
+    timeline: "3-4 weeks"
+    tier: Foundation
+    description: >
+      Production-ready cloud infrastructure with security, monitoring, and scalability built-in.
+      Perfect for applications moving from development to production.
+    includes:
+      - Cloud architecture design (AWS/GCP/Azure)
+      - Infrastructure as Code (Terraform)
+      - Security group & network configuration
+      - SSL certificates & domain setup
+      - Basic monitoring & alerting
+      - Backup & disaster recovery
+      - Cost optimization setup
+      - Documentation & runbooks
+    excludes:
+      - Multi-region deployment
+      - Advanced security features
+      - Container orchestration
+    ideal_for:
+      - Production launches
+      - Small to medium applications
+      - Cost-conscious deployments
+
+  - name: Infrastructure Professional
+    price: 28500
+    timeline: "5-7 weeks"
+    tier: Professional
+    description: >
+      Scalable cloud infrastructure with containers, auto-scaling, and advanced monitoring.
+      Built for growing applications that need reliability and performance at scale.
+    includes:
+      - Everything in Cloud Foundation
+      - Container orchestration (Kubernetes)
+      - Auto-scaling & load balancing
+      - Advanced monitoring stack
+      - Log aggregation & analysis
+      - Performance optimization
+      - Security hardening & compliance
+      - CI/CD pipeline integration
+      - 24/7 monitoring setup
+    ideal_for:
+      - Scaling applications
+      - Microservices architectures
+      - High-availability requirements
+
+  - name: Infrastructure Enterprise
+    price: 75000+
+    timeline: "8-12 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise-grade multi-cloud infrastructure with advanced security, compliance, and global reach.
+      Built for organizations with complex requirements and strict SLAs.
+    includes:
+      - Everything in Professional
+      - Multi-cloud/hybrid architecture
+      - Global CDN & edge computing
+      - Advanced security & compliance
+      - Zero-downtime deployment
+      - Cost management & optimization
+      - Dedicated infrastructure team
+      - Enterprise support & SLAs
+      - Disaster recovery testing
+    ideal_for:
+      - Large enterprises
+      - Regulated industries
+      - Global applications

@@ -1,0 +1,269 @@
+stacks
+├── backup
+│   ├── restic
+│   │   └── TODO.md
+│   ├── wal-e
+│   │   └── TODO.md
+│   └── backup.yml
+├── cache
+│   ├── redis
+│   │   └── TODO.md
+│   ├── vanish
+│   │   └── TODO.md
+│   └── cache.yml
+├── cloud
+│   ├── aws
+│   │   └── TODO.md
+│   ├── azure
+│   │   └── TODO.md
+│   ├── digital_ocean
+│   │   └── TODO.md
+│   ├── fly.io
+│   │   └── TODO.md
+│   ├── linode
+│   │   └── TODO.md
+│   └── cloud.yml
+├── connection
+│   ├── Asterisk
+│   │   ├── FreePBX
+│   │   │   └── TODO.md
+│   │   └── TODO.md
+│   ├── Jitsi
+│   │   └── TODO.md
+│   ├── Matrix
+│   │   └── TODO.md
+│   └── connection.yml
+├── container
+│   ├── cockpit
+│   │   └── TODO.md
+│   ├── conainerd
+│   │   └── TODO.md
+│   ├── docker
+│   │   └── TODO.md
+│   ├── harbor
+│   │   └── TODO.md
+│   ├── podman
+│   │   └── TODO.md
+│   └── container.yml
+├── database
+│   ├── clickhouse
+│   │   └── TODO.md
+│   ├── _idea
+│   │   ├── AgentsDB.yml
+│   │   ├── ModelsDB.yml
+│   │   ├── QueueDB.yml
+│   │   ├── README2.md
+│   │   ├── README.md
+│   │   ├── UsersDB.yml
+│   │   └── VectorStore.yml
+│   ├── Longhorn
+│   │   └── TODO.md
+│   ├── minio
+│   │   └── TODO.md
+│   ├── mysql
+│   │   └── TODO.md
+│   ├── postgresql
+│   │   ├── pgBouncer
+│   │   │   └── TODO.md
+│   │   └── TODO.md
+│   ├── redis_c3
+│   │   └── TODO.md
+│   ├── sqlite
+│   │   └── TODO.md
+│   └── database.yml
+├── dev
+│   ├── argocd
+│   │   └── TODO.md
+│   ├── dagger
+│   │   └── TODO.md
+│   ├── forgejo
+│   │   └── TODO.md
+│   ├── gitea
+│   │   └── TODO.md
+│   ├── nomads
+│   │   └── TODO.md
+│   ├── woodpecker_ci
+│   │   └── TODO.md
+│   └── dev.yml
+├── dns
+│   ├── coredns
+│   │   └── TODO.md
+│   ├── pihole
+│   │   └── TODO.md
+│   ├── powerdns
+│   │   └── TODO.md
+│   └── dns.yml
+├── engine
+│   ├── llama.cpp
+│   │   └── TODO.md
+│   ├── openvino
+│   │   └── TODO.md
+│   ├── pytouch
+│   │   └── TODO.md
+│   ├── tensorflow
+│   │   └── TODO.md
+│   ├── transformers
+│   │   └── TODO.md
+│   ├── triton
+│   │   └── TODO.md
+│   └── engine.yml
+├── firewall
+│   ├── firewalld
+│   │   └── TODO.md
+│   ├── iptables
+│   │   └── TODO.md
+│   ├── nftables
+│   │   └── TODO.md
+│   ├── pf
+│   │   └── TODO.md
+│   ├── ufw
+│   │   └── TODO.md
+│   └── firewall.yml
+├── gateway
+│   ├── kong
+│   │   └── TODO.md
+│   └── gateway.yml
+├── identity
+│   ├── keycloak
+│   │   └── TODO.md
+│   ├── oauth2
+│   │   └── TODO.md
+│   ├── teleport
+│   │   └── TODO.md
+│   └── identity.yml
+├── ingress
+│   ├── caddy
+│   │   └── TODO.md
+│   ├── nginx
+│   │   └── TODO.md
+│   ├── traefik
+│   │   └── TODO.md
+│   └── ingress.yml
+├── loadbalance
+│   ├── envoy
+│   │   └── TODO.md
+│   ├── haproxy
+│   │   └── TODO.md
+│   ├── keepalived
+│   │   └── TODO.md
+│   └── loadbalance.yml
+├── logging
+│   ├── loki
+│   │   └── TODO.md
+│   ├── promtail
+│   │   └── TODO.md
+│   └── logging.yml
+├── mesh
+│   ├── istio
+│   │   └── TODO.md
+│   ├── linkerd
+│   │   └── TODO.md
+│   └── mesh.yml
+├── metric
+│   ├── alertmanager
+│   │   └── TODO.md
+│   ├── prometheus
+│   │   └── TODO.md
+│   └── metric.yml
+├── monitoring
+│   ├── uptime_kuma
+│   │   └── TODO.md
+│   └── monitoring.yml
+├── options
+│   ├── connections
+│   │   ├── discord.md
+│   │   ├── signal.md
+│   │   ├── substack.md
+│   │   └── telegram.md
+│   └── databases
+│       ├── options
+│       │   ├── embeddings
+│       │   │   └── vector.md
+│       │   ├── engines
+│       │   │   ├── analyticals
+│       │   │   │   ├── duckdb.md
+│       │   │   │   ├── pandas.md
+│       │   │   │   ├── snowflake.md
+│       │   │   │   └── spark.md
+│       │   │   ├── columnars
+│       │   │   │   ├── arrow.md
+│       │   │   │   ├── csv.md
+│       │   │   │   └── json.md
+│       │   │   └── queues
+│       │   │       ├── faiss.md
+│       │   │       ├── milvus.md
+│       │   │       ├── qdrant.md
+│       │   │       └── weaviate.md
+│       │   ├── relational
+│       │   │   └── postgres.md
+│       │   └── storages
+│       │       └── parquet.md
+│       └── SQL
+│           ├── mysql.md
+│           └── sqlite.md
+├── orchistration
+│   ├── k3s
+│   │   └── TODO.md
+│   ├── k8s
+│   │   └── TODO.md
+│   ├── systemd
+│   │   └── TODO.md
+│   └── orchestration.yml
+├── proxy
+│   ├── fail2ban
+│   │   └── TODO.md
+│   ├── modsecurity
+│   │   ├── OWASP_Rules
+│   │   │   └── TODO.md
+│   │   └── TODO.md
+│   └── proxy.yml
+├── scafford
+│   ├── ansible
+│   │   └── TODO.md
+│   ├── terraform
+│   │   └── TODO.md
+│   ├── zora
+│   │   └── TODO.md
+│   └── scafford.yml
+├── scheduler
+│   ├── deadline
+│   │   └── TODO.md
+│   └── schdulers.yml
+├── security
+│   ├── clamav
+│   │   └── TODO.md
+│   ├── falco
+│   │   └── TODO.md
+│   ├── trivy
+│   │   └── TODO.md
+│   ├── wazuh
+│   │   └── TODO.md
+│   └── security.yml
+├── tracing
+│   ├── jaeger
+│   │   └── TODO.md
+│   └── tracing.yml
+├── tunneling
+│   ├── cloudflared
+│   │   └── TODO.md
+│   ├── frp
+│   │   └── TODO.md
+│   ├── tailscale
+│   │   └── TODO.md
+│   ├── wireguard
+│   │   └── TODO.md
+│   └── tunneling.yml
+├── visual
+│   ├── grafana
+│   │   └── TODO.md
+│   └── visual.yml
+├── zero_trust
+│   ├── cilium
+│   │   └── TODO.md
+│   ├── gpg
+│   │   └── TODO.md
+│   ├── open_policy_agent
+│   │   └── TODO.md
+│   └── zero_trust.yml
+├── stacks.tree
+└── stacks.yml

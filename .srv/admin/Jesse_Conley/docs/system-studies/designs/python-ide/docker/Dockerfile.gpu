@@ -1,0 +1,105 @@
+# GPU-enabled version for CUDA inference
+FROM nvidia/cuda:12.1-devel-ubuntu22.04 as builder
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3.11-dev \
+    python3-pip \
+    build-essential \
+    cmake \
+    git \
+    curl \
+    wget \
+    pkg-config \
+    libssl-dev \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symlinks for python
+RUN ln -s /usr/bin/python3.11 /usr/bin/python
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
+
+# Create app directory
+WORKDIR /app
+
+# Copy requirements
+COPY pyproject.toml requirements.txt ./
+
+# Install Python dependencies with CUDA support
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip install -r requirements.txt
+
+# Production stage
+FROM nvidia/cuda:12.1-runtime-ubuntu22.04 as production
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV APP_ENV=production
+ENV CUDA_VISIBLE_DEVICES=0
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3-pip \
+    git \
+    curl \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create symlinks
+RUN ln -s /usr/bin/python3.11 /usr/bin/python
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
+
+# Create non-root user
+RUN groupadd -r aiassistant && useradd -r -g aiassistant aiassistant
+
+# Create app directory
+WORKDIR /app
+RUN chown -R aiassistant:aiassistant /app
+
+# Copy Python packages from builder
+COPY --from=builder /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Create directories
+RUN mkdir -p \
+    /app/data/conversations \
+    /app/data/embeddings \
+    /app/data/knowledge \
+    /app/data/logs \
+    /app/data/models \
+    /app/data/backups \
+    /app/workspace \
+    /app/templates \
+    /app/static \
+    && chown -R aiassistant:aiassistant /app/data /app/workspace
+
+# Copy application code
+COPY --chown=aiassistant:aiassistant backend/ ./backend/
+COPY --chown=aiassistant:aiassistant templates/ ./templates/
+COPY --chown=aiassistant:aiassistant static/ ./static/
+COPY --chown=aiassistant:aiassistant migrations/ ./migrations/
+COPY --chown=aiassistant:aiassistant .env.example ./.env
+
+# Switch to non-root user
+USER aiassistant
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/ping || exit 1
+
+# Default command
+CMD ["python", "-m", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

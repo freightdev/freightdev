@@ -1,0 +1,307 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-data-pv
+spec:
+  capacity:
+    storage: {{STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{HOST_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-data
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-data-pv
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  loki.yaml: |
+    auth_enabled: {{AUTH_ENABLED}}
+
+    server:
+      http_listen_port: {{LOKI_HTTP_PORT}}
+      grpc_listen_port: {{LOKI_GRPC_PORT}}
+      log_level: {{LOG_LEVEL}}
+
+    common:
+      path_prefix: /loki
+      storage:
+        filesystem:
+          chunks_directory: /loki/chunks
+          rules_directory: /loki/rules
+      replication_factor: 1
+      ring:
+        instance_addr: 127.0.0.1
+        kvstore:
+          store: inmemory
+
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: boltdb-shipper
+          object_store: filesystem
+          schema: v11
+          index:
+            prefix: index_
+            period: 24h
+
+    storage_config:
+      boltdb_shipper:
+        active_index_directory: /loki/boltdb-shipper-active
+        cache_location: /loki/boltdb-shipper-cache
+        cache_ttl: 24h
+        shared_store: filesystem
+      filesystem:
+        directory: /loki/chunks
+
+    compactor:
+      working_directory: /loki/compactor
+      shared_store: filesystem
+      compaction_interval: {{COMPACTION_INTERVAL}}
+      retention_enabled: {{RETENTION_ENABLED}}
+      retention_delete_delay: {{RETENTION_DELETE_DELAY}}
+      retention_delete_worker_count: {{RETENTION_DELETE_WORKERS}}
+
+    limits_config:
+      enforce_metric_name: false
+      reject_old_samples: true
+      reject_old_samples_max_age: {{REJECT_OLD_SAMPLES_MAX_AGE}}
+      ingestion_rate_mb: {{INGESTION_RATE_MB}}
+      ingestion_burst_size_mb: {{INGESTION_BURST_SIZE_MB}}
+      max_query_length: {{MAX_QUERY_LENGTH}}
+      max_query_parallelism: {{MAX_QUERY_PARALLELISM}}
+      max_streams_per_user: {{MAX_STREAMS_PER_USER}}
+      max_global_streams_per_user: {{MAX_GLOBAL_STREAMS_PER_USER}}
+      max_cache_freshness_per_query: {{MAX_CACHE_FRESHNESS}}
+      retention_period: {{RETENTION_PERIOD}}
+
+    chunk_store_config:
+      max_look_back_period: {{MAX_LOOK_BACK_PERIOD}}
+
+    table_manager:
+      retention_deletes_enabled: {{RETENTION_ENABLED}}
+      retention_period: {{RETENTION_PERIOD}}
+
+    query_range:
+      align_queries_with_step: true
+      max_retries: {{QUERY_MAX_RETRIES}}
+      cache_results: {{CACHE_RESULTS}}
+      results_cache:
+        cache:
+          embedded_cache:
+            enabled: {{EMBEDDED_CACHE_ENABLED}}
+            max_size_mb: {{EMBEDDED_CACHE_SIZE_MB}}
+
+    frontend:
+      log_queries_longer_than: {{LOG_QUERIES_LONGER_THAN}}
+      compress_responses: {{COMPRESS_RESPONSES}}
+      max_outstanding_per_tenant: {{MAX_OUTSTANDING_PER_TENANT}}
+
+    querier:
+      max_concurrent: {{QUERIER_MAX_CONCURRENT}}
+
+    ingester:
+      lifecycler:
+        ring:
+          kvstore:
+            store: inmemory
+          replication_factor: 1
+      chunk_idle_period: {{CHUNK_IDLE_PERIOD}}
+      chunk_block_size: {{CHUNK_BLOCK_SIZE}}
+      chunk_target_size: {{CHUNK_TARGET_SIZE}}
+      chunk_retain_period: {{CHUNK_RETAIN_PERIOD}}
+      max_transfer_retries: {{MAX_TRANSFER_RETRIES}}
+
+    ruler:
+      storage:
+        type: local
+        local:
+          directory: /loki/rules
+      rule_path: /loki/rules-temp
+      alertmanager_url: {{ALERTMANAGER_URL}}
+      ring:
+        kvstore:
+          store: inmemory
+      enable_api: {{RULER_ENABLE_API}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{NAMESPACE}}
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{NAMESPACE}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{NAMESPACE}}
+subjects:
+- kind: ServiceAccount
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{NAMESPACE}}
+  template:
+    metadata:
+      labels:
+        app: {{NAMESPACE}}
+    spec:
+      serviceAccountName: {{NAMESPACE}}
+      nodeSelector:
+        node-type: {{NODE_TYPE}}
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: loki
+        image: grafana/loki:{{LOKI_VERSION}}
+        imagePullPolicy: IfNotPresent
+        args:
+          - -config.file=/etc/loki/loki.yaml
+        ports:
+        - containerPort: {{LOKI_HTTP_PORT}}
+          name: http
+          protocol: TCP
+        - containerPort: {{LOKI_GRPC_PORT}}
+          name: grpc
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /etc/loki
+        - name: data
+          mountPath: /loki
+        resources:
+          requests:
+            cpu: {{CPU_REQUEST}}
+            memory: {{MEMORY_REQUEST}}
+          limits:
+            cpu: {{CPU_LIMIT}}
+            memory: {{MEMORY_LIMIT}}
+        livenessProbe:
+          httpGet:
+            path: /ready
+            port: {{LOKI_HTTP_PORT}}
+          initialDelaySeconds: 45
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: {{LOKI_HTTP_PORT}}
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: config
+        configMap:
+          name: {{NAMESPACE}}-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{NAMESPACE}}-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: {{LOKI_HTTP_PORT}}
+    targetPort: {{LOKI_HTTP_PORT}}
+    nodePort: {{LOKI_HTTP_NODEPORT}}
+    protocol: TCP
+  - name: grpc
+    port: {{LOKI_GRPC_PORT}}
+    targetPort: {{LOKI_GRPC_PORT}}
+    nodePort: {{LOKI_GRPC_NODEPORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}-headless
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: {{LOKI_HTTP_PORT}}
+    targetPort: {{LOKI_HTTP_PORT}}
+    protocol: TCP
+  - name: grpc
+    port: {{LOKI_GRPC_PORT}}
+    targetPort: {{LOKI_GRPC_PORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}

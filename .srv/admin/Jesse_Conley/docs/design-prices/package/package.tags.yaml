@@ -1,0 +1,34 @@
+package_tags:
+  complexity:
+    - simple
+    - moderate
+    - complex
+    - enterprise
+  
+  timeline:
+    - rush (1-2 weeks)
+    - standard (3-6 weeks)
+    - extended (6-12 weeks)
+    - ongoing
+  
+  industry:
+    - ecommerce
+    - saas
+    - healthcare
+    - fintech
+    - education
+    - nonprofit
+  
+  technology:
+    - react
+    - nodejs
+    - python
+    - mobile
+    - ai_ml
+    - blockchain
+  
+  business_size:
+    - startup
+    - small_business
+    - mid_market
+    - enterprise

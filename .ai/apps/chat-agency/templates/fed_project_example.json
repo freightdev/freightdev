@@ -1,0 +1,72 @@
+{
+  "project_name": "fed_trucking_platform",
+  "queries": [
+    {
+      "name": "flutter_knowledge",
+      "search": "flutter",
+      "include_messages": true,
+      "filters": {
+        "min_messages": 5,
+        "limit": 100
+      }
+    },
+    {
+      "name": "rust_backend",
+      "search": "rust backend API server",
+      "include_messages": true,
+      "filters": {
+        "min_messages": 5,
+        "limit": 100
+      }
+    },
+    {
+      "name": "rust_code",
+      "search": "rust",
+      "extract_code": true,
+      "code_language": "rust"
+    },
+    {
+      "name": "flutter_code",
+      "search": "flutter dart",
+      "extract_code": true,
+      "code_language": "dart"
+    },
+    {
+      "name": "tms_domain_knowledge",
+      "search": "TMS trucking dispatch driver broker load freight",
+      "include_messages": true,
+      "filters": {
+        "limit": 200
+      }
+    },
+    {
+      "name": "architecture_decisions",
+      "search": "architecture design pattern structure database",
+      "include_messages": true,
+      "filters": {
+        "min_messages": 10
+      }
+    },
+    {
+      "name": "authentication",
+      "search": "auth authentication authorization JWT session token",
+      "include_messages": true
+    },
+    {
+      "name": "go_services",
+      "search": "go golang service microservice",
+      "include_messages": true
+    },
+    {
+      "name": "go_code",
+      "search": "go golang",
+      "extract_code": true,
+      "code_language": "go"
+    },
+    {
+      "name": "database_design",
+      "search": "database PostgreSQL schema table migration",
+      "include_messages": true
+    }
+  ]
+}

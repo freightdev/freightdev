@@ -1,0 +1,154 @@
+# ZBOX Container - Your custom AI shell environment
+FROM archlinux:latest
+
+# Install base system
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm \
+    zsh \
+    curl \
+    jq \
+    openssl \
+    git \
+    python \
+    rust \
+    nodejs \
+    nginx \
+    tmux \
+    htop \
+    neovim
+
+# Create ZBOX system structure
+RUN mkdir -p /opt/zbox/{bin,models,scripts,logs,users} && \
+    mkdir -p /opt/zbox/templates
+
+# Copy your Rust binary and ZBOX scripts
+COPY rust_llama_binary /opt/zbox/bin/rust_llama_binary
+COPY zbox_shell_system.zsh /opt/zbox/zbox.zsh
+COPY models/ /opt/zbox/models/
+COPY scripts/ /opt/zbox/scripts/
+
+# Make everything executable
+RUN chmod +x /opt/zbox/bin/* && \
+    chmod +x /opt/zbox/zbox.zsh
+
+# Create ZBOX user setup script
+RUN cat > /opt/zbox/setup_user.zsh << 'EOF'
+#!/bin/zsh
+# ZBOX User Setup Script
+
+USER_NAME="$1"
+if [[ -z "$USER_NAME" ]]; then
+    echo "Usage: $0 <username>"
+    exit 1
+fi
+
+# Create user if doesn't exist
+if ! id "$USER_NAME" &>/dev/null; then
+    useradd -m -s /bin/zsh "$USER_NAME"
+    echo "Created user: $USER_NAME"
+fi
+
+# Setup ZBOX for user
+USER_HOME="/home/$USER_NAME"
+mkdir -p "$USER_HOME/.config/zbox"
+
+# Create user's .zshrc to load ZBOX
+cat > "$USER_HOME/.zshrc" << 'ZSHRC'
+# ZBOX Auto-loader
+export ZBOX_HOME="/opt/zbox"
+source "$ZBOX_HOME/zbox.zsh"
+
+# User customizations can go here
+ZSHRC
+
+chown -R "$USER_NAME:$USER_NAME" "$USER_HOME"
+echo "ZBOX setup complete for user: $USER_NAME"
+EOF
+
+RUN chmod +x /opt/zbox/setup_user.zsh
+
+# Configure NGINX for ZBOX routing
+RUN cat > /etc/nginx/nginx.conf << 'EOF'
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream zbox_backend {
+        server 127.0.0.1:8080;
+    }
+    
+    # ZBOX main server block
+    server {
+        listen 80;
+        server_name _;
+        
+        # Route users to their ZBOX sessions
+        location ~ ^/zbox/([^/]+)/?(.*)$ {
+            set $zbox_user $1;
+            set $zbox_path $2;
+            
+            proxy_pass http://zbox_backend/$zbox_path;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-ZBOX-User $zbox_user;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            
+            # WebSocket support for terminal sessions
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+        
+        # Health check endpoint
+        location /health {
+            return 200 "ZBOX Container Healthy\n";
+            add_header Content-Type text/plain;
+        }
+    }
+}
+EOF
+
+# Create ZBOX container startup script
+RUN cat > /opt/zbox/start.sh << 'EOF'
+#!/bin/bash
+# ZBOX Container Startup Script
+
+echo "🚀 Starting ZBOX Container..."
+
+# Start NGINX
+nginx -g "daemon off;" &
+NGINX_PID=$!
+
+# Start your FastAPI backend (if you have one)
+if [[ -f /opt/zbox/bin/fastapi_server.py ]]; then
+    cd /opt/zbox && python bin/fastapi_server.py &
+    API_PID=$!
+fi
+
+# Setup signal handling
+trap 'kill $NGINX_PID $API_PID; exit' SIGTERM SIGINT
+
+echo "✅ ZBOX Container ready!"
+echo "🌐 Access via: http://localhost/zbox/username"
+echo "📊 Health: http://localhost/health"
+
+# Keep container running
+wait
+EOF
+
+RUN chmod +x /opt/zbox/start.sh
+
+# Expose ports
+EXPOSE 80 8080
+
+# Set working directory
+WORKDIR /opt/zbox
+
+# Default command
+CMD ["/opt/zbox/start.sh"]
+
+# Labels
+LABEL maintainer="your-email@example.com"
+LABEL version="1.0.0"
+LABEL description="ZBOX - Custom AI Shell Environment"

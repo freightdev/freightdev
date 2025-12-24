@@ -1,0 +1,281 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-data-pv
+spec:
+  capacity:
+    storage: {{STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{HOST_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-data
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-data-pv
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{NAMESPACE}}-admin
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  admin-username: {{GITEA_ADMIN_USERNAME}}
+  admin-password: {{GITEA_ADMIN_PASSWORD}}
+  admin-email: {{GITEA_ADMIN_EMAIL}}
+  secret-key: {{GITEA_SECRET_KEY}}
+  internal-token: {{GITEA_INTERNAL_TOKEN}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  app.ini: |
+    [general]
+    APP_NAME = Gitea
+    RUN_USER = git
+    RUN_MODE = prod
+
+    [repository]
+    ROOT = /data/git/repositories
+    ENABLE_PUSH_CREATE_USER = false
+    ENABLE_PUSH_CREATE_ORG = false
+    DEFAULT_BRANCH = main
+
+    [database]
+    DB_TYPE = sqlite3
+    PATH = /data/gitea/gitea.db
+
+    [server]
+    PROTOCOL = http
+    DOMAIN = {{GITEA_DOMAIN}}
+    ROOT_URL = http://{{GITEA_DOMAIN}}/
+    HTTP_PORT = 3000
+    DISABLE_SSH = {{DISABLE_SSH}}
+    SSH_PORT = 22
+    SSH_LISTEN_PORT = 22
+    OFFLINE_MODE = false
+
+    [session]
+    PROVIDER = memory
+    COOKIE_NAME = i_like_gitea
+    COOKIE_SECURE = false
+
+    [security]
+    INSTALL_LOCK = true
+    SECRET_KEY = __SECRET_KEY_PLACEHOLDER__
+    INTERNAL_TOKEN = __INTERNAL_TOKEN_PLACEHOLDER__
+    PASSWORD_HASH_ALGO = pbkdf2
+
+    [log]
+    MODE = console
+    LEVEL = {{LOG_LEVEL}}
+
+    [webhook]
+    SKIP_TLS_VERIFY = false
+    ALLOWED_HOST_LIST = *
+
+    [indexer]
+    ISSUE_INDEXER_TYPE = db
+
+    [storage.packages]
+    TYPE = local
+    PATH = /data/gitea/data/packages
+
+    [attachment]
+    STORAGE_TYPE = local
+    PATH = /data/gitea/data/attachments
+
+    [avatar]
+    STORAGE_TYPE = local
+    PATH = /data/gitea/data/avatars
+
+    [repo-avatar]
+    STORAGE_TYPE = local
+    PATH = /data/gitea/data/repo-avatars
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{NAMESPACE}}
+  template:
+    metadata:
+      labels:
+        app: {{NAMESPACE}}
+    spec:
+      nodeSelector:
+        node-type: {{NODE_TYPE}}
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+      - name: init-config
+        image: busybox:latest
+        command: ['sh', '-c']
+        args:
+          - |
+            cp /config-template/app.ini /config/app.ini
+            sed -i "s/__SECRET_KEY_PLACEHOLDER__/$(cat /secrets/secret-key)/g" /config/app.ini
+            sed -i "s/__INTERNAL_TOKEN_PLACEHOLDER__/$(cat /secrets/internal-token)/g" /config/app.ini
+        volumeMounts:
+        - name: config-template
+          mountPath: /config-template
+        - name: config
+          mountPath: /config
+        - name: secrets
+          mountPath: /secrets
+      containers:
+      - name: gitea
+        image: gitea/gitea:{{GITEA_VERSION}}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        - containerPort: 22
+          name: ssh
+          protocol: TCP
+        env:
+        - name: USER_UID
+          value: "1000"
+        - name: USER_GID
+          value: "1000"
+        - name: GITEA_WORK_DIR
+          value: /data/gitea
+        - name: GITEA_CUSTOM
+          value: /data/gitea/custom
+        - name: GITEA__database__DB_TYPE
+          value: sqlite3
+        - name: GITEA__database__PATH
+          value: /data/gitea/gitea.db
+        - name: GITEA__server__SSH_DOMAIN
+          value: {{GITEA_DOMAIN}}
+        - name: GITEA_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-admin
+              key: admin-username
+        - name: GITEA_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-admin
+              key: admin-password
+        - name: GITEA_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-admin
+              key: admin-email
+        volumeMounts:
+        - name: data
+          mountPath: /data/gitea
+        - name: git-data
+          mountPath: /data/git
+        - name: config
+          mountPath: /data/gitea/conf/app.ini
+          subPath: app.ini
+        resources:
+          requests:
+            cpu: {{CPU_REQUEST}}
+            memory: {{MEMORY_REQUEST}}
+          limits:
+            cpu: {{CPU_LIMIT}}
+            memory: {{MEMORY_LIMIT}}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/version
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/version
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{NAMESPACE}}-data
+      - name: git-data
+        emptyDir: {}
+      - name: config-template
+        configMap:
+          name: {{NAMESPACE}}-config
+          items:
+          - key: app.ini
+            path: app.ini
+      - name: config
+        emptyDir: {}
+      - name: secrets
+        secret:
+          secretName: {{NAMESPACE}}-admin
+          items:
+          - key: secret-key
+            path: secret-key
+          - key: internal-token
+            path: internal-token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    nodePort: {{HTTP_NODEPORT}}
+    protocol: TCP
+  - name: ssh
+    port: 22
+    targetPort: 22
+    nodePort: {{SSH_NODEPORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}

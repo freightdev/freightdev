@@ -1,0 +1,861 @@
+{% extends "base.html" %}
+
+{% block title %}AI IDE{% endblock %}
+{% block nav_ide %}active{% endblock %}
+
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.css" rel="stylesheet">
+<style>
+    /* IDE-specific glassmorphism styles */
+    .ide-container {
+        height: calc(100vh - 4rem);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ide-header {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .ide-main {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    .ide-sidebar {
+        width: 250px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-right: 1px solid var(--glass-border);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .sidebar-tab {
+        flex: 1;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+    }
+
+    .sidebar-tab:hover {
+        background: var(--glass-hover);
+        color: white;
+    }
+
+    .sidebar-tab.active {
+        background: var(--glass-active);
+        color: rgb(196, 181, 253);
+        box-shadow: 0 2px 10px rgba(139, 92, 246, 0.2);
+    }
+
+    .sidebar-panel {
+        display: none;
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    .sidebar-panel.active {
+        display: block;
+    }
+
+    .file-tree-item {
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .file-tree-item:hover {
+        background: var(--glass-hover);
+        color: white;
+    }
+
+    .file-tree-item.selected {
+        background: var(--glass-active);
+        color: rgb(196, 181, 253);
+    }
+
+    .editor-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .editor-tabs {
+        display: flex;
+        gap: 2px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 0.5rem;
+        overflow-x: auto;
+    }
+
+    .editor-tab {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 0.375rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .editor-tab:hover {
+        background: var(--glass-hover);
+        color: white;
+    }
+
+    .editor-tab.active {
+        background: var(--glass-active);
+        color: white;
+    }
+
+    .editor-tab .close {
+        opacity: 0.5;
+        transition: opacity 0.2s;
+    }
+
+    .editor-tab .close:hover {
+        opacity: 1;
+        color: #ef4444;
+    }
+
+    .chat-sidebar {
+        width: 350px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-left: 1px solid var(--glass-border);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-header {
+        padding: 1rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .chat-message {
+        display: flex;
+        gap: 0.75rem;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .chat-message.user {
+        flex-direction: row-reverse;
+    }
+
+    .chat-avatar {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.875rem;
+    }
+
+    .chat-message.user .chat-avatar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .chat-bubble {
+        max-width: 75%;
+        padding: 0.75rem 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 0.75rem;
+        color: white;
+        font-size: 0.875rem;
+    }
+
+    .chat-message.user .chat-bubble {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    }
+
+    .chat-input-area {
+        padding: 1rem;
+        border-top: 1px solid var(--glass-border);
+    }
+
+    .bottom-panel {
+        height: 200px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--glass-border);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bottom-panel-tabs {
+        display: flex;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 0.25rem 0.5rem;
+    }
+
+    .bottom-tab {
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+    .bottom-tab:hover {
+        color: white;
+    }
+
+    .bottom-tab.active {
+        color: rgb(196, 181, 253);
+        border-bottom: 2px solid rgb(196, 181, 253);
+    }
+
+    .terminal {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.7);
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+        padding: 1rem;
+        overflow-y: auto;
+        color: #00ff00;
+    }
+
+    /* Monaco Editor Dark Theme Integration */
+    .monaco-editor {
+        padding: 1rem !important;
+    }
+
+    .monaco-editor .margin {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+    }
+
+    #editor-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: rgba(255, 255, 255, 0.5);
+        text-align: center;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .ide-sidebar {
+            width: 100%;
+            max-width: 250px;
+            position: absolute;
+            left: -250px;
+            z-index: 10;
+            transition: left 0.3s ease;
+        }
+
+        .ide-sidebar.open {
+            left: 0;
+        }
+
+        .chat-sidebar {
+            width: 100%;
+            max-width: 350px;
+            position: absolute;
+            right: -350px;
+            z-index: 10;
+            transition: right 0.3s ease;
+        }
+
+        .chat-sidebar.open {
+            right: 0;
+        }
+
+        .editor-tabs {
+            font-size: 0.75rem;
+        }
+
+        .editor-tab {
+            padding: 0.375rem 0.75rem;
+        }
+    }
+
+    /* Modal Glass Style */
+    .modal-overlay {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: var(--glass-bg);
+        backdrop-filter: blur(30px);
+        border: 1px solid var(--glass-border);
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ide-container">
+    <!-- IDE Header -->
+    <div class="ide-header">
+        <div class="flex items-center gap-4">
+            <!-- File Operations -->
+            <button onclick="toggleSidebar()" class="btn-glass text-sm md:hidden">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <button onclick="showNewFileModal()" class="btn-glass text-sm">
+                <i class="fas fa-file-plus mr-2"></i>
+                <span class="hidden md:inline">New</span>
+            </button>
+
+            <button onclick="saveCurrentFile()" class="btn-glass text-sm" id="save-btn" disabled>
+                <i class="fas fa-save mr-2"></i>
+                <span class="hidden md:inline">Save</span>
+            </button>
+
+            <div id="current-file" class="text-sm text-gray-300 hidden md:block">
+                No file open
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button onclick="toggleTerminal()" class="btn-glass text-sm">
+                <i class="fas fa-terminal"></i>
+            </button>
+
+            <button onclick="toggleChat()" class="btn-glass text-sm">
+                <i class="fas fa-comments"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main IDE Layout -->
+    <div class="ide-main">
+        <!-- Sidebar -->
+        <div class="ide-sidebar" id="sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-tab="files">
+                    <i class="fas fa-folder"></i>
+                    <span>Files</span>
+                </button>
+                <button class="sidebar-tab" data-tab="git">
+                    <i class="fas fa-code-branch"></i>
+                    <span>Git</span>
+                </button>
+            </div>
+
+            <!-- Files Panel -->
+            <div class="sidebar-panel active" id="files-panel">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-white">Explorer</h3>
+                    <div class="flex gap-2">
+                        <button onclick="refreshFiles()" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-sync-alt text-sm"></i>
+                        </button>
+                        <button onclick="newFolder()" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-folder-plus text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="file-tree" class="space-y-1">
+                    <div class="text-center py-8 text-gray-400 text-sm">
+                        <i class="fas fa-spinner fa-spin mb-2"></i>
+                        <p>Loading files...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Git Panel -->
+            <div class="sidebar-panel" id="git-panel">
+                <h3 class="text-sm font-semibold text-white mb-3">Source Control</h3>
+
+                <div class="space-y-2 mb-4">
+                    <button onclick="gitCommit()" class="btn-glass-primary w-full text-sm">
+                        <i class="fas fa-check mr-2"></i>Commit
+                    </button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="gitPull()" class="btn-glass text-sm">
+                            <i class="fas fa-download mr-1"></i>Pull
+                        </button>
+                        <button onclick="gitPush()" class="btn-glass text-sm">
+                            <i class="fas fa-upload mr-1"></i>Push
+                        </button>
+                    </div>
+                </div>
+
+                <div id="git-changes" class="text-sm text-gray-400">
+                    No changes detected
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Area -->
+        <div class="editor-area">
+            <!-- Editor Tabs -->
+            <div class="editor-tabs" id="editor-tabs">
+                <div class="text-sm text-gray-400 py-1">
+                    No files open
+                </div>
+            </div>
+
+            <!-- Monaco Editor -->
+            <div id="monaco-container" class="flex-1 relative">
+                <div id="editor-placeholder">
+                    <div>
+                        <i class="fas fa-code text-5xl mb-4 opacity-50"></i>
+                        <h3 class="text-xl font-bold mb-2">AI-Powered IDE</h3>
+                        <p class="text-sm opacity-75">Open a file to start coding</p>
+                        <div class="mt-4 text-xs opacity-50">
+                            <p>Ctrl+N: New | Ctrl+S: Save | Ctrl+`: Terminal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Sidebar -->
+        <div class="chat-sidebar" id="chat-sidebar">
+            <div class="chat-header">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-white">AI Assistant</h3>
+                    <button onclick="toggleChat()" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <select id="agent-selector" class="select-glass text-sm w-full">
+                    <option value="codriver">CoDriver (Auto)</option>
+                    <option value="code">Code Assistant</option>
+                    <option value="chat">General Chat</option>
+                </select>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message">
+                    <div class="chat-avatar">
+                        <i class="fas fa-robot text-purple-300"></i>
+                    </div>
+                    <div class="chat-bubble">
+                        <p class="mb-2">Hello! I'm your AI coding assistant.</p>
+                        <p class="text-xs opacity-75">I can help with code, debugging, and explanations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="flex gap-2">
+                    <textarea
+                        id="chat-input"
+                        placeholder="Ask about your code..."
+                        class="input-glass flex-1 resize-none text-sm"
+                        rows="2"
+                        onkeydown="handleChatKeydown(event)"
+                    ></textarea>
+                    <button onclick="sendMessage()" class="btn-glass-primary self-end">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="text-xs text-gray-400 mt-1">
+                    Shift+Enter for new line
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Panel (Terminal) -->
+    <div class="bottom-panel hidden" id="bottom-panel">
+        <div class="bottom-panel-tabs">
+            <button class="bottom-tab active" data-tab="terminal">
+                <i class="fas fa-terminal mr-2"></i>Terminal
+            </button>
+            <button class="bottom-tab" data-tab="output">
+                <i class="fas fa-list mr-2"></i>Output
+            </button>
+            <div class="flex-1"></div>
+            <button onclick="toggleTerminal()" class="text-gray-400 hover:text-white px-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div id="terminal-content" class="flex-1 overflow-hidden">
+            <div id="terminal" class="terminal">
+                <div class="text-green-400">$ Welcome to AI IDE Terminal</div>
+                <div class="text-gray-400">$ Type commands here...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New File Modal -->
+<div id="new-file-modal" class="fixed inset-0 z-50 hidden modal-overlay">
+    <div class="flex items-center justify-center h-full p-4">
+        <div class="modal-content p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold text-white mb-4">Create New File</h3>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">File Name</label>
+                    <input
+                        type="text"
+                        id="new-file-name"
+                        placeholder="example.py"
+                        class="input-glass w-full"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">File Type</label>
+                    <select id="new-file-type" class="select-glass w-full">
+                        <option value="python">Python (.py)</option>
+                        <option value="javascript">JavaScript (.js)</option>
+                        <option value="typescript">TypeScript (.ts)</option>
+                        <option value="rust">Rust (.rs)</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="json">JSON</option>
+                        <option value="markdown">Markdown (.md)</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button onclick="hideNewFileModal()" class="btn-glass flex-1">
+                        Cancel
+                    </button>
+                    <button onclick="createNewFile()" class="btn-glass-primary flex-1">
+                        <i class="fas fa-plus mr-2"></i>Create
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<script>
+    let editor = null;
+    let currentFile = null;
+    let openFiles = new Map();
+    let chatMessages = [];
+
+    // Initialize Monaco Editor
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+
+    require(['vs/editor/editor.main'], function() {
+        editor = monaco.editor.create(document.getElementById('monaco-container'), {
+            value: '',
+            language: 'python',
+            theme: 'vs-dark',
+            fontSize: 14,
+            minimap: { enabled: true },
+            automaticLayout: true
+        });
+
+        // Hide placeholder when editor is ready
+        document.getElementById('editor-placeholder').style.display = 'none';
+    });
+
+    // Sidebar tab switching
+    document.querySelectorAll('.sidebar-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+
+            document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            document.querySelectorAll('.sidebar-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`${target}-panel`).classList.add('active');
+        });
+    });
+
+    // Bottom panel tab switching
+    document.querySelectorAll('.bottom-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+
+    // Toggle functions
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function toggleChat() {
+        const chat = document.getElementById('chat-sidebar');
+        const isHidden = chat.style.display === 'none';
+        chat.style.display = isHidden ? 'flex' : 'none';
+    }
+
+    function toggleTerminal() {
+        const panel = document.getElementById('bottom-panel');
+        panel.classList.toggle('hidden');
+    }
+
+    // File operations
+    function showNewFileModal() {
+        document.getElementById('new-file-modal').classList.remove('hidden');
+    }
+
+    function hideNewFileModal() {
+        document.getElementById('new-file-modal').classList.add('hidden');
+    }
+
+    function createNewFile() {
+        const name = document.getElementById('new-file-name').value;
+        const type = document.getElementById('new-file-type').value;
+
+        if (!name) {
+            alert('Please enter a file name');
+            return;
+        }
+
+        // Create new file logic here
+        console.log('Creating file:', name, type);
+        hideNewFileModal();
+
+        // Add to open files
+        openFiles.set(name, { content: '', language: type });
+        openFile(name);
+    }
+
+    function openFile(filename) {
+        currentFile = filename;
+        document.getElementById('current-file').textContent = filename;
+        document.getElementById('save-btn').disabled = false;
+
+        // Update editor content
+        const file = openFiles.get(filename);
+        if (file && editor) {
+            editor.setValue(file.content);
+            monaco.editor.setModelLanguage(editor.getModel(), file.language);
+        }
+
+        // Update tabs
+        updateEditorTabs();
+    }
+
+    function updateEditorTabs() {
+        const tabsContainer = document.getElementById('editor-tabs');
+        tabsContainer.innerHTML = '';
+
+        if (openFiles.size === 0) {
+            tabsContainer.innerHTML = '<div class="text-sm text-gray-400 py-1">No files open</div>';
+            return;
+        }
+
+        openFiles.forEach((file, filename) => {
+            const tab = document.createElement('div');
+            tab.className = `editor-tab ${filename === currentFile ? 'active' : ''}`;
+            tab.innerHTML = `
+                <i class="fas fa-file-code"></i>
+                <span>${filename}</span>
+                <i class="fas fa-times close" onclick="closeFile('${filename}', event)"></i>
+            `;
+            tab.onclick = (e) => {
+                if (!e.target.classList.contains('close')) {
+                    openFile(filename);
+                }
+            };
+            tabsContainer.appendChild(tab);
+        });
+    }
+
+    function closeFile(filename, event) {
+        event.stopPropagation();
+        openFiles.delete(filename);
+        if (currentFile === filename) {
+            currentFile = null;
+            if (openFiles.size > 0) {
+                openFile(Array.from(openFiles.keys())[0]);
+            } else {
+                document.getElementById('current-file').textContent = 'No file open';
+                document.getElementById('save-btn').disabled = true;
+                if (editor) editor.setValue('');
+            }
+        }
+        updateEditorTabs();
+    }
+
+    function saveCurrentFile() {
+        if (!currentFile || !editor) return;
+
+        const content = editor.getValue();
+        openFiles.get(currentFile).content = content;
+
+        // Show save notification
+        showNotification('File saved successfully', 'success');
+    }
+
+    function refreshFiles() {
+        const tree = document.getElementById('file-tree');
+        tree.innerHTML = '<div class="text-center py-8 text-gray-400 text-sm"><i class="fas fa-spinner fa-spin mb-2"></i><p>Loading files...</p></div>';
+
+        // Simulate file loading
+        setTimeout(() => {
+            tree.innerHTML = `
+                <div class="file-tree-item" onclick="openFile('main.py')">
+                    <i class="fas fa-file-code text-blue-400"></i>
+                    <span>main.py</span>
+                </div>
+                <div class="file-tree-item" onclick="openFile('config.json')">
+                    <i class="fas fa-file-code text-yellow-400"></i>
+                    <span>config.json</span>
+                </div>
+                <div class="file-tree-item" onclick="openFile('README.md')">
+                    <i class="fas fa-file-code text-purple-400"></i>
+                    <span>README.md</span>
+                </div>
+            `;
+        }, 500);
+    }
+
+    function newFolder() {
+        const name = prompt('Enter folder name:');
+        if (name) {
+            showNotification(`Folder "${name}" created`, 'success');
+        }
+    }
+
+    // Git operations
+    function gitCommit() {
+        showNotification('Commit functionality coming soon', 'info');
+    }
+
+    function gitPull() {
+        showNotification('Pull functionality coming soon', 'info');
+    }
+
+    function gitPush() {
+        showNotification('Push functionality coming soon', 'info');
+    }
+
+    // Chat functions
+    function handleChatKeydown(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Add user message
+        addChatMessage(message, 'user');
+        input.value = '';
+
+        // Simulate AI response
+        setTimeout(() => {
+            addChatMessage('I can help you with that! This is a demo response from the AI assistant.', 'assistant');
+        }, 1000);
+    }
+
+    function addChatMessage(text, role) {
+        const messagesDiv = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${role}`;
+
+        messageDiv.innerHTML = `
+            <div class="chat-avatar">
+                <i class="fas fa-${role === 'user' ? 'user' : 'robot'} ${role === 'assistant' ? 'text-purple-300' : ''}"></i>
+            </div>
+            <div class="chat-bubble">
+                ${text}
+            </div>
+        `;
+
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Notifications
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 glass-card p-4 z-50 animate-slide-up';
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i class="fas fa-${type === 'success' ? 'check-circle text-green-400' : type === 'error' ? 'exclamation-circle text-red-400' : 'info-circle text-blue-400'}"></i>
+                <span class="text-white text-sm">${message}</span>
+            </div>
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.remove(), 3000);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === 's') {
+                e.preventDefault();
+                saveCurrentFile();
+            } else if (e.key === 'n') {
+                e.preventDefault();
+                showNewFileModal();
+            } else if (e.key === '`') {
+                e.preventDefault();
+                toggleTerminal();
+            }
+        }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        refreshFiles();
+        // Hide chat by default on mobile
+        if (window.innerWidth < 768) {
+            document.getElementById('chat-sidebar').style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

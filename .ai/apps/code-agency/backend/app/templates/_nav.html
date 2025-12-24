@@ -1,0 +1,114 @@
+<!-- Unified Navigation for Agency Control Center -->
+<style>
+    .nav-glass {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link-glass {
+        position: relative;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-link-glass:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 1);
+        transform: translateY(-2px);
+    }
+
+    .nav-link-glass.active {
+        background: rgba(139, 92, 246, 0.3);
+        color: rgb(196, 181, 253);
+        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .mobile-menu {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .desktop-nav {
+            display: none;
+        }
+
+        .mobile-menu.open {
+            display: block;
+        }
+    }
+</style>
+
+<nav class="nav-glass sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <a href="/" class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    <i class="fas fa-robot mr-2"></i>AI Agency
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-2 desktop-nav">
+                <a href="/" class="nav-link-glass {{ 'active' if active_page == 'ide' else '' }}">
+                    <i class="fas fa-code"></i>
+                    <span>IDE</span>
+                </a>
+                <a href="/chat" class="nav-link-glass {{ 'active' if active_page == 'chat' else '' }}">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="/control" class="nav-link-glass {{ 'active' if active_page == 'control' else '' }}">
+                    <i class="fas fa-cog"></i>
+                    <span>Control</span>
+                </a>
+                <a href="/settings" class="nav-link-glass {{ 'active' if active_page == 'settings' else '' }}">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-white/10">
+                <i class="fas fa-bars text-white text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="px-4 py-2 space-y-2">
+            <a href="/" class="nav-link-glass block {{ 'active' if active_page == 'ide' else '' }}">
+                <i class="fas fa-code"></i>
+                <span>IDE</span>
+            </a>
+            <a href="/chat" class="nav-link-glass block {{ 'active' if active_page == 'chat' else '' }}">
+                <i class="fas fa-comments"></i>
+                <span>Chat</span>
+            </a>
+            <a href="/control" class="nav-link-glass block {{ 'active' if active_page == 'control' else '' }}">
+                <i class="fas fa-cog"></i>
+                <span>Control</span>
+            </a>
+            <a href="/settings" class="nav-link-glass block {{ 'active' if active_page == 'settings' else '' }}">
+                <i class="fas fa-sliders-h"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('open');
+    });
+</script>

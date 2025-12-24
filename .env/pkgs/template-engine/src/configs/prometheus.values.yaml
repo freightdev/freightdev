@@ -1,0 +1,43 @@
+# Prometheus Configuration
+NAMESPACE: prometheus
+NODE_TYPE: master
+PROMETHEUS_VERSION: v2.48.0
+STORAGE_SIZE: 50Gi
+HOST_PATH: /data/prometheus
+
+# Network Settings
+PROMETHEUS_PORT: 9090
+PROMETHEUS_NODEPORT: 30090
+
+# Scrape Settings
+SCRAPE_INTERVAL: 15s
+SCRAPE_TIMEOUT: 10s
+EVALUATION_INTERVAL: 15s
+
+# Cluster Labels
+CLUSTER_NAME: my-cluster
+ENVIRONMENT: production
+
+# Alertmanager
+ALERTMANAGER_TARGETS: "# - 'alertmanager:9093'"
+
+# Alert Configuration
+ALERT_GROUP_NAME: default-alerts
+ALERT_INTERVAL: 30s
+HIGH_MEMORY_THRESHOLD: 80
+HIGH_CPU_THRESHOLD: 80
+LOW_DISK_THRESHOLD: 20
+
+# Storage Settings
+RETENTION_TIME: 30d
+RETENTION_SIZE: 45GB
+
+# Server Settings
+ENABLE_ADMIN_API: "false"
+LOG_LEVEL: info
+
+# Resource Limits
+CPU_REQUEST: 500m
+MEMORY_REQUEST: 2Gi
+CPU_LIMIT: 1000m
+MEMORY_LIMIT: 4Gi

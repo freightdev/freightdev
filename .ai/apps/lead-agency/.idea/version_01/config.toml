@@ -1,0 +1,404 @@
+# ============================================
+# LEAD GENERATION ENGINE - MASTER CONFIG
+# ============================================
+# Edit this file to control your entire operation
+# No code changes needed - just update and restart
+
+[engine]
+enabled = true
+max_leads_per_day = 100
+max_outreach_per_day = 50
+scrape_interval_minutes = 60
+respect_rate_limits = true
+debug_mode = false
+
+# ============================================
+# OLLAMA INSTANCES
+# ============================================
+[ollama]
+# Primary instances (your 4 laptops)
+primary_endpoints = [
+    "http://192.168.12.136:11434",
+    # hostname = workbox
+    # sheildgemma:9b | mistrallite:7b | duckdb-nsql:7b | llava-phi3:3.8b | llava-llama3:8b
+    "http://192.168.12.106:11434",
+    # hostname = hostbox
+    # granite4:1b | nexusraven:13b | qwen2.5:14b | gemma3:12b
+    "http://192.168.12.66:11434",
+    # hostname = helpbox
+    # deepcoder:14b | codestral:22b | deepseek-coder-v2:16b | codellama:13b
+    "http://192.168.12.9:11434"
+    # hostname = callbox
+    # smallthinker:3b | nuextract:3.8b | phi4-mini:3.8b
+]
+# Laptop Specs:
+#   workbox: iGPU/NPU, 22 treads, 16GB RAM
+#   hostbox: iGPU(12.5 GB RAM shared), 20 threads, 24GB RAM
+#   helpbox: iGPU + GPU(GTX 1650 Mobile 4vRAM), 8 threads, 32 GB RAM
+#   callbox: none, 4 threads, 12GB RAM
+
+# Load balancing strategy: "round-robin", "random", "least-loaded"
+load_balance_strategy = "round-robin"
+
+# Fallback to cloud if all local instances down
+enable_cloud_fallback = false
+cloud_fallback_provider = "anthropic"  # or "openai", "together"
+cloud_api_key = "${CLOUD_API_KEY}"
+
+# Model selection per task
+[ollama.models]
+lead_qualification = "deepcoder:14b"
+email_writing = "qwen2.5:14b"
+linkedin_messages = "smallthinker:3b"
+response_handling = "gemma3:12b"
+
+# Retry logic
+max_retries = 3
+retry_delay_seconds = 5
+timeout_seconds = 60
+
+# ============================================
+# TARGET SOURCES (What to scrape)
+# ============================================
+[[sources]]
+name = "linkedin_trucking"
+type = "linkedin"
+enabled = true
+search_queries = [
+    "trucking company owner",
+    "logistics manager",
+    "freight broker",
+    "dispatch manager trucking"
+]
+locations = ["United States"]
+company_size = ["1-50", "51-200"]
+max_results_per_query = 50
+
+[[sources]]
+name = "trucking_websites"
+type = "web_scraper"
+enabled = true
+target_urls = [
+    "https://truckingdirectory.com",
+    "https://carrierlists.com/carriers",
+    # Add more trucking directories
+]
+scrape_depth = 2  # How many links deep
+extract_emails = true
+extract_phones = true
+
+[[sources]]
+name = "indeed_jobs"
+type = "job_board"
+enabled = true
+job_titles = [
+    "trucking dispatcher needed",
+    "need website developer",
+    "logistics software"
+]
+# Scrape job postings to find companies needing services
+
+[[sources]]
+name = "local_businesses"
+type = "google_maps"
+enabled = true
+search_terms = ["small business", "startup", "trucking company"]
+locations = ["United States"]
+max_results = 100
+
+[[sources]]
+name = "custom_list"
+type = "csv_import"
+enabled = true
+csv_path = "/data/custom_leads.csv"
+# Upload your own lead lists
+
+# ============================================
+# CAMPAIGN CONFIGURATIONS
+# ============================================
+[[campaigns]]
+name = "trucking_outreach"
+enabled = true
+target_sources = ["linkedin_trucking", "trucking_websites"]
+campaign_type = "cold_outreach"
+
+# Which Ollama prompt to use (defined below)
+prompt_template = "trucking_pitch"
+
+# Outreach channels
+channels = ["email", "linkedin"]
+send_email = true
+send_linkedin = true
+send_sms = false
+
+# Timing
+send_immediately = false
+optimal_send_time = "09:00-17:00"
+timezone = "${TIMEZONE}"
+
+# Follow-up sequence
+follow_up_enabled = true
+follow_up_days = [3, 7, 14]
+max_follow_ups = 2
+
+[[campaigns]]
+name = "local_business_outreach"
+enabled = true
+target_sources = ["local_businesses", "custom_list"]
+campaign_type = "cold_outreach"
+prompt_template = "local_business_pitch"
+channels = ["email"]
+send_email = true
+follow_up_enabled = true
+follow_up_days = [5, 12]
+
+[[campaigns]]
+name = "job_board_responses"
+enabled = true
+target_sources = ["indeed_jobs"]
+campaign_type = "job_application"
+prompt_template = "job_response"
+channels = ["email"]
+send_immediately = true
+
+# ============================================
+# AI PROMPT TEMPLATES
+# ============================================
+[prompts.trucking_pitch]
+system = """You are a technical sales assistant for a developer who specializes in trucking industry software.
+You have 10 years of trucking industry experience yourself. Be authentic, direct, and focus on solving real problems."""
+
+qualification = """Analyze this lead and return JSON with:
+- industry: string
+- company_size: estimate
+- likely_needs: array of potential services they need
+- pain_points: array
+- budget_estimate: "low" | "medium" | "high"
+- lead_score: 0-100
+- qualification_notes: string
+
+Lead data: {{LEAD_DATA}}"""
+
+initial_email_subject = """Quick question about {{COMPANY_NAME}}'s dispatch/logistics system"""
+
+initial_email_body = """Hey {{FIRST_NAME}},
+
+I'm a developer who spent 10 years in trucking before switching to building software. I specialize in systems for trucking companies - dispatch platforms, load boards, driver management, that kind of thing.
+
+I noticed {{COMPANY_NAME}} {{SPECIFIC_OBSERVATION}} and thought you might be dealing with {{PAIN_POINT}}.
+
+I've built custom platforms for a few trucking companies that helped them:
+- {{BENEFIT_1}}
+- {{BENEFIT_2}}
+- {{BENEFIT_3}}
+
+Not sure if this is relevant for you, but if you're looking to improve your systems, I'd be happy to chat for 15 minutes and see if I can help.
+
+No pressure - just reach out if you're interested.
+
+{{YOUR_NAME}}
+{{YOUR_CONTACT}}"""
+
+linkedin_connection_message = """Hey {{FIRST_NAME}}, I'm a developer specializing in trucking logistics software. Spent 10 years driving before switching to building systems. Would love to connect!"""
+
+follow_up_email_subject = """Re: {{COMPANY_NAME}}'s dispatch system"""
+
+follow_up_email_body = """{{FIRST_NAME}},
+
+Just following up on my previous email. I know you're busy running {{COMPANY_NAME}}.
+
+If you ever need help with dispatch software, load management, or any custom tech solutions, I'm here.
+
+Happy to answer any questions.
+
+{{YOUR_NAME}}"""
+
+[prompts.local_business_pitch]
+system = """You are a sales assistant for a full-stack developer who builds websites, apps, and AI-powered systems for small businesses."""
+
+qualification = """Analyze this business and return JSON:
+- business_type: string
+- has_website: boolean
+- website_quality: "none" | "poor" | "decent" | "good"
+- likely_needs: array
+- budget_estimate: string
+- lead_score: 0-100
+
+Business data: {{LEAD_DATA}}"""
+
+initial_email_subject = """Web development services for {{COMPANY_NAME}}"""
+
+initial_email_body = """Hi {{FIRST_NAME}},
+
+I'm a local developer who builds websites and apps for small businesses. I specialize in fast, affordable solutions that actually get results.
+
+I noticed {{COMPANY_NAME}} {{OBSERVATION}}. I've helped similar businesses with:
+- Modern websites that look great and convert visitors
+- AI chatbots for customer service
+- Custom apps and automation
+
+If you're looking to upgrade your online presence, I'd be happy to show you what's possible.
+
+No obligation - just a quick chat if you're interested.
+
+Best,
+{{YOUR_NAME}}
+{{YOUR_CONTACT}}"""
+
+[prompts.job_response]
+system = """You are applying for freelance/contract development work. Be professional, highlight relevant skills, and show genuine interest."""
+
+initial_email_subject = """Re: {{JOB_TITLE}} - Experienced Full-Stack Developer"""
+
+initial_email_body = """Hello,
+
+I saw your posting for {{JOB_TITLE}} and I'm very interested.
+
+I'm a full-stack developer with experience in:
+- {{RELEVANT_SKILL_1}}
+- {{RELEVANT_SKILL_2}}
+- {{RELEVANT_SKILL_3}}
+
+{{RELEVANT_EXPERIENCE}}
+
+I'd love to discuss your project in more detail. I'm available for a call this week if that works for you.
+
+Portfolio: {{PORTFOLIO_URL}}
+
+Best regards,
+{{YOUR_NAME}}
+{{YOUR_CONTACT}}"""
+
+# ============================================
+# RESPONSE HANDLING
+# ============================================
+[response_handler]
+enabled = true
+check_interval_minutes = 15
+
+# Auto-qualify responses
+auto_qualify_replies = true
+qualification_prompt = """Analyze this email reply and determine:
+- is_interested: boolean
+- interest_level: "high" | "medium" | "low"
+- wants_call: boolean
+- has_budget: boolean
+- timeline: string
+- next_action: string
+
+Reply: {{EMAIL_REPLY}}"""
+
+# Auto-book calls
+auto_book_calls = true
+booking_prompt = """Generate a professional response to book a discovery call. Suggest 3 time slots in the next week during business hours (9am-5pm {{TIMEZONE}}).
+
+Their message: {{EMAIL_REPLY}}"""
+
+# Notifications
+notify_on_reply = true
+notify_on_hot_lead = true
+hot_lead_threshold = 80  # Lead score
+
+# ============================================
+# DASHBOARD CONFIG
+# ============================================
+[dashboard]
+enabled = true
+port = 8888
+refresh_interval_seconds = 30
+
+# Metrics to display
+show_metrics = [
+    "leads_today",
+    "leads_this_week",
+    "outreach_sent_today",
+    "replies_today",
+    "calls_booked",
+    "hot_leads",
+    "campaign_performance"
+]
+
+# ============================================
+# PERSONAL INFO (Used in templates)
+# ============================================
+[personal]
+your_name = "${PERSONAL_NAME}"
+your_email = "${EMAIL_USER}"
+your_phone = "+1-419-689-6402"
+your_website = "https://open-hwy.com"
+your_linkedin = "https://linkedin.com/in/freightdevjesse"
+company_name = "${COMPANY_NAME}"
+
+# Your actual skills (AI will use these in pitches)
+skills = [
+    "Full-stack development (Python, Rust, Go, C++)",
+    "Mobile apps (Flutter)",
+    "DevOps & infrastructure",
+    "AI integration & automation",
+    "Hyperland/Linux systems",
+    "Docker & containerization",
+    "Full system optimization + tuning (remote)"
+]
+
+# ============================================
+# DATABASE
+# ============================================
+[database]
+host = "postgres"
+port = 5432
+database = "leads"
+user = "${POSTGRES_USER}"
+password = "${POSTGRES_PASSWORD}"
+
+# ============================================
+# EMAIL SENDING
+# ============================================
+[email]
+provider = "smtp"  # or "sendgrid", "mailgun"
+smtp_host = "smtp.gmail.com"
+smtp_port = 587
+smtp_user = "${EMAIL_USER}"
+smtp_password = "${EMAIL_PASSWORD}"
+from_email = "${EMAIL_USER}"
+from_name = "${PERSONAL_NAME}"
+
+# Rate limiting
+max_emails_per_hour = 50
+delay_between_emails_seconds = 10
+
+# ============================================
+# LINKEDIN AUTOMATION
+# ============================================
+[linkedin]
+enabled = true
+username = "${LINKEDIN_USER}"
+password = "${LINKEDIN_PASSWORD}"
+
+# Safety limits
+max_connections_per_day = 20
+max_messages_per_day = 30
+delay_between_actions_seconds = 30
+
+# ============================================
+# SAFETY & COMPLIANCE
+# ============================================
+[safety]
+# Spam prevention
+require_email_verification = true
+blacklist_domains = ["spam.com", "temporary-email.com"]
+max_outreach_per_lead = 3
+
+# Compliance
+include_unsubscribe_link = true
+respect_do_not_contact = true
+gdpr_compliant = true
+
+# ============================================
+# LOGGING
+# ============================================
+[logging]
+level = "info"  # debug, info, warning, error
+log_to_file = true
+log_file_path = "/data/logs/lead-engine.log"
+log_rotation = "daily"
+keep_logs_days = 30

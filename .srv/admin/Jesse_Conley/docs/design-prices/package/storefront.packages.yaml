@@ -1,0 +1,59 @@
+storefront_packages:
+  - name: Store Starter
+    price: 8500
+    timeline: "3-4 weeks"
+    tier: Launch
+    description: >
+      Everything you need to start selling online. Clean design, secure payments,
+      and inventory management. Perfect for launching your first online store.
+    includes:
+      - Product catalog (up to 100 products)
+      - Shopping cart & checkout
+      - Payment processing (Stripe/PayPal)
+      - Order management system
+      - Basic inventory tracking
+      - Mobile-responsive design
+      - SSL certificate & security
+    excludes:
+      - Advanced shipping calculations
+      - Multi-vendor support
+      - Advanced analytics
+
+  - name: Store Professional
+    price: 18500
+    timeline: "4-6 weeks"
+    tier: Professional
+    description: >
+      Advanced e-commerce platform with marketing tools, analytics, and automation.
+      Built for serious retailers ready to scale and optimize conversions.
+    includes:
+      - Everything in Store Starter
+      - Advanced product variations
+      - Abandoned cart recovery
+      - Email marketing integration
+      - Customer accounts & wishlists
+      - Advanced shipping options
+      - SEO optimization tools
+      - Sales analytics dashboard
+      - Review & rating system
+    ideal_for:
+      - Established retailers
+      - Growing product catalogs
+      - Marketing-focused businesses
+
+  - name: Store Enterprise
+    price: 45000+
+    timeline: "8-12 weeks"
+    tier: Enterprise
+    description: >
+      Full-scale e-commerce platform with multi-store, B2B features, and enterprise integrations.
+      Built for large retailers and complex selling scenarios.
+    includes:
+      - Everything in Professional
+      - Multi-store management
+      - B2B wholesale features
+      - ERP/CRM integrations
+      - Advanced reporting & BI
+      - Custom checkout flows
+      - Multi-currency support
+      - Dedicated account manager (6 months)

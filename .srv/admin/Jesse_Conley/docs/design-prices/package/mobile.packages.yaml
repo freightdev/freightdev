@@ -1,0 +1,53 @@
+mobile_packages:
+  - name: Mobile MVP
+    price: 8500
+    timeline: "4-6 weeks"
+    tier: Starter
+    description: >
+      Get your app idea validated fast with a clean, functional mobile app. 
+      Perfect for testing market fit before major investment. iOS or Android.
+    includes:
+      - Native iOS or Android app
+      - 3-5 core screens
+      - Basic user authentication
+      - API integration ready
+      - App store submission prep
+      - Source code & documentation
+    excludes:
+      - App store fees ($99 iOS, $25 Android)
+      - Backend hosting costs
+      - Push notification services
+
+  - name: Mobile Professional
+    price: 15000
+    timeline: "6-8 weeks" 
+    tier: Professional
+    description: >
+      A complete mobile solution with advanced features and dual-platform reach.
+      Built for businesses ready to scale and engage users professionally.
+    includes:
+      - Everything in Mobile MVP
+      - iOS AND Android versions
+      - Push notifications
+      - In-app analytics
+      - Custom animations & micro-interactions
+      - Offline capability
+      - 3 months bug fixes
+      - Performance optimization
+
+  - name: Mobile Enterprise
+    price: 35000+
+    timeline: "10-14 weeks"
+    tier: Enterprise
+    description: >
+      Enterprise-grade mobile platform with custom backend, admin systems,
+      and scalable architecture. Built for high-volume, mission-critical use.
+    includes:
+      - Everything in Professional
+      - Custom backend API
+      - Admin dashboard
+      - Multi-user roles & permissions
+      - Real-time features (chat, notifications)
+      - Third-party integrations
+      - Load testing & optimization
+      - 6 months support included

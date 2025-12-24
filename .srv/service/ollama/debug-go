@@ -1,0 +1,3 @@
+#!/bin/bash
+# Quick launcher for Go debugging toolkit
+./scripts/go-debug-toolkit.sh "$@"

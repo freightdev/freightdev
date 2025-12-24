@@ -1,0 +1,14 @@
+# docker-compose.test.yml
+services:
+  test-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ai_assistant_test
+    
+  ai-assistant-test:
+    build: .
+    environment:
+      - TESTING=true
+      - DATABASE_URL=postgresql://test-db:5432/ai_assistant_test
+    depends_on:
+      - test-db

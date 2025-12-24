@@ -1,0 +1,30 @@
+revision_services:
+  - name: "Initial Mark Cycle"
+    duration: "72 hours"
+    type: "included"
+    description: >
+      Client receives initial access to the project in a sandboxed Playground environment. They can explore and submit feedback via the Marker widget. Includes 1 full revision cycle.
+
+  - name: "Second Mark Cycle"
+    duration: "48 hours"
+    type: "included"
+    description: >
+      After revisions are applied from the first cycle, client gets a second round of access to test improvements and submit additional markers. Includes 1 more revision cycle.
+
+  - name: "Final Mark Cycle"
+    duration: "24 hours"
+    type: "included"
+    description: >
+      Final polish and confirmation stage before delivery or transfer. Final feedback window with final Marker session. Small polish fixes only.
+
+  - name: "Marker Loan (Subscription)"
+    duration: "Ongoing"
+    type: "paid"
+    description: >
+      Visual revision access after delivery. Clients with active Marker Loan plans can place markers directly on the live or hosted site.
+
+  - name: "Per-Marker Request"
+    duration: "24-48 hours"
+    type: "paid"
+    description: >
+      One-off fixes handled via on-site marker widget. No subscription required. Each marker placement is processed individually with delivery within 24–48 hours.

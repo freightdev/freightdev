@@ -1,0 +1,71 @@
+delivery_services:
+  - name: Handoff Delivery
+    price: 0
+    description: >
+      Final project is zipped with a README.md and setup instructions. You host and deploy however you like.
+    includes:
+      - Full source code (ZIP or Git)
+      - README.md with deployment/setup instructions
+      - Asset and config folders
+      - No ongoing support or hosting
+    terms:
+      - Includes 1 final ZIP export upon completion
+      - Additional exports = $15/request
+      - No bug fixes or updates after delivery
+
+  - name: In-House Hosting (Subdomain)
+    price: 19/month
+    description: >
+      We handle deployment, uptime, and security. Hosted under our subdomain (e.g., yourname.freightdev.app).
+    includes:
+      - Continuous deployment from Git
+      - SSL certificate + basic monitoring
+      - Basic CDN & caching
+      - Static asset management
+      - 1 monthly update via Marker request
+    terms:
+      - Cancel anytime, site goes offline
+      - Custom domain upgrade available anytime
+
+  - name: In-House Hosting (Custom Domain)
+    price: 49/month
+    description: >
+      Fully managed hosting under your domain (e.g., yourcompany.com). You keep full control without lifting a finger.
+    includes:
+      - All in Subdomain Hosting
+      - Custom domain setup (DNS & SSL)
+      - Business-grade deployment
+      - Monthly logs report (visits, uptime)
+      - Up to 2 Marker-based updates/month
+    terms:
+      - Domain purchase not included
+      - Cancel anytime, site archived for 30 days
+      - Optional support add-ons available
+
+  - name: Ongoing Maintenance Plan
+    price: 99/month
+    description: >
+      Hands-off maintenance plan to keep your site secure, updated, and functioning. Ideal for non-technical teams.
+    includes:
+      - All in Custom Domain Hosting
+      - Priority Marker queue (48hr response)
+      - Quarterly dependency review + upgrade
+      - Hotfix patching if bugs emerge
+    terms:
+      - Requires active hosting subscription
+      - Paused plans lose priority access
+
+  - name: Marker Loan
+    price: 49/month or 25/per mark
+    description: >
+      Ongoing revision access via a visual Marker widget. Clients can place issues directly on their live site for review.
+    includes:
+      - Embedded Marker widget on site
+      - Up to 10 active markers per month with loan
+      - 24-48 hour response and delivery window
+    terms:
+      - $25 per marked revision if no monthly loan is active
+      - $49/month for unlimited use (up to 10 markers per month)
+      - Additional markers beyond 10 may be billed or rate-limited
+      - Marker system is paused if monthly loan is canceled
+

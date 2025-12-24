@@ -1,0 +1,329 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-repo-pv
+spec:
+  capacity:
+    storage: {{REPO_STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{REPO_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-repo
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{REPO_STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-repo-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-cache-pv
+spec:
+  capacity:
+    storage: {{CACHE_STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{CACHE_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-cache
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{CACHE_STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-cache-pv
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{NAMESPACE}}-credentials
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  restic-password: {{RESTIC_PASSWORD}}
+  aws-access-key: {{AWS_ACCESS_KEY}}
+  aws-secret-key: {{AWS_SECRET_KEY}}
+  b2-account-id: {{B2_ACCOUNT_ID}}
+  b2-account-key: {{B2_ACCOUNT_KEY}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  backup.sh: |
+    #!/bin/sh
+    set -e
+    
+    echo "Starting backup at $(date)"
+    
+    # Initialize repository if needed
+    restic snapshots || restic init
+    
+    # Run backup
+    restic backup {{BACKUP_PATHS}} \
+      --tag {{BACKUP_TAG}} \
+      --exclude={{BACKUP_EXCLUDES}} \
+      --verbose={{BACKUP_VERBOSE}}
+    
+    # Prune old backups
+    restic forget \
+      --keep-last {{KEEP_LAST}} \
+      --keep-daily {{KEEP_DAILY}} \
+      --keep-weekly {{KEEP_WEEKLY}} \
+      --keep-monthly {{KEEP_MONTHLY}} \
+      --keep-yearly {{KEEP_YEARLY}} \
+      --prune
+    
+    # Check repository
+    restic check
+    
+    echo "Backup completed at $(date)"
+  
+  restore.sh: |
+    #!/bin/sh
+    set -e
+    
+    if [ -z "$SNAPSHOT_ID" ]; then
+      echo "Error: SNAPSHOT_ID environment variable not set"
+      exit 1
+    fi
+    
+    echo "Starting restore of snapshot $SNAPSHOT_ID at $(date)"
+    
+    restic restore $SNAPSHOT_ID \
+      --target {{RESTORE_TARGET}} \
+      --verbose={{RESTORE_VERBOSE}}
+    
+    echo "Restore completed at $(date)"
+  
+  check.sh: |
+    #!/bin/sh
+    set -e
+    
+    echo "Checking repository at $(date)"
+    restic check --read-data-subset={{CHECK_SUBSET}}
+    echo "Repository check completed at $(date)"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{NAMESPACE}}-backup
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  schedule: "{{BACKUP_SCHEDULE}}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{SUCCESSFUL_JOBS_HISTORY}}
+  failedJobsHistoryLimit: {{FAILED_JOBS_HISTORY}}
+  jobTemplate:
+    spec:
+      backoffLimit: {{JOB_BACKOFF_LIMIT}}
+      template:
+        metadata:
+          labels:
+            app: {{NAMESPACE}}
+        spec:
+          nodeSelector:
+            node-type: {{NODE_TYPE}}
+          restartPolicy: OnFailure
+          containers:
+          - name: restic
+            image: restic/restic:{{RESTIC_VERSION}}
+            imagePullPolicy: IfNotPresent
+            command:
+            - /scripts/backup.sh
+            env:
+            - name: RESTIC_REPOSITORY
+              value: {{RESTIC_REPOSITORY}}
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: restic-password
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: aws-access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: aws-secret-key
+            - name: B2_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: b2-account-id
+            - name: B2_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: b2-account-key
+            - name: RESTIC_CACHE_DIR
+              value: /cache
+            volumeMounts:
+            - name: backup-source
+              mountPath: /data
+              readOnly: true
+            - name: cache
+              mountPath: /cache
+            - name: scripts
+              mountPath: /scripts
+            resources:
+              requests:
+                cpu: {{CPU_REQUEST}}
+                memory: {{MEMORY_REQUEST}}
+              limits:
+                cpu: {{CPU_LIMIT}}
+                memory: {{MEMORY_LIMIT}}
+          volumes:
+          - name: backup-source
+            hostPath:
+              path: {{BACKUP_SOURCE_PATH}}
+              type: Directory
+          - name: cache
+            persistentVolumeClaim:
+              claimName: {{NAMESPACE}}-cache
+          - name: scripts
+            configMap:
+              name: {{NAMESPACE}}-config
+              defaultMode: 0755
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{NAMESPACE}}-check
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  schedule: "{{CHECK_SCHEDULE}}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{SUCCESSFUL_JOBS_HISTORY}}
+  failedJobsHistoryLimit: {{FAILED_JOBS_HISTORY}}
+  jobTemplate:
+    spec:
+      backoffLimit: {{JOB_BACKOFF_LIMIT}}
+      template:
+        metadata:
+          labels:
+            app: {{NAMESPACE}}
+        spec:
+          nodeSelector:
+            node-type: {{NODE_TYPE}}
+          restartPolicy: OnFailure
+          containers:
+          - name: restic
+            image: restic/restic:{{RESTIC_VERSION}}
+            imagePullPolicy: IfNotPresent
+            command:
+            - /scripts/check.sh
+            env:
+            - name: RESTIC_REPOSITORY
+              value: {{RESTIC_REPOSITORY}}
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: restic-password
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: aws-access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: aws-secret-key
+            - name: B2_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: b2-account-id
+            - name: B2_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{NAMESPACE}}-credentials
+                  key: b2-account-key
+            - name: RESTIC_CACHE_DIR
+              value: /cache
+            volumeMounts:
+            - name: cache
+              mountPath: /cache
+            - name: scripts
+              mountPath: /scripts
+            resources:
+              requests:
+                cpu: {{CPU_REQUEST}}
+                memory: {{MEMORY_REQUEST}}
+              limits:
+                cpu: {{CPU_LIMIT}}
+                memory: {{MEMORY_LIMIT}}
+          volumes:
+          - name: cache
+            persistentVolumeClaim:
+              claimName: {{NAMESPACE}}-cache
+          - name: scripts
+            configMap:
+              name: {{NAMESPACE}}-config
+              defaultMode: 0755
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: {{NAMESPACE}}

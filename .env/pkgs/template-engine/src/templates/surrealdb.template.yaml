@@ -1,0 +1,216 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-data-pv
+spec:
+  capacity:
+    storage: {{STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{HOST_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-data
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-data-pv
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{NAMESPACE}}-auth
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  root-username: {{SURREAL_ROOT_USERNAME}}
+  root-password: {{SURREAL_ROOT_PASSWORD}}
+  namespace-username: {{SURREAL_NS_USERNAME}}
+  namespace-password: {{SURREAL_NS_PASSWORD}}
+  database-username: {{SURREAL_DB_USERNAME}}
+  database-password: {{SURREAL_DB_PASSWORD}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  init.surql: |
+    -- Define namespace
+    DEFINE NAMESPACE {{SURREAL_NAMESPACE}};
+    USE NS {{SURREAL_NAMESPACE}};
+    
+    -- Define database
+    DEFINE DATABASE {{SURREAL_DATABASE}};
+    USE DB {{SURREAL_DATABASE}};
+    
+    -- Define namespace user
+    DEFINE USER {{SURREAL_NS_USERNAME}} ON NAMESPACE PASSWORD '{{SURREAL_NS_PASSWORD}}' ROLES OWNER;
+    
+    -- Define database user
+    DEFINE USER {{SURREAL_DB_USERNAME}} ON DATABASE PASSWORD '{{SURREAL_DB_PASSWORD}}' ROLES OWNER;
+    
+    -- Example: Define a sample table
+    DEFINE TABLE users SCHEMAFULL;
+    DEFINE FIELD name ON TABLE users TYPE string;
+    DEFINE FIELD email ON TABLE users TYPE string;
+    DEFINE FIELD created ON TABLE users TYPE datetime DEFAULT time::now();
+    DEFINE INDEX userEmailIndex ON TABLE users COLUMNS email UNIQUE;
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{NAMESPACE}}
+  template:
+    metadata:
+      labels:
+        app: {{NAMESPACE}}
+    spec:
+      nodeSelector:
+        node-type: {{NODE_TYPE}}
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: surrealdb
+        image: surrealdb/surrealdb:{{SURREAL_VERSION}}
+        imagePullPolicy: IfNotPresent
+        command:
+        - /surreal
+        - start
+        - --log
+        - {{LOG_LEVEL}}
+        - --user
+        - $(SURREAL_ROOT_USER)
+        - --pass
+        - $(SURREAL_ROOT_PASS)
+        - --bind
+        - 0.0.0.0:{{SURREAL_PORT}}
+        - --strict
+        - file:///data/{{SURREAL_DATABASE_FILE}}
+        ports:
+        - containerPort: {{SURREAL_PORT}}
+          name: http
+          protocol: TCP
+        env:
+        - name: SURREAL_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-auth
+              key: root-username
+        - name: SURREAL_ROOT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-auth
+              key: root-password
+        - name: SURREAL_PATH
+          value: file:///data/{{SURREAL_DATABASE_FILE}}
+        - name: SURREAL_LOG
+          value: {{LOG_LEVEL}}
+        - name: SURREAL_CAPS_ALLOW_ALL
+          value: "{{ALLOW_ALL_CAPABILITIES}}"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /init
+        resources:
+          requests:
+            cpu: {{CPU_REQUEST}}
+            memory: {{MEMORY_REQUEST}}
+          limits:
+            cpu: {{CPU_LIMIT}}
+            memory: {{MEMORY_LIMIT}}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{SURREAL_PORT}}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{SURREAL_PORT}}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{NAMESPACE}}-data
+      - name: config
+        configMap:
+          name: {{NAMESPACE}}-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: {{SURREAL_PORT}}
+    targetPort: {{SURREAL_PORT}}
+    nodePort: {{SURREAL_NODEPORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}-headless
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: {{SURREAL_PORT}}
+    targetPort: {{SURREAL_PORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}

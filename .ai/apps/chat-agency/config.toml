@@ -1,0 +1,56 @@
+# Conversation Indexer Configuration
+
+[paths]
+# Directory containing AI exports (relative to script or absolute)
+exports_dir = "ai-exports"
+
+# Output directory for generated files
+output_dir = "outputs"
+
+# Database filename
+database_name = "conversations.duckdb"
+
+[indexing]
+# Extract artifacts (images, audio files, etc.) from exports
+# Set to false to only index metadata
+extract_artifacts = false
+
+# Directory to extract artifacts to (relative to output_dir)
+artifacts_dir = "extracted_artifacts"
+
+# Maximum file size to extract (in MB, 0 = no limit)
+max_artifact_size = 100
+
+[sources]
+# Enable/disable specific sources
+index_claude = true
+index_openai = true
+
+# Skip conversations older than this date (YYYY-MM-DD, empty = index all)
+min_date = ""
+
+# Skip conversations newer than this date (YYYY-MM-DD, empty = index all)
+max_date = ""
+
+[performance]
+# Batch size for processing messages
+batch_size = 1000
+
+# Show progress bars during indexing
+show_progress = true
+
+# Verbose logging
+verbose = false
+
+[filters]
+# Exclude conversations by title pattern (regex)
+exclude_titles = []
+
+# Only include conversations matching title pattern (regex, empty = all)
+include_titles = []
+
+# Minimum message count to index a conversation
+min_messages = 0
+
+# Maximum message count to index (0 = no limit)
+max_messages = 0

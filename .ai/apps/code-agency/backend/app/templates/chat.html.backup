@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chat - {{ title }}{% endblock %}
+
+{% block nav_chat %}active{% endblock %}
+
+{% block head %}
+<style>
+    /* Custom chat-specific styles */
+    .chat-bubble {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    .typing-dots {
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .typing-dots span {
+        height: 6px;
+        width: 6px;
+        border-radius: 50%;
+        background-color: currentColor;
+        display: inline-block;
+        margin: 0 1px;
+        opacity: 0.4;
+        animation: typing 1.4s infinite;
+    }
+    
+    .typing-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .typing-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+        0%, 60%, 100% {
+            transform: translateY(0);
+            opacity: 0.4;
+        }
+        30% {
+            transform: translateY(-10px);
+            opacity: 1;
+        }
+    }
+    
+    .message-actions {
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    
+    .message:hover .message-actions {
+        opacity: 1;
+    }
+    
+    .code-block {
+        position: relative;
+    }
+    
+    .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    
+    .code-block:hover .copy-button {
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="h-screen flex flex-col">
+    <!-- Chat Header -->
+    <div class="bg-white dark:bg-ai-dark border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">AI Assistant</h1>
+                
+                <!-- Agent Selector -->
+                <div class="flex items-center space-x-2">
+                    <label class="text-sm text-gray-600 dark:text-gray-400">Agent:</label>
+                    <select id="agent-selector" class="input-primary text-sm min-w-[120px]">
+                        <option value="codriver">CoDriver (Auto)</option>
+                        <option value="chat">General Chat</option>
+                        <option value="code">Code Assistant</option>
+                    </select>
+                </div>
+
+                <!-- Model Selector -->
+                <div class="flex items-center space-x-2">
+                    <label class="text-sm text-gray-600 dark:text-gray-400">Model:</label>
+                    <select id="model-selector" class="input-primary text-sm min-w-[150px]">
+                        <option value="" disabled selected>Select model...</option>
+                        <!-- Models will be dynamically inserted here -->
+                    </select>
+                    <div id="model-download-status" class="text-xs text-gray-500 dark:text-gray-400 ml-2"></div>
+                </div>
+
+                <!-- Model Status -->
+                <div class="flex items-center space-x-2 text-sm">
+                    <div id="chat-model-status" class="flex items-center space-x-1">
+                        <div class="w-2 h-2 rounded-full bg-yellow-500" id="chat-status-dot"></div>
+                        <span class="text-gray-600 dark:text-gray-400" id="chat-status-text">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Actions -->
+            <div class="flex items-center space-x-2">
+                <!-- Conversation List -->
+                <button id="conversations-btn" class="btn-ghost">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.172-.268c-.77-.268-1.645-.268-2.208.268L5.172 22H3a2 2 0 01-2-2V12C1 7.582 4.582 4 9 4h12c4.418 0 8 3.582 8 8z"/>
+                    </svg>
+                    Conversations
+                </button>
+                
+                <!-- New Conversation -->
+                <button id="new-chat-btn" class="btn-primary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    New Chat
+                </button>
+                
+                <!-- Settings -->
+                <button id="chat-settings-btn" class="btn-ghost">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Current Conversation Info -->
+        <div class="mt-2 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div id="current-conversation-info">
+                <span id="conversation-title">New Conversation</span>
+                <span class="mx-2">•</span>
+                <span id="message-count">0 messages</span>
+            </div>
+            <div id="generation-stats" class="hidden">
+                Last response: <span id="last-generation-time">--</span>ms
+            </div>
+        </div>
+    </div>
+
+    <!-- No Model Warning Banner -->
+    <div id="no-model-banner" class="hidden bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-6 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div>
+                    <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">No AI model loaded</p>
+                    <p class="text-xs text-yellow-700 dark:text-yellow-300">Select a model from the dropdown above to start chatting</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('model-selector').focus()" class="btn-secondary text-sm py-1 px-3">
+                Select Model
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Conversation Sidebar -->
+        <div id="conversations-sidebar" class="w-80 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 hidden">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Conversations</h3>
+                <input 
+                    type="text" 
+                    id="conversation-search" 
+                    placeholder="Search conversations..." 
+                    class="input-primary w-full text-sm"
+                >
+            </div>
+            
+            <div id="conversations-list" class="flex-1 overflow-y-auto scrollbar-thin p-2">
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.172-.268c-.77-.268-1.645-.268-2.208.268L5.172 22H3a2 2 0 01-2-2V12C1 7.582 4.582 4 9 4h12c4.418 0 8 3.582 8 8z"/>
+                    </svg>
+                    <p class="text-sm">No conversations yet</p>
+                    <p class="text-xs mt-1">Start a new conversation to begin</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto scrollbar-thin p-6 space-y-6 bg-gray-50 dark:bg-gray-900">
+                <!-- Welcome Message -->
+                <div class="message assistant chat-bubble">
+                    <div class="flex space-x-4">
+                        <div class="message-avatar assistant">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364-.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                        </div>
+                        <div class="message-content flex-1">
+                            <div class="message-text prose dark:prose-invert max-w-none">
+                                <h3>Welcome to AI Assistant! 🚀</h3>
+                                <p>I'm your personal AI assistant, ready to help you with:</p>
+                                <ul>
+                                    <li><strong>General Questions</strong> - Ask me anything you're curious about</li>
+                                    <li><strong>Programming Help</strong> - Code writing, debugging, and explanations</li>
+                                    <li><strong>Problem Solving</strong> - Break down complex tasks step by step</li>
+                                    <li><strong>Creative Tasks</strong> - Writing, brainstorming, and creative projects</li>
+                                </ul>
+                                <p><em>Choose an agent above or just start chatting - I'll route your message to the right specialist!</em></p>
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typing-indicator" class="hidden px-6 py-2">
+                <div class="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
+                    <div class="message-avatar assistant">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364-.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="text-sm">AI is thinking...</span>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-container bg-white dark:bg-ai-dark border-t border-gray-200 dark:border-gray-700 p-6">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Suggestions (shown when no messages) -->
+                    <div id="suggestions-container" class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <button class="suggestion-btn text-left p-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <div class="font-medium text-sm">Explain a concept</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Help me understand something complex</div>
+                        </button>
+                        <button class="suggestion-btn text-left p-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <div class="font-medium text-sm">Write some code</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Help me build or debug a program</div>
+                        </button>
+                        <button class="suggestion-btn text-left p-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <div class="font-medium text-sm">Plan a project</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Break down tasks and create a roadmap</div>
+                        </button>
+                        <button class="suggestion-btn text-left p-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <div class="font-medium text-sm">Creative writing</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Stories, ideas, or creative projects</div>
+                        </button>
+                    </div>
+
+                    <!-- Input Controls -->
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <textarea 
+                                id="chat-input" 
+                                placeholder="Type your message... (Ctrl+Enter to send)"
+                                class="textarea-primary w-full resize-none"
+                                rows="3"
+                                maxlength="4000"
+                            ></textarea>
+                            
+                            <!-- Input Footer -->
+                            <div class="flex items-center justify-between mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                <div class="flex items-center space-x-4">
+                                    <span id="char-count">0 / 4000</span>
+                                    <span id="token-estimate">~0 tokens</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <!-- Attachment Button -->
+                                    <button id="attach-btn" class="p-1 hover:text-gray-700 dark:hover:text-gray-300" title="Attach file">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                        </svg>
+                                    </button>
+                                    
+                                    <!-- Voice Input Button -->
+                                    <button id="voice-btn" class="p-1 hover:text-gray-700 dark:hover:text-gray-300" title="Voice input">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Send Button -->
+                        <div class="flex flex-col justify-end">
+                            <button id="send-btn" class="btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Conversation Settings Modal -->
+<div id="chat-settings-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('chat-settings-modal')"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-ai-dark rounded-lg shadow-xl p-6 w-96 max-h-[80vh] overflow-y-auto">
+        <h3 class="text-lg font-medium mb-4">Chat Settings</h3>
+        
+        <div class="space-y-4">
+            <!-- Model Settings -->
+            <div>
+                <h4 class="text-sm font-medium mb-2">Generation Settings</h4>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                            Temperature: <span id="temperature-value">0.7</span>
+                        </label>
+                        <input type="range" id="temperature-slider" min="0.1" max="1.0" step="0.1" value="0.7" class="w-full">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                            Max Tokens: <span id="max-tokens-value">512</span>
+                        </label>
+                        <input type="range" id="max-tokens-slider" min="100" max="2048" step="50" value="512" class="w-full">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Settings -->
+            <div>
+                <h4 class="text-sm font-medium mb-2">Chat Preferences</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="auto-scroll" checked class="mr-2">
+                        <span class="text-sm">Auto-scroll to new messages</span>
+                    </label>
+                    
+                    <label class="flex items-center">
+                        <input type="checkbox" id="show-timestamps" checked class="mr-2">
+                        <span class="text-sm">Show message timestamps</span>
+                    </label>
+                    
+                    <label class="flex items-center">
+                        <input type="checkbox" id="code-syntax-highlight" checked class="mr-2">
+                        <span class="text-sm">Syntax highlighting in code blocks</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Export Options -->
+            <div>
+                <h4 class="text-sm font-medium mb-2">Export Conversation</h4>
+                <div class="flex space-x-2">
+                    <button id="export-md" class="btn-secondary text-sm">
+                        Export as Markdown
+                    </button>
+                    <button id="export-json" class="btn-secondary text-sm">
+                        Export as JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-end space-x-2 mt-6">
+            <button onclick="closeModal('chat-settings-modal')" class="btn-secondary">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Model Loading Modal -->
+<div id="model-loading-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-ai-dark rounded-lg shadow-2xl p-8 w-96 shadow-glow">
+        <div class="text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-blue rounded-full flex items-center justify-center animate-pulse-slow">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364-.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Loading Model</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400" id="model-loading-name">Preparing model...</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-4">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden relative">
+                    <div id="download-progress" class="bg-gradient-blue h-full rounded-full transition-all duration-300 ease-out progress-shimmer" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-xs">
+                    <span id="progress-percentage" class="text-gray-600 dark:text-gray-400">0%</span>
+                    <span id="progress-speed" class="text-gray-600 dark:text-gray-400"></span>
+                </div>
+            </div>
+
+            <!-- Status Message -->
+            <div id="model-download-status" class="min-h-[60px] flex items-center justify-center">
+                <div class="flex items-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-300">Starting...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- File Upload Modal -->
+<div id="file-upload-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('file-upload-modal')"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-ai-dark rounded-lg shadow-xl p-6 w-96">
+        <h3 class="text-lg font-medium mb-4">Upload File</h3>
+        
+        <div class="space-y-4">
+            <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+                <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Drop files here or click to browse</p>
+                <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.py,.js,.ts,.json,.yaml,.yml,.toml,.cfg,.ini">
+                <button id="browse-files" class="btn-secondary text-sm">Browse Files</button>
+            </div>
+            
+            <div id="file-list" class="space-y-2 max-h-32 overflow-y-auto">
+                <!-- Uploaded files will appear here -->
+            </div>
+        </div>
+        
+        <div class="flex justify-end space-x-2 mt-6">
+            <button onclick="closeModal('file-upload-modal')" class="btn-secondary">Cancel</button>
+            <button id="upload-files-btn" class="btn-primary">Upload & Attach</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/chat.js') }}"></script>
+{% endblock %}

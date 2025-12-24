@@ -1,0 +1,16 @@
+#! VectorStore (pgvector or Milvus/Weaviate)
+
+services:
+  vectorstore:
+    image: milvusdb/milvus:v2.2.10
+    ports:
+      - "19530:19530"
+      - "19121:19121"
+    volumes:
+      - /srv/vectors:/var/lib/milvus
+    networks:
+      - platform-net
+
+#* - GPU acceleration on GTX 1650
+#* - IVF_FLAT / HNSW indexes
+#* - Supports embeddings for agents, models, and user preferences

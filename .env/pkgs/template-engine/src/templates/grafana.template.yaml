@@ -1,0 +1,347 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-data-pv
+spec:
+  capacity:
+    storage: {{STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{HOST_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-data
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-data-pv
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{NAMESPACE}}-credentials
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  admin-user: {{GRAFANA_ADMIN_USER}}
+  admin-password: {{GRAFANA_ADMIN_PASSWORD}}
+  secret-key: {{GRAFANA_SECRET_KEY}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  grafana.ini: |
+    [server]
+    protocol = {{PROTOCOL}}
+    http_addr = 0.0.0.0
+    http_port = {{GRAFANA_PORT}}
+    domain = {{DOMAIN}}
+    root_url = {{ROOT_URL}}
+    serve_from_sub_path = {{SERVE_FROM_SUB_PATH}}
+    enable_gzip = {{ENABLE_GZIP}}
+
+    [database]
+    type = {{DATABASE_TYPE}}
+    host = {{DATABASE_HOST}}
+    name = {{DATABASE_NAME}}
+    user = {{DATABASE_USER}}
+    password = {{DATABASE_PASSWORD}}
+    path = {{DATABASE_PATH}}
+
+    [session]
+    provider = {{SESSION_PROVIDER}}
+    provider_config = {{SESSION_PROVIDER_CONFIG}}
+    cookie_name = {{COOKIE_NAME}}
+    cookie_secure = {{COOKIE_SECURE}}
+    session_life_time = {{SESSION_LIFE_TIME}}
+
+    [security]
+    admin_user = __ADMIN_USER_PLACEHOLDER__
+    admin_password = __ADMIN_PASSWORD_PLACEHOLDER__
+    secret_key = __SECRET_KEY_PLACEHOLDER__
+    disable_gravatar = {{DISABLE_GRAVATAR}}
+    data_source_proxy_whitelist = {{DATA_SOURCE_PROXY_WHITELIST}}
+    cookie_secure = {{COOKIE_SECURE}}
+    cookie_samesite = {{COOKIE_SAMESITE}}
+    allow_embedding = {{ALLOW_EMBEDDING}}
+
+    [users]
+    allow_sign_up = {{ALLOW_SIGN_UP}}
+    allow_org_create = {{ALLOW_ORG_CREATE}}
+    auto_assign_org = {{AUTO_ASSIGN_ORG}}
+    auto_assign_org_id = {{AUTO_ASSIGN_ORG_ID}}
+    auto_assign_org_role = {{AUTO_ASSIGN_ORG_ROLE}}
+    default_theme = {{DEFAULT_THEME}}
+
+    [auth.anonymous]
+    enabled = {{ANONYMOUS_ENABLED}}
+    org_name = {{ANONYMOUS_ORG_NAME}}
+    org_role = {{ANONYMOUS_ORG_ROLE}}
+
+    [auth.basic]
+    enabled = {{BASIC_AUTH_ENABLED}}
+
+    [auth.proxy]
+    enabled = {{PROXY_AUTH_ENABLED}}
+
+    [smtp]
+    enabled = {{SMTP_ENABLED}}
+    host = {{SMTP_HOST}}
+    user = {{SMTP_USER}}
+    password = {{SMTP_PASSWORD}}
+    from_address = {{SMTP_FROM_ADDRESS}}
+    from_name = {{SMTP_FROM_NAME}}
+
+    [log]
+    mode = {{LOG_MODE}}
+    level = {{LOG_LEVEL}}
+
+    [log.console]
+    level = {{LOG_CONSOLE_LEVEL}}
+    format = {{LOG_CONSOLE_FORMAT}}
+
+    [metrics]
+    enabled = {{METRICS_ENABLED}}
+    interval_seconds = {{METRICS_INTERVAL}}
+
+    [alerting]
+    enabled = {{ALERTING_ENABLED}}
+    execute_alerts = {{EXECUTE_ALERTS}}
+
+    [unified_alerting]
+    enabled = {{UNIFIED_ALERTING_ENABLED}}
+
+    [explore]
+    enabled = {{EXPLORE_ENABLED}}
+
+    [plugins]
+    enable_alpha = {{PLUGINS_ENABLE_ALPHA}}
+    app_tls_skip_verify_insecure = {{PLUGINS_SKIP_TLS_VERIFY}}
+
+    [rendering]
+    server_url = {{RENDERING_SERVER_URL}}
+    callback_url = {{RENDERING_CALLBACK_URL}}
+
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: {{PROMETHEUS_URL}}
+        isDefault: {{PROMETHEUS_IS_DEFAULT}}
+        editable: {{PROMETHEUS_EDITABLE}}
+        jsonData:
+          timeInterval: {{PROMETHEUS_TIME_INTERVAL}}
+          queryTimeout: {{PROMETHEUS_QUERY_TIMEOUT}}
+
+      - name: Loki
+        type: loki
+        access: proxy
+        url: {{LOKI_URL}}
+        isDefault: {{LOKI_IS_DEFAULT}}
+        editable: {{LOKI_EDITABLE}}
+        jsonData:
+          maxLines: {{LOKI_MAX_LINES}}
+
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 10
+        allowUiUpdates: true
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{NAMESPACE}}
+  template:
+    metadata:
+      labels:
+        app: {{NAMESPACE}}
+    spec:
+      nodeSelector:
+        node-type: {{NODE_TYPE}}
+      securityContext:
+        fsGroup: 472
+      initContainers:
+      - name: init-config
+        image: busybox:latest
+        command: ['sh', '-c']
+        args:
+          - |
+            cp /config-template/grafana.ini /config/grafana.ini
+            sed -i "s/__ADMIN_USER_PLACEHOLDER__/$(cat /secrets/admin-user)/g" /config/grafana.ini
+            sed -i "s/__ADMIN_PASSWORD_PLACEHOLDER__/$(cat /secrets/admin-password)/g" /config/grafana.ini
+            sed -i "s/__SECRET_KEY_PLACEHOLDER__/$(cat /secrets/secret-key)/g" /config/grafana.ini
+        volumeMounts:
+        - name: config-template
+          mountPath: /config-template
+        - name: config
+          mountPath: /config
+        - name: secrets
+          mountPath: /secrets
+      containers:
+      - name: grafana
+        image: grafana/grafana:{{GRAFANA_VERSION}}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{GRAFANA_PORT}}
+          name: http
+          protocol: TCP
+        env:
+        - name: GF_PATHS_CONFIG
+          value: /etc/grafana/grafana.ini
+        - name: GF_PATHS_DATA
+          value: /var/lib/grafana
+        - name: GF_PATHS_LOGS
+          value: /var/log/grafana
+        - name: GF_PATHS_PLUGINS
+          value: /var/lib/grafana/plugins
+        - name: GF_PATHS_PROVISIONING
+          value: /etc/grafana/provisioning
+        - name: GF_SECURITY_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-credentials
+              key: admin-user
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-credentials
+              key: admin-password
+        - name: GF_INSTALL_PLUGINS
+          value: {{INSTALL_PLUGINS}}
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/grafana
+        - name: config
+          mountPath: /etc/grafana/grafana.ini
+          subPath: grafana.ini
+        - name: config-template
+          mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+          subPath: datasources.yaml
+        - name: config-template
+          mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
+          subPath: dashboards.yaml
+        resources:
+          requests:
+            cpu: {{CPU_REQUEST}}
+            memory: {{MEMORY_REQUEST}}
+          limits:
+            cpu: {{CPU_LIMIT}}
+            memory: {{MEMORY_LIMIT}}
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: {{GRAFANA_PORT}}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: {{GRAFANA_PORT}}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{NAMESPACE}}-data
+      - name: config-template
+        configMap:
+          name: {{NAMESPACE}}-config
+      - name: config
+        emptyDir: {}
+      - name: secrets
+        secret:
+          secretName: {{NAMESPACE}}-credentials
+          items:
+          - key: admin-user
+            path: admin-user
+          - key: admin-password
+            path: admin-password
+          - key: secret-key
+            path: secret-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: {{GRAFANA_PORT}}
+    targetPort: {{GRAFANA_PORT}}
+    nodePort: {{GRAFANA_NODEPORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}-headless
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: {{GRAFANA_PORT}}
+    targetPort: {{GRAFANA_PORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}

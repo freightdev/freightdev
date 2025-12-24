@@ -1,0 +1,48 @@
+# monitoring/prometheus.yml
+global:
+    scrape_interval: 15s
+    evaluation_interval: 15s
+    external_labels:
+        cluster: 'payment-service'
+        environment: 'production'
+
+rule_files:
+    - 'rules/*.yml'
+
+alerting:
+    alertmanagers:
+        - static_configs:
+              - targets:
+                    - alertmanager:9093
+
+scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+          - targets: ['localhost:9090']
+
+    - job_name: 'payment-service'
+      static_configs:
+          - targets: ['payment-service:8080']
+      metrics_path: /metrics
+      scrape_interval: 10s
+      scrape_timeout: 5s
+
+    - job_name: 'postgres'
+      static_configs:
+          - targets: ['postgres:5432']
+
+    - job_name: 'redis'
+      static_configs:
+          - targets: ['redis:6379']
+
+    - job_name: 'nginx'
+      static_configs:
+          - targets: ['nginx:80']
+
+    - job_name: 'rabbitmq'
+      static_configs:
+          - targets: ['rabbitmq:15692']
+
+    - job_name: 'node-exporter'
+      static_configs:
+          - targets: ['node-exporter:9100']

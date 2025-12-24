@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Demos - Portfolio Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));
+            animation: float 20s infinite ease-in-out;
+            filter: blur(60px);
+        }
+
+        .bubble:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            right: -150px;
+            animation-delay: 7s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 500px;
+            height: 500px;
+            bottom: -250px;
+            left: 30%;
+            animation-delay: 14s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 20%;
+            right: 20%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translate(100px, -100px) scale(1.1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50px, 100px) scale(0.9);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(150px, 50px) scale(1.05);
+                opacity: 0.45;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        header p {
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0 3rem;
+            animation: fadeIn 1s ease-out 0.3s backwards;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.8rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .demos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            animation: fadeIn 1s ease-out 0.5s backwards;
+        }
+
+        .demo-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .demo-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .demo-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .demo-preview {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, var(--dark), var(--card-bg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-preview::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2), transparent);
+            transform: translate(-50%, -50%);
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+        }
+
+        .demo-content {
+            padding: 1.5rem;
+        }
+
+        .demo-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .demo-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .demo-content p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .demo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .client-name {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .view-btn {
+            padding: 0.6rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .view-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            margin: 3rem 0;
+        }
+
+        .carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 1rem 0;
+            scrollbar-width: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .carousel-nav button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .carousel-nav button:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .demos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .filter-bar {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Client Demos</h1>
+            <p>Explore professionally crafted web experiences and prototypes</p>
+        </header>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All Demos</button>
+            <button class="filter-btn" data-filter="landing">Landing Pages</button>
+            <button class="filter-btn" data-filter="app">Web Apps</button>
+            <button class="filter-btn" data-filter="dashboard">Dashboards</button>
+        </div>
+
+        <div class="carousel-container">
+            <div class="carousel" id="demoCarousel">
+                <!-- Demo cards will be inserted here -->
+            </div>
+            <div class="carousel-nav">
+                <button onclick="scrollCarousel(-1)">←</button>
+                <button onclick="scrollCarousel(1)">→</button>
+            </div>
+        </div>
+
+        <div class="demos-grid" id="demosGrid">
+            <!-- Demos dynamically populated -->
+        </div>
+    </div>
+
+    <script>
+        const demos = [
+            {
+                id: 1,
+                name: "Nails Rambo - Simple Landing",
+                client: "Sean Rambo",
+                description: "Clean, minimal landing page with essential information and booking CTA.",
+                icon: "💅",
+                tags: ["Landing Page", "Simple", "Business"],
+                type: "landing",
+                href: "./nails-rambo-simple.html"
+            },
+            {
+                id: 2,
+                name: "Nails Rambo - Premium",
+                client: "Sean Rambo",
+                description: "Modern animated landing page with advanced effects and interactive elements.",
+                icon: "✨",
+                tags: ["Landing Page", "Animated", "Premium"],
+                type: "landing",
+                href: "./nails-rambo-premium.html"
+            },
+            {
+                id: 3,
+                name: "Admin Dashboard",
+                client: "Sean Rambo",
+                description: "Full-featured admin panel for managing appointments, clients, and inventory.",
+                icon: "📊",
+                tags: ["Dashboard", "Admin", "SaaS"],
+                type: "dashboard",
+                href: "./admin-dashboard.html"
+            },
+            {
+                id: 4,
+                name: "Booking App",
+                client: "Sean Rambo",
+                description: "Customer-facing booking application with calendar and service selection.",
+                icon: "📅",
+                tags: ["Web App", "Booking", "Interactive"],
+                type: "app",
+                href: "./booking-app.html"
+            }
+        ];
+
+        function createDemoCard(demo) {
+            return `
+                <div class="demo-card" data-type="${demo.type}" onclick="window.location.href='${demo.href}'">
+                    <div class="demo-preview">
+                        <span style="position: relative; z-index: 1;">${demo.icon}</span>
+                    </div>
+                    <div class="demo-content">
+                        <div class="demo-tags">
+                            ${demo.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <h3>${demo.name}</h3>
+                        <p>${demo.description}</p>
+                        <div class="demo-meta">
+                            <span class="client-name">Client: ${demo.client}</span>
+                            <a href="${demo.href}" class="view-btn" onclick="event.stopPropagation()">View Demo</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDemos() {
+            const grid = document.getElementById('demosGrid');
+            const carousel = document.getElementById('demoCarousel');
+            
+            grid.innerHTML = demos.map(demo => createDemoCard(demo)).join('');
+            carousel.innerHTML = demos.map(demo => createDemoCard(demo)).join('');
+        }
+
+        function filterDemos(type) {
+            const cards = document.querySelectorAll('.demo-card');
+            cards.forEach(card => {
+                if (type === 'all' || card.dataset.type === type) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterDemos(btn.dataset.filter);
+            });
+        });
+
+        function scrollCarousel(direction) {
+            const carousel = document.getElementById('demoCarousel');
+            const scrollAmount = 400;
+            carousel.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        renderDemos();
+    </script>
+</body>
+</html>

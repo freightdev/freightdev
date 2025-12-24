@@ -1,0 +1,54 @@
+support_packages:
+  - name: Support Basic
+    price: 1500
+    billing: "monthly"
+    tier: Essential
+    description: >
+      Essential support for keeping your systems running smoothly.
+      Business hours support with reasonable response times.
+    includes:
+      - Email support (business hours)
+      - 24-48 hour response time
+      - Bug fixes & minor updates
+      - Monthly system health check
+      - Basic monitoring & alerts
+    excludes:
+      - Phone support
+      - Emergency/after-hours support
+      - Feature development
+
+  - name: Support Professional
+    price: 3500
+    billing: "monthly"
+    tier: Professional
+    description: >
+      Priority support with faster response times and proactive monitoring.
+      Perfect for businesses that can't afford extended downtime.
+    includes:
+      - Everything in Support Basic
+      - Priority email & phone support
+      - 4-8 hour response time
+      - Proactive monitoring & alerts
+      - Monthly optimization reviews
+      - Small feature requests
+      - Quarterly strategy calls
+    ideal_for:
+      - Revenue-generating applications
+      - Customer-facing systems
+      - Growing businesses
+
+  - name: Support Enterprise
+    price: 8500
+    billing: "monthly"
+    tier: Enterprise
+    description: >
+      White-glove support with dedicated resources and guaranteed response times.
+      Built for mission-critical applications and enterprise requirements.
+    includes:
+      - Everything in Professional
+      - Dedicated support engineer
+      - 1-2 hour response time
+      - 24/7 emergency support
+      - Monthly architecture reviews
+      - Feature development hours included
+      - Dedicated Slack channel

@@ -1,0 +1,124 @@
+# Lead Agency v2 - Scoring Criteria
+# How leads are scored (0-100 scale)
+
+scoring_weights:
+  budget: 30          # 30 points max
+  description: 20     # 20 points max
+  tech_stack: 15      # 15 points max
+  client_quality: 20  # 20 points max
+  timeline: 10        # 10 points max
+  engagement: 5       # 5 points max
+
+budget_scoring:
+  # Points based on budget ranges
+  ranges:
+    - min: 10000
+      max: null
+      points: 30  # $10k+ = full points
+
+    - min: 5000
+      max: 9999
+      points: 25  # $5k-$10k
+
+    - min: 3000
+      max: 4999
+      points: 20  # $3k-$5k
+
+    - min: 2000
+      max: 2999
+      points: 15  # $2k-$3k
+
+    - min: 1000
+      max: 1999
+      points: 10  # $1k-$2k
+
+    - min: 0
+      max: 999
+      points: 5   # Under $1k
+
+description_scoring:
+  # Length and detail
+  word_count:
+    - min: 500
+      points: 10
+    - min: 200
+      points: 7
+    - min: 50
+      points: 4
+    - min: 0
+      points: 0
+
+  # Has technical details
+  has_requirements: 5
+
+  # Has timeline
+  has_timeline: 3
+
+  # Well formatted
+  well_formatted: 2
+
+tech_stack_scoring:
+  # Points per preferred technology
+  preferred_tech_points: 3  # Up to 5 techs = 15 points
+
+  # Penalty for avoided tech
+  avoided_tech_penalty: -5
+
+client_quality_scoring:
+  # Established company indicators
+  company_indicators:
+    - "Inc."
+    - "LLC"
+    - "Corp"
+    - "founded"
+    - "established"
+  points_per_indicator: 4
+
+  # Startup indicators
+  startup_indicators:
+    - "funded"
+    - "seed"
+    - "series"
+    - "investors"
+    - "Y Combinator"
+    - "YC"
+  points_per_indicator: 5
+
+  # Individual/small biz (neutral)
+  individual_points: 10
+
+  # Red flags
+  red_flag_penalty: -20
+
+timeline_scoring:
+  # Has clear timeline
+  has_timeline: 5
+
+  # Realistic timeline (not "ASAP")
+  realistic: 3
+
+  # Long-term opportunity
+  ongoing: 2
+
+engagement_scoring:
+  # Responds to messages
+  responsive: 2
+
+  # Has portfolio/examples
+  has_examples: 2
+
+  # Detailed in communication
+  detailed: 1
+
+penalties:
+  # Deduct points for red flags
+  red_flag: -10
+
+  # Too urgent/desperate
+  urgent: -20
+
+  # Unrealistic expectations
+  unrealistic: -10
+
+  # Budget too low for scope
+  budget_mismatch: -10

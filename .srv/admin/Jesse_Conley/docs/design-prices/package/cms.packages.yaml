@@ -1,0 +1,57 @@
+cms_packages:
+  - name: CMS Lite
+    price: 4500
+    timeline: "2-3 weeks"
+    tier: Basic
+    description: >
+      Simple content management for teams that need to update pages without coding.
+      Perfect for marketing sites, blogs, and basic business content.
+    includes:
+      - Headless CMS integration (Strapi/Contentful)
+      - 5-8 content types
+      - Basic rich text editor
+      - Media library management
+      - Content preview system
+      - Simple workflow (draft/published)
+    excludes:
+      - Custom content types
+      - Advanced workflows
+      - Multi-user permissions
+
+  - name: CMS Professional
+    price: 9500
+    timeline: "3-4 weeks"
+    tier: Professional
+    description: >
+      Advanced content management with workflows, permissions, and multi-site support.
+      Built for content teams and agencies managing multiple properties.
+    includes:
+      - Everything in CMS Lite
+      - Custom content modeling
+      - Multi-user roles & permissions
+      - Content workflows & approval
+      - SEO optimization tools
+      - Multi-site management
+      - Content scheduling
+      - Analytics integration
+    ideal_for:
+      - Marketing agencies
+      - Multi-brand companies
+      - Content-heavy websites
+
+  - name: CMS Enterprise
+    price: 22000+
+    timeline: "6-8 weeks"
+    tier: Enterprise
+    description: >
+      Full-scale content platform with personalization, API management, and enterprise integrations.
+      Built for organizations treating content as a strategic asset.
+    includes:
+      - Everything in Professional
+      - Content personalization engine
+      - Advanced API management
+      - Enterprise integrations (CRM, ERP)
+      - Custom admin interfaces
+      - Content performance analytics
+      - Multi-language support
+      - Dedicated content strategist (2 months)

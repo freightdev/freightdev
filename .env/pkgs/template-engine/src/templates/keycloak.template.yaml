@@ -1,0 +1,302 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-data-pv
+spec:
+  capacity:
+    storage: {{STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{HOST_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-data
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-data-pv
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{NAMESPACE}}-credentials
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  admin-username: {{KEYCLOAK_ADMIN_USER}}
+  admin-password: {{KEYCLOAK_ADMIN_PASSWORD}}
+  db-username: {{DB_USERNAME}}
+  db-password: {{DB_PASSWORD}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  keycloak.conf: |
+    # Database
+    db={{DB_VENDOR}}
+    db-url-host={{DB_HOST}}
+    db-url-database={{DB_DATABASE}}
+    db-url-port={{DB_PORT}}
+    db-username={{DB_USERNAME}}
+    db-password={{DB_PASSWORD}}
+    db-schema={{DB_SCHEMA}}
+    db-pool-initial-size={{DB_POOL_INITIAL_SIZE}}
+    db-pool-min-size={{DB_POOL_MIN_SIZE}}
+    db-pool-max-size={{DB_POOL_MAX_SIZE}}
+
+    # HTTP/HTTPS
+    http-enabled={{HTTP_ENABLED}}
+    http-host={{HTTP_HOST}}
+    http-port={{HTTP_PORT}}
+    http-relative-path={{HTTP_RELATIVE_PATH}}
+    https-port={{HTTPS_PORT}}
+
+    # Hostname
+    hostname={{HOSTNAME}}
+    hostname-strict={{HOSTNAME_STRICT}}
+    hostname-strict-https={{HOSTNAME_STRICT_HTTPS}}
+
+    # Proxy
+    proxy={{PROXY_MODE}}
+
+    # Logging
+    log-level={{LOG_LEVEL}}
+    log-console-output={{LOG_CONSOLE_OUTPUT}}
+
+    # Health
+    health-enabled={{HEALTH_ENABLED}}
+    metrics-enabled={{METRICS_ENABLED}}
+
+    # Cache
+    cache={{CACHE_TYPE}}
+    cache-stack={{CACHE_STACK}}
+
+    # Features
+    features={{FEATURES}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-realm-config
+  namespace: {{NAMESPACE}}
+data:
+  realm-export.json: |
+    {
+      "realm": "{{REALM_NAME}}",
+      "enabled": true,
+      "displayName": "{{REALM_DISPLAY_NAME}}",
+      "registrationAllowed": {{REGISTRATION_ALLOWED}},
+      "registrationEmailAsUsername": {{REGISTRATION_EMAIL_AS_USERNAME}},
+      "rememberMe": {{REMEMBER_ME}},
+      "verifyEmail": {{VERIFY_EMAIL}},
+      "loginWithEmailAllowed": {{LOGIN_WITH_EMAIL}},
+      "duplicateEmailsAllowed": {{DUPLICATE_EMAILS_ALLOWED}},
+      "resetPasswordAllowed": {{RESET_PASSWORD_ALLOWED}},
+      "editUsernameAllowed": {{EDIT_USERNAME_ALLOWED}},
+      "bruteForceProtected": {{BRUTE_FORCE_PROTECTED}},
+      "permanentLockout": {{PERMANENT_LOCKOUT}},
+      "maxFailureWaitSeconds": {{MAX_FAILURE_WAIT_SECONDS}},
+      "minimumQuickLoginWaitSeconds": {{MINIMUM_QUICK_LOGIN_WAIT_SECONDS}},
+      "waitIncrementSeconds": {{WAIT_INCREMENT_SECONDS}},
+      "quickLoginCheckMilliSeconds": {{QUICK_LOGIN_CHECK_MILLISECONDS}},
+      "maxDeltaTimeSeconds": {{MAX_DELTA_TIME_SECONDS}},
+      "failureFactor": {{FAILURE_FACTOR}},
+      "defaultSignatureAlgorithm": "{{DEFAULT_SIGNATURE_ALGORITHM}}",
+      "offlineSessionIdleTimeout": {{OFFLINE_SESSION_IDLE_TIMEOUT}},
+      "accessTokenLifespan": {{ACCESS_TOKEN_LIFESPAN}},
+      "accessTokenLifespanForImplicitFlow": {{ACCESS_TOKEN_LIFESPAN_IMPLICIT}},
+      "ssoSessionIdleTimeout": {{SSO_SESSION_IDLE_TIMEOUT}},
+      "ssoSessionMaxLifespan": {{SSO_SESSION_MAX_LIFESPAN}},
+      "clients": []
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{NAMESPACE}}
+  template:
+    metadata:
+      labels:
+        app: {{NAMESPACE}}
+    spec:
+      nodeSelector:
+        node-type: {{NODE_TYPE}}
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:{{KEYCLOAK_VERSION}}
+        imagePullPolicy: IfNotPresent
+        args:
+          - start
+          - --optimized
+          - --import-realm
+        ports:
+        - containerPort: {{HTTP_PORT}}
+          name: http
+          protocol: TCP
+        - containerPort: {{HTTPS_PORT}}
+          name: https
+          protocol: TCP
+        env:
+        - name: KEYCLOAK_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-credentials
+              key: admin-username
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-credentials
+              key: admin-password
+        - name: KC_DB
+          value: {{DB_VENDOR}}
+        - name: KC_DB_URL_HOST
+          value: {{DB_HOST}}
+        - name: KC_DB_URL_DATABASE
+          value: {{DB_DATABASE}}
+        - name: KC_DB_URL_PORT
+          value: "{{DB_PORT}}"
+        - name: KC_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-credentials
+              key: db-username
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-credentials
+              key: db-password
+        - name: KC_HOSTNAME
+          value: {{HOSTNAME}}
+        - name: KC_HTTP_ENABLED
+          value: "{{HTTP_ENABLED}}"
+        - name: KC_HTTP_PORT
+          value: "{{HTTP_PORT}}"
+        - name: KC_PROXY
+          value: {{PROXY_MODE}}
+        - name: KC_LOG_LEVEL
+          value: {{LOG_LEVEL}}
+        - name: KC_HEALTH_ENABLED
+          value: "{{HEALTH_ENABLED}}"
+        - name: KC_METRICS_ENABLED
+          value: "{{METRICS_ENABLED}}"
+        - name: JAVA_OPTS_APPEND
+          value: {{JAVA_OPTS}}
+        volumeMounts:
+        - name: data
+          mountPath: /opt/keycloak/data
+        - name: realm-config
+          mountPath: /opt/keycloak/data/import
+        resources:
+          requests:
+            cpu: {{CPU_REQUEST}}
+            memory: {{MEMORY_REQUEST}}
+          limits:
+            cpu: {{CPU_LIMIT}}
+            memory: {{MEMORY_LIMIT}}
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: {{HTTP_PORT}}
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: {{HTTP_PORT}}
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{NAMESPACE}}-data
+      - name: realm-config
+        configMap:
+          name: {{NAMESPACE}}-realm-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: {{HTTP_PORT}}
+    targetPort: {{HTTP_PORT}}
+    nodePort: {{HTTP_NODEPORT}}
+    protocol: TCP
+  - name: https
+    port: {{HTTPS_PORT}}
+    targetPort: {{HTTPS_PORT}}
+    nodePort: {{HTTPS_NODEPORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}-headless
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: {{HTTP_PORT}}
+    targetPort: {{HTTP_PORT}}
+    protocol: TCP
+  - name: https
+    port: {{HTTPS_PORT}}
+    targetPort: {{HTTPS_PORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}

@@ -1,0 +1,40 @@
+# Redis Configuration
+NAMESPACE: redis
+NODE_TYPE: master
+REDIS_VERSION: 7.2-alpine
+STORAGE_SIZE: 10Gi
+HOST_PATH: /data/redis
+
+# Redis Password
+REDIS_PASSWORD: YourSecureRedisPassword123!
+
+# Network Settings
+REDIS_PORT: 6379
+REDIS_NODEPORT: 30379
+TCP_BACKLOG: 511
+CLIENT_TIMEOUT: 0
+TCP_KEEPALIVE: 300
+
+# General Settings
+LOG_LEVEL: notice
+DATABASES: 16
+
+# Persistence Settings
+SAVE_INTERVALS: "900 1 300 10 60 10000"
+APPEND_ONLY: "yes"
+APPEND_FSYNC: everysec
+
+# Memory Settings
+MAX_CLIENTS: 10000
+MAX_MEMORY: 512mb
+MAXMEMORY_POLICY: allkeys-lru
+
+# Slow Log
+SLOWLOG_THRESHOLD: 10000
+SLOWLOG_MAX_LEN: 128
+
+# Resource Limits
+CPU_REQUEST: 250m
+MEMORY_REQUEST: 512Mi
+CPU_LIMIT: 500m
+MEMORY_LIMIT: 1Gi

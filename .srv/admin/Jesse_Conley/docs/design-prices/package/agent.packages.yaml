@@ -1,0 +1,69 @@
+agent_packages:
+  - name: AI Agent Basic
+    price: 18500
+    timeline: "3-4 weeks"
+    tier: Foundation
+    description: >
+      Simple AI assistant that handles basic queries and tasks with pre-defined workflows.
+      Perfect for customer support, FAQ automation, or simple data retrieval tasks.
+    includes:
+      - Rule-based conversation flows
+      - Integration with 2-3 data sources
+      - Basic natural language processing
+      - Simple task automation (3-5 workflows)
+      - Web interface or API endpoints
+      - Training data preparation
+      - Basic analytics dashboard
+    excludes:
+      - Machine learning capabilities
+      - Complex reasoning tasks
+      - Real-time learning
+    ideal_for:
+      - Customer support automation
+      - FAQ systems
+      - Simple task automation
+
+  - name: AI Agent Professional
+    price: 45000
+    timeline: "6-8 weeks"
+    tier: Professional
+    description: >
+      Intelligent AI agent with learning capabilities, complex reasoning, and multi-system integration.
+      Built for businesses needing sophisticated automation and decision-making support.
+    includes:
+      - Everything in AI Agent Basic
+      - Machine learning capabilities
+      - Multi-step reasoning and planning
+      - Integration with 5-10 systems
+      - Custom model training
+      - Advanced conversation management
+      - Real-time learning from interactions
+      - Performance optimization
+      - Admin dashboard with detailed analytics
+    ideal_for:
+      - Sales automation
+      - Complex workflow management
+      - Business process automation
+      - Advanced customer service
+
+  - name: AI Agent Enterprise
+    price: 125000+
+    timeline: "10-14 weeks"
+    tier: Enterprise
+    description: >
+      Fully autonomous AI agent with advanced reasoning, multi-modal capabilities, and enterprise integrations.
+      Built for organizations requiring cutting-edge AI automation at scale.
+    includes:
+      - Everything in Professional
+      - Advanced autonomous decision-making
+      - Multi-modal processing (text, voice, images)
+      - Enterprise system integrations
+      - Custom AI model development
+      - Advanced security & compliance
+      - Scalable cloud infrastructure
+      - 24/7 monitoring & optimization
+      - Dedicated AI engineer (6 months)
+    ideal_for:
+      - Enterprise automation platforms
+      - Complex multi-system workflows
+      - Mission-critical AI applications

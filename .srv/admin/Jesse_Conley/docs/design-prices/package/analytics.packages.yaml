@@ -1,0 +1,59 @@
+analytics_packages:
+  - name: Analytics Starter
+    price: 2500
+    timeline: "1-2 weeks"
+    tier: Essential
+    description: >
+      Get clear visibility into what's working with essential tracking and reporting.
+      Perfect for businesses ready to move beyond guesswork and make data-driven decisions.
+    includes:
+      - Google Analytics 4 setup & configuration
+      - Conversion tracking for key actions
+      - Custom dashboard (5-8 key metrics)
+      - Monthly automated reports
+      - Goal/event tracking setup
+      - Privacy compliance (GDPR/CCPA)
+    excludes:
+      - Historical data migration
+      - Advanced segmentation
+      - Custom attribution models
+
+  - name: Analytics Professional
+    price: 6500
+    timeline: "2-3 weeks"
+    tier: Professional
+    description: >
+      Advanced analytics with predictive insights and multi-channel attribution.
+      Built for growth teams that need to understand customer journeys and optimize ROI.
+    includes:
+      - Everything in Analytics Starter
+      - Multi-platform integration (social, email, ads)
+      - Customer journey mapping
+      - Predictive analytics dashboard
+      - A/B testing framework
+      - Revenue attribution modeling
+      - Weekly strategy calls (first month)
+    ideal_for:
+      - E-commerce businesses
+      - SaaS with multiple touchpoints
+      - Marketing-driven companies
+
+  - name: Analytics Enterprise
+    price: 15000+
+    timeline: "4-6 weeks"
+    tier: Enterprise
+    description: >
+      Full-scale business intelligence with real-time processing, custom ML models,
+      and executive reporting. Built for data-driven organizations at scale.
+    includes:
+      - Everything in Professional
+      - Real-time data processing
+      - Custom machine learning models
+      - Executive dashboard suite
+      - Data warehouse integration
+      - API development for internal tools
+      - Dedicated analytics consultant (3 months)
+    ideal_for:
+      - Large enterprises
+      - Multi-product companies
+      - Organizations with complex data needs

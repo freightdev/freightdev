@@ -1,0 +1,35 @@
+# SurrealDB Configuration
+NAMESPACE: surrealdb
+NODE_TYPE: master
+SURREAL_VERSION: latest
+STORAGE_SIZE: 20Gi
+HOST_PATH: /data/surrealdb
+
+# Root Authentication
+SURREAL_ROOT_USERNAME: root
+SURREAL_ROOT_PASSWORD: YourSecureRootPassword123!
+
+# Namespace Configuration
+SURREAL_NAMESPACE: production
+SURREAL_NS_USERNAME: ns_admin
+SURREAL_NS_PASSWORD: YourNamespacePassword123!
+
+# Database Configuration
+SURREAL_DATABASE: myapp
+SURREAL_DATABASE_FILE: database.db
+SURREAL_DB_USERNAME: db_admin
+SURREAL_DB_PASSWORD: YourDatabasePassword123!
+
+# Network Settings
+SURREAL_PORT: 8000
+SURREAL_NODEPORT: 30800
+
+# Server Settings
+LOG_LEVEL: info
+ALLOW_ALL_CAPABILITIES: "false"
+
+# Resource Limits
+CPU_REQUEST: 500m
+MEMORY_REQUEST: 1Gi
+CPU_LIMIT: 1000m
+MEMORY_LIMIT: 2Gi

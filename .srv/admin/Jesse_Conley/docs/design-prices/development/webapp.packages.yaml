@@ -1,0 +1,53 @@
+webapp_packages:
+  - name: Web App MVP
+    price: 6500
+    timeline: "3-4 weeks"
+    tier: Startup
+    description: >
+      Minimum viable product to test your idea with real users. Core features only,
+      built for speed and user feedback. Perfect for validating concepts.
+    includes:
+      - User registration & login
+      - 2-3 core features
+      - Basic dashboard
+      - Mobile-responsive design
+      - Database setup
+      - Hosting setup & deployment
+    excludes:
+      - Payment processing
+      - Advanced features
+      - Admin panel
+    ideal_for: "Startup MVPs, concept validation, early-stage products"
+
+  - name: Web App Professional
+    price: 12500
+    timeline: "5-7 weeks"
+    tier: Business
+    description: >
+      Complete web application with user management, payments, and admin features.
+      Ready for real customers and revenue generation.
+    includes:
+      - Everything in MVP
+      - Payment processing (Stripe)
+      - Admin dashboard
+      - User roles & permissions
+      - Email notifications
+      - API endpoints
+      - 60 days of bug fixes
+    ideal_for: "SaaS startups, service businesses, membership sites"
+
+  - name: Custom Platform
+    price: 22000
+    timeline: "8-10 weeks"
+    tier: Enterprise
+    description: >
+      Fully custom platform tailored to your specific business needs. 
+      Includes advanced features, integrations, and ongoing support.
+    includes:
+      - Everything in Professional
+      - Custom features & workflows
+      - Third-party integrations (2-3)
+      - Advanced analytics
+      - Performance optimization
+      - 90 days support included
+    ideal_for: "Established businesses, complex workflows, unique requirements"

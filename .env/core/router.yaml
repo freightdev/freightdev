@@ -1,0 +1,54 @@
+#############################
+# zBoxxy Router Configuration
+# Defines how resources are routed to profiles/agents
+#############################
+
+# Routing rules
+routing:
+  # Default profile to load
+  default_profile: "workspace"
+
+  # Profile selection based on context
+  context_rules:
+    # Git repository context
+    - type: "git_repo"
+      pattern: "*/freightdev/*"
+      profile: "workspace"
+
+    # Directory context
+    - type: "directory"
+      pattern: "$HOME/projects/*"
+      profile: "workspace"
+
+    # AI agent context
+    - type: "agent"
+      name: "claude"
+      profile: "workspace"
+
+    - type: "agent"
+      name: "codriver"
+      profile: "development"
+
+  # Auto-switching rules
+  auto_switch:
+    enabled: true
+    on_directory_change: true
+    on_agent_start: true
+
+# Resource routing
+resources:
+  # How to route different resource types
+  configs:
+    strategy: "merge"  # merge, override, isolate
+
+  functions:
+    strategy: "isolate"
+
+  tools:
+    strategy: "selective"
+
+# Fallback behavior
+fallback:
+  on_profile_not_found: "use_default"
+  on_manifest_error: "continue_with_defaults"
+  on_routing_failure: "log_and_continue"

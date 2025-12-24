@@ -1,0 +1,65 @@
+addon_packages:
+  - name: Performance Optimization
+    price: 3500
+    timeline: "1-2 weeks"
+    description: >
+      Speed up your application with advanced optimization techniques.
+      Reduce load times, improve user experience, and boost search rankings.
+    includes:
+      - Performance audit & analysis
+      - Code optimization
+      - Database query optimization
+      - CDN setup & configuration
+      - Image optimization
+      - Caching implementation
+      - Performance monitoring setup
+
+  - name: Security Hardening
+    price: 4500
+    timeline: "1-2 weeks"
+    description: >
+      Comprehensive security review and hardening for production applications.
+      Protect your users and business from common threats and vulnerabilities.
+    includes:
+      - Security audit & penetration testing
+      - Vulnerability fixes
+      - Security headers configuration
+      - Input validation & sanitization
+      - Rate limiting implementation
+      - Security monitoring setup
+      - Compliance documentation
+
+  - name: Third-party Integration
+    price: 2500
+    timeline: "3-5 days"
+    per_integration: true
+    description: >
+      Connect your application with external services and APIs.
+      Streamline workflows and extend functionality with reliable integrations.
+    includes:
+      - API integration development
+      - Data mapping & transformation
+      - Error handling & retry logic
+      - Integration testing
+      - Documentation & monitoring
+    examples:
+      - CRM systems (Salesforce, HubSpot)
+      - Email services (Mailchimp, SendGrid)
+      - Payment gateways
+      - Analytics platforms
+      - Social media APIs
+
+  - name: Training & Documentation
+    price: 5500
+    timeline: "1-2 weeks"
+    description: >
+      Comprehensive training and documentation for your team.
+      Ensure smooth handover and long-term success of your project.
+    includes:
+      - Technical documentation
+      - User guide creation
+      - Admin training session (2 hours)
+      - Developer training session (4 hours)
+      - Best practices guide
+      - Maintenance procedures
+      - Video tutorials

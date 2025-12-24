@@ -1,0 +1,112 @@
+# Grafana Configuration
+NAMESPACE: grafana
+NODE_TYPE: master
+GRAFANA_VERSION: 10.2.3
+STORAGE_SIZE: 10Gi
+HOST_PATH: /data/grafana
+
+# Admin Credentials
+GRAFANA_ADMIN_USER: admin
+GRAFANA_ADMIN_PASSWORD: YourSecureGrafanaPassword123!
+GRAFANA_SECRET_KEY: GenerateThis32CharRandomString12
+
+# Server Settings
+PROTOCOL: http
+GRAFANA_PORT: 3000
+GRAFANA_NODEPORT: 30300
+DOMAIN: localhost
+ROOT_URL: http://localhost:3000
+SERVE_FROM_SUB_PATH: "false"
+ENABLE_GZIP: "true"
+
+# Database Settings
+DATABASE_TYPE: sqlite3
+DATABASE_HOST: 127.0.0.1:3306
+DATABASE_NAME: grafana
+DATABASE_USER: root
+DATABASE_PASSWORD: ""
+DATABASE_PATH: /var/lib/grafana/grafana.db
+
+# Session Settings
+SESSION_PROVIDER: file
+SESSION_PROVIDER_CONFIG: sessions
+COOKIE_NAME: grafana_sess
+COOKIE_SECURE: "false"
+SESSION_LIFE_TIME: 86400
+
+# Security Settings
+DISABLE_GRAVATAR: "false"
+DATA_SOURCE_PROXY_WHITELIST: ""
+COOKIE_SAMESITE: lax
+ALLOW_EMBEDDING: "false"
+
+# User Settings
+ALLOW_SIGN_UP: "false"
+ALLOW_ORG_CREATE: "false"
+AUTO_ASSIGN_ORG: "true"
+AUTO_ASSIGN_ORG_ID: 1
+AUTO_ASSIGN_ORG_ROLE: Viewer
+DEFAULT_THEME: dark
+
+# Anonymous Access
+ANONYMOUS_ENABLED: "false"
+ANONYMOUS_ORG_NAME: Main Org.
+ANONYMOUS_ORG_ROLE: Viewer
+
+# Authentication
+BASIC_AUTH_ENABLED: "true"
+PROXY_AUTH_ENABLED: "false"
+
+# SMTP Settings
+SMTP_ENABLED: "false"
+SMTP_HOST: localhost:25
+SMTP_USER: ""
+SMTP_PASSWORD: ""
+SMTP_FROM_ADDRESS: admin@grafana.localhost
+SMTP_FROM_NAME: Grafana
+
+# Logging
+LOG_MODE: console
+LOG_LEVEL: info
+LOG_CONSOLE_LEVEL: info
+LOG_CONSOLE_FORMAT: console
+
+# Metrics
+METRICS_ENABLED: "true"
+METRICS_INTERVAL: 10
+
+# Alerting
+ALERTING_ENABLED: "true"
+EXECUTE_ALERTS: "true"
+UNIFIED_ALERTING_ENABLED: "true"
+
+# Features
+EXPLORE_ENABLED: "true"
+
+# Plugins
+PLUGINS_ENABLE_ALPHA: "false"
+PLUGINS_SKIP_TLS_VERIFY: "false"
+INSTALL_PLUGINS: ""
+
+# Rendering
+RENDERING_SERVER_URL: ""
+RENDERING_CALLBACK_URL: ""
+
+# Datasource: Prometheus
+PROMETHEUS_URL: http://prometheus.prometheus.svc.cluster.local:9090
+PROMETHEUS_IS_DEFAULT: "true"
+PROMETHEUS_EDITABLE: "true"
+PROMETHEUS_TIME_INTERVAL: 15s
+PROMETHEUS_QUERY_TIMEOUT: 60s
+
+# Datasource: Loki
+LOKI_URL: http://loki.loki.svc.cluster.local:3100
+LOKI_IS_DEFAULT: "false"
+LOKI_EDITABLE: "true"
+LOKI_MAX_LINES: 1000
+
+# Resource Limits
+CPU_REQUEST: 250m
+MEMORY_REQUEST: 512Mi
+CPU_LIMIT: 500m
+MEMORY_LIMIT: 1Gi

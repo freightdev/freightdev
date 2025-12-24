@@ -1,0 +1,193 @@
+services:
+  # PostgreSQL - Stores everything
+  postgres:
+    image: postgres:15-alpine
+    container_name: lead_postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=lead_agency
+    networks:
+      - lead-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis - Queue management and caching
+  redis:
+    image: redis:7-alpine
+    container_name: lead_redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    networks:
+      - lead-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # N8N - Workflow orchestration
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: lead_n8n
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ./workflows:/workflows
+      - ./config.toml:/data/config.toml:ro
+      - ./scrapers:/scrapers
+    environment:
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678}
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=lead_agency
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - EXECUTIONS_MODE=regular
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+      - GENERIC_TIMEZONE=${TIMEZONE:-America/New_York}
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - lead-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Open-WebUI - Your AI command center
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: lead_open_webui
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - open-webui-data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URLS=http://192.168.12.136:11434,http://192.168.12.106:11434,http://192.168.12.66:11434,http://192.168.12.9:11434
+      - WEBUI_AUTH=true
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+    healthcheck:
+      disable: true
+
+  # Lead Engine - Main orchestrator (custom service)
+  lead-engine:
+    build:
+      context: ./lead-engine
+      dockerfile: Dockerfile
+    container_name: lead_engine
+    restart: unless-stopped
+    volumes:
+      - ./config.toml:/app/config.toml:ro
+      - ./lead-engine/scrapers:/app/scrapers
+      - engine-logs:/app/logs
+    environment:
+      - CONFIG_PATH=/app/config.toml
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/lead_agency
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - OLLAMA_ENDPOINTS=${OLLAMA_BASE_URLS}
+      - CLOUD_API_KEY=${CLOUD_API_KEY}
+      - NODE_ENV=production
+    networks:
+      - lead-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["node", "src/index.js"]
+
+  # Dashboard - React monitoring interface
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: lead_dashboard
+    restart: unless-stopped
+    ports:
+      - "${DASHBOARD_PORT:-8888}:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://lead-engine:3001
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/lead_agency
+    networks:
+      - lead-network
+    depends_on:
+      - postgres
+      - lead-engine
+
+  # API Server - Handles dashboard requests and webhooks
+  api-server:
+    build:
+      context: ./api-server
+      dockerfile: Dockerfile
+    container_name: lead_api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-3001}:3001"
+    volumes:
+      - ./config.toml:/app/config.toml:ro
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/lead_agency
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - CONFIG_PATH=/app/config.toml
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - lead-network
+    depends_on:
+      - postgres
+      - redis
+
+  # Backup service (runs daily)
+  backup:
+    image: postgres:15-alpine
+    container_name: lead_backup
+    volumes:
+      - ./backups:/backups
+      - ./backup.sh:/backup.sh:ro
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=lead_agency
+    networks:
+      - lead-network
+    depends_on:
+      - postgres
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["while true; do sleep 86400; /backup.sh; done"]
+    profiles:
+      - with-backup
+
+volumes:
+  postgres-data:
+  redis-data:
+  n8n-data:
+  open-webui-data:
+  engine-logs:
+
+networks:
+  lead-network:
+    driver: bridge

@@ -1,0 +1,251 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{NAMESPACE}}
+  labels:
+    name: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{NAMESPACE}}-data-pv
+spec:
+  capacity:
+    storage: {{STORAGE_SIZE}}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{HOST_PATH}}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values: ["{{NODE_TYPE}}"]
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{NAMESPACE}}-data
+  namespace: {{NAMESPACE}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{STORAGE_SIZE}}
+  volumeName: {{NAMESPACE}}-data-pv
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{NAMESPACE}}-auth
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  redis-password: {{REDIS_PASSWORD}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{NAMESPACE}}-config
+  namespace: {{NAMESPACE}}
+data:
+  redis.conf: |
+    # Network
+    bind 0.0.0.0
+    port {{REDIS_PORT}}
+    tcp-backlog {{TCP_BACKLOG}}
+    timeout {{CLIENT_TIMEOUT}}
+    tcp-keepalive {{TCP_KEEPALIVE}}
+
+    # General
+    daemonize no
+    supervised no
+    pidfile /var/run/redis.pid
+    loglevel {{LOG_LEVEL}}
+    logfile ""
+    databases {{DATABASES}}
+
+    # Snapshotting
+    save {{SAVE_INTERVALS}}
+    stop-writes-on-bgsave-error yes
+    rdbcompression yes
+    rdbchecksum yes
+    dbfilename dump.rdb
+    dir /data
+
+    # Replication
+    replica-serve-stale-data yes
+    replica-read-only yes
+    repl-diskless-sync no
+    repl-diskless-sync-delay 5
+
+    # Security
+    requirepass __REDIS_PASSWORD_PLACEHOLDER__
+
+    # Limits
+    maxclients {{MAX_CLIENTS}}
+    maxmemory {{MAX_MEMORY}}
+    maxmemory-policy {{MAXMEMORY_POLICY}}
+
+    # Append Only Mode
+    appendonly {{APPEND_ONLY}}
+    appendfilename "appendonly.aof"
+    appendfsync {{APPEND_FSYNC}}
+    no-appendfsync-on-rewrite no
+    auto-aof-rewrite-percentage 100
+    auto-aof-rewrite-min-size 64mb
+
+    # Slow Log
+    slowlog-log-slower-than {{SLOWLOG_THRESHOLD}}
+    slowlog-max-len {{SLOWLOG_MAX_LEN}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{NAMESPACE}}
+  template:
+    metadata:
+      labels:
+        app: {{NAMESPACE}}
+    spec:
+      nodeSelector:
+        node-type: {{NODE_TYPE}}
+      securityContext:
+        fsGroup: 999
+      initContainers:
+      - name: init-config
+        image: busybox:latest
+        command: ['sh', '-c']
+        args:
+          - |
+            cp /config-template/redis.conf /config/redis.conf
+            sed -i "s/__REDIS_PASSWORD_PLACEHOLDER__/$(cat /secrets/redis-password)/g" /config/redis.conf
+        volumeMounts:
+        - name: config-template
+          mountPath: /config-template
+        - name: config
+          mountPath: /config
+        - name: secrets
+          mountPath: /secrets
+      containers:
+      - name: redis
+        image: redis:{{REDIS_VERSION}}
+        imagePullPolicy: IfNotPresent
+        command:
+        - redis-server
+        - /etc/redis/redis.conf
+        ports:
+        - containerPort: {{REDIS_PORT}}
+          name: redis
+          protocol: TCP
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{NAMESPACE}}-auth
+              key: redis-password
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /etc/redis/redis.conf
+          subPath: redis.conf
+        resources:
+          requests:
+            cpu: {{CPU_REQUEST}}
+            memory: {{MEMORY_REQUEST}}
+          limits:
+            cpu: {{CPU_LIMIT}}
+            memory: {{MEMORY_LIMIT}}
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - -a
+            - $(REDIS_PASSWORD)
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - -a
+            - $(REDIS_PASSWORD)
+            - ping
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{NAMESPACE}}-data
+      - name: config-template
+        configMap:
+          name: {{NAMESPACE}}-config
+          items:
+          - key: redis.conf
+            path: redis.conf
+      - name: config
+        emptyDir: {}
+      - name: secrets
+        secret:
+          secretName: {{NAMESPACE}}-auth
+          items:
+          - key: redis-password
+            path: redis-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: NodePort
+  ports:
+  - name: redis
+    port: {{REDIS_PORT}}
+    targetPort: {{REDIS_PORT}}
+    nodePort: {{REDIS_NODEPORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{NAMESPACE}}-headless
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{NAMESPACE}}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: redis
+    port: {{REDIS_PORT}}
+    targetPort: {{REDIS_PORT}}
+    protocol: TCP
+  selector:
+    app: {{NAMESPACE}}

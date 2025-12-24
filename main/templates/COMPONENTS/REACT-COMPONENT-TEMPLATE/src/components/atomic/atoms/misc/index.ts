@@ -1,5 +1,0 @@
-export * from './Datalist'
-export * from './Figcaption'
-export * from './Figure'
-export * from './Table'
-export * from './Time'

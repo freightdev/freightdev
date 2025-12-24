@@ -1,0 +1,52 @@
+models/
+├── base/                          # Pretrained base models
+│   ├── tf/                        # TensorFlow versions
+│   ├── torch/                     # PyTorch versions
+│   ├── jax/                       # JAX versions
+│   └── onnx/                      # ONNX exported models
+├── lora/                          # LoRA fine-tuned models
+│   ├── tf/
+│   ├── torch/
+│   └── experiments/               # experimental LoRA variants
+├── qlora/                         # Quantized LoRA models
+│   ├── torch/
+│   ├── tf/                        # optional if quantized TF models exist
+│   └── experiments/
+├── fine-tuned/                     # Full fine-tuned models (not just LoRA)
+│   ├── tf/
+│   ├── torch/
+│   └── jax/
+├── adapters/                       # Adapter-based fine-tuning
+│   ├── tf/
+│   ├── torch/
+│   └── experiments/
+├── experimental/                   # Sandbox / dev models
+│   ├── tf/
+│   ├── torch/
+│   └── jax/
+├── quantized/                       # Fully quantized models
+│   ├── int8/
+│   ├── int4/
+│   └── bf16/
+├── diffusion/                       # Stable-diffusion, LDM, ControlNet, etc.
+│   ├── stable-diffusion/
+│   │   ├── base/
+│   │   ├── fine-tuned/
+│   │   └── adapters/
+│   └── controlnet/
+├── embeddings/                      # Word / token / vector embeddings
+│   ├── text/
+│   ├── image/
+│   └── multimodal/
+├── checkpoints/                     # Intermediate checkpoints during training
+│   ├── tf/
+│   ├── torch/
+│   └── jax/
+├── conversion/                      # Converted models between frameworks
+│   ├── tf-to-torch/
+│   ├── torch-to-onnx/
+│   └── jax-to-tf/
+└── docs/
+    ├── versioning/                  # Model version management guide
+    ├── training/                    # Notes on training / fine-tuning
+    └── deployment/                  # Model deployment guidelines

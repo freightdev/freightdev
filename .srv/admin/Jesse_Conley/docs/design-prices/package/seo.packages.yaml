@@ -1,0 +1,55 @@
+seo_packages:
+  - name: SEO Foundation
+    price: 3500
+    timeline: "2-3 weeks"
+    tier: Essential
+    description: >
+      Technical SEO essentials that search engines require. Get your site
+      properly indexed, fast-loading, and technically sound.
+    includes:
+      - Technical SEO audit & fixes
+      - Page speed optimization
+      - Meta tags & structured data
+      - XML sitemap generation
+      - Google Search Console setup
+      - Basic keyword research (10-15 terms)
+    excludes:
+      - Content strategy
+      - Link building
+      - Ongoing optimization
+
+  - name: SEO Professional
+    price: 8500
+    timeline: "3-4 weeks"
+    tier: Professional
+    description: >
+      Complete SEO strategy with content optimization, local SEO, and competitive analysis.
+      Built for businesses serious about organic growth and visibility.
+    includes:
+      - Everything in SEO Foundation
+      - Comprehensive keyword strategy (50+ terms)
+      - Content optimization & guidelines
+      - Local SEO setup (Google My Business)
+      - Competitor analysis
+      - Link building strategy
+      - Monthly SEO reporting setup
+    ideal_for:
+      - Local businesses
+      - Content-driven sites
+      - Competitive markets
+
+  - name: SEO Enterprise
+    price: 18000+
+    timeline: "4-6 weeks"
+    tier: Enterprise
+    description: >
+      Advanced SEO with automation, multi-site management, and enterprise tools.
+      Built for large sites and organizations with complex SEO needs.
+    includes:
+      - Everything in Professional
+      - Multi-site SEO management
+      - Advanced schema markup
+      - International SEO setup
+      - SEO automation tools
+      - Custom analytics & reporting
+      - Dedicated SEO strategist (3 months)
