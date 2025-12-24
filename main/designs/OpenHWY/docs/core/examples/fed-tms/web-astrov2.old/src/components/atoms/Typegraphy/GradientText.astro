@@ -1,0 +1,35 @@
+---
+export interface Props {
+  variant?: 'purple' | 'white-purple' | 'green';
+  class?: string;
+}
+
+const {
+  variant = 'purple',
+  class: className = ''
+} = Astro.props;
+---
+
+<span class:list={['gradient-text', `gradient-${variant}`, className]}>
+  <slot />
+</span>
+
+<style>
+  .gradient-text {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-purple {
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+  }
+
+  .gradient-white-purple {
+    background: linear-gradient(135deg, #ffffff 0%, #d946ef 100%);
+  }
+
+  .gradient-green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+</style>

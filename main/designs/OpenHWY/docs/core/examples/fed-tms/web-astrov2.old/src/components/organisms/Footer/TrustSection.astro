@@ -1,0 +1,51 @@
+---
+import { TrustBadge } from '@components/molecules/Card';
+
+export interface Props {
+  title: string;
+  badges: Array<{ icon: string; text: string }>;
+}
+
+const { title, badges } = Astro.props;
+---
+
+<section class="trust-section">
+  <div class="trust-container">
+    <div class="trust-title">{title}</div>
+    <div class="trust-badges">
+      {badges.map(badge => (
+        <TrustBadge icon={badge.icon} text={badge.text} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .trust-section {
+    padding: 60px 48px;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .trust-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .trust-title {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+  }
+
+  .trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+</style>

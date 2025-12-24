@@ -1,0 +1,10 @@
+{
+  "id": "osmosis-apply-1.7b",
+  "name": "Osmosis AI",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "1.19 GB",
+  "license": "none",
+  "path": "models/osmosis-apply-1.7b/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/DevQuasar/osmosis-ai.Osmosis-Apply-1.7B-GGUF/resolve/main/osmosis-apply-1.7b.Q4_K_M.gguf"
+}

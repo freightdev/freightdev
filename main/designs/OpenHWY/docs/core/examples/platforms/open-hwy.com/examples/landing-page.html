@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenHWY - The Open Protocol for Modern Trucking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo span {
+            color: #ff6b35;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b35;
+        }
+
+        .cta-button {
+            background: #ff6b35;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #ff8555;
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 107, 53, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 53, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: #b0b0b0;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #ff6b35;
+            color: #ffffff;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid #ff6b35;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #ff8555;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ffffff;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+            transform: translateY(-3px);
+        }
+
+        section {
+            padding: 6rem 5%;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+            line-height: 1.6;
+        }
+
+        .logbook-section {
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+        }
+
+        .logbook-visual {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logbook-visual::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .logbook-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .logbook-card:hover {
+            border-color: #ff6b35;
+            transform: scale(1.05);
+        }
+
+        .logbook-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .logbook-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logbook-count {
+            color: #ff6b35;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .logbook-card p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 107, 53, 0.05);
+            border-color: rgba(255, 107, 53, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #b0b0b0;
+            line-height: 1.7;
+        }
+
+        .wheelers-section {
+            background: #0a0a0a;
+        }
+
+        .wheeler-showcase {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .wheeler-badge {
+            background: rgba(255, 107, 53, 0.1);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 30px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .wheeler-badge:nth-child(1) { animation-delay: 0s; }
+        .wheeler-badge:nth-child(2) { animation-delay: 0.5s; }
+        .wheeler-badge:nth-child(3) { animation-delay: 1s; }
+        .wheeler-badge:nth-child(4) { animation-delay: 1.5s; }
+        .wheeler-badge:nth-child(5) { animation-delay: 2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .wheeler-badge:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: #ff6b35;
+            transform: scale(1.1) translateY(-5px);
+        }
+
+        .ecosystem-section {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+        }
+
+        .ecosystem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .ecosystem-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .ecosystem-card:hover {
+            border-color: #ff6b35;
+            transform: translateY(-10px);
+        }
+
+        .ecosystem-card h3 {
+            font-size: 1.8rem;
+            margin: 1rem 0;
+        }
+
+        .ecosystem-card .domain {
+            color: #ff6b35;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+
+        .ecosystem-card p {
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 8rem 5%;
+            background: radial-gradient(circle at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 2rem;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links a:not(.cta-button) {
+                display: none;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .logbook-visual {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">Open<span>HWY</span></div>
+        <div class="nav-links">
+            <a href="#logbooks">Logbooks</a>
+            <a href="#wheelers">Wheelers</a>
+            <a href="#ecosystem">Ecosystem</a>
+            <a href="#docs">Docs</a>
+            <a href="#" class="cta-button">Join Free</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <div class="hero-content">
+            <h1>The <span class="highlight">Open Protocol</span><br/>for Modern Trucking</h1>
+            <p>Where AI fleets, human drivers, dispatchers, and developers build the future of freight together. One protocol. Infinite possibilities. It's open.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">Join the Highway</a>
+                <a href="#" class="btn-secondary">View Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-grid-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚛</div>
+                <h3>For Drivers</h3>
+                <p>Stay relevant in the AI era. Become a yard dog, handle city routes, keep your wheels turning. Your logbook is your reputation.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>For Dispatchers</h3>
+                <p>Learn fast. Build your playbook. Connect with drivers who need your expertise. Whether you handle paperwork, routes, or operations—your logbook shows what you're made of.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏢</div>
+                <h3>For Fleets</h3>
+                <p>Integrate AI trucks with human drivers seamlessly. Manage logbooks across your entire operation. Optimize routes and maintain total control.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>For Developers</h3>
+                <p>Build wheelers on an open platform. Create custom agents, tools, integrations. Own your innovation. Get hired by drivers who need your skills.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="logbooks" class="logbook-section">
+        <h2 class="section-title">Everybody Gets a Logbook</h2>
+        <p class="section-subtitle">It's trucking. We all get logbooks. Your logbook is your reputation, your work history, your proof. It's open—because transparency builds trust.</p>
+        
+        <div class="logbook-visual">
+            <div class="logbook-grid">
+                <div class="logbook-card">
+                    <div class="logbook-icon">👤</div>
+                    <h4>Driver Logbook</h4>
+                    <div class="logbook-count">1 Logbook</div>
+                    <p>Track HOS, loads, who you work with. Your reputation lives here.</p>
+                </div>
+                <div class="logbook-card">
+                    <div class="logbook-icon">📱</div>
+                    <h4>Dispatcher Logbook</h4>
+                    <div class="logbook-count">7 Logbooks</div>
+                    <p>Show your playbook, your specialties. Drivers can follow your progress and hire you.</p>
+                </div>
+                <div class="logbook-card">
+                    <div class="logbook-icon">🏭</div>
+                    <h4>Fleet Logbook</h4>
+                    <div class="logbook-count">1,000+ Logbooks</div>
+                    <p>Manage operations across all drivers, dispatchers, and wheelers in your fleet.</p>
+                </div>
+                <div class="logbook-card">
+                    <div class="logbook-icon">💻</div>
+                    <h4>Developer Logbook</h4>
+                    <div class="logbook-count">Custom Wheelers</div>
+                    <p>Showcase the wheelers you've built. Build your reputation in the ecosystem.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="wheelers" class="wheelers-section">
+        <h2 class="section-title">Build Your Own Wheelers</h2>
+        <p class="section-subtitle">Wheelers are agents, tools, and integrations that do work in the trucking ecosystem. Build them. Use them. Sell them. It's your wheel.</p>
+        
+        <div class="wheeler-showcase">
+            <div class="wheeler-badge">🎯 HWY - Heavy Wheeler Yard Dog</div>
+            <div class="wheeler-badge">🎤 Whisper Witness</div>
+            <div class="wheeler-badge">⛽ Fuel Factor</div>
+            <div class="wheeler-badge">📦 CargoConnect</div>
+            <div class="wheeler-badge">⚖️ Legal Logger</div>
+            <div class="wheeler-badge">🤖 Your Wheeler Here</div>
+        </div>
+
+        <p class="section-subtitle">Developers: Build wheelers using LangChain, your own stack, whatever. Drivers: Hire developers to build custom wheelers for your specific needs. Companies: Integrate wheelers into your operations.</p>
+    </section>
+
+    <section id="ecosystem" class="ecosystem-section">
+        <h2 class="section-title">The OpenHWY Ecosystem</h2>
+        <p class="section-subtitle">Three domains. One vision. All connected.</p>
+        
+        <div class="ecosystem-grid">
+            <div class="ecosystem-card">
+                <div class="feature-icon">🛣️</div>
+                <h3>OpenHWY</h3>
+                <div class="domain">open-hwy.com</div>
+                <p>The protocol. The platform. Where AI and humans work together. The infrastructure for the future of trucking.</p>
+            </div>
+            <div class="ecosystem-card">
+                <div class="feature-icon">🎓</div>
+                <h3>FE Dispatching</h3>
+                <div class="domain">fedispatching.com</div>
+                <p>Learn to dispatch fast and easy. Train with AI. Build your logbook. Progress through real scenarios. Join the ecosystem as a pro.</p>
+            </div>
+            <div class="ecosystem-card">
+                <div class="feature-icon">🌐</div>
+                <h3>18 Wheelers</h3>
+                <div class="domain">8teenwheelers.com</div>
+                <p>The social network for trucking. Find dispatchers. Build wheelers. Follow logbooks. Connect with the community. The truck didn't park here.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to Join the Highway?</h2>
+        <p>Whether you're a driver, dispatcher, fleet, or developer—there's a place for you on OpenHWY.</p>
+        <div class="hero-buttons">
+            <a href="#" class="btn-primary">Get Started Free</a>
+            <a href="#" class="btn-secondary">Read the Docs</a>
+        </div>
+    </section>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.nav');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                nav.style.padding = '1rem 5%';
+            } else {
+                nav.style.padding = '1.5rem 5%';
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        const cards = document.querySelectorAll('.feature-card, .logbook-card, .ecosystem-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

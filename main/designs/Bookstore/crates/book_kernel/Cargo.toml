@@ -1,0 +1,55 @@
+[package]
+name = "marketeer"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "Infrastructure orchestration and profile management system"
+license = "MIT"
+
+[dependencies]
+# CLI
+clap = { version = "4.5", features = ["derive"] }
+
+# Async runtime
+tokio = { version = "1.40", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# Database
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Logging
+log = "0.4"
+env_logger = "0.11"
+chrono = "0.4"
+
+# HTTP/API
+axum = "0.7"
+tower = "0.5"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Crypto
+sha2 = "0.10"
+aes-gcm = "0.10"
+rand = "0.8"
+hex = "0.4"
+
+# System
+libc = "0.2"
+num_cpus = "1.16"
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+
+[dev-dependencies]
+tempfile = "3.10"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

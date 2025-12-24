@@ -1,0 +1,67 @@
+---
+export interface Props {
+  variant?: 'section' | 'pricing' | 'integration' | 'contract' | 'hero';
+  class?: string;
+}
+
+const {
+  variant = 'section',
+  class: className = ''
+} = Astro.props;
+---
+
+<span class:list={['badge', `badge-${variant}`, className]}>
+  <slot />
+</span>
+
+<style>
+  .badge {
+    display: inline-block;
+    font-weight: 600;
+    border-radius: 50px;
+  }
+
+  .badge-section {
+    padding: 8px 16px;
+    background: rgba(217, 70, 239, 0.1);
+    border: 1px solid rgba(217, 70, 239, 0.3);
+    font-size: 12px;
+    color: #d946ef;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .badge-hero {
+    padding: 10px 20px;
+    background: rgba(217, 70, 239, 0.1);
+    border: 1px solid rgba(217, 70, 239, 0.3);
+    font-size: 14px;
+    color: #d946ef;
+  }
+
+  .badge-pricing {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+  }
+
+  .badge-integration {
+    padding: 6px 12px;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    font-size: 12px;
+    color: #3b82f6;
+  }
+
+  .badge-contract {
+    padding: 6px 12px;
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    color: #f59e0b;
+  }
+</style>

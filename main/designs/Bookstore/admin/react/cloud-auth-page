@@ -1,0 +1,616 @@
+import React, { useState } from 'react';
+import { 
+  Cloud, Lock, Mail, Eye, EyeOff, ArrowRight, Shield, 
+  Github, Chrome, Key, Smartphone, AlertCircle, CheckCircle,
+  User, Building, Globe, RefreshCw, Terminal, Code
+} from 'lucide-react';
+
+export default function CloudDashAuth() {
+  const [authView, setAuthView] = useState('login'); // login, register, forgot, verify, mfa, success
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [mfaCode, setMfaCode] = useState(['', '', '', '', '', '']);
+
+  // Simulate auth action (connect to Zitadel here)
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    // TODO: Replace with actual Zitadel OAuth/OIDC flow
+    setTimeout(() => {
+      setLoading(false);
+      // Simulate success
+      if (authView === 'login') {
+        setAuthView('mfa'); // Move to MFA if enabled
+      } else if (authView === 'register') {
+        setAuthView('verify');
+      }
+    }, 1500);
+  };
+
+  const handleMFAInput = (index, value) => {
+    if (value.length <= 1 && /^\d*$/.test(value)) {
+      const newCode = [...mfaCode];
+      newCode[index] = value;
+      setMfaCode(newCode);
+      
+      // Auto-focus next input
+      if (value && index < 5) {
+        document.getElementById(`mfa-${index + 1}`)?.focus();
+      }
+    }
+  };
+
+  const handleMFASubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // TODO: Verify MFA code with Zitadel
+    setTimeout(() => {
+      setLoading(false);
+      setAuthView('success');
+      // Redirect to dashboard after success
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 2000);
+    }, 1500);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Auth Container */}
+      <div className="w-full max-w-6xl relative z-10">
+        <div className="grid md:grid-cols-2 gap-0 bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+          
+          {/* Left Side - Branding */}
+          <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-12 flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center space-x-3 mb-8">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center">
+                  <Cloud className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-white">CloudDash</h1>
+                  <p className="text-sm text-white/80">Infrastructure Control</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    Welcome to Your<br />Infrastructure Command Center
+                  </h2>
+                  <p className="text-white/80 text-lg leading-relaxed">
+                    Manage your entire cloud infrastructure from one powerful dashboard. 
+                    Monitor, deploy, and scale with enterprise-grade security.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Shield className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-1">Enterprise Security</h3>
+                      <p className="text-sm text-white/70">SSO, MFA, and RBAC built-in with Zitadel</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Terminal className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-1">Direct SSH Access</h3>
+                      <p className="text-sm text-white/70">Built-in terminal for instant server access</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-1">Multi-Region Support</h3>
+                      <p className="text-sm text-white/70">Deploy globally with automatic failover</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative z-10">
+              <div className="bg-white/10 backdrop-blur-xl rounded-lg p-4 border border-white/20">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="flex -space-x-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full border-2 border-white"></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full border-2 border-white"></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full border-2 border-white"></div>
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold">Trusted by 500+ teams</p>
+                    <p className="text-xs text-white/70">Managing 10K+ instances</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Auth Forms */}
+          <div className="p-12 flex flex-col justify-center">
+            
+            {/* Login Form */}
+            {authView === 'login' && (
+              <div className="w-full max-w-md mx-auto">
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-white mb-2">Sign In</h2>
+                  <p className="text-slate-400">Welcome back! Enter your credentials to continue.</p>
+                </div>
+
+                {error && (
+                  <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start space-x-3">
+                    <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-red-400 font-semibold">Authentication Failed</p>
+                      <p className="text-xs text-red-400/80 mt-1">{error}</p>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleAuth} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="admin@example.com"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-11 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter your password"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-11 pr-12 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input type="checkbox" className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500" />
+                      <span className="text-sm text-slate-400">Remember me</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setAuthView('forgot')}
+                      className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    {loading ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <span>Signing In...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Sign In</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="mt-8">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-slate-800"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-4 bg-slate-900 text-slate-400">Or continue with</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-3 gap-3">
+                    <button className="flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg py-3 transition-all">
+                      <Github className="w-5 h-5 text-white" />
+                    </button>
+                    <button className="flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg py-3 transition-all">
+                      <Chrome className="w-5 h-5 text-white" />
+                    </button>
+                    <button className="flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg py-3 transition-all">
+                      <Key className="w-5 h-5 text-white" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-8 text-center">
+                  <p className="text-slate-400">
+                    Don't have an account?{' '}
+                    <button
+                      onClick={() => setAuthView('register')}
+                      className="text-blue-400 hover:text-blue-300 font-semibold transition-colors"
+                    >
+                      Sign Up
+                    </button>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Register Form */}
+            {authView === 'register' && (
+              <div className="w-full max-w-md mx-auto">
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+                  <p className="text-slate-400">Get started with CloudDash in seconds.</p>
+                </div>
+
+                <form onSubmit={handleAuth} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="John"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Doe"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Organization Name
+                    </label>
+                    <div className="relative">
+                      <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Acme Corp"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-11 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        placeholder="john@acme.com"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-11 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Create a strong password"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-11 pr-12 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    <p className="mt-2 text-xs text-slate-400">Must be at least 12 characters with uppercase, lowercase, numbers & symbols</p>
+                  </div>
+
+                  <div>
+                    <label className="flex items-start space-x-3 cursor-pointer">
+                      <input type="checkbox" className="w-4 h-4 mt-1 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500" required />
+                      <span className="text-sm text-slate-400">
+                        I agree to the{' '}
+                        <a href="#" className="text-blue-400 hover:text-blue-300">Terms of Service</a>
+                        {' '}and{' '}
+                        <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
+                      </span>
+                    </label>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    {loading ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <span>Creating Account...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Create Account</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="mt-8 text-center">
+                  <p className="text-slate-400">
+                    Already have an account?{' '}
+                    <button
+                      onClick={() => setAuthView('login')}
+                      className="text-blue-400 hover:text-blue-300 font-semibold transition-colors"
+                    >
+                      Sign In
+                    </button>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Forgot Password */}
+            {authView === 'forgot' && (
+              <div className="w-full max-w-md mx-auto">
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-white mb-2">Reset Password</h2>
+                  <p className="text-slate-400">We'll send you a reset link to your email.</p>
+                </div>
+
+                <form onSubmit={handleAuth} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        placeholder="admin@example.com"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-11 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 flex items-center justify-center space-x-2"
+                  >
+                    {loading ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Send Reset Link</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="mt-8 text-center">
+                  <button
+                    onClick={() => setAuthView('login')}
+                    className="text-blue-400 hover:text-blue-300 transition-colors flex items-center space-x-2 mx-auto"
+                  >
+                    <ArrowRight className="w-4 h-4 rotate-180" />
+                    <span>Back to Sign In</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* MFA Verification */}
+            {authView === 'mfa' && (
+              <div className="w-full max-w-md mx-auto">
+                <div className="mb-8 text-center">
+                  <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Smartphone className="w-8 h-8 text-blue-400" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-2">Two-Factor Authentication</h2>
+                  <p className="text-slate-400">Enter the 6-digit code from your authenticator app.</p>
+                </div>
+
+                <form onSubmit={handleMFASubmit} className="space-y-6">
+                  <div className="flex justify-center space-x-3">
+                    {mfaCode.map((digit, index) => (
+                      <input
+                        key={index}
+                        id={`mfa-${index}`}
+                        type="text"
+                        maxLength="1"
+                        value={digit}
+                        onChange={(e) => handleMFAInput(index, e.target.value)}
+                        className="w-14 h-14 bg-slate-800 border border-slate-700 rounded-lg text-center text-2xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading || mfaCode.some(d => !d)}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    {loading ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <span>Verifying...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Verify & Continue</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      Didn't receive a code? Resend
+                    </button>
+                  </div>
+                </form>
+
+                <div className="mt-8 text-center">
+                  <button
+                    onClick={() => setAuthView('login')}
+                    className="text-slate-400 hover:text-white transition-colors flex items-center space-x-2 mx-auto"
+                  >
+                    <ArrowRight className="w-4 h-4 rotate-180" />
+                    <span>Back to Sign In</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Email Verification */}
+            {authView === 'verify' && (
+              <div className="w-full max-w-md mx-auto text-center">
+                <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Mail className="w-10 h-10 text-blue-400" />
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-4">Check Your Email</h2>
+                <p className="text-slate-400 mb-8">
+                  We've sent a verification link to <span className="text-white font-semibold">{email || 'your email'}</span>.
+                  Click the link to verify your account.
+                </p>
+
+                <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-8">
+                  <p className="text-sm text-slate-300 mb-4">Didn't receive the email?</p>
+                  <button className="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                    Resend Verification Email
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setAuthView('login')}
+                  className="text-slate-400 hover:text-white transition-colors flex items-center space-x-2 mx-auto"
+                >
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Sign In</span>
+                </button>
+              </div>
+            )}
+
+            {/* Success State */}
+            {authView === 'success' && (
+              <div className="w-full max-w-md mx-auto text-center">
+                <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                  <CheckCircle className="w-10 h-10 text-green-400" />
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-4">Authentication Successful!</h2>
+                <p className="text-slate-400 mb-8">
+                  Redirecting you to your dashboard...
+                </p>
+                <div className="flex items-center justify-center space-x-2">
+                  <RefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
+                  <span className="text-slate-400">Loading your infrastructure</span>
+                </div>
+              </div>
+            )}
+
+            {/* Footer Links */}
+            <div className="mt-12 pt-6 border-t border-slate-800">
+              <div className="flex items-center justify-center space-x-6 text-sm text-slate-400">
+                <a href="#" className="hover:text-white transition-colors">Terms</a>
+                <span>•</span>
+                <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                <span>•</span>
+                <a href="#" className="hover:text-white transition-colors">Security</a>
+                <span>•</span>
+                <a href="#" className="hover:text-white transition-colors">Docs</a>
+              </div>
+              <div className="text-center mt-4">
+                <p className="text-xs text-slate-500">
+                  Powered by <span className="text-blue-400">Zitadel</span> • CloudDash v1.0.0
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Info Bar */}
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center space-x-2 bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-lg px-4 py-2">
+            <Shield className="w-4 h-4 text-green-400" />
+            <span className="text-sm text-slate-300">
+              Secured with enterprise-grade authentication
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

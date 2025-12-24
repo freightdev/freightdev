@@ -1,0 +1,10 @@
+{
+  "id": "task-decomposer",
+  "label": "Task Decomposer",
+  "system": "System prompt for Task Decomposer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

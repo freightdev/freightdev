@@ -1,0 +1,75 @@
+[
+    {
+        "label": "cargo build",
+        "command": "cargo",
+        "args": ["build"],
+        "env": {},
+        "cwd": "${workspaceFolder}",
+        "hide": "on_success"
+    },
+    {
+        "label": "cargo build --release",
+        "command": "cargo",
+        "args": ["build", "--release"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo run",
+        "command": "cargo",
+        "args": ["run"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo run --release",
+        "command": "cargo",
+        "args": ["run", "--release"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo test",
+        "command": "cargo",
+        "args": ["test"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo test --release",
+        "command": "cargo",
+        "args": ["test", "--release"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo clippy",
+        "command": "cargo",
+        "args": ["clippy"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo fmt",
+        "command": "cargo",
+        "args": ["fmt"],
+        "env": {},
+        "cwd": "${workspaceFolder}",
+        "hide": "on_success"
+    },
+    {
+        "label": "cargo doc",
+        "command": "cargo",
+        "args": ["doc", "--open"],
+        "env": {},
+        "cwd": "${workspaceFolder}"
+    },
+    {
+        "label": "cargo clean",
+        "command": "cargo",
+        "args": ["clean"],
+        "env": {},
+        "cwd": "${workspaceFolder}",
+        "hide": "on_success"
+    }
+]

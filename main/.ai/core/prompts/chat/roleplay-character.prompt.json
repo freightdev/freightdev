@@ -1,0 +1,10 @@
+{
+  "id": "roleplay-character",
+  "label": "Roleplay Character",
+  "system": "System prompt for Roleplay Character",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

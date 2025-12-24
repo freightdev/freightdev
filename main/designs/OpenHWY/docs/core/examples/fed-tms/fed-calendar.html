@@ -1,0 +1,1317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Calendar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+        flex-shrink: 0;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .page-title-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .current-date {
+        font-size: 16px;
+        color: #888;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* VIEW TOGGLE */
+    .view-toggle {
+        display: flex;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 4px;
+        border-radius: 8px;
+    }
+
+    .view-btn {
+        padding: 8px 16px;
+        background: transparent;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .view-btn.active {
+        background: #d946ef;
+        color: white;
+    }
+
+    /* CONTENT WRAPPER */
+    .content-wrapper {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    /* MINI CALENDAR SIDEBAR */
+    .calendar-sidebar {
+        width: 320px;
+        background: #16213e;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 24px;
+        overflow-y: auto;
+    }
+
+    .mini-calendar {
+        margin-bottom: 32px;
+    }
+
+    .mini-calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .mini-calendar-title {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .month-nav {
+        display: flex;
+        gap: 8px;
+    }
+
+    .month-nav-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .month-nav-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+        color: #d946ef;
+    }
+
+    .mini-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+    }
+
+    .mini-calendar-day-header {
+        text-align: center;
+        font-size: 11px;
+        color: #666;
+        padding: 8px 0;
+        font-weight: 600;
+    }
+
+    .mini-calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .mini-calendar-day:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mini-calendar-day.other-month {
+        color: #444;
+    }
+
+    .mini-calendar-day.today {
+        background: rgba(217, 70, 239, 0.2);
+        color: #d946ef;
+        font-weight: 700;
+    }
+
+    .mini-calendar-day.has-events::after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        width: 4px;
+        height: 4px;
+        background: #d946ef;
+        border-radius: 50%;
+    }
+
+    /* UPCOMING EVENTS */
+    .upcoming-section {
+        margin-bottom: 32px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #666;
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .upcoming-event {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 4px solid;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .upcoming-event:hover {
+        background: rgba(217, 70, 239, 0.1);
+        border-color: #d946ef;
+    }
+
+    .upcoming-event.pickup {
+        border-left-color: #3b82f6;
+    }
+
+    .upcoming-event.delivery {
+        border-left-color: #10b981;
+    }
+
+    .upcoming-event.appointment {
+        border-left-color: #f59e0b;
+    }
+
+    .event-time {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 4px;
+    }
+
+    .event-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .event-location {
+        font-size: 12px;
+        color: #888;
+    }
+
+    /* FILTERS */
+    .filters-section {
+        margin-bottom: 32px;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 8px;
+    }
+
+    .filter-option:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .filter-checkbox {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        position: relative;
+    }
+
+    .filter-checkbox.checked {
+        background: #d946ef;
+        border-color: #d946ef;
+    }
+
+    .filter-checkbox.checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .filter-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .filter-count {
+        font-size: 12px;
+        color: #666;
+    }
+
+    /* MAIN CALENDAR */
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px;
+    }
+
+    /* CALENDAR HEADER */
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .calendar-title {
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .calendar-nav {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .nav-button {
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+    }
+
+    .nav-button:hover {
+        background: rgba(217, 70, 239, 0.1);
+        border-color: #d946ef;
+    }
+
+    /* CALENDAR GRID */
+    .calendar-container {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: rgba(217, 70, 239, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .calendar-weekday {
+        padding: 16px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .calendar-day {
+        background: #16213e;
+        min-height: 140px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .calendar-day:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .calendar-day.other-month {
+        opacity: 0.3;
+    }
+
+    .calendar-day.today {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .day-number {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .day-number.today {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: #d946ef;
+        border-radius: 50%;
+        color: white;
+    }
+
+    .day-events {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .calendar-event {
+        padding: 6px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        border-left: 3px solid;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .calendar-event:hover {
+        transform: translateX(4px);
+    }
+
+    .event-pickup {
+        background: rgba(59, 130, 246, 0.2);
+        border-left-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+    .event-delivery {
+        background: rgba(16, 185, 129, 0.2);
+        border-left-color: #10b981;
+        color: #10b981;
+    }
+
+    .event-appointment {
+        background: rgba(245, 158, 11, 0.2);
+        border-left-color: #f59e0b;
+        color: #f59e0b;
+    }
+
+    .event-reminder {
+        background: rgba(239, 68, 68, 0.2);
+        border-left-color: #ef4444;
+        color: #ef4444;
+    }
+
+    .event-maintenance {
+        background: rgba(168, 85, 247, 0.2);
+        border-left-color: #a855f7;
+        color: #a855f7;
+    }
+
+    .more-events {
+        font-size: 11px;
+        color: #666;
+        margin-top: 4px;
+        cursor: pointer;
+    }
+
+    .more-events:hover {
+        color: #d946ef;
+    }
+
+    /* EVENT MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 28px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .modal-body {
+        padding: 32px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .modal-footer {
+        padding: 24px 32px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    /* STATS */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+                <div class="nav-badge">8</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">⏱️</div>
+                <div class="nav-label">ELD & HOS</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title-section">
+                    <div>
+                        <div class="page-title">Calendar</div>
+                        <div class="current-date">December 2024</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="view-toggle">
+                        <button class="view-btn active">Month</button>
+                        <button class="view-btn">Week</button>
+                        <button class="view-btn">Day</button>
+                        <button class="view-btn">List</button>
+                    </div>
+                    <button class="btn btn-secondary">📊 Export</button>
+                    <button class="btn btn-primary" onclick="showAddEventModal()">➕ Add Event</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- MINI CALENDAR & FILTERS SIDEBAR -->
+            <div class="calendar-sidebar">
+                <!-- MINI CALENDAR -->
+                <div class="mini-calendar">
+                    <div class="mini-calendar-header">
+                        <div class="mini-calendar-title">December 2024</div>
+                        <div class="month-nav">
+                            <button class="month-nav-btn">←</button>
+                            <button class="month-nav-btn">→</button>
+                        </div>
+                    </div>
+                    <div class="mini-calendar-grid">
+                        <div class="mini-calendar-day-header">S</div>
+                        <div class="mini-calendar-day-header">M</div>
+                        <div class="mini-calendar-day-header">T</div>
+                        <div class="mini-calendar-day-header">W</div>
+                        <div class="mini-calendar-day-header">T</div>
+                        <div class="mini-calendar-day-header">F</div>
+                        <div class="mini-calendar-day-header">S</div>
+                        
+                        <div class="mini-calendar-day other-month">24</div>
+                        <div class="mini-calendar-day other-month">25</div>
+                        <div class="mini-calendar-day other-month">26</div>
+                        <div class="mini-calendar-day other-month">27</div>
+                        <div class="mini-calendar-day other-month">28</div>
+                        <div class="mini-calendar-day">1</div>
+                        <div class="mini-calendar-day">2</div>
+                        <div class="mini-calendar-day">3</div>
+                        <div class="mini-calendar-day">4</div>
+                        <div class="mini-calendar-day">5</div>
+                        <div class="mini-calendar-day">6</div>
+                        <div class="mini-calendar-day">7</div>
+                        <div class="mini-calendar-day">8</div>
+                        <div class="mini-calendar-day has-events">9</div>
+                        <div class="mini-calendar-day">10</div>
+                        <div class="mini-calendar-day">11</div>
+                        <div class="mini-calendar-day">12</div>
+                        <div class="mini-calendar-day">13</div>
+                        <div class="mini-calendar-day">14</div>
+                        <div class="mini-calendar-day">15</div>
+                        <div class="mini-calendar-day">16</div>
+                        <div class="mini-calendar-day">17</div>
+                        <div class="mini-calendar-day today has-events">18</div>
+                        <div class="mini-calendar-day has-events">19</div>
+                        <div class="mini-calendar-day has-events">20</div>
+                        <div class="mini-calendar-day">21</div>
+                        <div class="mini-calendar-day">22</div>
+                        <div class="mini-calendar-day">23</div>
+                        <div class="mini-calendar-day">24</div>
+                        <div class="mini-calendar-day">25</div>
+                        <div class="mini-calendar-day">26</div>
+                        <div class="mini-calendar-day">27</div>
+                        <div class="mini-calendar-day">28</div>
+                        <div class="mini-calendar-day">29</div>
+                        <div class="mini-calendar-day">30</div>
+                        <div class="mini-calendar-day">31</div>
+                    </div>
+                </div>
+
+                <!-- UPCOMING EVENTS -->
+                <div class="upcoming-section">
+                    <div class="section-title">📌 Upcoming</div>
+                    
+                    <div class="upcoming-event pickup">
+                        <div class="event-time">Today, 8:00 PM</div>
+                        <div class="event-title">Pickup: LD-4527</div>
+                        <div class="event-location">📍 Houston, TX • John Smith</div>
+                    </div>
+
+                    <div class="upcoming-event delivery">
+                        <div class="event-time">Tomorrow, 4:00 PM</div>
+                        <div class="event-title">Delivery: LD-4527</div>
+                        <div class="event-location">📍 Austin, TX • John Smith</div>
+                    </div>
+
+                    <div class="upcoming-event pickup">
+                        <div class="event-time">Dec 19, 6:00 AM</div>
+                        <div class="event-title">Pickup: LD-4529</div>
+                        <div class="event-location">📍 Atlanta, GA • Sarah Williams</div>
+                    </div>
+
+                    <div class="upcoming-event delivery">
+                        <div class="event-time">Dec 19, 5:00 PM</div>
+                        <div class="event-title">Delivery: LD-4529</div>
+                        <div class="event-location">📍 Charlotte, NC • Sarah Williams</div>
+                    </div>
+
+                    <div class="upcoming-event appointment">
+                        <div class="event-time">Dec 20, 9:00 AM</div>
+                        <div class="event-title">Truck Inspection</div>
+                        <div class="event-location">📍 Dallas Service Center</div>
+                    </div>
+                </div>
+
+                <!-- FILTERS -->
+                <div class="filters-section">
+                    <div class="section-title">🎨 Event Types</div>
+                    
+                    <div class="filter-option">
+                        <div class="filter-checkbox checked"></div>
+                        <div class="filter-label">Pickups</div>
+                        <div class="filter-count">28</div>
+                    </div>
+
+                    <div class="filter-option">
+                        <div class="filter-checkbox checked"></div>
+                        <div class="filter-label">Deliveries</div>
+                        <div class="filter-count">28</div>
+                    </div>
+
+                    <div class="filter-option">
+                        <div class="filter-checkbox checked"></div>
+                        <div class="filter-label">Appointments</div>
+                        <div class="filter-count">5</div>
+                    </div>
+
+                    <div class="filter-option">
+                        <div class="filter-checkbox checked"></div>
+                        <div class="filter-label">Reminders</div>
+                        <div class="filter-count">8</div>
+                    </div>
+
+                    <div class="filter-option">
+                        <div class="filter-checkbox checked"></div>
+                        <div class="filter-label">Maintenance</div>
+                        <div class="filter-count">3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CALENDAR -->
+            <div class="content">
+                <!-- STATS -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #3b82f6;">28</div>
+                        <div class="stat-label">Pickups This Month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #10b981;">28</div>
+                        <div class="stat-label">Deliveries This Month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #f59e0b;">12</div>
+                        <div class="stat-label">Events Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #ef4444;">8</div>
+                        <div class="stat-label">Overdue Tasks</div>
+                    </div>
+                </div>
+
+                <!-- CALENDAR NAVIGATION -->
+                <div class="calendar-header">
+                    <div class="calendar-title">December 2024</div>
+                    <div class="calendar-nav">
+                        <button class="nav-button">◄ Previous</button>
+                        <button class="nav-button">Today</button>
+                        <button class="nav-button">Next ►</button>
+                    </div>
+                </div>
+
+                <!-- CALENDAR GRID -->
+                <div class="calendar-container">
+                    <div class="calendar-weekdays">
+                        <div class="calendar-weekday">Sunday</div>
+                        <div class="calendar-weekday">Monday</div>
+                        <div class="calendar-weekday">Tuesday</div>
+                        <div class="calendar-weekday">Wednesday</div>
+                        <div class="calendar-weekday">Thursday</div>
+                        <div class="calendar-weekday">Friday</div>
+                        <div class="calendar-weekday">Saturday</div>
+                    </div>
+
+                    <div class="calendar-days">
+                        <!-- Week 1 -->
+                        <div class="calendar-day">
+                            <div class="day-number">1</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">2</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">3</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">4</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">5</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">6</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">7</div>
+                        </div>
+
+                        <!-- Week 2 -->
+                        <div class="calendar-day">
+                            <div class="day-number">8</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">9</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-pickup">8:00 AM - Pickup LD-4520</div>
+                                <div class="calendar-event event-delivery">2:00 PM - Delivery LD-4519</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">10</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">11</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">12</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-maintenance">9:00 AM - Oil Change</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">13</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">14</div>
+                        </div>
+
+                        <!-- Week 3 -->
+                        <div class="calendar-day">
+                            <div class="day-number">15</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-reminder">Payment Due - INV-1025</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">16</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">17</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-delivery">3:00 PM - Delivery LD-4530</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day today">
+                            <div class="day-number today">18</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-pickup">8:00 PM - Pickup LD-4527</div>
+                                <div class="calendar-event event-delivery">6:00 PM - Delivery LD-4531</div>
+                                <div class="calendar-event event-appointment">2:00 PM - Broker Meeting</div>
+                                <div class="more-events">+2 more</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">19</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-delivery">4:00 PM - Delivery LD-4527</div>
+                                <div class="calendar-event event-pickup">6:00 AM - Pickup LD-4529</div>
+                                <div class="calendar-event event-delivery">5:00 PM - Delivery LD-4529</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">20</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-pickup">7:00 AM - Pickup LD-5849</div>
+                                <div class="calendar-event event-appointment">9:00 AM - Truck Inspection</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">21</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-delivery">3:00 PM - Delivery LD-5849</div>
+                            </div>
+                        </div>
+
+                        <!-- Week 4 -->
+                        <div class="calendar-day">
+                            <div class="day-number">22</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">23</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">24</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">25</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-reminder" style="background: rgba(16, 185, 129, 0.2); border-left-color: #10b981; color: #10b981;">🎄 Christmas</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">26</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">27</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">28</div>
+                        </div>
+
+                        <!-- Week 5 -->
+                        <div class="calendar-day">
+                            <div class="day-number">29</div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">30</div>
+                            <div class="day-events">
+                                <div class="calendar-event event-reminder">Medical Card Renewal - Sarah</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day">
+                            <div class="day-number">31</div>
+                        </div>
+                        <div class="calendar-day other-month">
+                            <div class="day-number">1</div>
+                        </div>
+                        <div class="calendar-day other-month">
+                            <div class="day-number">2</div>
+                        </div>
+                        <div class="calendar-day other-month">
+                            <div class="day-number">3</div>
+                        </div>
+                        <div class="calendar-day other-month">
+                            <div class="day-number">4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD EVENT MODAL -->
+<div class="modal" id="addEventModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Add New Event</div>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Event Type</label>
+                <select class="form-select">
+                    <option>Pickup</option>
+                    <option>Delivery</option>
+                    <option>Appointment</option>
+                    <option>Reminder</option>
+                    <option>Maintenance</option>
+                    <option>Meeting</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input" placeholder="e.g., Pickup LD-4527">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Time</label>
+                <input type="time" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" class="form-input" placeholder="e.g., Houston, TX">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Related Load (Optional)</label>
+                <select class="form-select">
+                    <option>None</option>
+                    <option>LD-2024-4527</option>
+                    <option>LD-2024-4529</option>
+                    <option>LD-2024-4530</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Driver (Optional)</label>
+                <select class="form-select">
+                    <option>None</option>
+                    <option>John Smith</option>
+                    <option>Sarah Williams</option>
+                    <option>Mike Johnson</option>
+                    <option>Maria Garcia</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-textarea" placeholder="Additional details..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary">Add Event</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showAddEventModal() {
+        document.getElementById('addEventModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('addEventModal').classList.remove('show');
+    }
+
+    // Close modal on background click
+    document.getElementById('addEventModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Filter checkbox toggle
+    document.querySelectorAll('.filter-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const checkbox = this.querySelector('.filter-checkbox');
+            checkbox.classList.toggle('checked');
+        });
+    });
+
+    // Mini calendar day click
+    document.querySelectorAll('.mini-calendar-day').forEach(day => {
+        day.addEventListener('click', function() {
+            console.log('Day clicked:', this.textContent);
+        });
+    });
+
+    // Calendar event click
+    document.querySelectorAll('.calendar-event').forEach(event => {
+        event.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('Event clicked:', this.textContent);
+        });
+    });
+
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

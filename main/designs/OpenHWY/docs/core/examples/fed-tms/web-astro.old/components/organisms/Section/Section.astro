@@ -1,0 +1,25 @@
+---
+import Container from '@components/atoms/Container';
+import SectionHeading from './SectionHeading.astro';
+import type { SectionProps } from './section.types';
+import { buildSectionClasses, resolveHeadingConfig } from './section.utils';
+
+const props = Astro.props as SectionProps;
+const shouldUseContainer = props.fullWidth ? false : props.container !== false;
+const wrapperClasses = buildSectionClasses(props);
+const heading = resolveHeadingConfig(props);
+---
+
+<section class={wrapperClasses} id={props.id} data-testid={props['data-testid']}>
+  {shouldUseContainer ? (
+    <Container maxWidth={props.maxWidth ?? 'xl'}>
+      {heading && <SectionHeading {...heading} />}
+      <slot />
+    </Container>
+  ) : (
+    <>
+      {heading && <SectionHeading {...heading} />}
+      <slot />
+    </>
+  )}
+</section>

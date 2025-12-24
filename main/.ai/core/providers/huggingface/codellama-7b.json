@@ -1,0 +1,10 @@
+{
+  "id": "codellama-7b",
+  "name": "CodeLLaMA 7B",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "3.8 GB",
+  "license": "Llama 2.0",
+  "path": "models/codellama-7b/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/TheBloke/CodeLlama-7B-GGUF/resolve/main/codellama-7b.Q4_K_M.gguf"
+}

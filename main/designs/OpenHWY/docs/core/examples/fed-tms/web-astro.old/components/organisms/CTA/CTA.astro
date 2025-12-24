@@ -1,0 +1,35 @@
+---
+import Button from '@components/atoms/Button';
+import Container from '@components/atoms/Container';
+import { Typography } from '@components';
+import type { CTAProps } from './cta.types';
+import { getCtaWrapperClasses } from './cta.variants';
+
+const props = Astro.props as CTAProps;
+const wrapperClass = getCtaWrapperClasses(props);
+---
+
+<section class={wrapperClass} id={props.id} data-testid={props['data-testid']}>
+  <Container maxWidth="lg">
+    <div class="text-center space-y-6">
+      <Typography.Heading level={2} align="center">
+        {props.title}
+      </Typography.Heading>
+      {props.description && (
+        <Typography.Text size="lg" tone="secondary" align="center" class="max-w-2xl mx-auto block">
+          {props.description}
+        </Typography.Text>
+      )}
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button href={props.primaryButton.href} variant={props.primaryButton.variant ?? 'primary'} size="lg">
+          {props.primaryButton.label}
+        </Button>
+        {props.secondaryButton && (
+          <Button href={props.secondaryButton.href} variant={props.secondaryButton.variant ?? 'outlined'} size="lg">
+            {props.secondaryButton.label}
+          </Button>
+        )}
+      </div>
+    </div>
+  </Container>
+</section>

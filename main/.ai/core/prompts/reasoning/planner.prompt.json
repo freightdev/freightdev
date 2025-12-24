@@ -1,0 +1,10 @@
+{
+  "id": "planner",
+  "label": "Planner",
+  "system": "System prompt for Planner",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

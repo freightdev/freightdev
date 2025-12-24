@@ -1,0 +1,10 @@
+{
+  "id": "story-prompt-engine",
+  "label": "Story Prompt Engine",
+  "system": "System prompt for Story Prompt Engine",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

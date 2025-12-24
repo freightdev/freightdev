@@ -1,0 +1,10 @@
+{
+  "id": "fact-checker",
+  "label": "Fact Checker",
+  "system": "System prompt for Fact Checker",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,24 @@
+# ink.yaml — Describes strokes and permanent burns
+ink_id: "ink-001"
+format: "markdown"
+
+stroke:
+  unit: "word"
+  token_ratio: 1.25
+  animated: true
+
+burn_policy:
+  immutable_after_burn: true
+  visibility: "book-owner and keeper"
+  signature_required: true
+
+logging:
+  enabled: true
+  include_timestamp: true
+  include_marker_id: true
+
+styles:
+  fonts: ["Courier", "Mono"]
+  effects:
+    - "handwritten"
+    - "smolder"

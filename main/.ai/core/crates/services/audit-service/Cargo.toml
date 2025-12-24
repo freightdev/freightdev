@@ -1,0 +1,24 @@
+[package]
+name = "auditor-agent"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+chrono = "0.4"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# For log rotation and analysis
+regex = "1.10"
+walkdir = "2.4"
+
+# Web framework
+axum = { version = "0.7", features = ["macros"] }
+
+# Database (commented for now)
+# surrealdb = "2.0"

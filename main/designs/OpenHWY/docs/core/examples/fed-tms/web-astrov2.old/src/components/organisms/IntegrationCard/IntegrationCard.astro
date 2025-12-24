@@ -1,0 +1,107 @@
+---
+import Badge from '@components/atoms/Badge';
+
+export interface Props {
+  name: string;
+  logo: string;
+  badge: string;
+  description: string;
+  tiers: Array<{ name: string; price: string; limits: string }>;
+}
+
+const { name, logo, badge, description, tiers } = Astro.props;
+---
+
+<div class="integration-card">
+  <div class="integration-header">
+    <div class="integration-logo">{logo}</div>
+    <Badge variant="integration">{badge}</Badge>
+  </div>
+  <h3 class="integration-name">{name}</h3>
+  <p class="integration-description">{description}</p>
+
+  {tiers.map(tier => (
+    <div class="pricing-tier">
+      <div class="tier-header">
+        <div class="tier-name">{tier.name}</div>
+        <div class="tier-price">{tier.price}</div>
+      </div>
+      <div class="tier-limits">{tier.limits}</div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .integration-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    transition: all 0.3s;
+  }
+
+  .integration-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.3);
+  }
+
+  .integration-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .integration-logo {
+    font-size: 48px;
+  }
+
+  .integration-name {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #e0e0e0;
+  }
+
+  .integration-description {
+    font-size: 16px;
+    color: #888;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .pricing-tier {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .pricing-tier:last-child {
+    margin-bottom: 0;
+  }
+
+  .tier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .tier-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e0e0e0;
+  }
+
+  .tier-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #3b82f6;
+  }
+
+  .tier-limits {
+    font-size: 14px;
+    color: #666;
+  }
+</style>

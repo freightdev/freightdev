@@ -1,0 +1,63 @@
+---
+import Badge from '@components/atoms/Badge';
+import { FAQItem } from '@components/molecules/Card';
+
+export interface Props {
+  badge: string;
+  title: string;
+  faqs: Array<{ question: string; answer: string }>;
+}
+
+const { badge, title, faqs } = Astro.props;
+---
+
+<section class="section faq-section">
+  <div class="container">
+    <div class="section-header">
+      <Badge variant="section">{badge}</Badge>
+      <h2 class="section-title">{title}</h2>
+    </div>
+
+    <div class="faq-grid">
+      {faqs.map(faq => (
+        <FAQItem question={faq.question} answer={faq.answer} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .faq-section {
+    background: #16213e;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-top: 20px;
+    color: #e0e0e0;
+  }
+
+  .faq-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+</style>

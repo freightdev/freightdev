@@ -1,0 +1,10 @@
+{
+  "id": "product-description",
+  "label": "Product Description",
+  "system": "System prompt for Product Description",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

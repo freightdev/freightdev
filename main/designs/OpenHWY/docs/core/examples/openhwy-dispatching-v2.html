@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenHWY - Learn Dispatching the Right Way | Built by a Driver, For Drivers</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Brand Colors - Highway Journey Theme */
+            --road-black: #0a0a0f;
+            --asphalt-gray: #1a1a2e;
+            --concrete-gray: #2a2a3e;
+            --yellow-line: #fbbf24;
+            --warning-orange: #f97316;
+            --truck-red: #ef4444;
+            --highway-blue: #3b82f6;
+            --forest-green: #10b981;
+            --sky-blue: #60a5fa;
+            --sunrise-purple: #a855f7;
+            --dawn-pink: #ec4899;
+            --white: #ffffff;
+            --off-white: #f9fafb;
+            --text-gray: #9ca3af;
+            --border-gray: rgba(255, 255, 255, 0.1);
+            
+            /* Gradients */
+            --gradient-sunrise: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #ef4444 100%);
+            --gradient-highway: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+            --gradient-forest: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-night: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--road-black);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* NAVIGATION - Sleek & Modern */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 48px;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-gray);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.scrolled {
+            padding: 16px 48px;
+            background: rgba(10, 10, 15, 0.95);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .logo-beta {
+            padding: 4px 10px;
+            background: var(--gradient-highway);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-sunrise);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 12px 28px;
+            background: var(--gradient-sunrise);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.5);
+        }
+
+        /* HERO SECTION - Emotional & Inspiring */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 140px 48px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Road Background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            animation: roadPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes roadPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Road Lines Animation */
+        .road-lines {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                transparent 40%, 
+                var(--yellow-line) 40%, 
+                var(--yellow-line) 60%, 
+                transparent 60%, 
+                transparent 100%
+            );
+            background-size: 4px 80px;
+            animation: roadScroll 2s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes roadScroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 80px; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--yellow-line);
+            margin-bottom: 32px;
+            animation: fadeInDown 0.8s ease-out, float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-title {
+            font-size: 84px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 28px;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-title-line1 {
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .hero-title-line2 {
+            color: var(--white);
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            font-weight: 400;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-subtitle strong {
+            color: var(--yellow-line);
+            font-weight: 700;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .btn-hero {
+            padding: 20px 48px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-hero:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-hero span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary-hero {
+            background: var(--gradient-sunrise);
+            color: white;
+            box-shadow: 0 10px 40px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-primary-hero:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn-secondary-hero {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary-hero:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--yellow-line);
+            transform: translateY(-4px);
+        }
+
+        /* Beta Seats Counter */
+        .beta-counter {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-top: 48px;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .seat-counter {
+            padding: 24px 36px;
+            background: var(--gradient-night);
+            border: 2px solid var(--border-gray);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .seat-counter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-sunrise);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .seat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .seat-count {
+            font-size: 36px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .seat-total {
+            font-size: 16px;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: bounce 2s infinite, fadeInUp 0.8s ease-out 1s both;
+            cursor: pointer;
+        }
+
+        .scroll-text {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+
+        .scroll-arrow {
+            font-size: 24px;
+            color: var(--yellow-line);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-8px); }
+        }
+
+        /* PROBLEM SECTION - Empathy */
+        .problem-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+            position: relative;
+        }
+
+        .problem-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-eyebrow {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--truck-red);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 28px;
+        }
+
+        .problem-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 32px;
+            line-height: 1.2;
+        }
+
+        .problem-title-highlight {
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .problem-description {
+            font-size: 22px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .problem-card {
+            background: var(--gradient-night);
+            border: 2px solid rgba(239, 68, 68, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-sunrise);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .problem-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--truck-red);
+            box-shadow: 0 20px 60px rgba(239, 68, 68, 0.3);
+        }
+
+        .problem-icon {
+            font-size: 56px;
+            margin-bottom: 24px;
+        }
+
+        .problem-card-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--white);
+        }
+
+        .problem-card-text {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* HOW IT WORKS SECTION - Journey */
+        .how-it-works-section {
+            padding: 120px 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .journey-line {
+            position: absolute;
+            left: 50%;
+            top: 200px;
+            bottom: 200px;
+            width: 4px;
+            background: linear-gradient(180deg, 
+                var(--yellow-line) 0%,
+                var(--warning-orange) 50%,
+                var(--forest-green) 100%
+            );
+            transform: translateX(-50%);
+        }
+
+        .journey-step {
+            max-width: 1200px;
+            margin: 0 auto 120px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+        }
+
+        .journey-step:nth-child(even) .step-content {
+            order: 2;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-sunrise);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 900;
+            color: white;
+            z-index: 2;
+            box-shadow: 0 0 0 12px var(--road-black), 0 10px 40px rgba(251, 191, 36, 0.5);
+        }
+
+        .step-content {
+            padding: 48px;
+            background: var(--gradient-night);
+            border: 2px solid var(--border-gray);
+            border-radius: 32px;
+            position: relative;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--yellow-line);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .step-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step-description {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        .step-features {
+            list-style: none;
+        }
+
+        .step-features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .step-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-forest);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-visual {
+            background: var(--concrete-gray);
+            border: 2px solid var(--border-gray);
+            border-radius: 24px;
+            padding: 48px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* AI TEAM SECTION */
+        .ai-team-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+        }
+
+        .ai-team-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .ai-team-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .ai-team-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .ai-team-subtitle {
+            font-size: 22px;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ai-team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .ai-card {
+            background: var(--gradient-night);
+            border: 3px solid transparent;
+            border-radius: 32px;
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .ai-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 32px;
+            padding: 3px;
+            background: var(--gradient-highway);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .ai-card:hover::before {
+            opacity: 1;
+        }
+
+        .ai-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(59, 130, 246, 0.3);
+        }
+
+        .ai-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-highway);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .ai-name {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .ai-role {
+            font-size: 16px;
+            color: var(--highway-blue);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .ai-description {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .ai-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .ai-feature-tag {
+            padding: 8px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--highway-blue);
+            font-weight: 600;
+        }
+
+        /* WHEELER AGENTS */
+        .wheeler-agents {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .wheeler-card {
+            background: var(--concrete-gray);
+            border: 2px solid var(--border-gray);
+            border-radius: 24px;
+            padding: 36px;
+            transition: all 0.3s;
+        }
+
+        .wheeler-card:hover {
+            border-color: var(--forest-green);
+            transform: translateY(-4px);
+        }
+
+        .wheeler-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .wheeler-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .wheeler-description {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* COURSE PREVIEW SECTION */
+        .course-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+        }
+
+        .course-carousel {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            position: relative;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 32px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 20px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .carousel-track::-webkit-scrollbar-track {
+            background: var(--asphalt-gray);
+            border-radius: 10px;
+        }
+
+        .carousel-track::-webkit-scrollbar-thumb {
+            background: var(--gradient-sunrise);
+            border-radius: 10px;
+        }
+
+        .course-card {
+            min-width: 380px;
+            scroll-snap-align: start;
+            background: var(--gradient-night);
+            border: 2px solid var(--border-gray);
+            border-radius: 28px;
+            padding: 40px;
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            border-color: var(--yellow-line);
+            transform: scale(1.05);
+            box-shadow: 0 30px 80px rgba(251, 191, 36, 0.3);
+        }
+
+        .course-number {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--gradient-sunrise);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .course-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .course-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .course-description {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--forest-green);
+        }
+
+        /* EARNINGS SECTION */
+        .earnings-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .earnings-section::before {
+            content: '💰';
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            font-size: 200px;
+            opacity: 0.05;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .earnings-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .earnings-intro {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .earnings-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 28px;
+        }
+
+        .earnings-title-gradient {
+            background: var(--gradient-forest);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .earnings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .earnings-card {
+            background: var(--gradient-night);
+            border: 3px solid var(--forest-green);
+            border-radius: 32px;
+            padding: 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .earnings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-forest);
+        }
+
+        .earnings-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 40px 100px rgba(16, 185, 129, 0.4);
+        }
+
+        .earnings-level {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--forest-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .earnings-amount {
+            font-size: 64px;
+            font-weight: 900;
+            background: var(--gradient-forest);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .earnings-period {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 24px;
+        }
+
+        .earnings-details {
+            font-size: 15px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            padding-top: 24px;
+            border-top: 2px solid var(--border-gray);
+        }
+
+        .buyout-card {
+            max-width: 900px;
+            margin: 60px auto 0;
+            padding: 48px;
+            background: var(--gradient-night);
+            border: 3px solid var(--yellow-line);
+            border-radius: 32px;
+            text-align: center;
+        }
+
+        .buyout-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--gradient-sunrise);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .buyout-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .buyout-description {
+            font-size: 20px;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* BETA PROMOTION - URGENCY */
+        .beta-promo-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+            position: relative;
+        }
+
+        .beta-promo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 80px 60px;
+            background: var(--gradient-sunrise);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .beta-promo-container::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        .beta-promo-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .beta-promo-badge {
+            display: inline-block;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 28px;
+        }
+
+        .beta-promo-title {
+            font-size: 56px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .beta-promo-subtitle {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 48px;
+            line-height: 1.6;
+        }
+
+        .promo-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .promo-option {
+            background: white;
+            border-radius: 28px;
+            padding: 40px 32px;
+            text-align: left;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .promo-option:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .promo-option-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--gradient-sunrise);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .promo-option-name {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--road-black);
+            margin-bottom: 12px;
+        }
+
+        .promo-option-price {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--road-black);
+            margin-bottom: 16px;
+        }
+
+        .promo-option-price span {
+            font-size: 20px;
+            color: var(--text-gray);
+        }
+
+        .promo-option-features {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .promo-option-features li {
+            padding: 10px 0;
+            color: var(--road-black);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .promo-cta {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-sunrise);
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .promo-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .promo-cta.secondary {
+            background: var(--road-black);
+        }
+
+        .seats-remaining {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 700;
+        }
+
+        .seats-remaining strong {
+            color: white;
+            font-size: 28px;
+        }
+
+        /* FOUNDER STORY */
+        .founder-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+        }
+
+        .founder-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .founder-image {
+            width: 100%;
+            height: 600px;
+            background: var(--gradient-night);
+            border: 4px solid var(--yellow-line);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .founder-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+        }
+
+        .founder-content {
+            
+        }
+
+        .founder-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--yellow-line);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .founder-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 28px;
+            line-height: 1.2;
+        }
+
+        .founder-story {
+            font-size: 19px;
+            color: var(--text-gray);
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .founder-story strong {
+            color: var(--white);
+        }
+
+        .founder-quote {
+            padding: 32px;
+            background: var(--gradient-night);
+            border-left: 4px solid var(--yellow-line);
+            border-radius: 16px;
+            margin: 32px 0;
+            font-size: 20px;
+            font-style: italic;
+            color: var(--white);
+            line-height: 1.7;
+        }
+
+        .founder-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .founder-stat {
+            text-align: center;
+        }
+
+        .founder-stat-value {
+            font-size: 36px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .founder-stat-label {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* FINAL CTA */
+        .final-cta-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+            text-align: center;
+        }
+
+        .final-cta-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .final-cta-title {
+            font-size: 64px;
+            font-weight: 900;
+            margin-bottom: 28px;
+            line-height: 1.2;
+        }
+
+        .final-cta-gradient {
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .final-cta-subtitle {
+            font-size: 24px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+            line-height: 1.7;
+        }
+
+        .final-cta-button {
+            display: inline-block;
+            padding: 24px 60px;
+            background: var(--gradient-sunrise);
+            border: none;
+            border-radius: 20px;
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.4);
+        }
+
+        .final-cta-button:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 80px rgba(251, 191, 36, 0.6);
+        }
+
+        .final-cta-note {
+            margin-top: 32px;
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 2px solid var(--border-gray);
+            padding: 80px 48px 40px;
+            background: var(--asphalt-gray);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand {
+            
+        }
+
+        .footer-logo {
+            font-size: 36px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .footer-tagline {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--concrete-gray);
+            border: 2px solid var(--border-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .social-icon:hover {
+            background: var(--gradient-sunrise);
+            border-color: var(--yellow-line);
+            transform: translateY(-4px);
+        }
+
+        .footer-section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: var(--white);
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .footer-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .footer-link:hover {
+            color: var(--yellow-line);
+            transform: translateX(4px);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-legal a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-legal a:hover {
+            color: var(--yellow-line);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 64px; }
+            .problem-grid { grid-template-columns: 1fr; }
+            .journey-step { grid-template-columns: 1fr; }
+            .step-number { position: relative; left: 0; top: 0; transform: none; margin-bottom: 24px; }
+            .ai-team-grid { grid-template-columns: 1fr; }
+            .earnings-grid { grid-template-columns: 1fr; }
+            .promo-options { grid-template-columns: 1fr; }
+            .founder-container { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 48px; }
+            .hero-subtitle { font-size: 18px; }
+            .beta-counter { flex-direction: column; gap: 20px; }
+            .problem-title { font-size: 36px; }
+            .step-content { padding: 32px; }
+            .step-title { font-size: 28px; }
+            .wheeler-agents { grid-template-columns: 1fr; }
+            .course-card { min-width: 320px; }
+            .earnings-title { font-size: 36px; }
+            .beta-promo-title { font-size: 36px; }
+            .founder-title { font-size: 32px; }
+            .final-cta-title { font-size: 42px; }
+            .footer-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo">OpenHWY</div>
+                <div class="logo-beta">BETA</div>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#ai-team" class="nav-link">AI Team</a>
+                <a href="#courses" class="nav-link">Courses</a>
+                <a href="#earnings" class="nav-link">Earnings</a>
+                <a href="#founder" class="nav-link">Our Story</a>
+                <button class="nav-cta">🚀 Claim Beta Seat</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="road-lines"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                ✨ Driver-Built, Community
+            </div>
+            <h1 class="hero-title">
+                <span class="hero-title-line1">Learn Dispatching.</span>
+                <span class="hero-title-line2">The Right Way.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Master truck dispatching with <strong>AI-powered training</strong>, practice on a <strong>real TMS system</strong>, and get <strong>matched with drivers</strong> immediately after graduation. Start earning from day one.
+            </p>
+            <div class="hero-cta-group">
+                <button class="btn-hero btn-primary-hero">
+                    <span>🎓 Claim Your Free Seat</span>
+                </button>
+                <button class="btn-hero btn-secondary-hero">
+                    <span>📹 Watch How It Works</span>
+                </button>
+            </div>
+            
+            <div class="beta-counter">
+                <div class="seat-counter">
+                    <div class="seat-label">Free Beta Seats</div>
+                    <div class="seat-count">847</div>
+                    <div class="seat-total">/ 1000 remaining</div>
+                </div>
+                <div class="seat-counter">
+                    <div class="seat-label">Premium Seats</div>
+                    <div class="seat-count">276</div>
+                    <div class="seat-total">/ 300 remaining</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-text">Scroll to explore</div>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- PROBLEM SECTION -->
+    <section class="problem-section">
+        <div class="problem-container">
+            <div class="section-eyebrow">🚨 THE PROBLEM</div>
+            <h2 class="problem-title">
+                Bad Dispatchers <span class="problem-title-highlight">Hurt Drivers</span>
+            </h2>
+            <p class="problem-description">
+                I drove trucks for 10 years. I had great dispatchers and I had terrible dispatchers. The difference? My income, my family time, my safety, my sanity. Most dispatchers mean well—they just don't know any better.
+            </p>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">📚</div>
+                    <div class="problem-card-title">No Real Training Exists</div>
+                    <div class="problem-card-text">
+                        Most dispatchers learn from other bad dispatchers. YouTube videos and outdated courses don't teach the real skills drivers need.
+                    </div>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">🚫</div>
+                    <div class="problem-card-title">Cold Start Problem</div>
+                    <div class="problem-card-text">
+                        You graduate with a certificate but zero clients. Cold calling trucking companies is terrifying. Most give up before they start.
+                    </div>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">💔</div>
+                    <div class="problem-card-title">Drivers Suffer</div>
+                    <div class="problem-card-text">
+                        Bad loads, low rates, violated HOS, missed family time. Drivers quit trucking because their dispatcher doesn't understand the job.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI TEAM SECTION -->
+    <section class="ai-team-section" id="ai-team">
+        <div class="ai-team-container">
+            <div class="ai-team-header">
+                <div class="section-eyebrow" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: var(--highway-blue);">🤖 YOUR AI TEAM</div>
+                <h2 class="ai-team-title">
+                    Meet Your <span style="background: var(--gradient-highway); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI Mentors</span>
+                </h2>
+                <p class="ai-team-subtitle">
+                    You're not learning alone. You have an entire AI team guiding you every step of the way.
+                </p>
+            </div>
+            
+            <div class="ai-team-grid">
+                <!-- FED -->
+                <div class="ai-card">
+                    <div class="ai-avatar">👨‍✈️</div>
+                    <h3 class="ai-name">FED</h3>
+                    <div class="ai-role">Fleet Ecosystem Director</div>
+                    <p class="ai-description">
+                        Your platform navigator. FED guides you through OpenHWY, shows you how to use features, tracks your progress, and matches you with drivers when you graduate. Think of him as your career coach.
+                    </p>
+                    <div class="ai-features">
+                        <div class="ai-feature-tag">Platform Guide</div>
+                        <div class="ai-feature-tag">Progress Tracking</div>
+                        <div class="ai-feature-tag">Driver Matching</div>
+                        <div class="ai-feature-tag">Fleet Management</div>
+                    </div>
+                </div>
+                
+                <!-- ELDA -->
+                <div class="ai-card">
+                    <div class="ai-avatar">👩‍🏫</div>
+                    <h3 class="ai-name">ELDA</h3>
+                    <div class="ai-role">Enhanced Logistics Dispatching Assistant</div>
+                    <p class="ai-description">
+                        Your personal AI instructor. ELDA teaches you everything about dispatching—from finding loads to negotiating rates to managing drivers. She answers questions 24/7 and adapts to your learning style.
+                    </p>
+                    <div class="ai-features">
+                        <div class="ai-feature-tag">AI Instructor</div>
+                        <div class="ai-feature-tag">24/7 Available</div>
+                        <div class="ai-feature-tag">Personalized</div>
+                        <div class="ai-feature-tag">Patient Teacher</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 60px; margin-bottom: 40px;">
+                <h3 style="font-size: 32px; font-weight: 800; margin-bottom: 32px;">Wheeler Agents <span style="color: var(--text-gray); font-size: 20px;">(Your Automation Helpers)</span></h3>
+            </div>
+            
+            <div class="wheeler-agents">
+                <div class="wheeler-card">
+                    <div class="wheeler-icon">📎</div>
+                    <h4 class="wheeler-name">Packet Pilot</h4>
+                    <p class="wheeler-description">
+                        Automatically collects and fills out carrier packets from brokers. No more chasing paperwork or missing loads because forms weren't ready.
+                    </p>
+                </div>
+                
+                <div class="wheeler-card">
+                    <div class="wheeler-icon">🔗</div>
+                    <h4 class="wheeler-name">Cargo Connect</h4>
+                    <p class="wheeler-description">
+                        Integrates YOUR load boards (DAT, Truckstop, 123Loadboard) and searches them all at once. Finds the best loads for your drivers automatically.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- HOW IT WORKS SECTION -->
+    <section class="how-it-works-section" id="how-it-works">
+        <div class="journey-line"></div>
+        
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 100px;">
+                <div class="section-eyebrow" style="background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.3); color: var(--yellow-line);">🛣️ YOUR JOURNEY</div>
+                <h2 class="problem-title" style="margin-top: 28px;">
+                    Three Steps to <span class="problem-title-highlight">Your Dispatch Career</span>
+                </h2>
+            </div>
+            
+            <!-- STEP 1: LEARN -->
+            <div class="journey-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-badge">Step 1</div>
+                    <h3 class="step-title">Learn from ELDA</h3>
+                    <p class="step-description">
+                        ELDA (Enhanced Logistics Dispatching Assistant) is your AI instructor. She teaches you everything—from load boards to ELD rules to negotiation tactics. Available 24/7, patient, and she never judges.
+                    </p>
+                    <ul class="step-features">
+                        <li><span class="feature-check">✓</span> 20+ comprehensive modules</li>
+                        <li><span class="feature-check">✓</span> Real-world scenarios & quizzes</li>
+                        <li><span class="feature-check">✓</span> Learn at your own pace</li>
+                        <li><span class="feature-check">✓</span> AI tutor answers every question</li>
+                        <li><span class="feature-check">✓</span> Progress tracking dashboard</li>
+                    </ul>
+                </div>
+                <div class="step-visual">
+                    👩‍🏫
+                </div>
+            </div>
+            
+            <!-- STEP 2: PRACTICE -->
+            <div class="journey-step">
+                <div class="step-number">2</div>
+                <div class="step-visual">
+                    📱
+                </div>
+                <div class="step-content">
+                    <div class="step-badge">Step 2</div>
+                    <h3 class="step-title">Practice on Real TMS</h3>
+                    <p class="step-description">
+                        Use our Mini TMS (web + mobile) to practice dispatching with simulated loads, drivers, and scenarios. Make mistakes in a safe environment before you work with real drivers.
+                    </p>
+                    <ul class="step-features">
+                        <li><span class="feature-check">✓</span> Full TMS with load management</li>
+                        <li><span class="feature-check">✓</span> Driver tracking & HOS monitoring</li>
+                        <li><span class="feature-check">✓</span> Rate calculator & profit margins</li>
+                        <li><span class="feature-check">✓</span> Document generator (BOL, invoices)</li>
+                        <li><span class="feature-check">✓</span> Works on phone, tablet, desktop</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- STEP 3: EARN -->
+            <div class="journey-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-badge">Step 3</div>
+                    <h3 class="step-title">Join FED's Fleet & Earn</h3>
+                    <p class="step-description">
+                        Graduate and join FED's Fleet—our marketplace where drivers find dispatchers. Get matched with real drivers immediately. Start earning 70% commission. Buy out your contract after 1 year and keep 100%.
+                    </p>
+                    <ul class="step-features">
+                        <li><span class="feature-check">✓</span> Instant client matching (no cold calling)</li>
+                        <li><span class="feature-check">✓</span> 70% commission (you keep most of it)</li>
+                        <li><span class="feature-check">✓</span> FED handles invoicing & payments</li>
+                        <li><span class="feature-check">✓</span> Scale to multiple drivers</li>
+                        <li><span class="feature-check">✓</span> Buy out after 1 year (100% yours)</li>
+                    </ul>
+                </div>
+                <div class="step-visual">
+                    💰
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COURSE PREVIEW -->
+    <section class="course-section" id="courses">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <div class="section-eyebrow" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: var(--forest-green);">📚 CURRICULUM</div>
+                <h2 class="problem-title" style="margin-top: 28px;">
+                    20+ Modules. <span style="background: var(--gradient-forest); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Real Skills.</span>
+                </h2>
+                <p style="font-size: 20px; color: var(--text-gray); max-width: 800px; margin: 20px auto 0;">
+                    Each module includes video lessons, quizzes, and hands-on practice in the Mini TMS. Learn by doing.
+                </p>
+            </div>
+            
+            <div class="course-carousel">
+                <div class="carousel-track">
+                    <div class="course-card">
+                        <div class="course-number">Module 1</div>
+                        <h3 class="course-title">What is Dispatching?</h3>
+                        <div class="course-meta">
+                            <div class="course-meta-item">📹 20 min</div>
+                            <div class="course-meta-item">❓ 10 questions</div>
+                            <div class="course-meta-item">🎯 Beginner</div>
+                        </div>
+                        <p class="course-description">
+                            Learn the fundamentals. What does a dispatcher actually do? How do you make money? What tools do you need? Start here.
+                        </p>
+                        <div class="course-badge">🎓 Start Here</div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-number">Module 2</div>
+                        <h3 class="course-title">Understanding Drivers</h3>
+                        <div class="course-meta">
+                            <div class="course-meta-item">📹 25 min</div>
+                            <div class="course-meta-item">❓ 12 questions</div>
+                            <div class="course-meta-item">🎯 Beginner</div>
+                        </div>
+                        <p class="course-description">
+                            The driver is your partner, not your resource. Learn what matters to them, how they think, and how to build trust.
+                        </p>
+                        <div class="course-badge">💡 Core Concept</div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-number">Module 3</div>
+                        <h3 class="course-title">Load Boards 101</h3>
+                        <div class="course-meta">
+                            <div class="course-meta-item">📹 35 min</div>
+                            <div class="course-meta-item">❓ 15 questions</div>
+                            <div class="course-meta-item">🎯 Beginner</div>
+                        </div>
+                        <p class="course-description">
+                            Master DAT, Truckstop, and other load boards. How to search, filter, evaluate rates, and spot good vs bad loads.
+                        </p>
+                        <div class="course-badge">🔥 Popular</div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-number">Module 4</div>
+                        <h3 class="course-title">ELD & HOS Rules</h3>
+                        <div class="course-meta">
+                            <div class="course-meta-item">📹 30 min</div>
+                            <div class="course-meta-item">❓ 20 questions</div>
+                            <div class="course-meta-item">🎯 Intermediate</div>
+                        </div>
+                        <p class="course-description">
+                            Critical. Understand Hours of Service rules, ELD systems, and how to keep your drivers legal and safe.
+                        </p>
+                        <div class="course-badge">⚠️ Required</div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-number">Module 5</div>
+                        <h3 class="course-title">Rate Negotiation</h3>
+                        <div class="course-meta">
+                            <div class="course-meta-item">📹 40 min</div>
+                            <div class="course-meta-item">❓ 15 questions</div>
+                            <div class="course-meta-item">🎯 Intermediate</div>
+                        </div>
+                        <p class="course-description">
+                            Learn broker tactics, how to negotiate higher rates, when to walk away, and how to build lasting relationships.
+                        </p>
+                        <div class="course-badge">💰 High Value</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 48px;">
+                <p style="font-size: 18px; color: var(--text-gray); margin-bottom: 24px;">
+                    ...and 15+ more modules covering route planning, compliance, documentation, crisis management, and scaling your business.
+                </p>
+                <button class="btn-hero btn-primary-hero">
+                    <span>📖 See Full Curriculum</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- EARNINGS SECTION -->
+    <section class="earnings-section" id="earnings">
+        <div class="earnings-container">
+            <div class="earnings-intro">
+                <div class="section-eyebrow" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: var(--forest-green);">💰 YOUR EARNINGS</div>
+                <h2 class="earnings-title">
+                    Start Earning <span class="earnings-title-gradient">From Day One</span>
+                </h2>
+                <p style="font-size: 22px; color: var(--text-gray); max-width: 800px; margin: 20px auto 0; line-height: 1.7;">
+                    Graduate from OpenHWY, join FED's Fleet, and get matched with real drivers immediately. No cold calling. No guessing. Just work.
+                </p>
+            </div>
+            
+            <div class="earnings-grid">
+                <div class="earnings-card">
+                    <div class="earnings-level">Part-Time</div>
+                    <div class="earnings-amount">$2-3K</div>
+                    <div class="earnings-period">per month</div>
+                    <div class="earnings-details">
+                        <strong>5 trucks</strong><br>
+                        Work 20-30 hours/week<br>
+                        Your cut: <strong>~$2,000/month</strong><br>
+                        Perfect for side income
+                    </div>
+                </div>
+                
+                <div class="earnings-card">
+                    <div class="earnings-level">Full-Time</div>
+                    <div class="earnings-amount">$5-8K</div>
+                    <div class="earnings-period">per month</div>
+                    <div class="earnings-details">
+                        <strong>10-15 trucks</strong><br>
+                        Work 40-50 hours/week<br>
+                        Your cut: <strong>~$5,000/month</strong><br>
+                        Solid full-time income
+                    </div>
+                </div>
+                
+                <div class="earnings-card">
+                    <div class="earnings-level">Experienced</div>
+                    <div class="earnings-amount">$10K+</div>
+                    <div class="earnings-period">per month</div>
+                    <div class="earnings-details">
+                        <strong>20+ trucks</strong><br>
+                        Automated workflows<br>
+                        Your cut: <strong>~$7,000+/month</strong><br>
+                        Scale with Wheeler Agents
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buyout-card">
+                <div class="buyout-badge">🎯 BUYOUT OPTION</div>
+                <h3 class="buyout-title">After 1 Year: Buy Out & Keep 100%</h3>
+                <p class="buyout-description">
+                    Work with the same driver for 1 year through FED's Fleet? <strong>Buy out the contract for a reasonable fee</strong> (typically $500-2,000 based on revenue). After buyout, you keep <strong>100% of your earnings</strong>. We don't trap you—we help you build your own business.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BETA PROMO -->
+    <section class="beta-promo-section">
+        <div class="beta-promo-container">
+            <div class="beta-promo-content">
+                <div class="beta-promo-badge">⏰ LIMITED BETA ACCESS</div>
+                <h2 class="beta-promo-title">
+                    Join the First 1,300 Dispatchers
+                </h2>
+                <p class="beta-promo-subtitle">
+                    We're opening OpenHWY to 1,300 beta users. Get lifetime perks, early access to new features, and help shape the future of dispatch training.
+                </p>
+                
+                <div class="promo-options">
+                    <div class="promo-option">
+                        <div class="promo-option-badge">🎓 Most Popular</div>
+                        <h3 class="promo-option-name">Free Beta</h3>
+                        <div class="promo-option-price">$0<span>/forever</span></div>
+                        <ul class="promo-option-features">
+                            <li><span class="feature-check">✓</span> Full access to all 20+ modules</li>
+                            <li><span class="feature-check">✓</span> Mini TMS (web + mobile)</li>
+                            <li><span class="feature-check">✓</span> FED navigation assistant</li>
+                            <li><span class="feature-check">✓</span> Progress tracking dashboard</li>
+                            <li><span class="feature-check">✓</span> Community forum access</li>
+                            <li><span class="feature-check">✓</span> Join FED's Fleet after graduation</li>
+                        </ul>
+                        <button class="promo-cta">Claim Free Seat (847 left)</button>
+                    </div>
+                    
+                    <div class="promo-option">
+                        <div class="promo-option-badge">🚀 AI Accelerated</div>
+                        <h3 class="promo-option-name">Premium Beta</h3>
+                        <div class="promo-option-price">$97<span>/month</span></div>
+                        <ul class="promo-option-features">
+                            <li><span class="feature-check">✓</span> Everything in Free</li>
+                            <li><span class="feature-check">✓</span> <strong>ELDA AI tutor (unlimited)</strong></li>
+                            <li><span class="feature-check">✓</span> <strong>Priority driver matching</strong></li>
+                            <li><span class="feature-check">✓</span> <strong>1-on-1 mentorship call/month</strong></li>
+                            <li><span class="feature-check">✓</span> <strong>Early access to Wheeler Agents</strong></li>
+                            <li><span class="feature-check">✓</span> Lifetime 20% discount on services</li>
+                        </ul>
+                        <button class="promo-cta">Go Premium (276 left)</button>
+                    </div>
+                </div>
+                
+                <p class="seats-remaining">
+                    ⚠️ Only <strong>1,123 total seats</strong> remaining across both tiers
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOUNDER STORY -->
+    <section class="founder-section" id="founder">
+        <div class="founder-container">
+            <div class="founder-image">
+                🚛
+            </div>
+            
+            <div class="founder-content">
+                <div class="founder-badge">👋 FROM THE FOUNDER</div>
+                <h2 class="founder-title">Built By a Driver Who Got Tired of Bad Dispatchers</h2>
+                
+                <p class="founder-story">
+                    I drove trucks for <strong>10 years</strong>. Over-the-road, long haul, seen it all. I had great dispatchers who understood the job, found good loads, and respected my time. I also had terrible dispatchers who booked garbage loads, violated my HOS, and made my life hell.
+                </p>
+                
+                <p class="founder-story">
+                    After 10 years on the road, I got tired of bad dispatchers hurting drivers. So I taught myself to code. Spent <strong>1.5 years learning distributed systems, orchestration, AI, everything</strong>. Not to build a unicorn startup—to fix what's broken.
+                </p>
+                
+                <div class="founder-quote">
+                    "Most dispatchers aren't evil. They're just ignorant. Nobody taught them the right way. OpenHWY teaches the right way. We train dispatchers to respect drivers, understand HOS, find good loads, and build real relationships. This is how dispatching should be done."
+                </div>
+                
+                <p class="founder-story">
+                    OpenHWY is <strong>open source (AGPL)</strong>. Anyone can fork it, run it, modify it. I can't train all 3.5 million drivers myself—but if others use this platform to train dispatchers, we fix the entire industry together.
+                </p>
+                
+                <div class="founder-stats">
+                    <div class="founder-stat">
+                        <div class="founder-stat-value">10</div>
+                        <div class="founder-stat-label">Years OTR Driver</div>
+                    </div>
+                    <div class="founder-stat">
+                        <div class="founder-stat-value">1.5</div>
+                        <div class="founder-stat-label">Years Learning to Code</div>
+                    </div>
+                    <div class="founder-stat">
+                        <div class="founder-stat-value">100%</div>
+                        <div class="founder-stat-label">Mission-Driven</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta-section">
+        <div class="final-cta-container">
+            <h2 class="final-cta-title">
+                Ready to Start Your <span class="final-cta-gradient">Dispatching Career</span>?
+            </h2>
+            <p class="final-cta-subtitle">
+                Join 1,123 beta users who are learning the right way. Free training, real practice, instant job matching. No credit card required.
+            </p>
+            <button class="final-cta-button">
+                🚀 Claim Your Beta Seat Now
+            </button>
+            <p class="final-cta-note">
+                ✅ No credit card required &nbsp;•&nbsp; 🎓 Start learning immediately &nbsp;•&nbsp; 💼 Get matched with drivers after graduation
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">OpenHWY</div>
+                <p class="footer-tagline">
+                    The future of truck dispatch training. Learn the right way, practice on real tools, and start earning from day one.
+                </p>
+                <div class="footer-social">
+                    <div class="social-icon">𝕏</div>
+                    <div class="social-icon">in</div>
+                    <div class="social-icon">▶</div>
+                    <div class="social-icon">f</div>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="footer-section-title">Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="#how-it-works" class="footer-link">How It Works</a></li>
+                    <li><a href="#ai-team" class="footer-link">AI Team</a></li>
+                    <li><a href="#courses" class="footer-link">Courses</a></li>
+                    <li><a href="#earnings" class="footer-link">Earnings</a></li>
+                    <li><a href="#" class="footer-link">FED's Fleet</a></li>
+                    <li><a href="#" class="footer-link">Driver Pool</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="footer-section-title">Company</h4>
+                <ul class="footer-links">
+                    <li><a href="#founder" class="footer-link">Our Story</a></li>
+                    <li><a href="#" class="footer-link">Open Source</a></li>
+                    <li><a href="#" class="footer-link">Blog</a></li>
+                    <li><a href="#" class="footer-link">Press Kit</a></li>
+                    <li><a href="#" class="footer-link">Contact Us</a></li>
+                    <li><a href="#" class="footer-link">Careers</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="footer-section-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#" class="footer-link">Terms of Service</a></li>
+                    <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer-link">AGPL License</a></li>
+                    <li><a href="#" class="footer-link">Refund Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div>© 2024 Fast & Easy Dispatching LLC. All rights reserved.</div>
+            <div style="color: #888;">Built with 💛 for drivers, by a driver</div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll indicator click
+        document.querySelector('.scroll-indicator')?.addEventListener('click', function() {
+            window.scrollBy({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>

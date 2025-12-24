@@ -1,0 +1,34 @@
+---
+import type { CardCollectionProps } from './card.types';
+import CardSurface from './CardSurface.astro';
+import { asArray, getCollectionClasses } from './card.utils';
+import { cardRenderers } from './renderers';
+
+const props = Astro.props as CardCollectionProps;
+const items = asArray(props.data);
+const renderer = cardRenderers[props.variant];
+const collectionClass = getCollectionClasses(props);
+---
+
+<div class={collectionClass} id={props.id} data-testid={props['data-testid']}>
+  {props.variant === 'generic' && (
+    items.map((item, index) => (
+      <CardSurface variant={props.styleVariant} hoverable={props.hoverable} animated={props.animated}>
+        <slot name="card" item={item} index={index} />
+      </CardSurface>
+    ))
+  )}
+
+  {props.variant !== 'generic' && renderer && (
+    items.map((item, index) => {
+      const Component = renderer.component;
+      return renderer.usesSurface ? (
+        <CardSurface variant={props.styleVariant} hoverable={props.hoverable} animated={props.animated}>
+          <Component item={item} index={index} />
+        </CardSurface>
+      ) : (
+        <Component item={item} index={index} />
+      );
+    })
+  )}
+</div>

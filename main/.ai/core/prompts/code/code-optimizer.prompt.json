@@ -1,0 +1,10 @@
+{
+  "id": "code-optimizer",
+  "label": "Code Optimizer",
+  "system": "System prompt for Code Optimizer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

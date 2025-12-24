@@ -1,0 +1,50 @@
+---
+import { page, site } from "@/routes";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Login - HWY-TMS">
+  <section
+    class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-primary/20 via-background to-purple-secondary/20"
+  >
+    <div class="max-w-3xl w-full text-center space-y-6">
+      <div>
+        <h1
+          class="text-4xl md:text-5xl font-bold bg-gradient-purple bg-clip-text text-transparent"
+        >
+          Access HWY-TMS via Flutter App
+        </h1>
+        <p class="mt-4 text-lg text-text-secondary">
+          The Flutter app handles all authentication and registration. Launch it
+          once and the same credentials travel with you across mobile, desktop,
+          and the hosted web preview.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={site.app}
+          class="bg-gradient-purple text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-2xl shadow-purple-primary/40 hover:opacity-90 transition-opacity"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Flutter App
+        </a>
+        <a
+          href={page.download}
+          class="bg-background-elevated text-white px-8 py-4 rounded-2xl text-lg font-semibold border border-background-card hover:border-purple-primary transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download App
+        </a>
+      </div>
+
+      <p class="text-sm text-text-tertiary">
+        Registered users are automatically synced. Keep the Flutter app handy
+        for the same experience everywhere.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

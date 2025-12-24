@@ -1,0 +1,58 @@
+[package]
+name = "conversation-intelligence"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Web framework
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
+
+# HTTP client
+reqwest = { version = "0.12", features = ["json"] }
+
+# Database
+surrealdb = "2"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Async traits
+async-trait = "0.1"
+
+# UUID
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# HTML parsing
+scraper = "0.20"
+html5ever = "0.27"
+
+# Text processing
+regex = "1"
+
+# Configuration
+config = "0.14"
+
+# Natural Language Processing (basic)
+unicode-segmentation = "1.10"
+
+# Vector embeddings (for semantic search) - TODO: Add when needed
+# ort = { version = "2.0.0-rc.10", features = ["half"] }
+
+# YAML/JSON handling
+serde_with = "3.0"

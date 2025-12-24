@@ -1,0 +1,10 @@
+{
+  "id": "json-schema-generator",
+  "label": "Json Schema Generator",
+  "system": "System prompt for Json Schema Generator",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firecracker VM Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(250, 112, 154, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #0a0e27;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-btn {
+            background: rgba(10, 14, 39, 0.2);
+            border: 1px solid rgba(10, 14, 39, 0.3);
+            color: #0a0e27;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(10, 14, 39, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #1a1f3a;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #2d3548;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fa709a;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3548;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #e0e6ed;
+        }
+
+        .tab.active {
+            color: #fa709a;
+            border-bottom-color: #fa709a;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .vm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .vm-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #2d3548;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vm-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fa709a, #fee140);
+        }
+
+        .vm-card.running::before {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .vm-card.paused::before {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .vm-card.stopped::before {
+            background: linear-gradient(90deg, #6b7280, #4b5563);
+        }
+
+        .vm-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border-color: #fa709a;
+        }
+
+        .vm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .vm-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .vm-id {
+            font-size: 11px;
+            color: #9ca3af;
+            font-family: monospace;
+        }
+
+        .vm-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .vm-status.running {
+            background: #065f46;
+            color: #10b981;
+        }
+
+        .vm-status.paused {
+            background: #78350f;
+            color: #f59e0b;
+        }
+
+        .vm-status.stopped {
+            background: #374151;
+            color: #9ca3af;
+        }
+
+        .vm-status.starting {
+            background: #1e3a8a;
+            color: #3b82f6;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .vm-info {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #1a1f3a;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-family: monospace;
+            color: #fa709a;
+        }
+
+        .resource-meters {
+            margin-top: 12px;
+        }
+
+        .meter {
+            margin-bottom: 10px;
+        }
+
+        .meter-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+
+        .meter-bar {
+            background: #0a0e27;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+            background: linear-gradient(90deg, #fa709a, #fee140);
+        }
+
+        .meter-fill.warn {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .meter-fill.danger {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .vm-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            background: #2d3548;
+            border: none;
+            color: #9ca3af;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            background: #3d4556;
+            color: #e0e6ed;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            color: #0a0e27;
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(250, 112, 154, 0.3);
+        }
+
+        .action-btn.danger {
+            background: #7f1d1d;
+            color: #ef4444;
+        }
+
+        .action-btn.danger:hover {
+            background: #991b1b;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pool-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+        }
+
+        .pool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .pool-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fa709a;
+        }
+
+        .pool-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .pool-stat {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .pool-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fa709a;
+        }
+
+        .pool-stat-label {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .function-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+
+        .function-card:hover {
+            border-color: #fa709a;
+            box-shadow: 0 4px 12px rgba(250, 112, 154, 0.2);
+        }
+
+        .function-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .function-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .function-runtime {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .function-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .metric-box {
+            background: #0f1629;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fa709a;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .create-vm-btn {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            border: none;
+            color: #0a0e27;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto;
+            box-shadow: 0 6px 12px rgba(250, 112, 154, 0.3);
+            transition: all 0.2s;
+        }
+
+        .create-vm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(250, 112, 154, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid #2d3548;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fa709a;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #2d3548;
+            color: #e0e6ed;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: #0f1629;
+            border: 1px solid #2d3548;
+            color: #e0e6ed;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #fa709a;
+        }
+
+        .os-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .os-option {
+            background: #0f1629;
+            border: 2px solid #2d3548;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .os-option:hover {
+            border-color: #fa709a;
+        }
+
+        .os-option.selected {
+            background: linear-gradient(135deg, rgba(250, 112, 154, 0.2), rgba(254, 225, 64, 0.2));
+            border-color: #fa709a;
+        }
+
+        .os-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .os-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .console-viewer {
+            background: #0a0e27;
+            border: 1px solid #2d3548;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+
+        .console-line {
+            padding: 2px 0;
+            color: #10b981;
+        }
+
+        .console-prompt {
+            color: #fa709a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .vm-grid {
+                grid-template-columns: 1fr;
+            }
+            .vm-actions {
+                grid-template-columns: 1fr;
+            }
+            .function-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔥 Firecracker VM Manager</h1>
+        <div class="header-actions">
+            <button class="header-btn" onclick="refreshData()">
+                <span>🔄</span>
+                <span>Refresh</span>
+            </button>
+            <button class="header-btn" onclick="openCreateModal()">
+                <span>➕</span>
+                <span>Create VM</span>
+            </button>
+            <button class="header-btn" onclick="manageWarmPool()">
+                <span>🔥</span>
+                <span>Warm Pool</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="totalVMs">0</div>
+            <div class="stat-label">Total VMs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="runningVMs">0</div>
+            <div class="stat-label">Running</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="warmVMs">0</div>
+            <div class="stat-label">Warm Pool</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalMemory">0 GB</div>
+            <div class="stat-label">Memory Used</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="avgBootTime">0ms</div>
+            <div class="stat-label">Avg Boot Time</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('vms')">💻 VMs</button>
+        <button class="tab" onclick="switchTab('functions')">⚡ Functions</button>
+        <button class="tab" onclick="switchTab('pools')">🔥 Warm Pools</button>
+        <button class="tab" onclick="switchTab('images')">💿 Images</button>
+    </div>
+
+    <!-- VMs Tab -->
+    <div class="tab-content active" id="vms-tab">
+        <div class="vm-grid" id="vmGrid"></div>
+    </div>
+
+    <!-- Functions Tab -->
+    <div class="tab-content" id="functions-tab">
+        <div id="functionsContainer"></div>
+    </div>
+
+    <!-- Warm Pools Tab -->
+    <div class="tab-content" id="pools-tab">
+        <div id="poolsContainer"></div>
+    </div>
+
+    <!-- Images Tab -->
+    <div class="tab-content" id="images-tab">
+        <div id="imagesContainer"></div>
+    </div>
+
+    <!-- Create VM Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔥 Create Firecracker VM</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">VM Name</label>
+                <input type="text" class="form-input" placeholder="my-vm" id="vmName">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Operating System</label>
+                <div class="os-grid">
+                    <div class="os-option selected" data-os="alpine">
+                        <div class="os-icon">🏔️</div>
+                        <div class="os-name">Alpine</div>
+                    </div>
+                    <div class="os-option" data-os="ubuntu">
+                        <div class="os-icon">🐧</div>
+                        <div class="os-name">Ubuntu</div>
+                    </div>
+                    <div class="os-option" data-os="debian">
+                        <div class="os-icon">🌀</div>
+                        <div class="os-name">Debian</div>
+                    </div>
+                    <div class="os-option" data-os="flatcar">
+                        <div class="os-icon">📦</div>
+                        <div class="os-name">Flatcar</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">vCPUs</label>
+                <select class="form-select" id="vmCpus">
+                    <option>1</option>
+                    <option selected>2</option>
+                    <option>4</option>
+                    <option>8</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Memory (MB)</label>
+                <select class="form-select" id="vmMemory">
+                    <option>128</option>
+                    <option>256</option>
+                    <option selected>512</option>
+                    <option>1024</option>
+                    <option>2048</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Purpose</label>
+                <select class="form-select" id="vmPurpose">
+                    <option>Client Workload</option>
+                    <option>Function Runtime</option>
+                    <option>Build Job</option>
+                    <option>Warm Pool</option>
+                </select>
+            </div>
+
+            <button class="create-vm-btn" onclick="createVM()">
+                <span>🚀</span>
+                <span>Create VM</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- VM Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detailVMName">VM Details</h2>
+                <button class="close-btn" onclick="closeDetailModal()">×</button>
+            </div>
+
+            <div class="vm-info">
+                <div class="info-row">
+                    <span class="info-label">VM ID</span>
+                    <span class="info-value" id="detailVMId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status</span>
+                    <span class="info-value" id="detailStatus">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">OS</span>
+                    <span class="info-value" id="detailOS">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Kernel</span>
+                    <span class="info-value" id="detailKernel">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Nebula IP</span>
+                    <span class="info-value" id="detailIP">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Uptime</span>
+                    <span class="info-value" id="detailUptime">-</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Console Output</label>
+                <div class="console-viewer" id="consoleOutput">
+                    <div class="console-line"><span class="console-prompt">root@vm:</span> dmesg | tail</div>
+                    <div class="console-line">[    2.145234] virtio_net virtio0 eth0: renamed from enp0s3</div>
+                    <div class="console-line">[    2.234567] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready</div>
+                    <div class="console-line">[    2.345678] Firecracker VM initialized successfully</div>
+                    <div class="console-line"><span class="console-prompt">root@vm:</span> _</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px;">
+                <button class="action-btn" onclick="openConsole()">Open Console</button>
+                <button class="action-btn" onclick="downloadSnapshot()">Snapshot</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'vms';
+        let selectedOS = 'alpine';
+
+        function generateMockData() {
+            return {
+                vms: [
+                    {
+                        id: 'fc-vm-001',
+                        name: 'client-acme-web',
+                        status: 'running',
+                        os: 'Alpine Linux 3.19',
+                        kernel: '6.1.0-fc',
+                        cpu: { allocated: 2, usage: 65 },
+                        memory: { allocated: 512, usage: 320 },
+                        ip: '10.42.1.5',
+                        uptime: '2h 34m',
+                        bootTime: '125ms',
+                        client: 'Acme Corporation',
+                        purpose: 'Web App'
+                    },
+                    {
+                        id: 'fc-vm-002',
+                        name: 'function-runtime-1',
+                        status: 'paused',
+                        os: 'Ubuntu 22.04 Minimal',
+                        kernel: '6.1.0-fc',
+                        cpu: { allocated: 1, usage: 0 },
+                        memory: { allocated: 256, usage: 78 },
+                        ip: '10.42.1.14',
+                        uptime: 'paused',
+                        bootTime: '105ms',
+                        client: null,
+                        purpose: 'Warm Pool'
+                    }
+                ],
+                functions: [
+                    {
+                        name: 'image-resize',
+                        runtime: 'Python 3.11',
+                        invocations: 12453,
+                        avgDuration: '234ms',
+                        coldStarts: 23,
+                        warmStarts: 12430,
+                        memory: 512,
+                        lastInvoke: '2 minutes ago'
+                    },
+                    {
+                        name: 'pdf-generator',
+                        runtime: 'Node.js 20',
+                        invocations: 3421,
+                        avgDuration: '1.2s',
+                        coldStarts: 8,
+                        warmStarts: 3413,
+                        memory: 1024,
+                        lastInvoke: '15 minutes ago'
+                    },
+                    {
+                        name: 'data-processor',
+                        runtime: 'Rust',
+                        invocations: 8932,
+                        avgDuration: '45ms',
+                        coldStarts: 12,
+                        warmStarts: 8920,
+                        memory: 256,
+                        lastInvoke: '1 minute ago'
+                    }
+                ],
+                pools: [
+                    {
+                        name: 'python-runtime',
+                        size: 10,
+                        available: 7,
+                        inUse: 3,
+                        os: 'Alpine Linux 3.19',
+                        memory: 256,
+                        avgStartTime: '105ms'
+                    },
+                    {
+                        name: 'nodejs-runtime',
+                        size: 8,
+                        available: 5,
+                        inUse: 3,
+                        os: 'Ubuntu 22.04',
+                        memory: 512,
+                        avgStartTime: '132ms'
+                    },
+                    {
+                        name: 'rust-runtime',
+                        size: 5,
+                        available: 4,
+                        inUse: 1,
+                        os: 'Alpine Linux 3.19',
+                        memory: 128,
+                        avgStartTime: '98ms'
+                    }
+                ],
+                images: [
+                    { name: 'Alpine Linux 3.19', size: '8 MB', kernel: '6.1.0', uses: 15 },
+                    { name: 'Ubuntu 22.04 Minimal', size: '45 MB', kernel: '6.1.0', uses: 8 },
+                    { name: 'Debian 12 Slim', size: '52 MB', kernel: '6.1.0', uses: 3 },
+                    { name: 'Flatcar Container Linux', size: '35 MB', kernel: '6.1.0', uses: 2 }
+                ]
+            };
+        }
+
+        function renderVMs(vms) {
+            if (vms.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">💻</div><div>No VMs running</div></div>';
+            }
+
+            return vms.map(vm => {
+                const cpuPercent = vm.cpu.usage;
+                const memPercent = Math.round((vm.memory.usage / vm.memory.allocated) * 100);
+
+                return `
+                    <div class="vm-card ${vm.status}">
+                        <div class="vm-header">
+                            <div>
+                                <div class="vm-title">${vm.name}</div>
+                                <div class="vm-id">${vm.id}</div>
+                            </div>
+                            <span class="vm-status ${vm.status}">
+                                <span class="status-dot"></span>
+                                ${vm.status.toUpperCase()}
+                            </span>
+                        </div>
+
+                        <div class="vm-info">
+                            <div class="info-row">
+                                <span class="info-label">💿 OS</span>
+                                <span class="info-value">${vm.os}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">🔧 Kernel</span>
+                                <span class="info-value">${vm.kernel}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">🌐 IP</span>
+                                <span class="info-value">${vm.ip}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">⏱️ Uptime</span>
+                                <span class="info-value">${vm.uptime}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">⚡ Boot</span>
+                                <span class="info-value">${vm.bootTime}</span>
+                            </div>
+                            ${vm.client ? `
+                                <div class="info-row">
+                                    <span class="info-label">👤 Client</span>
+                                    <span class="info-value">${vm.client}</span>
+                                </div>
+                            ` : ''}
+                            <div class="info-row">
+                                <span class="info-label">📋 Purpose</span>
+                                <span class="info-value">${vm.purpose}</span>
+                            </div>
+                        </div>
+
+                        <div class="resource-meters">
+                            <div class="meter">
+                                <div class="meter-label">
+                                    <span>CPU</span>
+                                    <span>${cpuPercent}% (${vm.cpu.allocated} vCPU)</span>
+                                </div>
+                                <div class="meter-bar">
+                                    <div class="meter-fill ${cpuPercent > 80 ? 'danger' : cpuPercent > 60 ? 'warn' : ''}" 
+                                         style="width: ${cpuPercent}%"></div>
+                                </div>
+                            </div>
+                            <div class="meter">
+                                <div class="meter-label">
+                                    <span>Memory</span>
+                                    <span>${vm.memory.usage}/${vm.memory.allocated} MB</span>
+                                </div>
+                                <div class="meter-bar">
+                                    <div class="meter-fill ${memPercent > 80 ? 'danger' : memPercent > 60 ? 'warn' : ''}" 
+                                         style="width: ${memPercent}%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vm-actions">
+                            ${vm.status === 'running' ? `
+                                <button class="action-btn" onclick="pauseVM('${vm.id}')">⏸️ Pause</button>
+                                <button class="action-btn danger" onclick="stopVM('${vm.id}')">⏹️ Stop</button>
+                            ` : vm.status === 'paused' ? `
+                                <button class="action-btn primary" onclick="resumeVM('${vm.id}')">▶️ Resume</button>
+                                <button class="action-btn danger" onclick="stopVM('${vm.id}')">⏹️ Stop</button>
+                            ` : `
+                                <button class="action-btn primary" onclick="startVM('${vm.id}')">▶️ Start</button>
+                                <button class="action-btn danger" onclick="deleteVM('${vm.id}')">🗑️ Delete</button>
+                            `}
+                            <button class="action-btn" onclick="openVMDetails('${vm.id}')">📊 Details</button>
+                            <button class="action-btn" onclick="snapshotVM('${vm.id}')">📸 Snapshot</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderFunctions(functions) {
+            if (functions.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">⚡</div><div>No serverless functions</div></div>';
+            }
+
+            return functions.map(fn => `
+                <div class="function-card">
+                    <div class="function-header">
+                        <div>
+                            <div class="function-name">${fn.name}</div>
+                            <div class="function-runtime">${fn.runtime} • ${fn.memory} MB</div>
+                        </div>
+                        <span class="vm-status running">
+                            <span class="status-dot"></span>
+                            ACTIVE
+                        </span>
+                    </div>
+
+                    <div class="function-metrics">
+                        <div class="metric-box">
+                            <div class="metric-value">${(fn.invocations / 1000).toFixed(1)}k</div>
+                            <div class="metric-label">Invocations</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${fn.avgDuration}</div>
+                            <div class="metric-label">Avg Duration</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${fn.coldStarts}</div>
+                            <div class="metric-label">Cold Starts</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${(fn.warmStarts / 1000).toFixed(1)}k</div>
+                            <div class="metric-label">Warm Starts</div>
+                        </div>
+                    </div>
+
+                    <div class="vm-info" style="margin-top: 12px;">
+                        <div class="info-row">
+                            <span class="info-label">Last Invoked</span>
+                            <span class="info-value">${fn.lastInvoke}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Cold Start Rate</span>
+                            <span class="info-value">${((fn.coldStarts / fn.invocations) * 100).toFixed(2)}%</span>
+                        </div>
+                    </div>
+
+                    <div class="vm-actions" style="margin-top: 12px;">
+                        <button class="action-btn" onclick="viewFunctionLogs('${fn.name}')">📜 Logs</button>
+                        <button class="action-btn" onclick="testFunction('${fn.name}')">🧪 Test</button>
+                        <button class="action-btn" onclick="editFunction('${fn.name}')">✏️ Edit</button>
+                        <button class="action-btn danger" onclick="deleteFunction('${fn.name}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPools(pools) {
+            if (pools.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">🔥</div><div>No warm pools configured</div></div>';
+            }
+
+            return pools.map(pool => `
+                <div class="pool-card">
+                    <div class="pool-header">
+                        <h3 class="pool-title">${pool.name}</h3>
+                        <button class="action-btn primary" onclick="scalePool('${pool.name}')">⚙️ Scale</button>
+                    </div>
+
+                    <div class="pool-stats">
+                        <div class="pool-stat">
+                            <div class="pool-stat-value">${pool.size}</div>
+                            <div class="pool-stat-label">Pool Size</div>
+                        </div>
+                        <div class="pool-stat">
+                            <div class="pool-stat-value">${pool.available}</div>
+                            <div class="pool-stat-label">Available</div>
+                        </div>
+                        <div class="pool-stat">
+                            <div class="pool-stat-value">${pool.inUse}</div>
+                            <div class="pool-stat-label">In Use</div>
+                        </div>
+                        <div class="pool-stat">
+                            <div class="pool-stat-value">${pool.avgStartTime}</div>
+                            <div class="pool-stat-label">Avg Start Time</div>
+                        </div>
+                    </div>
+
+                    <div class="vm-info">
+                        <div class="info-row">
+                            <span class="info-label">OS Image</span>
+                            <span class="info-value">${pool.os}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Memory per VM</span>
+                            <span class="info-value">${pool.memory} MB</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Utilization</span>
+                            <span class="info-value">${Math.round((pool.inUse / pool.size) * 100)}%</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 12px;">
+                        <div class="meter">
+                            <div class="meter-label">
+                                <span>Pool Utilization</span>
+                                <span>${pool.inUse}/${pool.size}</span>
+                            </div>
+                            <div class="meter-bar">
+                                <div class="meter-fill" style="width: ${(pool.inUse / pool.size) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderImages(images) {
+            return images.map(img => `
+                <div class="function-card">
+                    <div class="function-header">
+                        <div>
+                            <div class="function-name">${img.name}</div>
+                            <div class="function-runtime">Size: ${img.size} • Kernel: ${img.kernel}</div>
+                        </div>
+                        <span class="vm-status running">${img.uses} VMs</span>
+                    </div>
+
+                    <div class="vm-actions" style="margin-top: 12px;">
+                        <button class="action-btn" onclick="viewImageDetails('${img.name}')">📊 Details</button>
+                        <button class="action-btn" onclick="buildImage('${img.name}')">🔨 Rebuild</button>
+                        <button class="action-btn danger" onclick="deleteImage('${img.name}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const data = generateMockData();
+
+            // Update stats
+            const runningCount = data.vms.filter(vm => vm.status === 'running').length;
+            const warmCount = data.vms.filter(vm => vm.status === 'paused').length;
+            const totalMemory = data.vms.reduce((sum, vm) => sum + vm.memory.usage, 0);
+            const avgBoot = Math.round(data.vms.reduce((sum, vm) => sum + parseInt(vm.bootTime), 0) / data.vms.length);
+
+            document.getElementById('totalVMs').textContent = data.vms.length;
+            document.getElementById('runningVMs').textContent = runningCount;
+            document.getElementById('warmVMs').textContent = warmCount;
+            document.getElementById('totalMemory').textContent = (totalMemory / 1024).toFixed(1) + ' GB';
+            document.getElementById('avgBootTime').textContent = avgBoot + 'ms';
+
+            // Render content
+            document.getElementById('vmGrid').innerHTML = renderVMs(data.vms);
+            document.getElementById('functionsContainer').innerHTML = renderFunctions(data.functions);
+            document.getElementById('poolsContainer').innerHTML = renderPools(data.pools);
+            document.getElementById('imagesContainer').innerHTML = renderImages(data.images);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('createModal').classList.remove('active');
+        }
+
+        function openVMDetails(id) {
+            const data = generateMockData();
+            const vm = data.vms.find(v => v.id === id);
+            
+            if (!vm) return;
+
+            document.getElementById('detailVMName').textContent = vm.name;
+            document.getElementById('detailVMId').textContent = vm.id;
+            document.getElementById('detailStatus').textContent = vm.status.toUpperCase();
+            document.getElementById('detailOS').textContent = vm.os;
+            document.getElementById('detailKernel').textContent = vm.kernel;
+            document.getElementById('detailIP').textContent = vm.ip;
+            document.getElementById('detailUptime').textContent = vm.uptime;
+
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // OS selection in create modal
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.os-option')) {
+                document.querySelectorAll('.os-option').forEach(opt => opt.classList.remove('selected'));
+                e.target.closest('.os-option').classList.add('selected');
+                selectedOS = e.target.closest('.os-option').dataset.os;
+            }
+        });
+
+        // VM Actions
+        function createVM() {
+            const name = document.getElementById('vmName').value || 'new-vm';
+            const cpus = document.getElementById('vmCpus').value;
+            const memory = document.getElementById('vmMemory').value;
+            const purpose = document.getElementById('vmPurpose').value;
+            
+            alert(`Creating Firecracker VM:\n\nName: ${name}\nOS: ${selectedOS}\nvCPUs: ${cpus}\nMemory: ${memory}MB\nPurpose: ${purpose}`);
+            closeModal();
+        }
+
+        function startVM(id) {
+            alert(`Starting VM ${id}...`);
+            setTimeout(updateDashboard, 500);
+        }
+
+        function pauseVM(id) {
+            if (confirm('Pause this VM? It will be kept in memory.')) {
+                alert(`Pausing VM ${id}...`);
+                setTimeout(updateDashboard, 500);
+            }
+        }
+
+        function resumeVM(id) {
+            alert(`Resuming VM ${id}...`);
+            setTimeout(updateDashboard, 500);
+        }
+
+        function stopVM(id) {
+            if (confirm('Stop this VM? All state will be lost unless snapshotted.')) {
+                alert(`Stopping VM ${id}...`);
+                setTimeout(updateDashboard, 500);
+            }
+        }
+
+        function deleteVM(id) {
+            if (confirm('Permanently delete this VM?')) {
+                alert(`Deleting VM ${id}...`);
+                setTimeout(updateDashboard, 500);
+            }
+        }
+
+        function snapshotVM(id) {
+            alert(`Creating snapshot of VM ${id}...`);
+        }
+
+        function openConsole() {
+            alert('Opening serial console...');
+        }
+
+        function downloadSnapshot() {
+            alert('Downloading VM snapshot...');
+        }
+
+        // Function Actions
+        function viewFunctionLogs(name) {
+            alert(`Opening logs for function: ${name}`);
+        }
+
+        function testFunction(name) {
+            alert(`Running test invocation for: ${name}`);
+        }
+
+        function editFunction(name) {
+            alert(`Opening editor for: ${name}`);
+        }
+
+        function deleteFunction(name) {
+            if (confirm(`Delete function ${name}?`)) {
+                alert(`Deleting function: ${name}`);
+            }
+        }
+
+        // Pool Actions
+        function scalePool(name) {
+            const newSize = prompt(`Enter new pool size for ${name}:`, '10');
+            if (newSize) {
+                alert(`Scaling ${name} to ${newSize} VMs...`);
+            }
+        }
+
+        function manageWarmPool() {
+            switchTab('pools');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab')[2].classList.add('active');
+            document.getElementById('pools-tab').classList.add('active');
+        }
+
+        // Image Actions
+        function viewImageDetails(name) {
+            alert(`Image details for: ${name}`);
+        }
+
+        function buildImage(name) {
+            if (confirm(`Rebuild image: ${name}?`)) {
+                alert(`Rebuilding image: ${name}`);
+            }
+        }
+
+        function deleteImage(name) {
+            if (confirm(`Delete image: ${name}? This will affect ${Math.floor(Math.random() * 10)} VMs.`)) {
+                alert(`Deleting image: ${name}`);
+            }
+        }
+
+        function refreshData() {
+            updateDashboard();
+            alert('Dashboard refreshed!');
+        }
+
+        // Modal close on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Initial render
+        updateDashboard();
+
+        // Auto-refresh every 5 seconds
+        setInterval(updateDashboard, 5000);
+    </script>
+</body>
+</html>

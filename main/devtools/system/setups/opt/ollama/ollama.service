@@ -1,0 +1,17 @@
+[Unit]
+Description=Ollama LLM Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ollama
+WorkingDirectory=/home/ollama
+ExecStart=/usr/local/bin/ollama serve
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

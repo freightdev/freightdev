@@ -1,0 +1,13 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { Footer, Navbar, PageComposer } from '@components';
+import { featuresPage } from './features.configs';
+---
+
+<BaseLayout title={featuresPage.title}>
+  <Navbar />
+  <div class="pt-16">
+    <PageComposer nodes={featuresPage.sections} />
+  </div>
+  <Footer />
+</BaseLayout>

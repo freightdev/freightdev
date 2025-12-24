@@ -1,0 +1,10 @@
+{
+  "id": "dev-coach",
+  "label": "Dev Coach",
+  "system": "System prompt for Dev Coach",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

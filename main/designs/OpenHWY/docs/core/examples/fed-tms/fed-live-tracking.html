@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Live Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+        overflow: hidden;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .page-title {
+        font-size: 24px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .live-indicator {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #10b981;
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .header-controls {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-color: #d946ef;
+        color: #d946ef;
+    }
+
+    /* MAP CONTAINER */
+    .map-container {
+        flex: 1;
+        display: flex;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .map {
+        flex: 1;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Simulated Map Background */
+    .map-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            linear-gradient(rgba(217, 70, 239, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(217, 70, 239, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        opacity: 0.5;
+    }
+
+    /* Map Markers */
+    .marker {
+        position: absolute;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .marker-driver {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+        border: 3px solid #16213e;
+        animation: driverPulse 3s infinite;
+    }
+
+    @keyframes driverPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .marker-pickup {
+        width: 40px;
+        height: 40px;
+        background: rgba(59, 130, 246, 0.2);
+        border: 2px solid #3b82f6;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .marker-pickup::before {
+        content: '📦';
+        transform: rotate(45deg);
+        font-size: 18px;
+    }
+
+    .marker-delivery {
+        width: 40px;
+        height: 40px;
+        background: rgba(16, 185, 129, 0.2);
+        border: 2px solid #10b981;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .marker-delivery::before {
+        content: '🎯';
+        transform: rotate(45deg);
+        font-size: 18px;
+    }
+
+    .marker-label {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        white-space: nowrap;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Route Line */
+    .route-line {
+        position: absolute;
+        height: 3px;
+        background: linear-gradient(90deg, #3b82f6, #d946ef, #10b981);
+        opacity: 0.6;
+        z-index: 5;
+        animation: dashFlow 2s linear infinite;
+        background-size: 20px 3px;
+        box-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+    }
+
+    @keyframes dashFlow {
+        0% { background-position: 0 0; }
+        100% { background-position: 20px 0; }
+    }
+
+    /* SIDEBAR PANEL */
+    .tracking-sidebar {
+        width: 420px;
+        background: #16213e;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .sidebar-filters {
+        display: flex;
+        gap: 8px;
+    }
+
+    .filter-chip {
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-chip:hover, .filter-chip.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-color: #d946ef;
+        color: #d946ef;
+    }
+
+    .sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+    }
+
+    .load-tracking-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .load-tracking-card:hover {
+        border-color: #d946ef;
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .load-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #d946ef;
+    }
+
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-transit {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+
+    .status-pickup {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .status-delivery {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .driver-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .driver-avatar-small {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .driver-details {
+        flex: 1;
+    }
+
+    .driver-name {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .driver-truck {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .progress-section {
+        margin-bottom: 16px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #d946ef, #a855f7);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+
+    .route-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .route-point {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .route-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 14px;
+    }
+
+    .route-icon.pickup {
+        background: rgba(59, 130, 246, 0.2);
+        border: 2px solid #3b82f6;
+    }
+
+    .route-icon.delivery {
+        background: rgba(16, 185, 129, 0.2);
+        border: 2px solid #10b981;
+    }
+
+    .route-details {
+        flex: 1;
+    }
+
+    .route-location {
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .route-time {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .eta-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        background: rgba(217, 70, 239, 0.1);
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #d946ef;
+        margin-top: 4px;
+    }
+
+    .last-update {
+        font-size: 11px;
+        color: #666;
+        text-align: center;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Map Controls */
+    .map-controls {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 20;
+    }
+
+    .map-btn {
+        width: 44px;
+        height: 44px;
+        background: rgba(22, 33, 62, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.2s;
+        backdrop-filter: blur(10px);
+    }
+
+    .map-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+        border-color: #d946ef;
+    }
+
+    /* Stats Overlay */
+    .stats-overlay {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        gap: 12px;
+        z-index: 20;
+    }
+
+    .stat-card {
+        background: rgba(22, 33, 62, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px 20px;
+        backdrop-filter: blur(10px);
+        min-width: 140px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="page-title">
+                Live Tracking
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    <span>LIVE</span>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="btn btn-secondary active">
+                    🗺️ Map View
+                </button>
+                <button class="btn btn-secondary">
+                    🌐 Satellite
+                </button>
+                <button class="btn btn-secondary">
+                    🚦 Traffic
+                </button>
+                <button class="btn btn-secondary">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <!-- MAP -->
+            <div class="map">
+                <div class="map-bg"></div>
+
+                <!-- Route Lines -->
+                <div class="route-line" style="width: 200px; top: 35%; left: 15%; transform: rotate(15deg);"></div>
+                <div class="route-line" style="width: 150px; top: 45%; left: 35%; transform: rotate(-10deg);"></div>
+                <div class="route-line" style="width: 180px; top: 30%; left: 48%; transform: rotate(5deg);"></div>
+
+                <!-- Driver Markers -->
+                <div class="marker marker-driver" style="top: 35%; left: 20%;">
+                    🚛
+                    <div class="marker-label">John Smith - LD-4527</div>
+                </div>
+
+                <div class="marker marker-driver" style="top: 60%; left: 45%;">
+                    🚛
+                    <div class="marker-label">Sarah Williams - LD-4529</div>
+                </div>
+
+                <div class="marker marker-driver" style="top: 25%; left: 65%;">
+                    🚛
+                    <div class="marker-label">Mike Johnson - LD-4533</div>
+                </div>
+
+                <!-- Pickup Markers -->
+                <div class="marker marker-pickup" style="top: 35%; left: 12%;">
+                    <div class="marker-label">Houston Pickup</div>
+                </div>
+
+                <div class="marker marker-pickup" style="top: 55%; left: 35%;">
+                    <div class="marker-label">Dallas Pickup</div>
+                </div>
+
+                <!-- Delivery Markers -->
+                <div class="marker marker-delivery" style="top: 30%; left: 52%;">
+                    <div class="marker-label">Austin Delivery</div>
+                </div>
+
+                <div class="marker marker-delivery" style="top: 65%; left: 72%;">
+                    <div class="marker-label">Charlotte Delivery</div>
+                </div>
+
+                <!-- Map Controls -->
+                <div class="map-controls">
+                    <div class="map-btn" title="Zoom In">➕</div>
+                    <div class="map-btn" title="Zoom Out">➖</div>
+                    <div class="map-btn" title="Center Map">🎯</div>
+                    <div class="map-btn" title="Fullscreen">⛶</div>
+                </div>
+
+                <!-- Stats Overlay -->
+                <div class="stats-overlay">
+                    <div class="stat-card">
+                        <div class="stat-value">10</div>
+                        <div class="stat-label">Active Loads</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">847</div>
+                        <div class="stat-label">Total Miles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">On-Time</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRACKING SIDEBAR -->
+            <div class="tracking-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-title">Active Loads (10)</div>
+                    <div class="sidebar-filters">
+                        <div class="filter-chip active">All</div>
+                        <div class="filter-chip">In Transit</div>
+                        <div class="filter-chip">Pickup</div>
+                        <div class="filter-chip">Delivery</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-content">
+                    <!-- Load Card 1 -->
+                    <div class="load-tracking-card">
+                        <div class="card-header">
+                            <div class="load-number">LD-2024-4527</div>
+                            <div class="status-badge status-transit">In Transit</div>
+                        </div>
+
+                        <div class="driver-info">
+                            <div class="driver-avatar-small">JS</div>
+                            <div class="driver-details">
+                                <div class="driver-name">John Smith</div>
+                                <div class="driver-truck">Dry Van • TX-4527</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #d946ef; font-weight: 600;">65%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="route-info">
+                            <div class="route-point">
+                                <div class="route-icon pickup">📦</div>
+                                <div class="route-details">
+                                    <div class="route-location">Houston, TX</div>
+                                    <div class="route-time">Picked up: Today 8:00 AM</div>
+                                </div>
+                            </div>
+                            <div class="route-point">
+                                <div class="route-icon delivery">🎯</div>
+                                <div class="route-details">
+                                    <div class="route-location">Austin, TX</div>
+                                    <div class="route-time">Expected: Today 4:00 PM</div>
+                                    <div class="eta-badge">⏱️ ETA: 2h 15m</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="last-update">Last updated: 2 minutes ago</div>
+                    </div>
+
+                    <!-- Load Card 2 -->
+                    <div class="load-tracking-card">
+                        <div class="card-header">
+                            <div class="load-number">LD-2024-4529</div>
+                            <div class="status-badge status-transit">In Transit</div>
+                        </div>
+
+                        <div class="driver-info">
+                            <div class="driver-avatar-small">SW</div>
+                            <div class="driver-details">
+                                <div class="driver-name">Sarah Williams</div>
+                                <div class="driver-truck">Dry Van • MO-3345</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #d946ef; font-weight: 600;">42%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="route-info">
+                            <div class="route-point">
+                                <div class="route-icon pickup">📦</div>
+                                <div class="route-details">
+                                    <div class="route-location">Raytown, MO</div>
+                                    <div class="route-time">Picked up: Today 6:00 AM</div>
+                                </div>
+                            </div>
+                            <div class="route-point">
+                                <div class="route-icon delivery">🎯</div>
+                                <div class="route-details">
+                                    <div class="route-location">Charlotte, NC</div>
+                                    <div class="route-time">Expected: Tomorrow 6:00 PM</div>
+                                    <div class="eta-badge">⏱️ ETA: 18h 30m</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="last-update">Last updated: 5 minutes ago</div>
+                    </div>
+
+                    <!-- Load Card 3 -->
+                    <div class="load-tracking-card">
+                        <div class="card-header">
+                            <div class="load-number">LD-2024-4533</div>
+                            <div class="status-badge status-pickup">At Pickup</div>
+                        </div>
+
+                        <div class="driver-info">
+                            <div class="driver-avatar-small">MJ</div>
+                            <div class="driver-details">
+                                <div class="driver-name">Mike Johnson</div>
+                                <div class="driver-truck">Flatbed • TX-9012</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #d946ef; font-weight: 600;">5%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 5%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="route-info">
+                            <div class="route-point">
+                                <div class="route-icon pickup">📦</div>
+                                <div class="route-details">
+                                    <div class="route-location">Denver, CO</div>
+                                    <div class="route-time">Loading now...</div>
+                                    <div class="eta-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">🔄 Loading</div>
+                                </div>
+                            </div>
+                            <div class="route-point">
+                                <div class="route-icon delivery">🎯</div>
+                                <div class="route-details">
+                                    <div class="route-location">Phoenix, AZ</div>
+                                    <div class="route-time">Expected: Tomorrow 4:00 PM</div>
+                                    <div class="eta-badge">⏱️ ETA: 24h 0m</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="last-update">Last updated: Just now</div>
+                    </div>
+
+                    <!-- Load Card 4 -->
+                    <div class="load-tracking-card">
+                        <div class="card-header">
+                            <div class="load-number">LD-2024-4534</div>
+                            <div class="status-badge status-delivery">Near Delivery</div>
+                        </div>
+
+                        <div class="driver-info">
+                            <div class="driver-avatar-small">MG</div>
+                            <div class="driver-details">
+                                <div class="driver-name">Maria Garcia</div>
+                                <div class="driver-truck">Reefer • TX-7723</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #10b981; font-weight: 600;">92%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                            </div>
+                        </div>
+
+                        <div class="route-info">
+                            <div class="route-point">
+                                <div class="route-icon pickup">📦</div>
+                                <div class="route-details">
+                                    <div class="route-location">San Antonio, TX</div>
+                                    <div class="route-time">Picked up: Yesterday 2:00 PM</div>
+                                </div>
+                            </div>
+                            <div class="route-point">
+                                <div class="route-icon delivery">🎯</div>
+                                <div class="route-details">
+                                    <div class="route-location">Miami, FL</div>
+                                    <div class="route-time">Expected: Today 3:00 PM</div>
+                                    <div class="eta-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">⏱️ ETA: 45m</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="last-update">Last updated: 1 minute ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animate markers
+    function animateMarkers() {
+        const markers = document.querySelectorAll('.marker-driver');
+        markers.forEach((marker, index) => {
+            setInterval(() => {
+                const currentTop = parseFloat(marker.style.top);
+                const currentLeft = parseFloat(marker.style.left);
+                marker.style.top = (currentTop + (Math.random() - 0.5) * 0.5) + '%';
+                marker.style.left = (currentLeft + (Math.random() - 0.5) * 0.5) + '%';
+            }, 3000 + index * 1000);
+        });
+    }
+
+    animateMarkers();
+
+    // Simulate real-time updates
+    setInterval(() => {
+        const updates = document.querySelectorAll('.last-update');
+        updates.forEach(update => {
+            update.textContent = 'Last updated: Just now';
+            setTimeout(() => {
+                update.textContent = 'Last updated: 2 minutes ago';
+            }, 2000);
+        });
+    }, 30000);
+</script>
+</body>
+</html>

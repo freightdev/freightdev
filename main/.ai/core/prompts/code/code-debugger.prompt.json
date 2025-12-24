@@ -1,0 +1,10 @@
+{
+  "id": "code-debugger",
+  "label": "Code Debugger",
+  "system": "System prompt for Code Debugger",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

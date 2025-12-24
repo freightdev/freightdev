@@ -1,0 +1,111 @@
+{
+  // Performance optimizations
+  "files.watcherExclude": {
+    "**/Trash/**": true,
+    "**/.git/**": true,
+    "**/__pycache__/**": true,
+    "**/node_modules/**": true,
+    "**/target/**": true,
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/vendor/**": true,
+  },
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+  },
+  "search.exclude": {
+    "**/Trash/**": true,
+    "**/.git/**": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/target": true,
+    "**/build": true,
+    "**/.dart_tool": true,
+    "**/vendor": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/*.lock": true,
+  },
+  // Disable compact folders
+  "explorer.compactFolders": false,
+  // Disable telemetry-like features
+  "telemetry.telemetryLevel": "off",
+  "extensions.autoUpdate": false,
+  // Editor settings
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit",
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.suggestSelection": "first",
+  "editor.tabSize": 2,
+  "editor.minimap.enabled": false, // Improves performance
+  // Language-specific settings
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+    },
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+  },
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off",
+  },
+  // Rust-specific
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.inlayHints.chainingHints.enable": true,
+  "rust-analyzer.inlayHints.parameterHints.enable": true,
+  "rust-analyzer.checkOnSave": true,
+  "rust-analyzer.diagnostics.enable": true,
+  // Optional: More aggressive linting
+  "rust-analyzer.check.extraArgs": [
+    "--all-targets",
+    "--all-features"
+  ],
+  // Go-specific
+  "go.useLanguageServer": true,
+  "go.lintOnSave": "workspace",
+  "go.formatTool": "goimports",
+  // Flutter-specific
+  "dart.flutterSdkPath": "/home/admin/flutter", // Update this
+  "dart.previewFlutterUiGuides": true,
+  // Git
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  // Terminal
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  // File associations
+  "files.associations": {
+    "*.rs": "rust",
+    "Cargo.toml": "toml",
+    "Cargo.lock": "toml",
+  },
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "workbench.activityBar.location": "top",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Dracula ShuzzyOS",
+}

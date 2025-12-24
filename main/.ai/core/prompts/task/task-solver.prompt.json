@@ -1,0 +1,10 @@
+{
+  "id": "task-solver",
+  "label": "Task Solver",
+  "system": "System prompt for Task Solver",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

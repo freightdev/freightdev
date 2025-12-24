@@ -1,0 +1,1537 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Drivers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    .tab-count {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* VIEW TOGGLE */
+    .view-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 350px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 12px 12px 44px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+    }
+
+    .view-toggle {
+        display: flex;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 4px;
+        border-radius: 8px;
+    }
+
+    .view-btn {
+        padding: 8px 16px;
+        background: transparent;
+        border: none;
+        color: #888;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s;
+        font-size: 14px;
+    }
+
+    .view-btn.active {
+        background: #d946ef;
+        color: white;
+    }
+
+    /* FILTERS */
+    .filters {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .filter-select {
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* GRID VIEW */
+    .drivers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+    }
+
+    .driver-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .driver-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #d946ef 0%, #a855f7 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .driver-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(217, 70, 239, 0.3);
+        border-color: #d946ef;
+    }
+
+    .driver-card:hover::before {
+        opacity: 1;
+    }
+
+    .driver-header {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        align-items: flex-start;
+    }
+
+    .driver-avatar-large {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: bold;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .status-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 3px solid #16213e;
+    }
+
+    .status-available {
+        background: #10b981;
+    }
+
+    .status-on-load {
+        background: #a855f7;
+    }
+
+    .status-off-duty {
+        background: #ef4444;
+    }
+
+    .driver-info-header {
+        flex: 1;
+    }
+
+    .driver-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .driver-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .status-badge-available {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .status-badge-on-load {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+
+    .status-badge-off-duty {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .driver-contact {
+        font-size: 13px;
+        color: #888;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    .driver-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .stat-value {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .driver-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+    }
+
+    .detail-label {
+        color: #888;
+    }
+
+    .detail-value {
+        font-weight: 500;
+    }
+
+    .driver-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .badge-pill {
+        padding: 6px 12px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #d946ef;
+    }
+
+    .badge-pill.gold {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+    }
+
+    .badge-pill.green {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.3);
+        color: #10b981;
+    }
+
+    .driver-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 10px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 8px;
+        color: #d946ef;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .action-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .action-btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+
+    .action-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* LIST VIEW */
+    .drivers-list {
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .drivers-list.active {
+        display: flex;
+    }
+
+    .driver-list-item {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .driver-list-item:hover {
+        background: rgba(217, 70, 239, 0.05);
+        border-color: #d946ef;
+    }
+
+    .driver-avatar-medium {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: bold;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .driver-list-info {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .info-column {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-title {
+        font-size: 11px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .info-value.large {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #f59e0b;
+    }
+
+    /* MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 90%;
+        max-width: 900px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 28px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .modal-body {
+        padding: 32px;
+    }
+
+    .driver-profile-header {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: bold;
+    }
+
+    .profile-info {
+        flex: 1;
+    }
+
+    .profile-name {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .profile-meta {
+        display: flex;
+        gap: 20px;
+        margin-top: 12px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .profile-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .profile-stat-card {
+        background: rgba(217, 70, 239, 0.05);
+        border: 1px solid rgba(217, 70, 239, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .profile-stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #d946ef;
+        margin-bottom: 8px;
+    }
+
+    .profile-stat-label {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+    }
+
+    .info-item-label {
+        color: #888;
+        font-size: 13px;
+    }
+
+    .info-item-value {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    @media (max-width: 1400px) {
+        .drivers-grid {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            display: none;
+        }
+        .drivers-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title">Drivers</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">
+                        📥 Import
+                    </button>
+                    <button class="btn btn-primary" onclick="showAddDriver()">
+                        ➕ Add Driver
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active">All Drivers <span class="tab-count">24</span></div>
+                <div class="tab">Available <span class="tab-count">8</span></div>
+                <div class="tab">On Load <span class="tab-count">12</span></div>
+                <div class="tab">Off Duty <span class="tab-count">4</span></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- VIEW CONTROLS -->
+            <div class="view-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search drivers by name, location, equipment...">
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div class="filters">
+                        <select class="filter-select">
+                            <option>All Equipment</option>
+                            <option>Dry Van</option>
+                            <option>Flatbed</option>
+                            <option>Reefer</option>
+                            <option>Step Deck</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All States</option>
+                            <option>Texas</option>
+                            <option>California</option>
+                            <option>Missouri</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>Sort: Rating</option>
+                            <option>Sort: Name</option>
+                            <option>Sort: Total Loads</option>
+                            <option>Sort: On-Time %</option>
+                        </select>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="switchView('grid')">🔲 Grid</button>
+                        <button class="view-btn" onclick="switchView('list')">📋 List</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRID VIEW -->
+            <div class="drivers-grid" id="gridView">
+                <!-- Driver Card 1 -->
+                <div class="driver-card" onclick="showDriverProfile('John Smith')">
+                    <div class="driver-header">
+                        <div class="driver-avatar-large">
+                            JS
+                            <div class="status-indicator status-on-load"></div>
+                        </div>
+                        <div class="driver-info-header">
+                            <div class="driver-name">John Smith</div>
+                            <div class="driver-status-badge status-badge-on-load">
+                                🚛 On Load
+                            </div>
+                            <div class="driver-contact">
+                                📞 (555) 123-4567
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="driver-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">⭐ 4.8</div>
+                            <div class="stat-label">Rating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">523</div>
+                            <div class="stat-label">Total Loads</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">98.5%</div>
+                            <div class="stat-label">On-Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$247K</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                    </div>
+
+                    <div class="driver-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">📍 Houston, TX</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Equipment</span>
+                            <span class="detail-value">Dry Van 53'</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Truck #</span>
+                            <span class="detail-value">TX-4527</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Available</span>
+                            <span class="detail-value">Today 6:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="driver-badges">
+                        <div class="badge-pill green">Safe Driver</div>
+                        <div class="badge-pill gold">500+ Loads</div>
+                        <div class="badge-pill">ACH</div>
+                    </div>
+
+                    <div class="driver-actions">
+                        <button class="action-btn" onclick="event.stopPropagation(); callDriver()">
+                            📞 Call
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation(); messageDriver()">
+                            💬 Message
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation(); assignLoad()">
+                            🚛 Assign Load
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            👁️ View Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Driver Card 2 -->
+                <div class="driver-card" onclick="showDriverProfile('Maria Garcia')">
+                    <div class="driver-header">
+                        <div class="driver-avatar-large">
+                            MG
+                            <div class="status-indicator status-available"></div>
+                        </div>
+                        <div class="driver-info-header">
+                            <div class="driver-name">Maria Garcia</div>
+                            <div class="driver-status-badge status-badge-available">
+                                ✅ Available Now
+                            </div>
+                            <div class="driver-contact">
+                                📞 (555) 234-5678
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="driver-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">⭐ 4.9</div>
+                            <div class="stat-label">Rating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">387</div>
+                            <div class="stat-label">Total Loads</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">99.2%</div>
+                            <div class="stat-label">On-Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$189K</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                    </div>
+
+                    <div class="driver-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">📍 San Antonio, TX</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Equipment</span>
+                            <span class="detail-value">Reefer 53'</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Truck #</span>
+                            <span class="detail-value">TX-7723</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Available</span>
+                            <span class="detail-value">Now</span>
+                        </div>
+                    </div>
+
+                    <div class="driver-badges">
+                        <div class="badge-pill green">Safe Driver</div>
+                        <div class="badge-pill gold">Top Performer</div>
+                        <div class="badge-pill">Quick Pay</div>
+                    </div>
+
+                    <div class="driver-actions">
+                        <button class="action-btn" onclick="event.stopPropagation()">
+                            📞 Call
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation()">
+                            💬 Message
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            🚛 Assign Load
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            👁️ View Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Driver Card 3 -->
+                <div class="driver-card" onclick="showDriverProfile('Mike Johnson')">
+                    <div class="driver-header">
+                        <div class="driver-avatar-large">
+                            MJ
+                            <div class="status-indicator status-available"></div>
+                        </div>
+                        <div class="driver-info-header">
+                            <div class="driver-name">Mike Johnson</div>
+                            <div class="driver-status-badge status-badge-available">
+                                ✅ Available Now
+                            </div>
+                            <div class="driver-contact">
+                                📞 (555) 345-6789
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="driver-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">⭐ 4.7</div>
+                            <div class="stat-label">Rating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">612</div>
+                            <div class="stat-label">Total Loads</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">97.8%</div>
+                            <div class="stat-label">On-Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$298K</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                    </div>
+
+                    <div class="driver-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">📍 Dallas, TX</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Equipment</span>
+                            <span class="detail-value">Flatbed 53'</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Truck #</span>
+                            <span class="detail-value">TX-9012</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Available</span>
+                            <span class="detail-value">Now</span>
+                        </div>
+                    </div>
+
+                    <div class="driver-badges">
+                        <div class="badge-pill green">Safe Driver</div>
+                        <div class="badge-pill gold">500+ Loads</div>
+                        <div class="badge-pill">ACH Weekly</div>
+                    </div>
+
+                    <div class="driver-actions">
+                        <button class="action-btn" onclick="event.stopPropagation()">
+                            📞 Call
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation()">
+                            💬 Message
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            🚛 Assign Load
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            👁️ View Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Driver Card 4 -->
+                <div class="driver-card">
+                    <div class="driver-header">
+                        <div class="driver-avatar-large">
+                            SW
+                            <div class="status-indicator status-on-load"></div>
+                        </div>
+                        <div class="driver-info-header">
+                            <div class="driver-name">Sarah Williams</div>
+                            <div class="driver-status-badge status-badge-on-load">
+                                🚛 On Load
+                            </div>
+                            <div class="driver-contact">
+                                📞 (555) 456-7890
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="driver-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">⭐ 4.8</div>
+                            <div class="stat-label">Rating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">441</div>
+                            <div class="stat-label">Total Loads</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">98.1%</div>
+                            <div class="stat-label">On-Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$215K</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                    </div>
+
+                    <div class="driver-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">📍 Kansas City, MO</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Equipment</span>
+                            <span class="detail-value">Dry Van 53'</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Truck #</span>
+                            <span class="detail-value">MO-3345</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Available</span>
+                            <span class="detail-value">Dec 21, 2:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="driver-badges">
+                        <div class="badge-pill green">Safe Driver</div>
+                        <div class="badge-pill">Factoring</div>
+                    </div>
+
+                    <div class="driver-actions">
+                        <button class="action-btn" onclick="event.stopPropagation()">
+                            📞 Call
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation()">
+                            💬 Message
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            🗺️ Track
+                        </button>
+                        <button class="action-btn-secondary" onclick="event.stopPropagation()">
+                            👁️ View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIST VIEW -->
+            <div class="drivers-list" id="listView">
+                <div class="driver-list-item" onclick="showDriverProfile('John Smith')">
+                    <div class="driver-avatar-medium">
+                        JS
+                        <div class="status-indicator status-on-load"></div>
+                    </div>
+                    <div class="driver-list-info">
+                        <div class="info-column">
+                            <div class="info-title">Driver</div>
+                            <div class="info-value large">John Smith</div>
+                            <div class="driver-status-badge status-badge-on-load" style="width: fit-content; margin-top: 4px;">🚛 On Load</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Equipment / Truck</div>
+                            <div class="info-value">Dry Van 53'</div>
+                            <div style="font-size: 12px; color: #888;">TX-4527</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Location</div>
+                            <div class="info-value">📍 Houston, TX</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Rating</div>
+                            <div class="rating">
+                                <span>⭐</span>
+                                <span class="info-value">4.8</span>
+                            </div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Loads / On-Time</div>
+                            <div class="info-value">523 loads</div>
+                            <div style="font-size: 12px; color: #10b981;">98.5% on-time</div>
+                        </div>
+                        <div class="info-column">
+                            <div style="display: flex; gap: 8px;">
+                                <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation()">📞</button>
+                                <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation()">💬</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="driver-list-item">
+                    <div class="driver-avatar-medium">
+                        MG
+                        <div class="status-indicator status-available"></div>
+                    </div>
+                    <div class="driver-list-info">
+                        <div class="info-column">
+                            <div class="info-title">Driver</div>
+                            <div class="info-value large">Maria Garcia</div>
+                            <div class="driver-status-badge status-badge-available" style="width: fit-content; margin-top: 4px;">✅ Available</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Equipment / Truck</div>
+                            <div class="info-value">Reefer 53'</div>
+                            <div style="font-size: 12px; color: #888;">TX-7723</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Location</div>
+                            <div class="info-value">📍 San Antonio, TX</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Rating</div>
+                            <div class="rating">
+                                <span>⭐</span>
+                                <span class="info-value">4.9</span>
+                            </div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Loads / On-Time</div>
+                            <div class="info-value">387 loads</div>
+                            <div style="font-size: 12px; color: #10b981;">99.2% on-time</div>
+                        </div>
+                        <div class="info-column">
+                            <div style="display: flex; gap: 8px;">
+                                <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation()">📞</button>
+                                <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation()">💬</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="driver-list-item">
+                    <div class="driver-avatar-medium">
+                        MJ
+                        <div class="status-indicator status-available"></div>
+                    </div>
+                    <div class="driver-list-info">
+                        <div class="info-column">
+                            <div class="info-title">Driver</div>
+                            <div class="info-value large">Mike Johnson</div>
+                            <div class="driver-status-badge status-badge-available" style="width: fit-content; margin-top: 4px;">✅ Available</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Equipment / Truck</div>
+                            <div class="info-value">Flatbed 53'</div>
+                            <div style="font-size: 12px; color: #888;">TX-9012</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Location</div>
+                            <div class="info-value">📍 Dallas, TX</div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Rating</div>
+                            <div class="rating">
+                                <span>⭐</span>
+                                <span class="info-value">4.7</span>
+                            </div>
+                        </div>
+                        <div class="info-column">
+                            <div class="info-title">Loads / On-Time</div>
+                            <div class="info-value">612 loads</div>
+                            <div style="font-size: 12px; color: #10b981;">97.8% on-time</div>
+                        </div>
+                        <div class="info-column">
+                            <div style="display: flex; gap: 8px;">
+                                <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation()">📞</button>
+                                <button class="action-btn" style="width: 100%;" onclick="event.stopPropagation()">💬</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DRIVER PROFILE MODAL -->
+<div class="modal" id="driverModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Driver Profile</div>
+            <button class="modal-close" onclick="hideModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="driver-profile-header">
+                <div class="profile-avatar">JS</div>
+                <div class="profile-info">
+                    <div class="profile-name">John Smith</div>
+                    <div class="driver-status-badge status-badge-on-load">🚛 On Load - LD-2024-4527</div>
+                    <div class="profile-meta">
+                        <div class="meta-item">📞 (555) 123-4567</div>
+                        <div class="meta-item">📧 john.smith@email.com</div>
+                        <div class="meta-item">📍 Houston, TX</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-stats-grid">
+                <div class="profile-stat-card">
+                    <div class="profile-stat-value">⭐ 4.8</div>
+                    <div class="profile-stat-label">Overall Rating</div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="profile-stat-value">523</div>
+                    <div class="profile-stat-label">Total Loads</div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="profile-stat-value">98.5%</div>
+                    <div class="profile-stat-label">On-Time Rate</div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="profile-stat-value">$247K</div>
+                    <div class="profile-stat-label">Total Revenue</div>
+                </div>
+            </div>
+
+            <div class="section-title">🚛 Equipment Information</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-item-label">Equipment Type</span>
+                    <span class="info-item-value">Dry Van 53'</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">Truck Number</span>
+                    <span class="info-item-value">TX-4527</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">Trailer Number</span>
+                    <span class="info-item-value">TRL-8832</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">MC Authority</span>
+                    <span class="info-item-value">MC-123456</span>
+                </div>
+            </div>
+
+            <div class="section-title">💳 Payment Information</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-item-label">Payment Method</span>
+                    <span class="info-item-value">ACH</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">Payment Schedule</span>
+                    <span class="info-item-value">Weekly</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">Available Date</span>
+                    <span class="info-item-value">Today 6:00 PM</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">Current Load</span>
+                    <span class="info-item-value">LD-2024-4527</span>
+                </div>
+            </div>
+
+            <div class="section-title">🏆 Performance Badges</div>
+            <div class="driver-badges">
+                <div class="badge-pill green">Safe Driver - 500+ loads, 0 accidents</div>
+                <div class="badge-pill gold">500+ Loads Completed</div>
+                <div class="badge-pill green">98.5% On-Time Delivery</div>
+                <div class="badge-pill">Professional Driver</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 24px;">
+                <button class="btn btn-primary" style="width: 100%;">📞 Call Driver</button>
+                <button class="btn btn-secondary" style="width: 100%;">💬 Send Message</button>
+                <button class="btn btn-secondary" style="width: 100%;">🚛 Assign Load</button>
+                <button class="btn btn-secondary" style="width: 100%;">📄 View Documents</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchView(view) {
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+        const buttons = document.querySelectorAll('.view-btn');
+
+        if (view === 'grid') {
+            gridView.style.display = 'grid';
+            listView.classList.remove('active');
+            buttons[0].classList.add('active');
+            buttons[1].classList.remove('active');
+        } else {
+            gridView.style.display = 'none';
+            listView.classList.add('active');
+            buttons[0].classList.remove('active');
+            buttons[1].classList.add('active');
+        }
+    }
+
+    function showDriverProfile(name) {
+        document.getElementById('driverModal').classList.add('show');
+    }
+
+    function hideModal() {
+        document.getElementById('driverModal').classList.remove('show');
+    }
+
+    function showAddDriver() {
+        alert('Add Driver form would open here');
+    }
+
+    function callDriver() {
+        alert('Initiating call...');
+    }
+
+    function messageDriver() {
+        alert('Opening message...');
+    }
+
+    function assignLoad() {
+        alert('Opening load assignment...');
+    }
+
+    document.getElementById('driverModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideModal();
+        }
+    });
+</script>
+</body>
+</html>

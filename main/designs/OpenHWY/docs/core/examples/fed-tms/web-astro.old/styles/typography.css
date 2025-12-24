@@ -1,0 +1,15 @@
+.heading-display {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.body-muted {
+  color: var(--color-text-secondary);
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-purple-primary);
+}

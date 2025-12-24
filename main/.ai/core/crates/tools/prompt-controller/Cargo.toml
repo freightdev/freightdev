@@ -1,0 +1,44 @@
+[package]
+name = "prompt-security-controller"
+version = "0.1.0"
+edition = "2021"
+authors = ["CoDriver Agency <agency@openhwy.local>"]
+description = "Secure prompt management system - only answers to coordinator"
+
+[dependencies]
+# Core
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Web framework
+axum = { version = "0.7", features = ["macros"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["trace", "cors"] }
+
+# Database (commented out for now - will integrate later)
+# surrealdb = "2.0"
+
+# Security
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Config
+config = "0.14"
+toml = "0.8"
+
+[dependencies.ring]
+version = "0.17"
+features = ["std"]
+
+[dev-dependencies]
+tokio-test = "0.4"

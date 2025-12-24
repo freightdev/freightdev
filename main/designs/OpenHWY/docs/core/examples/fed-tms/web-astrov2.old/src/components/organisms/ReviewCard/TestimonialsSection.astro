@@ -1,0 +1,92 @@
+---
+import Badge from '@components/atoms/Badge';
+import { TestimonialCard } from '@components/molecules/Card';
+
+export interface Props {
+  badge: string;
+  title: string;
+  subtitle: string;
+  testimonials: Array<{
+    rating: number;
+    text: string;
+    authorName: string;
+    authorInitials: string;
+    authorRole: string;
+  }>;
+}
+
+const { badge, title, subtitle, testimonials } = Astro.props;
+---
+
+<section class="section testimonials-section" id="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <Badge variant="section">{badge}</Badge>
+      <h2 class="section-title">{title}</h2>
+      <p class="section-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="testimonials-grid">
+      {testimonials.map(testimonial => (
+        <TestimonialCard
+          rating={testimonial.rating}
+          text={testimonial.text}
+          authorName={testimonial.authorName}
+          authorInitials={testimonial.authorInitials}
+          authorRole={testimonial.authorRole}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #e0e0e0;
+  }
+
+  .section-subtitle {
+    font-size: 20px;
+    color: #888;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  @media (max-width: 1024px) {
+    .testimonials-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .testimonials-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

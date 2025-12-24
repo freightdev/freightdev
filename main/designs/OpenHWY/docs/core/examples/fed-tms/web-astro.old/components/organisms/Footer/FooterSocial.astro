@@ -1,0 +1,25 @@
+---
+import type { FooterConfig } from './footer.configs';
+
+interface Props {
+  social?: FooterConfig['social'];
+}
+
+const { social } = Astro.props as Props;
+---
+
+{social && (
+  <div class="flex space-x-6 mt-4 md:mt-0">
+    {social.map((item) => (
+      <a
+        href={item.href}
+        class="text-text-secondary hover:text-text-primary transition-colors"
+        aria-label={item.label}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="text-lg">{item.icon}</span>
+      </a>
+    ))}
+  </div>
+)}

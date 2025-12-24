@@ -1,0 +1,17 @@
+[Unit]
+Description=OpenVINO Inference Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=openvino
+WorkingDirectory=/home/openvino
+ExecStart=/usr/local/bin/ovms --model_path /home/openvino/models --port 8000
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

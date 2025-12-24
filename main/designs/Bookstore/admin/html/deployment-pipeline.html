@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Pipeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(67, 233, 123, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #0a0e27;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-btn {
+            background: rgba(10, 14, 39, 0.2);
+            border: 1px solid rgba(10, 14, 39, 0.3);
+            color: #0a0e27;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(10, 14, 39, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pipeline-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .status-card {
+            background: #1a1f3a;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #2d3548;
+            text-align: center;
+        }
+
+        .status-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #43e97b;
+            margin-bottom: 4px;
+        }
+
+        .status-label {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3548;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #e0e6ed;
+        }
+
+        .tab.active {
+            color: #43e97b;
+            border-bottom-color: #43e97b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .deployment-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2d3548;
+            transition: all 0.3s;
+        }
+
+        .deployment-card:hover {
+            border-color: #43e97b;
+            box-shadow: 0 4px 12px rgba(67, 233, 123, 0.2);
+        }
+
+        .deployment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .deployment-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .deployment-meta {
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: #065f46;
+            color: #10b981;
+        }
+
+        .status-badge.running {
+            background: #1e3a8a;
+            color: #3b82f6;
+            animation: pulse-badge 2s infinite;
+        }
+
+        .status-badge.failed {
+            background: #7f1d1d;
+            color: #ef4444;
+        }
+
+        .status-badge.pending {
+            background: #78350f;
+            color: #f59e0b;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .pipeline-stages {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .stage {
+            flex: 1;
+            min-width: 100px;
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .stage::after {
+            content: '→';
+            position: absolute;
+            right: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2d3548;
+            font-size: 20px;
+        }
+
+        .stage:last-child::after {
+            display: none;
+        }
+
+        .stage.completed {
+            background: linear-gradient(135deg, #065f46, #047857);
+            border: 1px solid #10b981;
+        }
+
+        .stage.running {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            border: 1px solid #3b82f6;
+            animation: pulse-stage 2s infinite;
+        }
+
+        .stage.failed {
+            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+            border: 1px solid #ef4444;
+        }
+
+        @keyframes pulse-stage {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .stage-name {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stage-time {
+            font-size: 10px;
+            color: #9ca3af;
+        }
+
+        .deployment-info {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .info-label {
+            color: #9ca3af;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-family: monospace;
+            color: #43e97b;
+        }
+
+        .deployment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: #2d3548;
+            border: none;
+            color: #9ca3af;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #3d4556;
+            color: #e0e6ed;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #0a0e27;
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(67, 233, 123, 0.3);
+        }
+
+        .action-btn.danger {
+            background: #7f1d1d;
+            color: #ef4444;
+        }
+
+        .action-btn.danger:hover {
+            background: #991b1b;
+        }
+
+        .log-viewer {
+            background: #0a0e27;
+            border: 1px solid #2d3548;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 12px;
+        }
+
+        .log-line {
+            padding: 4px 0;
+            border-bottom: 1px solid #1a1f3a;
+        }
+
+        .log-line:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: #9ca3af;
+            margin-right: 12px;
+        }
+
+        .log-level {
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .log-level.info { color: #3b82f6; }
+        .log-level.success { color: #10b981; }
+        .log-level.error { color: #ef4444; }
+        .log-level.warn { color: #f59e0b; }
+
+        .log-message {
+            color: #e0e6ed;
+        }
+
+        .quick-deploy {
+            background: #1a1f3a;
+            border: 1px solid #2d3548;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quick-deploy h3 {
+            font-size: 16px;
+            color: #43e97b;
+            margin-bottom: 16px;
+        }
+
+        .deploy-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+
+        .form-input, .form-select {
+            background: #0f1629;
+            border: 1px solid #2d3548;
+            color: #e0e6ed;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #43e97b;
+        }
+
+        .deploy-btn {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border: none;
+            color: #0a0e27;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .deploy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 233, 123, 0.4);
+        }
+
+        .deploy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #1a1f3a;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #2d3548;
+        }
+
+        .metric-header {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #43e97b;
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .metric-change.positive { color: #10b981; }
+        .metric-change.negative { color: #ef4444; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .pipeline-stages {
+                flex-direction: column;
+            }
+            .stage::after {
+                content: '↓';
+                right: 50%;
+                transform: translateX(50%);
+                top: auto;
+                bottom: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Deployment Pipeline</h1>
+        <div class="header-actions">
+            <button class="header-btn" onclick="refreshDeployments()">
+                <span>🔄</span>
+                <span>Refresh</span>
+            </button>
+            <button class="header-btn" onclick="toggleQuickDeploy()">
+                <span>⚡</span>
+                <span>Quick Deploy</span>
+            </button>
+            <button class="header-btn" onclick="viewMetrics()">
+                <span>📊</span>
+                <span>Metrics</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="pipeline-status">
+        <div class="status-card">
+            <div class="status-value" id="deployCount">0</div>
+            <div class="status-label">Today</div>
+        </div>
+        <div class="status-card">
+            <div class="status-value" id="successRate">0%</div>
+            <div class="status-label">Success Rate</div>
+        </div>
+        <div class="status-card">
+            <div class="status-value" id="avgTime">0s</div>
+            <div class="status-label">Avg Time</div>
+        </div>
+        <div class="status-card">
+            <div class="status-value" id="activeCount">0</div>
+            <div class="status-label">Active</div>
+        </div>
+    </div>
+
+    <!-- Quick Deploy Form -->
+    <div class="quick-deploy" id="quickDeployForm" style="display: none;">
+        <h3>⚡ Quick Deploy</h3>
+        <div class="deploy-form">
+            <div class="form-group">
+                <label class="form-label">Client</label>
+                <select class="form-select" id="clientSelect">
+                    <option>Acme Corporation</option>
+                    <option>TechStart Inc</option>
+                    <option>Global Solutions</option>
+                    <option>DevShop LLC</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Service</label>
+                <select class="form-select" id="serviceSelect">
+                    <option>Web App</option>
+                    <option>API Server</option>
+                    <option>Worker Queue</option>
+                    <option>Admin Panel</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Branch / Tag</label>
+                <input type="text" class="form-input" placeholder="main" value="main">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Target Environment</label>
+                <select class="form-select">
+                    <option>Production (Oracle + Home)</option>
+                    <option>Staging (Home Only)</option>
+                    <option>Development (Dev Machine)</option>
+                </select>
+            </div>
+            <button class="deploy-btn" onclick="triggerDeploy()">
+                <span>🚀</span>
+                <span>Deploy Now</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('active')">🔄 Active</button>
+        <button class="tab" onclick="switchTab('history')">📜 History</button>
+        <button class="tab" onclick="switchTab('scheduled')">⏰ Scheduled</button>
+        <button class="tab" onclick="switchTab('rollbacks')">⏮️ Rollbacks</button>
+    </div>
+
+    <!-- Active Deployments -->
+    <div class="tab-content active" id="active-tab">
+        <div id="activeDeployments"></div>
+    </div>
+
+    <!-- Deployment History -->
+    <div class="tab-content" id="history-tab">
+        <div id="historyDeployments"></div>
+    </div>
+
+    <!-- Scheduled Deployments -->
+    <div class="tab-content" id="scheduled-tab">
+        <div id="scheduledDeployments"></div>
+    </div>
+
+    <!-- Rollbacks -->
+    <div class="tab-content" id="rollbacks-tab">
+        <div id="rollbackDeployments"></div>
+    </div>
+
+    <script>
+        let currentTab = 'active';
+        let showLogs = {};
+
+        function generateMockDeployments() {
+            return {
+                active: [
+                    {
+                        id: 'deploy-001',
+                        client: 'Acme Corporation',
+                        service: 'Web App',
+                        status: 'running',
+                        branch: 'main',
+                        commit: 'a3f7c9e',
+                        startTime: '2 minutes ago',
+                        stages: [
+                            { name: 'Build', status: 'completed', time: '45s' },
+                            { name: 'Test', status: 'completed', time: '1m 23s' },
+                            { name: 'Deploy', status: 'running', time: '34s' },
+                            { name: 'Health Check', status: 'pending', time: '-' }
+                        ],
+                        environment: 'Production',
+                        triggeredBy: 'GitHub Push'
+                    },
+                    {
+                        id: 'deploy-002',
+                        client: 'Global Solutions',
+                        service: 'API Server',
+                        status: 'running',
+                        branch: 'feature/new-api',
+                        commit: '7b2e4f1',
+                        startTime: '5 minutes ago',
+                        stages: [
+                            { name: 'Build', status: 'completed', time: '1m 12s' },
+                            { name: 'Test', status: 'running', time: '2m 34s' },
+                            { name: 'Deploy', status: 'pending', time: '-' },
+                            { name: 'Health Check', status: 'pending', time: '-' }
+                        ],
+                        environment: 'Staging',
+                        triggeredBy: 'Manual'
+                    }
+                ],
+                history: [
+                    {
+                        id: 'deploy-003',
+                        client: 'DevShop LLC',
+                        service: 'Portfolio Site',
+                        status: 'success',
+                        branch: 'main',
+                        commit: 'e9d2c1a',
+                        startTime: '1 hour ago',
+                        duration: '3m 45s',
+                        environment: 'Production',
+                        triggeredBy: 'GitHub Push'
+                    },
+                    {
+                        id: 'deploy-004',
+                        client: 'TechStart Inc',
+                        service: 'Landing Page',
+                        status: 'failed',
+                        branch: 'main',
+                        commit: 'c4f8b2e',
+                        startTime: '2 hours ago',
+                        duration: '1m 23s',
+                        environment: 'Production',
+                        triggeredBy: 'Scheduled',
+                        error: 'Build failed: npm install timeout'
+                    },
+                    {
+                        id: 'deploy-005',
+                        client: 'Acme Corporation',
+                        service: 'API Server',
+                        status: 'success',
+                        branch: 'main',
+                        commit: 'f1a9c7e',
+                        startTime: '3 hours ago',
+                        duration: '4m 12s',
+                        environment: 'Production',
+                        triggeredBy: 'Manual'
+                    }
+                ],
+                scheduled: [
+                    {
+                        id: 'sched-001',
+                        client: 'Global Solutions',
+                        service: 'E-commerce Platform',
+                        branch: 'main',
+                        scheduledFor: 'Today at 11:00 PM',
+                        environment: 'Production'
+                    }
+                ],
+                rollbacks: [
+                    {
+                        id: 'rollback-001',
+                        client: 'TechStart Inc',
+                        service: 'Landing Page',
+                        fromCommit: 'c4f8b2e',
+                        toCommit: 'a1b2c3d',
+                        time: '2 hours ago',
+                        reason: 'Build failure'
+                    }
+                ]
+            };
+        }
+
+        function renderActiveDeployments(deployments) {
+            if (deployments.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">✅</div><div>No active deployments</div></div>';
+            }
+
+            return deployments.map(d => `
+                <div class="deployment-card">
+                    <div class="deployment-header">
+                        <div>
+                            <div class="deployment-title">${d.client} - ${d.service}</div>
+                            <div class="deployment-meta">
+                                <span>🌿 ${d.branch}</span>
+                                <span>📝 ${d.commit}</span>
+                                <span>⏱️ ${d.startTime}</span>
+                            </div>
+                        </div>
+                        <span class="status-badge ${d.status}">${d.status.toUpperCase()}</span>
+                    </div>
+
+                    <div class="pipeline-stages">
+                        ${d.stages.map(stage => `
+                            <div class="stage ${stage.status}">
+                                <div class="stage-name">${stage.name}</div>
+                                <div class="stage-time">${stage.time}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="deployment-info">
+                        <div class="info-row">
+                            <span class="info-label">Environment</span>
+                            <span class="info-value">${d.environment}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Triggered By</span>
+                            <span class="info-value">${d.triggeredBy}</span>
+                        </div>
+                    </div>
+
+                    <div class="deployment-actions">
+                        <button class="action-btn" onclick="toggleLogs('${d.id}')">
+                            ${showLogs[d.id] ? 'Hide' : 'Show'} Logs
+                        </button>
+                        <button class="action-btn danger" onclick="cancelDeploy('${d.id}')">Cancel</button>
+                    </div>
+
+                    ${showLogs[d.id] ? `
+                        <div class="log-viewer">
+                            <div class="log-line">
+                                <span class="log-time">12:34:21</span>
+                                <span class="log-level info">[INFO]</span>
+                                <span class="log-message">Starting deployment pipeline...</span>
+                            </div>
+                            <div class="log-line">
+                                <span class="log-time">12:34:23</span>
+                                <span class="log-level success">[SUCCESS]</span>
+                                <span class="log-message">Build stage completed successfully</span>
+                            </div>
+                            <div class="log-line">
+                                <span class="log-time">12:35:46</span>
+                                <span class="log-level success">[SUCCESS]</span>
+                                <span class="log-message">All tests passed (42/42)</span>
+                            </div>
+                            <div class="log-line">
+                                <span class="log-time">12:36:12</span>
+                                <span class="log-level info">[INFO]</span>
+                                <span class="log-message">Deploying to K8s cluster via Nebula tunnel...</span>
+                            </div>
+                            <div class="log-line">
+                                <span class="log-time">12:36:34</span>
+                                <span class="log-level info">[INFO]</span>
+                                <span class="log-message">Pod scheduled on home-worker-2 (10.42.0.3)</span>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderHistoryDeployments(deployments) {
+            if (deployments.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">📜</div><div>No deployment history</div></div>';
+            }
+
+            return deployments.map(d => `
+                <div class="deployment-card">
+                    <div class="deployment-header">
+                        <div>
+                            <div class="deployment-title">${d.client} - ${d.service}</div>
+                            <div class="deployment-meta">
+                                <span>🌿 ${d.branch}</span>
+                                <span>📝 ${d.commit}</span>
+                                <span>⏱️ ${d.startTime}</span>
+                                <span>⏳ ${d.duration}</span>
+                            </div>
+                        </div>
+                        <span class="status-badge ${d.status}">${d.status.toUpperCase()}</span>
+                    </div>
+
+                    <div class="deployment-info">
+                        <div class="info-row">
+                            <span class="info-label">Environment</span>
+                            <span class="info-value">${d.environment}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Triggered By</span>
+                            <span class="info-value">${d.triggeredBy}</span>
+                        </div>
+                        ${d.error ? `
+                            <div class="info-row">
+                                <span class="info-label">Error</span>
+                                <span class="info-value" style="color: #ef4444;">${d.error}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="deployment-actions">
+                        <button class="action-btn" onclick="viewLogs('${d.id}')">View Logs</button>
+                        ${d.status === 'success' ? `
+                            <button class="action-btn primary" onclick="redeployVersion('${d.id}')">Redeploy</button>
+                        ` : `
+                            <button class="action-btn" onclick="retryDeploy('${d.id}')">Retry</button>
+                        `}
+                        ${d.status === 'failed' ? `
+                            <button class="action-btn danger" onclick="rollbackDeploy('${d.id}')">Rollback</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderScheduledDeployments(deployments) {
+            if (deployments.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">⏰</div><div>No scheduled deployments</div></div>';
+            }
+
+            return deployments.map(d => `
+                <div class="deployment-card">
+                    <div class="deployment-header">
+                        <div>
+                            <div class="deployment-title">${d.client} - ${d.service}</div>
+                            <div class="deployment-meta">
+                                <span>🌿 ${d.branch}</span>
+                                <span>⏰ ${d.scheduledFor}</span>
+                            </div>
+                        </div>
+                        <span class="status-badge pending">SCHEDULED</span>
+                    </div>
+
+                    <div class="deployment-info">
+                        <div class="info-row">
+                            <span class="info-label">Environment</span>
+                            <span class="info-value">${d.environment}</span>
+                        </div>
+                    </div>
+
+                    <div class="deployment-actions">
+                        <button class="action-btn primary" onclick="runNow('${d.id}')">Run Now</button>
+                        <button class="action-btn" onclick="editSchedule('${d.id}')">Edit</button>
+                        <button class="action-btn danger" onclick="cancelSchedule('${d.id}')">Cancel</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRollbacks(rollbacks) {
+            if (rollbacks.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">⏮️</div><div>No rollbacks performed</div></div>';
+            }
+
+            return rollbacks.map(r => `
+                <div class="deployment-card">
+                    <div class="deployment-header">
+                        <div>
+                            <div class="deployment-title">${r.client} - ${r.service}</div>
+                            <div class="deployment-meta">
+                                <span>⏮️ ${r.fromCommit} → ${r.toCommit}</span>
+                                <span>⏱️ ${r.time}</span>
+                            </div>
+                        </div>
+                        <span class="status-badge success">ROLLED BACK</span>
+                    </div>
+
+                    <div class="deployment-info">
+                        <div class="info-row">
+                            <span class="info-label">Reason</span>
+                            <span class="info-value">${r.reason}</span>
+                        </div>
+                    </div>
+
+                    <div class="deployment-actions">
+                        <button class="action-btn" onclick="viewRollbackLogs('${r.id}')">View Logs</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const data = generateMockDeployments();
+
+            // Update stats
+            const totalToday = data.active.length + data.history.length;
+            const successful = data.history.filter(d => d.status === 'success').length;
+            const successRate = data.history.length > 0 ? Math.round((successful / data.history.length) * 100) : 100;
+            const avgTime = '3m 24s'; // Mock average
+
+            document.getElementById('deployCount').textContent = totalToday;
+            document.getElementById('successRate').textContent = successRate + '%';
+            document.getElementById('avgTime').textContent = avgTime;
+            document.getElementById('activeCount').textContent = data.active.length;
+
+            // Render deployments based on current tab
+            document.getElementById('activeDeployments').innerHTML = renderActiveDeployments(data.active);
+            document.getElementById('historyDeployments').innerHTML = renderHistoryDeployments(data.history);
+            document.getElementById('scheduledDeployments').innerHTML = renderScheduledDeployments(data.scheduled);
+            document.getElementById('rollbackDeployments').innerHTML = renderRollbacks(data.rollbacks);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function toggleQuickDeploy() {
+            const form = document.getElementById('quickDeployForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleLogs(id) {
+            showLogs[id] = !showLogs[id];
+            updateDashboard();
+        }
+
+        function triggerDeploy() {
+            const client = document.getElementById('clientSelect').value;
+            const service = document.getElementById('serviceSelect').value;
+            alert(`🚀 Deploying ${service} for ${client}...`);
+            toggleQuickDeploy();
+        }
+
+        function cancelDeploy(id) {
+            if (confirm('Are you sure you want to cancel this deployment?')) {
+                alert(`Deployment ${id} cancelled`);
+            }
+        }
+
+        function viewLogs(id) {
+            alert(`Opening full logs for ${id}`);
+        }
+
+        function redeployVersion(id) {
+            if (confirm('Redeploy this version to production?')) {
+                alert(`Redeploying ${id}...`);
+            }
+        }
+
+        function retryDeploy(id) {
+            if (confirm('Retry this failed deployment?')) {
+                alert(`Retrying ${id}...`);
+            }
+        }
+
+        function rollbackDeploy(id) {
+            if (confirm('Rollback to previous version? This will happen immediately.')) {
+                alert(`Rolling back ${id}...`);
+            }
+        }
+
+        function runNow(id) {
+            if (confirm('Run this scheduled deployment now?')) {
+                alert(`Running ${id} immediately...`);
+            }
+        }
+
+        function editSchedule(id) {
+            alert(`Opening schedule editor for ${id}`);
+        }
+
+        function cancelSchedule(id) {
+            if (confirm('Cancel this scheduled deployment?')) {
+                alert(`Schedule ${id} cancelled`);
+            }
+        }
+
+        function viewRollbackLogs(id) {
+            alert(`Opening rollback logs for ${id}`);
+        }
+
+        function refreshDeployments() {
+            updateDashboard();
+            alert('Dashboard refreshed!');
+        }
+
+        function viewMetrics() {
+            alert('Opening deployment metrics dashboard');
+        }
+
+        // Initial render
+        updateDashboard();
+
+        // Auto-refresh every 10 seconds
+        setInterval(updateDashboard, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+---
+import Badge from '@components/atoms/Badge';
+import PricingCard from './PricingCard.astro';
+
+export interface Props {
+  badge: string;
+  title: string;
+  subtitle: string;
+  pricingTiers: Array<{
+    name: string;
+    description: string;
+    price: number;
+    period: string;
+    note?: string;
+    badge?: string;
+    featured?: boolean;
+    features: string[];
+    ctaText: string;
+    ctaVariant?: 'primary' | 'secondary';
+  }>;
+}
+
+const { badge, title, subtitle, pricingTiers } = Astro.props;
+---
+
+<section class="section pricing-section" id="software-pricing">
+  <div class="container">
+    <div class="section-header">
+      <Badge variant="section">{badge}</Badge>
+      <h2 class="section-title">{title}</h2>
+      <p class="section-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="pricing-container">
+      {pricingTiers.map(tier => (
+        <PricingCard {...tier} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .pricing-section {
+    background: #16213e;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #e0e0e0;
+  }
+
+  .section-subtitle {
+    font-size: 20px;
+    color: #888;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .pricing-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 1024px) {
+    .pricing-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>

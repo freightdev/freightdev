@@ -1,0 +1,23 @@
+# Trail Log — encrypted ledger of what the marker did
+
+trail_id: ""
+linked_chapter_id: ""
+linked_marker_id: ""
+linked_page_id: ""
+
+scope: "marker-local"          # marker-local | system-wide
+encrypted: true
+
+trail_data: ""                 # Encrypted payload or reference
+hash: ""                       # SHA256 hash for integrity check
+
+access:
+  readable_by_marker: true
+  readable_by_system: true
+  readable_by_user: false
+  requires_warrant: true       # Only accessed if warrant conditions met
+
+inkburned: true                # True if trail was burned into the page
+burned_at: ""                  # Timestamp if burned
+
+created_at: ""

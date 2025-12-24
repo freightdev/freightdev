@@ -1,0 +1,10 @@
+{
+  "id": "nsfw-filter",
+  "label": "Nsfw Filter",
+  "system": "System prompt for Nsfw Filter",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,1308 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Training Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .page-title-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .training-icon {
+        width: 52px;
+        height: 52px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .page-title-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        color: #888;
+    }
+
+    .progress-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 12px;
+    }
+
+    .progress-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #f59e0b;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 32px;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #f59e0b;
+        border-bottom-color: #f59e0b;
+    }
+
+    .tab-count {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    /* STATS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(245, 158, 11, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #888;
+    }
+
+    /* COURSE GRID */
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .course-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .course-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(245, 158, 11, 0.3);
+        border-color: #f59e0b;
+    }
+
+    .course-thumbnail {
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 64px;
+        position: relative;
+    }
+
+    .course-duration {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        padding: 6px 12px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    .course-content {
+        padding: 24px;
+    }
+
+    .course-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .course-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .difficulty-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .difficulty-beginner {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .difficulty-intermediate {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .difficulty-advanced {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .course-description {
+        font-size: 14px;
+        color: #888;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+
+    .course-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 16px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .course-progress {
+        margin-bottom: 16px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .course-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .course-btn-primary {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        border: none;
+    }
+
+    .course-btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    .course-btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+
+    /* LESSON VIEWER */
+    .lesson-viewer {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 32px;
+    }
+
+    .video-container {
+        width: 100%;
+        height: 500px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+        position: relative;
+    }
+
+    .play-button {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(245, 158, 11, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .play-button:hover {
+        transform: scale(1.1);
+        background: #f59e0b;
+    }
+
+    .lesson-info {
+        padding: 24px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lesson-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .lesson-description {
+        font-size: 14px;
+        color: #888;
+        line-height: 1.6;
+    }
+
+    .lesson-navigation {
+        padding: 20px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* LESSON LIST */
+    .lessons-list {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .lessons-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lessons-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .lesson-item {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .lesson-item:hover {
+        background: rgba(245, 158, 11, 0.05);
+    }
+
+    .lesson-item.completed {
+        opacity: 0.7;
+    }
+
+    .lesson-item.active {
+        background: rgba(245, 158, 11, 0.1);
+        border-left: 3px solid #f59e0b;
+    }
+
+    .lesson-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(245, 158, 11, 0.1);
+        border: 2px solid rgba(245, 158, 11, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #f59e0b;
+    }
+
+    .lesson-number.completed {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: #10b981;
+        color: #10b981;
+    }
+
+    .lesson-details {
+        flex: 1;
+    }
+
+    .lesson-name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .lesson-meta {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .lesson-status {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .status-locked {
+        background: rgba(100, 116, 139, 0.2);
+        color: #64748b;
+    }
+
+    .status-available {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .status-completed {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    /* ACHIEVEMENTS */
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .achievement-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .achievement-card.locked {
+        opacity: 0.4;
+    }
+
+    .achievement-card:hover:not(.locked) {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(245, 158, 11, 0.3);
+    }
+
+    .achievement-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+
+    .achievement-name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .achievement-description {
+        font-size: 12px;
+        color: #888;
+    }
+
+    /* CERTIFICATE */
+    .certificate-preview {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-radius: 16px;
+        padding: 48px;
+        text-align: center;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .certificate-preview::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .certificate-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .certificate-badge {
+        font-size: 80px;
+        margin-bottom: 24px;
+    }
+
+    .certificate-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: white;
+    }
+
+    .certificate-subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 32px;
+    }
+
+    .certificate-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    /* QUIZ */
+    .quiz-container {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 32px;
+    }
+
+    .question {
+        margin-bottom: 32px;
+    }
+
+    .question-text {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .answer-option {
+        padding: 16px 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .answer-option:hover {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: #f59e0b;
+    }
+
+    .answer-option.selected {
+        background: rgba(245, 158, 11, 0.2);
+        border-color: #f59e0b;
+    }
+
+    .answer-option.correct {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: #10b981;
+    }
+
+    .answer-option.incorrect {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Learning</div>
+            <div class="nav-item active">
+                <div class="nav-icon">🎓</div>
+                <div class="nav-label">Training Center</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🤖</div>
+                <div class="nav-label">ELDA Assistant</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title-section">
+                    <div class="training-icon">🎓</div>
+                    <div class="page-title-info">
+                        <div class="page-title">Training Center</div>
+                        <div class="page-subtitle">Master Truck Dispatching & Grow Your Business</div>
+                    </div>
+                </div>
+                <div class="progress-badge">
+                    <div class="progress-text">📚 3 of 12 courses completed (25%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">All Courses</div>
+                <div class="tab">My Learning <span class="tab-count">5</span></div>
+                <div class="tab">Certificates</div>
+                <div class="tab">Achievements</div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Total Courses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value">47h</div>
+                    <div class="stat-label">Learning Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Achievements</div>
+                </div>
+            </div>
+
+            <!-- COURSES GRID -->
+            <div class="courses-grid">
+                <!-- Course 1 - In Progress -->
+                <div class="course-card">
+                    <div class="course-thumbnail">
+                        📋
+                        <div class="course-duration">⏱️ 4h 30m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Dispatching Basics</div>
+                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Learn the fundamentals of truck dispatching including load booking, driver coordination, and documentation management.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 12 lessons</div>
+                            <div class="meta-item">🎥 Video & Text</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #f59e0b; font-weight: 600;">65%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-primary">Continue Learning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 2 - Not Started -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);">
+                        💰
+                        <div class="course-duration">⏱️ 2h 45m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Rate Negotiation</div>
+                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Master the art of negotiating freight rates with brokers and shippers to maximize profitability.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 8 lessons</div>
+                            <div class="meta-item">🎥 Video & Quiz</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #666;">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-primary">Start Course</button>
+                            <button class="course-btn course-btn-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 3 - Completed -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        🔍
+                        <div class="course-duration">⏱️ 3h 15m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Load Board Mastery</div>
+                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Find the best loads on DAT and Truckstop. Learn search strategies, rate analysis, and booking tactics.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 10 lessons</div>
+                            <div class="meta-item">🎥 Video & Practice</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #10b981; font-weight: 600;">✅ Completed</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-secondary">Review</button>
+                            <button class="course-btn course-btn-secondary">📜 Certificate</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 4 -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                        📄
+                        <div class="course-duration">⏱️ 2h 00m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Document Management</div>
+                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Master paperwork, compliance requirements, and automation tools for efficient operations.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 6 lessons</div>
+                            <div class="meta-item">🎥 Video & Templates</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #f59e0b; font-weight: 600;">40%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-primary">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 5 -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                        👥
+                        <div class="course-duration">⏱️ 5h 30m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Multi-Driver Operations</div>
+                                <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Scale your dispatching business by managing multiple drivers simultaneously with efficiency.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 15 lessons</div>
+                            <div class="meta-item">🎥 Video & Case Studies</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #666;">Locked - Complete prerequisites</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-secondary" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 6 -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);">
+                        💬
+                        <div class="course-duration">⏱️ 3h 00m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Driver Communication</div>
+                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Build strong relationships with drivers through effective communication and conflict resolution.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 9 lessons</div>
+                            <div class="meta-item">🎥 Video & Scenarios</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #666;">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-primary">Start Course</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 7 -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);">
+                        📊
+                        <div class="course-duration">⏱️ 4h 15m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Financial Management</div>
+                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Track revenue, manage expenses, and optimize cash flow for your dispatch business.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 11 lessons</div>
+                            <div class="meta-item">🎥 Video & Spreadsheets</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #666;">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-primary">Start Course</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 8 -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);">
+                        🚨
+                        <div class="course-duration">⏱️ 2h 30m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Crisis Management</div>
+                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Handle breakdowns, accidents, delays, and other emergencies with confidence and professionalism.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 7 lessons</div>
+                            <div class="meta-item">🎥 Video & Simulations</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #666;">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-primary">Start Course</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 9 -->
+                <div class="course-card">
+                    <div class="course-thumbnail" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+                        🎯
+                        <div class="course-duration">⏱️ 3h 45m</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <div>
+                                <div class="course-title">Business Growth Strategies</div>
+                                <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            </div>
+                        </div>
+                        <div class="course-description">
+                            Scale from solo dispatcher to managing a team and building a profitable dispatch company.
+                        </div>
+                        <div class="course-meta">
+                            <div class="meta-item">📖 13 lessons</div>
+                            <div class="meta-item">🎥 Video & Worksheets</div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span style="color: #666;">Locked</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="course-btn course-btn-secondary" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACHIEVEMENTS SECTION -->
+            <div style="margin-top: 48px;">
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">🏆 Your Achievements</h3>
+                <div class="achievements-grid">
+                    <div class="achievement-card">
+                        <div class="achievement-icon">🎓</div>
+                        <div class="achievement-name">First Steps</div>
+                        <div class="achievement-description">Complete your first course</div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-icon">🔥</div>
+                        <div class="achievement-name">On Fire!</div>
+                        <div class="achievement-description">7 day learning streak</div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-icon">📚</div>
+                        <div class="achievement-name">Bookworm</div>
+                        <div class="achievement-description">Complete 5 courses</div>
+                    </div>
+
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">🏅</div>
+                        <div class="achievement-name">Master Dispatcher</div>
+                        <div class="achievement-description">Complete all courses</div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-icon">💯</div>
+                        <div class="achievement-name">Perfect Score</div>
+                        <div class="achievement-description">Get 100% on a quiz</div>
+                    </div>
+
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">⚡</div>
+                        <div class="achievement-name">Speed Learner</div>
+                        <div class="achievement-description">Complete course in 1 day</div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-icon">🎯</div>
+                        <div class="achievement-name">Goal Getter</div>
+                        <div class="achievement-description">Complete 10 lessons</div>
+                    </div>
+
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">👑</div>
+                        <div class="achievement-name">Elite Dispatcher</div>
+                        <div class="achievement-description">Earn all achievements</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CERTIFICATE PREVIEW -->
+            <div style="margin-top: 48px;">
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">📜 Your Certificates</h3>
+                <div class="certificate-preview">
+                    <div class="certificate-content">
+                        <div class="certificate-badge">🏆</div>
+                        <div class="certificate-title">Certificate of Completion</div>
+                        <div class="certificate-subtitle">Load Board Mastery</div>
+                        <div style="color: rgba(255, 255, 255, 0.8); margin-bottom: 24px;">
+                            Awarded to <strong>Jesse</strong> for successfully completing the course
+                        </div>
+                        <div class="certificate-actions">
+                            <button class="btn btn-secondary" style="background: white; color: #f59e0b;">📥 Download PDF</button>
+                            <button class="btn btn-secondary" style="background: rgba(255, 255, 255, 0.2); color: white;">📧 Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

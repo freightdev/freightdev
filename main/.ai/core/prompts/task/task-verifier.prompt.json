@@ -1,0 +1,10 @@
+{
+  "id": "task-verifier",
+  "label": "Task Verifier",
+  "system": "System prompt for Task Verifier",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

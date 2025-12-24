@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Payments</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 32px;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    .tab-count {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    /* STATS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* FILTERS */
+    .filters-bar {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .filter-select {
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* PAYMENT TABLE */
+    .table-container {
+        background: #16213e;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .table-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .table-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    th {
+        padding: 16px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    td {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tbody tr {
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    tbody tr:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .payment-id {
+        font-weight: 600;
+        color: #d946ef;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-pending {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .badge-collected {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .badge-overdue {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .badge-expected {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .badge-paid {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .badge-unpaid {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .badge-processing {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+
+    .amount {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .amount.positive {
+        color: #10b981;
+    }
+
+    .amount.negative {
+        color: #ef4444;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        background: rgba(217, 70, 239, 0.1);
+        color: #d946ef;
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    /* DRIVER PAYMENT TRACKING */
+    .driver-payment-grid {
+        display: grid;
+        gap: 16px;
+    }
+
+    .driver-payment-card {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 24px;
+        transition: all 0.2s;
+    }
+
+    .driver-payment-card:hover {
+        border-color: #d946ef;
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.2);
+    }
+
+    .driver-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .driver-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .driver-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .driver-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .driver-name {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .driver-meta {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .driver-balance {
+        text-align: right;
+    }
+
+    .balance-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .balance-amount {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .driver-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .mini-stat {
+        text-align: center;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+    }
+
+    .mini-stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .mini-stat-label {
+        font-size: 10px;
+        color: #888;
+        text-transform: uppercase;
+    }
+
+    .loads-table {
+        margin-top: 16px;
+    }
+
+    .loads-table-small {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .loads-table-small th {
+        padding: 10px 12px;
+        font-size: 10px;
+    }
+
+    .loads-table-small td {
+        padding: 12px;
+    }
+
+    .expand-btn {
+        width: 100%;
+        padding: 10px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 8px;
+        color: #d946ef;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 12px;
+        transition: all 0.2s;
+    }
+
+    .expand-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    /* MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 28px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .modal-body {
+        padding: 32px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .modal-footer {
+        padding: 24px 32px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    /* TIMELINE */
+    .payment-timeline {
+        position: relative;
+        padding-left: 32px;
+        margin-top: 24px;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 24px;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -26px;
+        top: 8px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #d946ef;
+        border: 2px solid #16213e;
+    }
+
+    .timeline-item::after {
+        content: '';
+        position: absolute;
+        left: -21px;
+        top: 20px;
+        width: 2px;
+        height: calc(100% - 8px);
+        background: rgba(217, 70, 239, 0.3);
+    }
+
+    .timeline-item:last-child::after {
+        display: none;
+    }
+
+    .timeline-date {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 4px;
+    }
+
+    .timeline-event {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .timeline-amount {
+        font-size: 16px;
+        font-weight: 700;
+        color: #10b981;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title">Payments</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📊 Generate Report</button>
+                    <button class="btn btn-secondary">📤 Export</button>
+                    <button class="btn btn-primary" onclick="showRecordPaymentModal()">💰 Record Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">Overview</div>
+                <div class="tab">From Brokers/Shippers <span class="tab-count">28</span></div>
+                <div class="tab">From Drivers <span class="tab-count">12</span></div>
+                <div class="tab">Driver Load Tracking</div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" style="color: #10b981;">$89,430</div>
+                    <div class="stat-label">Received (This Month)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-value" style="color: #f59e0b;">$47,250</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📥</div>
+                    <div class="stat-value" style="color: #3b82f6;">$12,450</div>
+                    <div class="stat-label">Dispatch Fees Due</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📤</div>
+                    <div class="stat-value" style="color: #ef4444;">$67,800</div>
+                    <div class="stat-label">Owed to Drivers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value">$21,630</div>
+                    <div class="stat-label">Net Cash Flow</div>
+                </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search by load #, driver, broker...">
+                </div>
+                <select class="filter-select">
+                    <option>All Types</option>
+                    <option>From Brokers</option>
+                    <option>From Shippers</option>
+                    <option>From Drivers</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Statuses</option>
+                    <option>Collected</option>
+                    <option>Pending</option>
+                    <option>Overdue</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Dates</option>
+                    <option>This Week</option>
+                    <option>This Month</option>
+                    <option>Last 30 Days</option>
+                </select>
+            </div>
+
+            <!-- PAYMENTS FROM BROKERS/SHIPPERS -->
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">Payments from Brokers & Shippers</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Load #</th>
+                            <th>Payer</th>
+                            <th>Invoice #</th>
+                            <th>Amount</th>
+                            <th>Payment Date</th>
+                            <th>Expected Date</th>
+                            <th>Driver</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>LD-2024-4527</strong></td>
+                            <td>FreightLink Logistics</td>
+                            <td>INV-2024-1047</td>
+                            <td><span class="amount positive">$2,450.00</span></td>
+                            <td>Dec 16, 2024</td>
+                            <td>Jan 14, 2025</td>
+                            <td>John Smith</td>
+                            <td><span class="badge badge-collected">Collected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Receipt</button>
+                                    <button class="action-btn">💸 Pay Driver</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4529</strong></td>
+                            <td>AutoParts Distribution</td>
+                            <td>INV-2024-1048</td>
+                            <td><span class="amount">$4,400.00</span></td>
+                            <td>—</td>
+                            <td>Jan 15, 2025</td>
+                            <td>Sarah Williams</td>
+                            <td><span class="badge badge-expected">Expected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📧 Follow Up</button>
+                                    <button class="action-btn">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4501</strong></td>
+                            <td>National Freight Solutions</td>
+                            <td>INV-2024-1025</td>
+                            <td><span class="amount">$3,200.00</span></td>
+                            <td>—</td>
+                            <td>Dec 15, 2024</td>
+                            <td>Mike Johnson</td>
+                            <td><span class="badge badge-overdue">Overdue</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">⚠️ Escalate</button>
+                                    <button class="action-btn">📧 Reminder</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4530</strong></td>
+                            <td>TransAmerica Brokerage</td>
+                            <td>INV-2024-1050</td>
+                            <td><span class="amount positive">$2,120.00</span></td>
+                            <td>Dec 17, 2024</td>
+                            <td>Jan 16, 2025</td>
+                            <td>Mike Johnson</td>
+                            <td><span class="badge badge-collected">Collected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Receipt</button>
+                                    <button class="action-btn">💸 Pay Driver</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4531</strong></td>
+                            <td>Fresh Valley Foods</td>
+                            <td>INV-2024-1051</td>
+                            <td><span class="amount">$2,650.00</span></td>
+                            <td>—</td>
+                            <td>Jan 17, 2025</td>
+                            <td>Maria Garcia</td>
+                            <td><span class="badge badge-expected">Expected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">👁️ View</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4518</strong></td>
+                            <td>Midwest Logistics Group</td>
+                            <td>INV-2024-1044</td>
+                            <td><span class="amount positive">$2,890.00</span></td>
+                            <td>Dec 12, 2024</td>
+                            <td>Jan 4, 2025</td>
+                            <td>John Smith</td>
+                            <td><span class="badge badge-collected">Collected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Receipt</button>
+                                    <button class="action-btn">💸 Pay Driver</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DISPATCH FEE COLLECTIONS FROM DRIVERS -->
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">Dispatch Fee Collections from Drivers</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Load #</th>
+                            <th>Driver</th>
+                            <th>Load Revenue</th>
+                            <th>Dispatch Fee (10%)</th>
+                            <th>Payment Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>LD-2024-4527</strong></td>
+                            <td>John Smith</td>
+                            <td>$2,450.00</td>
+                            <td><span class="amount positive">$245.00</span></td>
+                            <td>Dec 16, 2024</td>
+                            <td>Dec 22, 2024</td>
+                            <td><span class="badge badge-collected">Collected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Receipt</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4529</strong></td>
+                            <td>Sarah Williams</td>
+                            <td>$4,400.00</td>
+                            <td><span class="amount">$440.00</span></td>
+                            <td>—</td>
+                            <td>Dec 25, 2024</td>
+                            <td><span class="badge badge-pending">Pending</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📧 Send Invoice</button>
+                                    <button class="action-btn">💰 Record</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4530</strong></td>
+                            <td>Mike Johnson</td>
+                            <td>$2,120.00</td>
+                            <td><span class="amount positive">$212.00</span></td>
+                            <td>Dec 17, 2024</td>
+                            <td>Dec 23, 2024</td>
+                            <td><span class="badge badge-collected">Collected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Receipt</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4531</strong></td>
+                            <td>Maria Garcia</td>
+                            <td>$2,650.00</td>
+                            <td><span class="amount">$265.00</span></td>
+                            <td>—</td>
+                            <td>Dec 24, 2024</td>
+                            <td><span class="badge badge-pending">Pending</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📧 Send Invoice</button>
+                                    <button class="action-btn">💰 Record</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>LD-2024-4518</strong></td>
+                            <td>John Smith</td>
+                            <td>$2,890.00</td>
+                            <td><span class="amount positive">$289.00</span></td>
+                            <td>Dec 12, 2024</td>
+                            <td>Dec 18, 2024</td>
+                            <td><span class="badge badge-collected">Collected</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn">📄 Receipt</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DRIVER LOAD TRACKING -->
+            <div style="margin-top: 32px;">
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">Driver Load Payment Tracking</h3>
+                
+                <div class="driver-payment-grid">
+                    <!-- John Smith -->
+                    <div class="driver-payment-card">
+                        <div class="driver-header">
+                            <div class="driver-info">
+                                <div class="driver-avatar">JS</div>
+                                <div class="driver-details">
+                                    <div class="driver-name">John Smith</div>
+                                    <div class="driver-meta">MC-123456 • Dry Van • TX-4527</div>
+                                </div>
+                            </div>
+                            <div class="driver-balance">
+                                <div class="balance-label">Amount Owed to Driver</div>
+                                <div class="balance-amount" style="color: #ef4444;">$4,851.00</div>
+                            </div>
+                        </div>
+
+                        <div class="driver-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-value">6</div>
+                                <div class="mini-stat-label">Total Loads</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #10b981;">3</div>
+                                <div class="mini-stat-label">Broker Paid</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #f59e0b;">2</div>
+                                <div class="mini-stat-label">Pending</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #ef4444;">1</div>
+                                <div class="mini-stat-label">Overdue</div>
+                            </div>
+                        </div>
+
+                        <div class="loads-table">
+                            <table class="loads-table-small">
+                                <thead>
+                                    <tr>
+                                        <th>Load #</th>
+                                        <th>Broker/Shipper</th>
+                                        <th>Load Pay</th>
+                                        <th>Fee (10%)</th>
+                                        <th>Net to Driver</th>
+                                        <th>Broker Status</th>
+                                        <th>Driver Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>LD-4527</strong></td>
+                                        <td>FreightLink</td>
+                                        <td>$2,450</td>
+                                        <td>$245</td>
+                                        <td>$2,205</td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4518</strong></td>
+                                        <td>Midwest Logistics</td>
+                                        <td>$2,890</td>
+                                        <td>$289</td>
+                                        <td>$2,601</td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                    </tr>
+                                    <tr style="background: rgba(239, 68, 68, 0.05);">
+                                        <td><strong>LD-4533</strong></td>
+                                        <td>Apex Freight</td>
+                                        <td>$1,850</td>
+                                        <td>$185</td>
+                                        <td>$1,665</td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                        <td><span class="badge badge-unpaid">Unpaid</span></td>
+                                    </tr>
+                                    <tr style="background: rgba(245, 158, 11, 0.05);">
+                                        <td><strong>LD-4534</strong></td>
+                                        <td>National Freight</td>
+                                        <td>$3,200</td>
+                                        <td>$320</td>
+                                        <td>$2,880</td>
+                                        <td><span class="badge badge-overdue">Overdue</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                    <tr style="background: rgba(245, 158, 11, 0.05);">
+                                        <td><strong>LD-4535</strong></td>
+                                        <td>TransAmerica</td>
+                                        <td>$2,320</td>
+                                        <td>$232</td>
+                                        <td>$2,088</td>
+                                        <td><span class="badge badge-expected">Expected</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4536</strong></td>
+                                        <td>FreightLink</td>
+                                        <td>$2,750</td>
+                                        <td>$275</td>
+                                        <td>$2,475</td>
+                                        <td><span class="badge badge-expected">Expected</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button class="expand-btn">💸 Pay Driver $4,851.00</button>
+                    </div>
+
+                    <!-- Sarah Williams -->
+                    <div class="driver-payment-card">
+                        <div class="driver-header">
+                            <div class="driver-info">
+                                <div class="driver-avatar">SW</div>
+                                <div class="driver-details">
+                                    <div class="driver-name">Sarah Williams</div>
+                                    <div class="driver-meta">MC-456789 • Dry Van • MO-3345</div>
+                                </div>
+                            </div>
+                            <div class="driver-balance">
+                                <div class="balance-label">Amount Owed to Driver</div>
+                                <div class="balance-amount" style="color: #ef4444;">$3,960.00</div>
+                            </div>
+                        </div>
+
+                        <div class="driver-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-value">4</div>
+                                <div class="mini-stat-label">Total Loads</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #10b981;">1</div>
+                                <div class="mini-stat-label">Broker Paid</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #f59e0b;">3</div>
+                                <div class="mini-stat-label">Pending</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value">0</div>
+                                <div class="mini-stat-label">Overdue</div>
+                            </div>
+                        </div>
+
+                        <div class="loads-table">
+                            <table class="loads-table-small">
+                                <thead>
+                                    <tr>
+                                        <th>Load #</th>
+                                        <th>Broker/Shipper</th>
+                                        <th>Load Pay</th>
+                                        <th>Fee (10%)</th>
+                                        <th>Net to Driver</th>
+                                        <th>Broker Status</th>
+                                        <th>Driver Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background: rgba(239, 68, 68, 0.05);">
+                                        <td><strong>LD-4529</strong></td>
+                                        <td>AutoParts Dist</td>
+                                        <td>$4,400</td>
+                                        <td>$440</td>
+                                        <td>$3,960</td>
+                                        <td><span class="badge badge-expected">Expected</span></td>
+                                        <td><span class="badge badge-unpaid">Unpaid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4537</strong></td>
+                                        <td>Midwest Logistics</td>
+                                        <td>$2,980</td>
+                                        <td>$298</td>
+                                        <td>$2,682</td>
+                                        <td><span class="badge badge-expected">Expected</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4538</strong></td>
+                                        <td>FreightLink</td>
+                                        <td>$3,250</td>
+                                        <td>$325</td>
+                                        <td>$2,925</td>
+                                        <td><span class="badge badge-expected">Expected</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4539</strong></td>
+                                        <td>TransAmerica</td>
+                                        <td>$2,150</td>
+                                        <td>$215</td>
+                                        <td>$1,935</td>
+                                        <td><span class="badge badge-processing">Processing</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button class="expand-btn">💸 Pay Driver $3,960.00</button>
+                    </div>
+
+                    <!-- Maria Garcia -->
+                    <div class="driver-payment-card">
+                        <div class="driver-header">
+                            <div class="driver-info">
+                                <div class="driver-avatar">MG</div>
+                                <div class="driver-details">
+                                    <div class="driver-name">Maria Garcia</div>
+                                    <div class="driver-meta">MC-234567 • Reefer • TX-7723</div>
+                                </div>
+                            </div>
+                            <div class="driver-balance">
+                                <div class="balance-label">Amount Owed to Driver</div>
+                                <div class="balance-amount" style="color: #ef4444;">$2,385.00</div>
+                            </div>
+                        </div>
+
+                        <div class="driver-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-value">3</div>
+                                <div class="mini-stat-label">Total Loads</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #10b981;">2</div>
+                                <div class="mini-stat-label">Broker Paid</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" style="color: #f59e0b;">1</div>
+                                <div class="mini-stat-label">Pending</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value">0</div>
+                                <div class="mini-stat-label">Overdue</div>
+                            </div>
+                        </div>
+
+                        <div class="loads-table">
+                            <table class="loads-table-small">
+                                <thead>
+                                    <tr>
+                                        <th>Load #</th>
+                                        <th>Broker/Shipper</th>
+                                        <th>Load Pay</th>
+                                        <th>Fee (10%)</th>
+                                        <th>Net to Driver</th>
+                                        <th>Broker Status</th>
+                                        <th>Driver Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background: rgba(239, 68, 68, 0.05);">
+                                        <td><strong>LD-4531</strong></td>
+                                        <td>Fresh Valley Foods</td>
+                                        <td>$2,650</td>
+                                        <td>$265</td>
+                                        <td>$2,385</td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                        <td><span class="badge badge-unpaid">Unpaid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4540</strong></td>
+                                        <td>National Freight</td>
+                                        <td>$3,150</td>
+                                        <td>$315</td>
+                                        <td>$2,835</td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                        <td><span class="badge badge-paid">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LD-4541</strong></td>
+                                        <td>Midwest Logistics</td>
+                                        <td>$2,890</td>
+                                        <td>$289</td>
+                                        <td>$2,601</td>
+                                        <td><span class="badge badge-expected">Expected</span></td>
+                                        <td><span class="badge badge-pending">Pending</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button class="expand-btn">💸 Pay Driver $2,385.00</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RECORD PAYMENT MODAL -->
+<div class="modal" id="recordPaymentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Record Payment</div>
+            <button class="modal-close" onclick="hideModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Payment Type</label>
+                <select class="form-select">
+                    <option>From Broker/Shipper</option>
+                    <option>From Driver (Dispatch Fee)</option>
+                    <option>To Driver (Load Payment)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Related Load</label>
+                <select class="form-select">
+                    <option>Select Load...</option>
+                    <option>LD-2024-4527 - FreightLink Logistics - $2,450</option>
+                    <option>LD-2024-4529 - AutoParts Distribution - $4,400</option>
+                    <option>LD-2024-4530 - TransAmerica - $2,120</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Payer/Payee</label>
+                <select class="form-select">
+                    <option>Auto-filled from load...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Amount</label>
+                <input type="number" class="form-input" placeholder="0.00" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Payment Date</label>
+                <input type="date" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Payment Method</label>
+                <select class="form-select">
+                    <option>ACH Transfer</option>
+                    <option>Wire Transfer</option>
+                    <option>Check</option>
+                    <option>Cash</option>
+                    <option>Quick Pay</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Reference/Confirmation #</label>
+                <input type="text" class="form-input" placeholder="e.g., Wire confirmation, check #">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Notes (Optional)</label>
+                <textarea class="form-textarea" placeholder="Any additional details..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="hideModal()">Cancel</button>
+            <button class="btn btn-primary">💰 Record Payment</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showRecordPaymentModal() {
+        document.getElementById('recordPaymentModal').classList.add('show');
+    }
+
+    function hideModal() {
+        document.getElementById('recordPaymentModal').classList.remove('show');
+    }
+
+    document.getElementById('recordPaymentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideModal();
+        }
+    });
+</script>
+</body>
+</html>

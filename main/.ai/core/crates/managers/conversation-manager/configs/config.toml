@@ -1,0 +1,33 @@
+# Conversation Intelligence Agent Configuration
+
+[server]
+host = "127.0.0.1"
+port = 9020
+
+[database]
+url = "ws://127.0.0.1:8000"
+namespace = "agency"
+database = "conversations"
+username = "root"
+password = "root"
+
+[analysis]
+# Default analysis depth: quick, standard, thorough, deep
+default_depth = "standard"
+
+# Default passes to run
+default_passes = [
+    "EntityExtraction",
+    "TopicModeling",
+    "IntentDetection",
+    "PatternAnalysis",
+    "CrossReferencing",
+    "KnowledgeSynthesis"
+]
+
+[parser]
+# Maximum file size to parse (in MB)
+max_file_size_mb = 100
+
+# Supported formats
+supported_sources = ["ChatGPT", "Claude"]

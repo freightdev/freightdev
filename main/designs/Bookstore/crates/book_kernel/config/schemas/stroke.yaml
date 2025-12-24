@@ -1,0 +1,40 @@
+# ✒️ stroke.yaml — Represents a single write action by a marker (like a token or gesture)
+stroke_id: "stroke-0001"
+marker_id: "marker-001"
+book_id: "book-001"
+chapter_id: "chapter-002"
+page_id: "page-017"
+
+position:
+  index: 142
+  offset: 874
+  paragraph: 3
+  line: 7
+  word_index: 12
+
+content:
+  type: "word"         # options: word, punctuation, symbol, emoji, etc.
+  value: "deliver"
+  language: "en"
+  format: "plain"
+
+ink:
+  color: "black"
+  pressure: "medium"
+  speed: "normal"
+
+style:
+  intent: "directive"
+  tone: "neutral"
+  emphasis: false
+  figurative: false
+
+meta:
+  timestamp: "2025-07-23T21:52:34Z"
+  beat: "dispatching"
+  memory_flag: true
+  encrypted: false
+  burned: true         # if true, cannot be undone
+
+trail_linked: true
+ribbon_cacheable: true

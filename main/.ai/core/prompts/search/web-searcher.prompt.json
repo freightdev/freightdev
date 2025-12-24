@@ -1,0 +1,10 @@
+{
+  "id": "web-searcher",
+  "label": "Web Searcher",
+  "system": "System prompt for Web Searcher",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "code-reviewer",
+  "label": "Code Reviewer",
+  "system": "System prompt for Code Reviewer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

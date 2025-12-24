@@ -1,0 +1,1383 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - PacketPilot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pilot-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .page-title-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        color: #888;
+    }
+
+    .agent-status {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+    }
+
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    }
+
+    .status-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #10b981;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 32px;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    .tab-count {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #888;
+    }
+
+    /* ACTIVITY FEED */
+    .activity-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .activity-card {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .activity-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .activity-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .activity-body {
+        padding: 0;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .activity-item {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        transition: all 0.2s;
+    }
+
+    .activity-item:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .activity-icon.success {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .activity-icon.warning {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .activity-icon.info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .activity-icon.error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-text {
+        font-size: 14px;
+        margin-bottom: 4px;
+        line-height: 1.5;
+    }
+
+    .activity-time {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .activity-action {
+        padding: 6px 12px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #d946ef;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 8px;
+        display: inline-block;
+    }
+
+    .activity-action:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    /* PACKET QUEUE */
+    .packet-queue {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .queue-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .queue-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .queue-filters {
+        display: flex;
+        gap: 8px;
+    }
+
+    .filter-chip {
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-chip:hover, .filter-chip.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-color: #d946ef;
+        color: #d946ef;
+    }
+
+    .packet-item {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.2s;
+    }
+
+    .packet-item:hover {
+        background: rgba(217, 70, 239, 0.05);
+    }
+
+    .packet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .packet-info {
+        flex: 1;
+    }
+
+    .packet-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .packet-meta {
+        font-size: 12px;
+        color: #888;
+        display: flex;
+        gap: 12px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-pending {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .badge-processing {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .badge-completed {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .badge-failed {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .packet-progress {
+        margin-top: 12px;
+    }
+
+    .progress-steps {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .progress-step {
+        flex: 1;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-step.completed {
+        background: #10b981;
+    }
+
+    .progress-step.active {
+        background: linear-gradient(90deg, #d946ef, #a855f7);
+    }
+
+    .progress-text {
+        font-size: 11px;
+        color: #888;
+    }
+
+    .packet-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .packet-btn {
+        padding: 8px 16px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #d946ef;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .packet-btn:hover {
+        background: rgba(217, 70, 239, 0.2);
+    }
+
+    .packet-btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+
+    /* SETTINGS PANEL */
+    .settings-grid {
+        display: grid;
+        gap: 24px;
+    }
+
+    .settings-section {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .settings-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .settings-row:last-child {
+        border-bottom: none;
+    }
+
+    .settings-info {
+        flex: 1;
+    }
+
+    .settings-label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .settings-description {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 26px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 13px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .toggle-switch.active {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    }
+
+    .toggle-slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.3s;
+    }
+
+    .toggle-switch.active .toggle-slider {
+        left: 27px;
+    }
+
+    .input-field {
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+        width: 200px;
+    }
+
+    .select-field {
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+        cursor: pointer;
+        width: 200px;
+    }
+
+    /* EMAIL MONITOR */
+    .email-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .email-item {
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .email-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .email-content {
+        flex: 1;
+    }
+
+    .email-sender {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .email-subject {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .email-status {
+        padding: 4px 10px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #10b981;
+    }
+
+    /* CONTRACT TEMPLATES */
+    .template-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .template-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .template-card:hover {
+        border-color: #d946ef;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .template-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(217, 70, 239, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .template-name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .template-description {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 12px;
+    }
+
+    .template-stats {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #666;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title-section">
+                    <div class="pilot-icon">🤖</div>
+                    <div class="page-title-info">
+                        <div class="page-title">PacketPilot</div>
+                        <div class="page-subtitle">AI-Powered Carrier Packet Automation</div>
+                    </div>
+                </div>
+                <div class="agent-status">
+                    <div class="status-dot"></div>
+                    <div class="status-text">Agent Active • Monitoring Inbox</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">Overview</div>
+                <div class="tab">Packet Queue <span class="tab-count">8</span></div>
+                <div class="tab">Contract Templates <span class="tab-count">12</span></div>
+                <div class="tab">Email Monitor</div>
+                <div class="tab">Settings</div>
+            </div>
+
+            <!-- STATS GRID -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📧</div>
+                    <div class="stat-value">47</div>
+                    <div class="stat-label">Packets Detected (30d)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value">43</div>
+                    <div class="stat-label">Auto-Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value">18m</div>
+                    <div class="stat-label">Avg Time Saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value">91%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+
+            <!-- ACTIVITY SECTION -->
+            <div class="activity-section">
+                <!-- RECENT ACTIVITY -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-title">Recent Activity</div>
+                    </div>
+                    <div class="activity-body">
+                        <div class="activity-item">
+                            <div class="activity-icon success">✅</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>Carrier packet completed</strong> for FreightLink Logistics
+                                </div>
+                                <div class="activity-time">2 minutes ago</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon info">📧</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>New packet detected</strong> from National Freight Solutions
+                                </div>
+                                <div class="activity-time">15 minutes ago</div>
+                                <div class="activity-action">Process Now</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon success">📝</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>Contract generated</strong> for driver John Smith
+                                </div>
+                                <div class="activity-time">1 hour ago</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon warning">⚠️</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>Manual review required</strong> - Missing insurance info
+                                </div>
+                                <div class="activity-time">2 hours ago</div>
+                                <div class="activity-action">Review</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon success">✅</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>W9 auto-filled</strong> for TransAmerica Brokerage
+                                </div>
+                                <div class="activity-time">3 hours ago</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon info">🔔</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>Email monitored</strong> - 8 new carrier packets found
+                                </div>
+                                <div class="activity-time">5 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MONITORED EMAILS -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-title">Email Monitor</div>
+                        <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 12px;">Configure</button>
+                    </div>
+                    <div class="activity-body">
+                        <div class="activity-item">
+                            <div class="activity-icon info">📧</div>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    <strong>inbox@fasteasydispatching.com</strong>
+                                </div>
+                                <div class="activity-time">Monitoring active • Last check: 30s ago</div>
+                            </div>
+                        </div>
+
+                        <div class="email-list" style="padding: 20px;">
+                            <div class="email-item">
+                                <div class="email-icon">📨</div>
+                                <div class="email-content">
+                                    <div class="email-sender">FreightLink Logistics</div>
+                                    <div class="email-subject">Carrier Setup Packet - Action Required</div>
+                                </div>
+                                <div class="email-status">Detected</div>
+                            </div>
+
+                            <div class="email-item">
+                                <div class="email-icon">📨</div>
+                                <div class="email-content">
+                                    <div class="email-sender">National Freight Solutions</div>
+                                    <div class="email-subject">Complete Your W9 and Insurance Certificate</div>
+                                </div>
+                                <div class="email-status">Processing</div>
+                            </div>
+
+                            <div class="email-item">
+                                <div class="email-icon">📨</div>
+                                <div class="email-content">
+                                    <div class="email-sender">TransAmerica Brokerage</div>
+                                    <div class="email-subject">Carrier Onboarding Documents</div>
+                                </div>
+                                <div class="email-status" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">Completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PACKET QUEUE -->
+            <div class="packet-queue">
+                <div class="queue-header">
+                    <div class="queue-title">Packet Processing Queue</div>
+                    <div class="queue-filters">
+                        <div class="filter-chip active">All</div>
+                        <div class="filter-chip">Pending</div>
+                        <div class="filter-chip">Processing</div>
+                        <div class="filter-chip">Review</div>
+                        <div class="filter-chip">Completed</div>
+                    </div>
+                </div>
+
+                <!-- Packet Item 1 -->
+                <div class="packet-item">
+                    <div class="packet-header">
+                        <div class="packet-info">
+                            <div class="packet-title">FreightLink Logistics - Carrier Setup Packet</div>
+                            <div class="packet-meta">
+                                <span>📧 From: onboarding@freightlink.com</span>
+                                <span>🕐 Received: 2 min ago</span>
+                                <span>📄 6 documents</span>
+                            </div>
+                        </div>
+                        <div class="badge badge-processing">Processing</div>
+                    </div>
+
+                    <div class="packet-progress">
+                        <div class="progress-steps">
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step active"></div>
+                            <div class="progress-step"></div>
+                            <div class="progress-step"></div>
+                        </div>
+                        <div class="progress-text">Step 3 of 5: Filling W9 form...</div>
+                    </div>
+
+                    <div class="packet-actions">
+                        <button class="packet-btn">👁️ View Progress</button>
+                        <button class="packet-btn-secondary">⏸️ Pause</button>
+                        <button class="packet-btn-secondary">📋 View Details</button>
+                    </div>
+                </div>
+
+                <!-- Packet Item 2 -->
+                <div class="packet-item">
+                    <div class="packet-header">
+                        <div class="packet-info">
+                            <div class="packet-title">National Freight Solutions - Insurance Certificate Request</div>
+                            <div class="packet-meta">
+                                <span>📧 From: compliance@natlfreight.com</span>
+                                <span>🕐 Received: 15 min ago</span>
+                                <span>📄 3 documents</span>
+                            </div>
+                        </div>
+                        <div class="badge badge-pending">Pending Review</div>
+                    </div>
+
+                    <div class="packet-progress">
+                        <div class="progress-steps">
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step"></div>
+                        </div>
+                        <div class="progress-text">⚠️ Manual review required: Insurance certificate expired</div>
+                    </div>
+
+                    <div class="packet-actions">
+                        <button class="packet-btn">📝 Review Now</button>
+                        <button class="packet-btn-secondary">📤 Upload New Certificate</button>
+                        <button class="packet-btn-secondary">📋 View Details</button>
+                    </div>
+                </div>
+
+                <!-- Packet Item 3 -->
+                <div class="packet-item">
+                    <div class="packet-header">
+                        <div class="packet-info">
+                            <div class="packet-title">TransAmerica Brokerage - Carrier Onboarding</div>
+                            <div class="packet-meta">
+                                <span>📧 From: setup@transamericabrok.com</span>
+                                <span>🕐 Received: 3 hours ago</span>
+                                <span>📄 8 documents</span>
+                            </div>
+                        </div>
+                        <div class="badge badge-completed">Completed</div>
+                    </div>
+
+                    <div class="packet-progress">
+                        <div class="progress-steps">
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                            <div class="progress-step completed"></div>
+                        </div>
+                        <div class="progress-text">✅ All documents completed and submitted</div>
+                    </div>
+
+                    <div class="packet-actions">
+                        <button class="packet-btn">📥 Download Package</button>
+                        <button class="packet-btn-secondary">📧 Email Confirmation</button>
+                        <button class="packet-btn-secondary">📋 View Details</button>
+                    </div>
+                </div>
+
+                <!-- Packet Item 4 -->
+                <div class="packet-item">
+                    <div class="packet-header">
+                        <div class="packet-info">
+                            <div class="packet-title">Apex Freight Partners - W9 + Banking Info</div>
+                            <div class="packet-meta">
+                                <span>📧 From: payments@apexfreight.com</span>
+                                <span>🕐 Received: 5 hours ago</span>
+                                <span>📄 2 documents</span>
+                            </div>
+                        </div>
+                        <div class="badge badge-pending">Queued</div>
+                    </div>
+
+                    <div class="packet-progress">
+                        <div class="progress-steps">
+                            <div class="progress-step"></div>
+                            <div class="progress-step"></div>
+                            <div class="progress-step"></div>
+                            <div class="progress-step"></div>
+                            <div class="progress-step"></div>
+                        </div>
+                        <div class="progress-text">Waiting in queue - Processing will start in ~5 minutes</div>
+                    </div>
+
+                    <div class="packet-actions">
+                        <button class="packet-btn">⚡ Process Now</button>
+                        <button class="packet-btn-secondary">📋 View Details</button>
+                        <button class="packet-btn-secondary">🗑️ Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTRACT TEMPLATES SECTION -->
+            <div style="margin-top: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-size: 20px; font-weight: 600;">Contract Templates</h2>
+                    <button class="btn btn-primary">➕ Create New Template</button>
+                </div>
+
+                <div class="template-grid">
+                    <div class="template-card">
+                        <div class="template-icon">📋</div>
+                        <div class="template-name">Driver Agreement</div>
+                        <div class="template-description">Standard independent contractor agreement for drivers</div>
+                        <div class="template-stats">
+                            <span>Used 47 times</span>
+                            <span>Last updated: 2d ago</span>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-icon">💼</div>
+                        <div class="template-name">Sub-Dispatcher Contract</div>
+                        <div class="template-description">Agreement for hiring sub-dispatchers during peak times</div>
+                        <div class="template-stats">
+                            <span>Used 8 times</span>
+                            <span>Last updated: 1w ago</span>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-icon">📝</div>
+                        <div class="template-name">Broker Agreement</div>
+                        <div class="template-description">Standard carrier-broker partnership agreement</div>
+                        <div class="template-stats">
+                            <span>Used 23 times</span>
+                            <span>Last updated: 5d ago</span>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-icon">🔒</div>
+                        <div class="template-name">NDA Template</div>
+                        <div class="template-description">Non-disclosure agreement for sensitive loads</div>
+                        <div class="template-stats">
+                            <span>Used 12 times</span>
+                            <span>Last updated: 3w ago</span>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-icon">💰</div>
+                        <div class="template-name">Rate Confirmation</div>
+                        <div class="template-description">Auto-generated rate con for load assignments</div>
+                        <div class="template-stats">
+                            <span>Used 156 times</span>
+                            <span>Last updated: 1d ago</span>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-icon">🛡️</div>
+                        <div class="template-name">Insurance Certificate</div>
+                        <div class="template-description">Standard COI request form for carriers</div>
+                        <div class="template-stats">
+                            <span>Used 89 times</span>
+                            <span>Last updated: 4d ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS SECTION -->
+            <div class="settings-grid" style="margin-top: 32px;">
+                <div class="settings-section">
+                    <div class="section-title">⚙️ Automation Settings</div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Auto-Process Carrier Packets</div>
+                            <div class="settings-description">Automatically fill and submit detected carrier packets without manual approval</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Email Monitoring</div>
+                            <div class="settings-description">Monitor inbox for new carrier packets and onboarding requests</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Require Manual Review</div>
+                            <div class="settings-description">Always require human approval before submitting completed packets</div>
+                        </div>
+                        <div class="toggle-switch" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Notifications</div>
+                            <div class="settings-description">Send notifications when packets require attention</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">📧 Email Configuration</div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Monitored Email Account</div>
+                            <div class="settings-description">Primary inbox to monitor for carrier packets</div>
+                        </div>
+                        <input type="email" class="input-field" value="inbox@fasteasydispatching.com">
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Check Frequency</div>
+                            <div class="settings-description">How often to check for new emails</div>
+                        </div>
+                        <select class="select-field">
+                            <option>Every 5 minutes</option>
+                            <option selected>Every 15 minutes</option>
+                            <option>Every 30 minutes</option>
+                            <option>Every hour</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Auto-Archive Completed</div>
+                            <div class="settings-description">Automatically move processed packets to archive folder</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">🤖 AI Agent Behavior</div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Confidence Threshold</div>
+                            <div class="settings-description">Minimum confidence level for auto-processing (lower = more manual reviews)</div>
+                        </div>
+                        <select class="select-field">
+                            <option>70% - Aggressive</option>
+                            <option>80% - Balanced</option>
+                            <option selected>90% - Conservative</option>
+                            <option>95% - Very Conservative</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Smart Learning</div>
+                            <div class="settings-description">Learn from your corrections to improve accuracy over time</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-info">
+                            <div class="settings-label">Document Type Detection</div>
+                            <div class="settings-description">Automatically identify document types (W9, COI, etc.)</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

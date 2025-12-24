@@ -1,0 +1,10 @@
+{
+  "id": "api-drafter",
+  "label": "Api Drafter",
+  "system": "System prompt for Api Drafter",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

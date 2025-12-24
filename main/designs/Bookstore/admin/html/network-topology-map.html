@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Topology</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: #1a1f3a;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid #2d3548;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .stat-dot.healthy { background: #10b981; }
+        .stat-dot.warning { background: #f59e0b; }
+        .stat-dot.critical { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stat-text {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #e0e6ed;
+        }
+
+        .topology-container {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid #2d3548;
+            position: relative;
+            min-height: 700px;
+            overflow: hidden;
+        }
+
+        .network-canvas {
+            position: relative;
+            width: 100%;
+            height: 650px;
+        }
+
+        .node {
+            position: absolute;
+            background: #2d3548;
+            border-radius: 12px;
+            padding: 16px;
+            min-width: 180px;
+            border: 2px solid #3d4556;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .node:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            z-index: 10;
+        }
+
+        .node.cloud {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .node.home {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-color: #f093fb;
+        }
+
+        .node.edge {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: #4facfe;
+        }
+
+        .node.device {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            border-color: #43e97b;
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .node-icon {
+            font-size: 24px;
+        }
+
+        .node-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .node-status.degraded { background: #f59e0b; }
+        .node-status.down { background: #ef4444; }
+
+        .node-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .node-subtitle {
+            font-size: 11px;
+            opacity: 0.8;
+            font-family: monospace;
+        }
+
+        .node-metrics {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        .metric {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .connection {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .connection-line {
+            stroke: #3d4556;
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.3s;
+        }
+
+        .connection-line.active {
+            stroke: #667eea;
+            stroke-width: 3;
+            animation: flow 2s linear infinite;
+        }
+
+        .connection-line.vpn {
+            stroke: #10b981;
+            stroke-dasharray: 5, 5;
+        }
+
+        .connection-line.nebula {
+            stroke: #f093fb;
+            stroke-dasharray: 10, 5;
+        }
+
+        @keyframes flow {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 20; }
+        }
+
+        .connection-label {
+            position: absolute;
+            background: #1a1f3a;
+            border: 1px solid #3d4556;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #9ca3af;
+            pointer-events: none;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 31, 58, 0.95);
+            border: 1px solid #2d3548;
+            border-radius: 8px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .legend-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 2px;
+        }
+
+        .legend-line.direct { background: #3d4556; }
+        .legend-line.vpn { background: #10b981; }
+        .legend-line.nebula { background: #f093fb; }
+        .legend-line.active { background: #667eea; }
+
+        .info-panel {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-top: 20px;
+        }
+
+        .info-panel h3 {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .connection-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .connection-item {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .connection-path {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .connection-details {
+            font-size: 11px;
+            color: #9ca3af;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .traffic-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .traffic-bar {
+            flex: 1;
+            height: 4px;
+            background: #0a0e27;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .traffic-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .network-canvas {
+                height: 800px;
+            }
+            .node {
+                min-width: 140px;
+                padding: 12px;
+            }
+            .legend {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌐 Network Topology Map</h1>
+        <div class="header-controls">
+            <button class="control-btn active" onclick="toggleView('topology')">
+                <span>🗺️</span>
+                <span>Topology</span>
+            </button>
+            <button class="control-btn" onclick="toggleView('connections')">
+                <span>🔗</span>
+                <span>Connections</span>
+            </button>
+            <button class="control-btn" onclick="highlightPath()">
+                <span>✨</span>
+                <span>Highlight Path</span>
+            </button>
+            <button class="control-btn" onclick="refreshTopology()">
+                <span>🔄</span>
+                <span>Refresh</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-dot healthy"></span>
+            <span class="stat-text">Nebula Mesh: <span class="stat-value">Healthy</span></span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-dot healthy"></span>
+            <span class="stat-text">Wireguard: <span class="stat-value">Connected</span></span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-text">Active Tunnels: <span class="stat-value" id="activeTunnels">12</span></span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-text">Total Traffic: <span class="stat-value" id="totalTraffic">2.3 GB/s</span></span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-text">Avg Latency: <span class="stat-value" id="avgLatency">8ms</span></span>
+        </div>
+    </div>
+
+    <div id="topologyView" class="topology-container">
+        <svg class="connection" width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+            <!-- Connections will be drawn here -->
+        </svg>
+
+        <div class="network-canvas" id="networkCanvas">
+            <!-- Nodes will be placed here -->
+        </div>
+
+        <div class="legend">
+            <div class="legend-title">Connection Types</div>
+            <div class="legend-item">
+                <div class="legend-line direct"></div>
+                <span>Direct</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line vpn"></div>
+                <span>Wireguard VPN</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line nebula"></div>
+                <span>Nebula P2P</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line active"></div>
+                <span>Active Traffic</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="connectionsView" class="info-panel" style="display: none;">
+        <h3>🔗 Active Connections</h3>
+        <div class="connection-list" id="connectionList"></div>
+    </div>
+
+    <script>
+        const nodes = [
+            // Edge Layer
+            { id: 'cloudflare', name: 'Cloudflare CDN', type: 'edge', icon: '☁️', ip: 'edge', x: 50, y: 5, status: 'healthy', cpu: 2, mem: 45 },
+            
+            // Cloud Layer (Oracle)
+            { id: 'oracle-control', name: 'Oracle K8s Control', type: 'cloud', icon: '🎛️', ip: '10.42.0.1', x: 50, y: 20, status: 'healthy', cpu: 15, mem: 62 },
+            { id: 'traefik', name: 'Traefik Ingress', type: 'cloud', icon: '🚪', ip: '10.42.0.2', x: 30, y: 35, status: 'healthy', cpu: 8, mem: 34 },
+            { id: 'consul', name: 'Consul', type: 'cloud', icon: '🔍', ip: '10.42.0.3', x: 50, y: 35, status: 'healthy', cpu: 5, mem: 28 },
+            { id: 'zitadel', name: 'Zitadel Auth', type: 'cloud', icon: '🔐', ip: '10.42.0.4', x: 70, y: 35, status: 'healthy', cpu: 12, mem: 45 },
+            { id: 'nebula-lighthouse', name: 'Nebula Lighthouse', type: 'cloud', icon: '🗼', ip: '10.42.0.5', x: 50, y: 50, status: 'healthy', cpu: 3, mem: 15 },
+            
+            // Home Network Layer
+            { id: 'home-worker-1', name: 'Home Worker 1', type: 'home', icon: '🖥️', ip: '10.42.1.1', x: 20, y: 70, status: 'healthy', cpu: 65, mem: 72 },
+            { id: 'home-worker-2', name: 'Home Worker 2', type: 'home', icon: '🖥️', ip: '10.42.1.2', x: 40, y: 70, status: 'healthy', cpu: 78, mem: 68 },
+            { id: 'home-worker-3', name: 'Home Worker 3', type: 'home', icon: '🖥️', ip: '10.42.1.3', x: 60, y: 70, status: 'healthy', cpu: 42, mem: 55 },
+            { id: 'dev-machine', name: 'Dev Machine', type: 'home', icon: '💻', ip: '10.42.1.5', x: 80, y: 70, status: 'healthy', cpu: 35, mem: 58 },
+            
+            // Client Pods
+            { id: 'client-pod-1', name: 'Client A - Web', type: 'device', icon: '📦', ip: '10.244.1.5', x: 15, y: 85, status: 'healthy', cpu: 45, mem: 62 },
+            { id: 'client-pod-2', name: 'Client B - API', type: 'device', icon: '📦', ip: '10.244.2.8', x: 35, y: 85, status: 'healthy', cpu: 68, mem: 75 },
+            { id: 'firecracker-pool', name: 'Firecracker Pool', type: 'device', icon: '🔥', ip: '10.42.2.x', x: 55, y: 85, status: 'healthy', cpu: 25, mem: 30 },
+            { id: 'nomad-client', name: 'Nomad Client', type: 'device', icon: '⚙️', ip: '10.42.1.6', x: 75, y: 85, status: 'healthy', cpu: 15, mem: 22 },
+        ];
+
+        const connections = [
+            // User -> Edge -> Cloud
+            { from: 'cloudflare', to: 'traefik', type: 'direct', traffic: 85, latency: '12ms', bandwidth: '1.2 GB/s' },
+            
+            // Cloud Internal
+            { from: 'traefik', to: 'consul', type: 'direct', traffic: 45, latency: '2ms', bandwidth: '450 MB/s' },
+            { from: 'traefik', to: 'zitadel', type: 'direct', traffic: 30, latency: '3ms', bandwidth: '180 MB/s' },
+            { from: 'consul', to: 'oracle-control', type: 'direct', traffic: 25, latency: '1ms', bandwidth: '220 MB/s' },
+            { from: 'oracle-control', to: 'nebula-lighthouse', type: 'direct', traffic: 15, latency: '1ms', bandwidth: '50 MB/s' },
+            
+            // Nebula Mesh (Cloud to Home)
+            { from: 'nebula-lighthouse', to: 'home-worker-1', type: 'nebula', traffic: 70, latency: '8ms', bandwidth: '680 MB/s' },
+            { from: 'nebula-lighthouse', to: 'home-worker-2', type: 'nebula', traffic: 82, latency: '9ms', bandwidth: '750 MB/s' },
+            { from: 'nebula-lighthouse', to: 'home-worker-3', type: 'nebula', traffic: 55, latency: '7ms', bandwidth: '520 MB/s' },
+            { from: 'nebula-lighthouse', to: 'dev-machine', type: 'vpn', traffic: 20, latency: '10ms', bandwidth: '120 MB/s' },
+            
+            // Traefik to Home Services
+            { from: 'traefik', to: 'home-worker-1', type: 'nebula', traffic: 65, latency: '15ms', bandwidth: '580 MB/s' },
+            { from: 'traefik', to: 'home-worker-2', type: 'nebula', traffic: 78, latency: '14ms', bandwidth: '720 MB/s' },
+            
+            // Home Workers to Pods
+            { from: 'home-worker-1', to: 'client-pod-1', type: 'direct', traffic: 60, latency: '1ms', bandwidth: '520 MB/s' },
+            { from: 'home-worker-2', to: 'client-pod-2', type: 'direct', traffic: 75, latency: '1ms', bandwidth: '680 MB/s' },
+            { from: 'home-worker-2', to: 'firecracker-pool', type: 'direct', traffic: 40, latency: '1ms', bandwidth: '350 MB/s' },
+            { from: 'dev-machine', to: 'nomad-client', type: 'direct', traffic: 18, latency: '1ms', bandwidth: '95 MB/s' },
+        ];
+
+        let currentView = 'topology';
+
+        function renderTopology() {
+            const canvas = document.getElementById('networkCanvas');
+            const svg = document.querySelector('.connection');
+            
+            // Clear existing
+            canvas.innerHTML = '';
+            svg.innerHTML = '';
+
+            // Calculate positions
+            const canvasWidth = canvas.offsetWidth;
+            const canvasHeight = canvas.offsetHeight;
+
+            // Draw connections first (so they're behind nodes)
+            connections.forEach(conn => {
+                const fromNode = nodes.find(n => n.id === conn.from);
+                const toNode = nodes.find(n => n.id === conn.to);
+
+                if (!fromNode || !toNode) return;
+
+                const x1 = (fromNode.x / 100) * canvasWidth + 90;
+                const y1 = (fromNode.y / 100) * canvasHeight + 40;
+                const x2 = (toNode.x / 100) * canvasWidth + 90;
+                const y2 = (toNode.y / 100) * canvasHeight + 40;
+
+                // Create curved path
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+                const curve = 30;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY - curve} ${x2} ${y2}`);
+                path.classList.add('connection-line');
+                path.classList.add(conn.type);
+                if (conn.traffic > 70) {
+                    path.classList.add('active');
+                }
+                svg.appendChild(path);
+
+                // Add label
+                if (conn.type !== 'direct') {
+                    const label = document.createElement('div');
+                    label.className = 'connection-label';
+                    label.textContent = conn.type === 'nebula' ? 'Nebula' : 'VPN';
+                    label.style.left = `${midX}px`;
+                    label.style.top = `${midY - curve - 10}px`;
+                    label.style.transform = 'translate(-50%, -50%)';
+                    canvas.appendChild(label);
+                }
+            });
+
+            // Draw nodes
+            nodes.forEach(node => {
+                const nodeEl = document.createElement('div');
+                nodeEl.className = `node ${node.type}`;
+                nodeEl.style.left = `${(node.x / 100) * canvasWidth}px`;
+                nodeEl.style.top = `${(node.y / 100) * canvasHeight}px`;
+                
+                nodeEl.innerHTML = `
+                    <div class="node-header">
+                        <span class="node-icon">${node.icon}</span>
+                        <div class="node-status ${node.status}"></div>
+                    </div>
+                    <div class="node-title">${node.name}</div>
+                    <div class="node-subtitle">${node.ip}</div>
+                    <div class="node-metrics">
+                        <div class="metric">CPU ${node.cpu}%</div>
+                        <div class="metric">MEM ${node.mem}%</div>
+                    </div>
+                `;
+
+                nodeEl.onclick = () => showNodeDetails(node);
+                canvas.appendChild(nodeEl);
+            });
+        }
+
+        function renderConnections() {
+            const list = document.getElementById('connectionList');
+            list.innerHTML = connections.map(conn => {
+                const fromNode = nodes.find(n => n.id === conn.from);
+                const toNode = nodes.find(n => n.id === conn.to);
+
+                return `
+                    <div class="connection-item">
+                        <div class="connection-path">
+                            ${fromNode.name} → ${toNode.name}
+                        </div>
+                        <div class="connection-details">
+                            <div>Type: ${conn.type.toUpperCase()}</div>
+                            <div>Latency: ${conn.latency}</div>
+                            <div>Bandwidth: ${conn.bandwidth}</div>
+                        </div>
+                        <div class="traffic-indicator">
+                            <span style="font-size: 10px; color: #9ca3af;">Traffic</span>
+                            <div class="traffic-bar">
+                                <div class="traffic-fill" style="width: ${conn.traffic}%"></div>
+                            </div>
+                            <span style="font-size: 10px; font-weight: 600;">${conn.traffic}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            
+            // Update buttons
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.control-btn').classList.add('active');
+
+            // Toggle views
+            if (view === 'topology') {
+                document.getElementById('topologyView').style.display = 'block';
+                document.getElementById('connectionsView').style.display = 'none';
+            } else {
+                document.getElementById('topologyView').style.display = 'none';
+                document.getElementById('connectionsView').style.display = 'block';
+                renderConnections();
+            }
+        }
+
+        function highlightPath() {
+            const paths = [
+                ['cloudflare', 'traefik', 'home-worker-2', 'client-pod-2'],
+                ['cloudflare', 'traefik', 'zitadel'],
+                ['oracle-control', 'nebula-lighthouse', 'home-worker-1', 'client-pod-1']
+            ];
+
+            const randomPath = paths[Math.floor(Math.random() * paths.length)];
+            const pathNames = randomPath.map(id => nodes.find(n => n.id === id).name);
+            
+            alert(`Highlighting traffic path:
+
+${pathNames.join(' → ')}
+
+This shows how a request flows through your infrastructure.`);
+
+            // In a real implementation, you'd actually highlight the path visually
+            renderTopology();
+        }
+
+        function showNodeDetails(node) {
+            const connections = getNodeConnections(node.id);
+            
+            alert(`${node.icon} ${node.name}
+
+IP: ${node.ip}
+Status: ${node.status.toUpperCase()}
+CPU: ${node.cpu}%
+Memory: ${node.mem}%
+
+Connections: ${connections.length}
+Type: ${node.type.toUpperCase()}
+
+Click OK to view in detail panel.`);
+        }
+
+        function getNodeConnections(nodeId) {
+            return connections.filter(c => c.from === nodeId || c.to === nodeId);
+        }
+
+        function refreshTopology() {
+            // Simulate data refresh
+            nodes.forEach(node => {
+                node.cpu = Math.max(5, Math.min(95, node.cpu + (Math.random() * 10 - 5)));
+                node.mem = Math.max(10, Math.min(90, node.mem + (Math.random() * 8 - 4)));
+            });
+
+            connections.forEach(conn => {
+                conn.traffic = Math.max(10, Math.min(95, conn.traffic + (Math.random() * 10 - 5)));
+            });
+
+            renderTopology();
+            updateStats();
+        }
+
+        function updateStats() {
+            const avgLatency = connections.reduce((sum, c) => sum + parseInt(c.latency), 0) / connections.length;
+            const totalTraffic = connections.reduce((sum, c) => {
+                const val = parseFloat(c.bandwidth);
+                const unit = c.bandwidth.includes('GB') ? 1 : 0.001;
+                return sum + (val * unit);
+            }, 0);
+
+            document.getElementById('activeTunnels').textContent = connections.length;
+            document.getElementById('totalTraffic').textContent = totalTraffic.toFixed(1) + ' GB/s';
+            document.getElementById('avgLatency').textContent = Math.round(avgLatency) + 'ms';
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (currentView === 'topology') {
+                renderTopology();
+            }
+        });
+
+        // Initial render
+        renderTopology();
+        updateStats();
+
+        // Auto-refresh every 5 seconds
+        setInterval(() => {
+            if (currentView === 'topology') {
+                refreshTopology();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+---
+import Button from '@components/atoms/Button';
+import type { PricingPlan } from '../content/pricing';
+import type { CardRendererProps } from '../card.types';
+import PricingFeature from './PricingFeature.astro';
+import { cn } from '@utils';
+
+const { item } = Astro.props as CardRendererProps<PricingPlan>;
+const wrapperClass = cn(
+  'bg-background-card rounded-2xl p-8 border-2 relative',
+  item.highlighted
+    ? 'border-purple-primary shadow-2xl shadow-purple-primary/20 scale-105'
+    : 'border-background-elevated'
+);
+---
+
+<div class={wrapperClass}>
+  {item.badge && (
+    <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+      <div class="bg-gradient-purple text-white text-sm font-semibold px-6 py-2 rounded-full whitespace-nowrap">
+        {item.badge}
+      </div>
+    </div>
+  )}
+  <div class="mb-6">
+    <h3 class="text-2xl font-bold mb-2">{item.name}</h3>
+    <p class="text-text-secondary text-sm">{item.description}</p>
+  </div>
+  <div class="mb-6">
+    <span class="text-5xl font-bold">{item.price}</span>
+    <span class="text-text-secondary ml-2">{item.period}</span>
+  </div>
+  <ul class="space-y-4 mb-8">
+    {item.features.map((feature) => (
+      <PricingFeature feature={feature} />
+    ))}
+  </ul>
+  <Button href={item.ctaLink} variant={item.highlighted ? 'primary' : 'outlined'} size="lg" fullWidth>
+    {item.cta}
+  </Button>
+</div>

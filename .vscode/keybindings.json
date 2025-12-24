@@ -1,0 +1,13 @@
+// Place your key bindings in this file to override the defaults
+[
+  {
+    "key": "ctrl+alt+m",
+    "command": "explorer.newFolder",
+    "when": "explorerViewletFocus && !inputFocus"
+  },
+  {
+    "key": "ctrl+alt+n",
+    "command": "explorer.newFile",
+    "when": "explorerViewletFocus && !inputFocus"
+  }
+]

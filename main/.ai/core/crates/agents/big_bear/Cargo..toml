@@ -1,0 +1,54 @@
+[package]
+name = "bigbear"
+version = "0.0.1"
+edition = "2021"
+authors = ["Fast & Easy Dispatching LLC"]
+description = "Passive road monitoring - law enforcement, weigh stations, hazards, and incidents"
+license = "Proprietary"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# Web server
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Geospatial
+geo = "0.27"
+geojson = "0.24"
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# UUID
+uuid = { version = "1.6", features = ["v4"] }
+
+# Environment
+dotenvy = "0.15"
+
+# Caching
+moka = { version = "0.12", features = ["future"] }
+
+# Regex
+regex = "1.10"
+
+[profile.release]
+opt-level = 3
+lto = true

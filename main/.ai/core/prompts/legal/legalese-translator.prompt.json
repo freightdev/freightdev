@@ -1,0 +1,10 @@
+{
+  "id": "legalese-translator",
+  "label": "Legalese Translator",
+  "system": "System prompt for Legalese Translator",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

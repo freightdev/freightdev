@@ -1,0 +1,10 @@
+{
+  "id": "realtime-transcript-summary",
+  "label": "Realtime Transcript Summary",
+  "system": "System prompt for Realtime Transcript Summary",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

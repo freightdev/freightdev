@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Health Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(240, 147, 251, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .stat-pill {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid #2d3548;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #f093fb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .service-item {
+            background: #0f1629;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s ease;
+        }
+
+        .service-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-item.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .service-item.critical {
+            border-left-color: #ef4444;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .service-name {
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.healthy { background: #10b981; }
+        .status-indicator.degraded { background: #f59e0b; }
+        .status-indicator.down { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.95); }
+        }
+
+        .service-url {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .metric-box {
+            background: #0a0e27;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f093fb;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .response-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .response-bar {
+            flex: 1;
+            height: 4px;
+            background: #0a0e27;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .response-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            transition: width 0.3s ease;
+        }
+
+        .response-fill.slow {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .response-fill.critical {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .traffic-graph {
+            background: #0a0e27;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            position: relative;
+            height: 100px;
+        }
+
+        .graph-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 80px;
+            gap: 4px;
+        }
+
+        .graph-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #f093fb, #f5576c);
+            border-radius: 2px 2px 0 0;
+            min-height: 2px;
+            transition: height 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .graph-bar:hover {
+            opacity: 1;
+        }
+
+        .incident-item {
+            background: #7f1d1d;
+            border: 1px solid #ef4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .incident-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .incident-title {
+            font-weight: 600;
+            color: #fca5a5;
+        }
+
+        .incident-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .incident-desc {
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        .endpoint-list {
+            background: #0a0e27;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .endpoint-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1f3a;
+        }
+
+        .endpoint-item:last-child {
+            border-bottom: none;
+        }
+
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 12px;
+            color: #a78bfa;
+        }
+
+        .endpoint-count {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #2d3548;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: #e0e6ed;
+        }
+
+        .tab.active {
+            color: #f093fb;
+            border-bottom-color: #f093fb;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #2d3548;
+            border: 1px solid #3d4556;
+            color: #9ca3af;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #3d4556;
+            color: #e0e6ed;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border-color: transparent;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .metrics-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏥 Service Health Monitor</h1>
+        <div class="header-stats">
+            <div class="stat-pill">
+                <span>✅</span>
+                <span><strong id="healthyCount">0</strong> Healthy</span>
+            </div>
+            <div class="stat-pill">
+                <span>⚠️</span>
+                <span><strong id="degradedCount">0</strong> Degraded</span>
+            </div>
+            <div class="stat-pill">
+                <span>❌</span>
+                <span><strong id="downCount">0</strong> Down</span>
+            </div>
+            <div class="stat-pill">
+                <span>🔄</span>
+                <span>Updated: <span id="lastUpdate">--:--:--</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('services')">Services</button>
+        <button class="tab" onclick="switchTab('traffic')">Traffic</button>
+        <button class="tab" onclick="switchTab('incidents')">Incidents</button>
+    </div>
+
+    <!-- Services Tab -->
+    <div class="tab-content active" id="services-tab">
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterServices('all')">All Services</button>
+            <button class="filter-btn" onclick="filterServices('cloud')">☁️ Cloud</button>
+            <button class="filter-btn" onclick="filterServices('home')">🏠 Home</button>
+            <button class="filter-btn" onclick="filterServices('edge')">⚡ Edge</button>
+        </div>
+
+        <div class="grid" id="servicesGrid"></div>
+    </div>
+
+    <!-- Traffic Tab -->
+    <div class="tab-content" id="traffic-tab">
+        <div class="grid">
+            <div class="card">
+                <h2>📈 Request Rate (Last Hour)</h2>
+                <div class="traffic-graph">
+                    <div class="graph-bars" id="trafficGraph"></div>
+                </div>
+                <div style="margin-top: 12px; text-align: center; color: #9ca3af; font-size: 12px;">
+                    Time (minutes ago)
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Top Endpoints</h2>
+                <div class="endpoint-list" id="topEndpoints"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🌍 Traffic by Location</h2>
+            <div class="metrics-row">
+                <div class="metric-box">
+                    <div class="metric-value" id="cloudTraffic">0</div>
+                    <div class="metric-label">Cloud Requests</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-value" id="homeTraffic">0</div>
+                    <div class="metric-label">Home Requests</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-value" id="edgeTraffic">0</div>
+                    <div class="metric-label">Edge Cached</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incidents Tab -->
+    <div class="tab-content" id="incidents-tab">
+        <div class="card">
+            <h2>🚨 Recent Incidents</h2>
+            <div id="incidentsList"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentFilter = 'all';
+        let currentTab = 'services';
+
+        function generateMockData() {
+            return {
+                services: [
+                    {
+                        name: 'Traefik Ingress',
+                        location: 'cloud',
+                        url: 'https://api.example.com',
+                        status: 'healthy',
+                        responseTime: 45,
+                        uptime: 99.98,
+                        requests: 15420,
+                        errors: 3
+                    },
+                    {
+                        name: 'Zitadel Auth',
+                        location: 'cloud',
+                        url: 'https://auth.example.com',
+                        status: 'healthy',
+                        responseTime: 120,
+                        uptime: 99.95,
+                        requests: 8932,
+                        errors: 12
+                    },
+                    {
+                        name: 'Consul Service Mesh',
+                        location: 'cloud',
+                        url: 'consul.internal:8500',
+                        status: 'healthy',
+                        responseTime: 12,
+                        uptime: 100,
+                        requests: 45203,
+                        errors: 0
+                    },
+                    {
+                        name: 'Nebula Lighthouse',
+                        location: 'cloud',
+                        url: 'nebula.internal:4242',
+                        status: 'healthy',
+                        responseTime: 8,
+                        uptime: 100,
+                        requests: 2341,
+                        errors: 0
+                    },
+                    {
+                        name: 'Client App XYZ',
+                        location: 'home',
+                        url: 'https://client-xyz.example.com',
+                        status: 'degraded',
+                        responseTime: 850,
+                        uptime: 98.2,
+                        requests: 3421,
+                        errors: 87
+                    },
+                    {
+                        name: 'Firecracker Pool',
+                        location: 'home',
+                        url: 'internal-compute',
+                        status: 'healthy',
+                        responseTime: 125,
+                        uptime: 99.7,
+                        requests: 1203,
+                        errors: 5
+                    },
+                    {
+                        name: 'Nomad Server',
+                        location: 'cloud',
+                        url: 'nomad.internal:4646',
+                        status: 'healthy',
+                        responseTime: 34,
+                        uptime: 99.99,
+                        requests: 892,
+                        errors: 1
+                    },
+                    {
+                        name: 'Cloudflare CDN',
+                        location: 'edge',
+                        url: 'https://cdn.example.com',
+                        status: 'healthy',
+                        responseTime: 15,
+                        uptime: 99.99,
+                        requests: 125043,
+                        errors: 23
+                    }
+                ],
+                traffic: Array.from({ length: 20 }, (_, i) => Math.floor(Math.random() * 1000) + 200),
+                endpoints: [
+                    { path: '/api/v1/users', count: 45203 },
+                    { path: '/api/v1/auth/login', count: 12043 },
+                    { path: '/api/v1/services', count: 8932 },
+                    { path: '/health', count: 7821 },
+                    { path: '/api/v1/metrics', count: 5432 }
+                ],
+                incidents: [
+                    {
+                        title: 'High response time on Client App XYZ',
+                        time: '15 minutes ago',
+                        description: 'Service experiencing elevated response times (>800ms). Investigating database connection pool exhaustion.'
+                    },
+                    {
+                        title: 'Nebula tunnel reconnection',
+                        time: '2 hours ago',
+                        description: 'Home worker node temporarily lost Nebula connection. Auto-reconnected after 45 seconds.'
+                    }
+                ],
+                locationTraffic: {
+                    cloud: 67234,
+                    home: 15892,
+                    edge: 125043
+                }
+            };
+        }
+
+        function getStatusClass(status) {
+            return status === 'healthy' ? 'healthy' : status === 'degraded' ? 'degraded' : 'down';
+        }
+
+        function getResponseClass(time) {
+            return time < 200 ? '' : time < 500 ? 'slow' : 'critical';
+        }
+
+        function getResponseWidth(time) {
+            return Math.min((time / 1000) * 100, 100);
+        }
+
+        function renderServices(data) {
+            const services = data.services.filter(s => 
+                currentFilter === 'all' || s.location === currentFilter
+            );
+
+            const html = services.map(service => `
+                <div class="card service-item ${service.status === 'degraded' ? 'warning' : service.status === 'down' ? 'critical' : ''}">
+                    <div class="service-header">
+                        <div class="service-name">
+                            <span class="status-indicator ${getStatusClass(service.status)}"></span>
+                            ${service.name}
+                        </div>
+                        <span style="font-size: 12px; color: #9ca3af;">
+                            ${service.location === 'cloud' ? '☁️' : service.location === 'home' ? '🏠' : '⚡'}
+                        </span>
+                    </div>
+                    <div class="service-url">${service.url}</div>
+                    
+                    <div class="response-time">
+                        <span>${service.responseTime}ms</span>
+                        <div class="response-bar">
+                            <div class="response-fill ${getResponseClass(service.responseTime)}" 
+                                 style="width: ${getResponseWidth(service.responseTime)}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metrics-row">
+                        <div class="metric-box">
+                            <div class="metric-value">${service.uptime}%</div>
+                            <div class="metric-label">Uptime</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${(service.requests / 1000).toFixed(1)}k</div>
+                            <div class="metric-label">Requests</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${service.errors}</div>
+                            <div class="metric-label">Errors</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('servicesGrid').innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">🔍</div><div>No services found</div></div>';
+        }
+
+        function renderTraffic(data) {
+            const maxValue = Math.max(...data.traffic);
+            const barsHtml = data.traffic.map(value => {
+                const height = (value / maxValue) * 100;
+                return `<div class="graph-bar" style="height: ${height}%"></div>`;
+            }).join('');
+
+            document.getElementById('trafficGraph').innerHTML = barsHtml;
+
+            const endpointsHtml = data.endpoints.map(ep => `
+                <div class="endpoint-item">
+                    <span class="endpoint-path">${ep.path}</span>
+                    <span class="endpoint-count">${(ep.count / 1000).toFixed(1)}k req</span>
+                </div>
+            `).join('');
+
+            document.getElementById('topEndpoints').innerHTML = endpointsHtml;
+
+            document.getElementById('cloudTraffic').textContent = (data.locationTraffic.cloud / 1000).toFixed(1) + 'k';
+            document.getElementById('homeTraffic').textContent = (data.locationTraffic.home / 1000).toFixed(1) + 'k';
+            document.getElementById('edgeTraffic').textContent = (data.locationTraffic.edge / 1000).toFixed(1) + 'k';
+        }
+
+        function renderIncidents(data) {
+            const html = data.incidents.length ? data.incidents.map(incident => `
+                <div class="incident-item">
+                    <div class="incident-header">
+                        <span class="incident-title">${incident.title}</span>
+                        <span class="incident-time">${incident.time}</span>
+                    </div>
+                    <div class="incident-desc">${incident.description}</div>
+                </div>
+            `).join('') : '<div class="empty-state"><div class="empty-state-icon">✅</div><div>No recent incidents</div></div>';
+
+            document.getElementById('incidentsList').innerHTML = html;
+        }
+
+        function updateDashboard() {
+            const data = generateMockData();
+
+            // Update header stats
+            const healthy = data.services.filter(s => s.status === 'healthy').length;
+            const degraded = data.services.filter(s => s.status === 'degraded').length;
+            const down = data.services.filter(s => s.status === 'down').length;
+
+            document.getElementById('healthyCount').textContent = healthy;
+            document.getElementById('degradedCount').textContent = degraded;
+            document.getElementById('downCount').textContent = down;
+
+            // Render active tab
+            renderServices(data);
+            renderTraffic(data);
+            renderIncidents(data);
+
+            // Update timestamp
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function filterServices(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const data = generateMockData();
+            renderServices(data);
+        }
+
+        // Initial load
+        updateDashboard();
+
+        // Auto-refresh every 15 seconds
+        setInterval(updateDashboard, 15000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "id": "lore-builder",
+  "label": "Lore Builder",
+  "system": "System prompt for Lore Builder",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

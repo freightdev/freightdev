@@ -1,0 +1,10 @@
+{
+  "id": "mythomax-l2-13b",
+  "name": "MythoMax L2 13B",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "7.33 GB",
+  "license": "Other",
+  "path": "models/mythomax-l2-13b/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/TheBloke/MythoMax-L2-13B-GGUF/resolve/main/mythomax-l2-13b.Q4_K_M.gguf"
+}

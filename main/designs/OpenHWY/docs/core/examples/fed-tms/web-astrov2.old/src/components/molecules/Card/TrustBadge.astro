@@ -1,0 +1,27 @@
+---
+export interface Props {
+  icon: string;
+  text: string;
+}
+
+const { icon, text } = Astro.props;
+---
+
+<div class="trust-badge">
+  <span class="trust-icon">{icon}</span>
+  <span>{text}</span>
+</div>
+
+<style>
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    color: #888;
+  }
+
+  .trust-icon {
+    font-size: 32px;
+  }
+</style>

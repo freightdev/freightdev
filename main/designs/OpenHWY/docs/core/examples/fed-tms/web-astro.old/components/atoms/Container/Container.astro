@@ -1,0 +1,27 @@
+---
+import type { ContainerProps } from './container.types';
+import { buildContainerClasses } from './container.utils';
+
+const {
+  as: Tag = 'div',
+  maxWidth = 'xl',
+  center = true,
+  padding = true,
+  className,
+  id,
+  'data-testid': dataTestId,
+  ...rest
+} = Astro.props as ContainerProps;
+
+const classes = buildContainerClasses({
+  as: Tag,
+  maxWidth,
+  center,
+  padding,
+  className,
+});
+---
+
+<Tag class={classes} id={id} data-testid={dataTestId} {...rest}>
+  <slot />
+</Tag>

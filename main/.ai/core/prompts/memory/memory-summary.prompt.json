@@ -1,0 +1,10 @@
+{
+  "id": "memory-summary",
+  "label": "Memory Summary",
+  "system": "System prompt for Memory Summary",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

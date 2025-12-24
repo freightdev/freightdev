@@ -1,0 +1,506 @@
+import React, { useState, useEffect } from 'react';
+import { Cloud, Zap, Shield, Globe, Code, Database, Lock, TrendingUp, CheckCircle, ArrowRight, Server, Cpu, HardDrive, Activity, Timer, DollarSign, Users, Award, Sparkles, Terminal, Network, RefreshCw } from 'lucide-react';
+
+export default function LandingPage() {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeTab, setActiveTab] = useState('monthly');
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const features = [
+    {
+      icon: RefreshCw,
+      title: "Auto-Failover & HA",
+      description: "99%+ uptime with automatic cloud failover in under 3 minutes. Your workloads never go down.",
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      icon: Globe,
+      title: "Built-in Global CDN",
+      description: "Cloudflare CDN integration included. Deploy anywhere, serve everywhere, lightning fast.",
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: Network,
+      title: "Private Mesh VPN",
+      description: "Secure encrypted mesh networking between all your instances. No extra configuration needed.",
+      color: "from-green-500 to-emerald-500"
+    },
+    {
+      icon: Terminal,
+      title: "Infrastructure as Code",
+      description: "Declarative NixOS configs, Terraform-native, GitOps ready. Reproducible infrastructure out of the box.",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      icon: Activity,
+      title: "Real-Time Monitoring",
+      description: "Prometheus metrics, Grafana dashboards, and intelligent alerts included. Know what's happening.",
+      color: "from-indigo-500 to-purple-500"
+    },
+    {
+      icon: Shield,
+      title: "Enterprise Isolation",
+      description: "Firecracker microVM isolation. AWS-grade security for every workload, no exceptions.",
+      color: "from-cyan-500 to-blue-500"
+    }
+  ];
+
+  const pricingTiers = [
+    {
+      name: "Nano",
+      cpu: "1 vCPU",
+      ram: "1GB RAM",
+      storage: "20GB NVMe",
+      hourly: "$0.015",
+      monthly: "$11",
+      aws: "$21",
+      savings: "48%",
+      features: ["Auto-failover", "CDN included", "VPN mesh", "SSL/TLS", "Monitoring"],
+      popular: false
+    },
+    {
+      name: "Micro",
+      cpu: "1 vCPU",
+      ram: "2GB RAM",
+      storage: "20GB NVMe",
+      hourly: "$0.020",
+      monthly: "$15",
+      aws: "$30",
+      savings: "50%",
+      features: ["Everything in Nano", "Priority support", "Backup snapshots", "Load balancing", "Custom domains"],
+      popular: false
+    },
+    {
+      name: "Small",
+      cpu: "2 vCPU",
+      ram: "4GB RAM",
+      storage: "40GB NVMe",
+      hourly: "$0.030",
+      monthly: "$22",
+      aws: "$42",
+      savings: "48%",
+      features: ["Everything in Micro", "Advanced monitoring", "Auto-scaling", "Team access", "SLA 99%"],
+      popular: true
+    },
+    {
+      name: "Medium",
+      cpu: "4 vCPU",
+      ram: "8GB RAM",
+      storage: "80GB NVMe",
+      hourly: "$0.060",
+      monthly: "$44",
+      aws: "$84",
+      savings: "48%",
+      features: ["Everything in Small", "Dedicated support", "Custom integrations", "Priority failover", "Advanced analytics"],
+      popular: false
+    },
+    {
+      name: "Large",
+      cpu: "8 vCPU",
+      ram: "16GB RAM",
+      storage: "160GB NVMe",
+      hourly: "$0.120",
+      monthly: "$88",
+      aws: "$168",
+      savings: "48%",
+      features: ["Everything in Medium", "White-glove onboarding", "Custom SLA", "Dedicated resources", "Architecture review"],
+      popular: false
+    }
+  ];
+
+  const comparisonData = [
+    { feature: "Setup Time", budget: "30+ min", aws: "15+ min", us: "< 60 sec" },
+    { feature: "Auto-Failover", budget: "Manual", aws: "Extra $$$", us: "Included" },
+    { feature: "CDN", budget: "DIY", aws: "CloudFront", us: "Included" },
+    { feature: "VPN Mesh", budget: "DIY", aws: "Extra cost", us: "Included" },
+    { feature: "Support", budget: "Tickets", aws: "Enterprise", us: "Human" },
+    { feature: "Complexity", budget: "Medium", aws: "Very High", us: "Low" },
+    { feature: "Pricing", budget: "Lowest", aws: "Highest", us: "Fair" }
+  ];
+
+  const stats = [
+    { value: "< 60s", label: "Average Deploy Time", icon: Timer },
+    { value: "99%+", label: "Uptime SLA", icon: Activity },
+    { value: "30%", label: "vs AWS Savings", icon: DollarSign },
+    { value: "24/7", label: "Human Support", icon: Users }
+  ];
+
+  const testimonials = [
+    {
+      quote: "We moved from AWS and cut our infrastructure costs by 40% while getting better support. The auto-failover has saved us twice already.",
+      author: "Sarah Chen",
+      role: "CTO, TechFlow",
+      avatar: "SC"
+    },
+    {
+      quote: "Finally, cloud infrastructure that doesn't require a PhD to understand. We deployed in minutes, not days.",
+      author: "Marcus Rodriguez",
+      role: "Founder, BuildSpace",
+      avatar: "MR"
+    },
+    {
+      quote: "The built-in CDN and VPN mesh saved us thousands in additional services. It just works.",
+      author: "Emily Watson",
+      role: "Lead Dev, Streamline",
+      avatar: "EW"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
+      {/* Navigation */}
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/80 backdrop-blur-xl border-b border-slate-800' : ''}`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <Cloud className="w-6 h-6" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">CloudForge</span>
+          </div>
+          <div className="hidden md:flex space-x-8">
+            <a href="#features" className="hover:text-blue-400 transition">Features</a>
+            <a href="#pricing" className="hover:text-blue-400 transition">Pricing</a>
+            <a href="#comparison" className="hover:text-blue-400 transition">Compare</a>
+          </div>
+          <button className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all">
+            Get Started
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-8 animate-fade-in">
+            <Sparkles className="w-4 h-4 text-blue-400" />
+            <span className="text-sm text-blue-300">AWS-Class Infrastructure Without The Complexity</span>
+          </div>
+          
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Deploy Instantly.
+            </span>
+            <br />
+            <span className="text-white">Scale Automatically.</span>
+            <br />
+            <span className="text-slate-300">Sleep Soundly.</span>
+          </h1>
+          
+          <p className="text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            Enterprise-grade infrastructure with automatic failover, built-in CDN, and private mesh networking. 
+            <span className="text-blue-400 font-semibold"> 30% cheaper than AWS</span>, infinitely simpler.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <button className="group bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all transform hover:scale-105 flex items-center justify-center space-x-2">
+              <span>Start Free Trial</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="border-2 border-slate-700 px-8 py-4 rounded-xl text-lg font-semibold hover:border-blue-500 hover:bg-blue-500/10 transition-all flex items-center justify-center space-x-2">
+              <Terminal className="w-5 h-5" />
+              <span>View Docs</span>
+            </button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {stats.map((stat, idx) => (
+              <div key={idx} className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl p-6 hover:border-blue-500/50 transition-all group">
+                <stat.icon className="w-8 h-8 text-blue-400 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-sm text-slate-400">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Everything You Need.
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Nothing You Don't.</span>
+            </h2>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Stop paying for features you'll never use. Get what actually matters, included.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, idx) => (
+              <div
+                key={idx}
+                onMouseEnter={() => setHoveredFeature(idx)}
+                onMouseLeave={() => setHoveredFeature(null)}
+                className="group relative bg-slate-800/30 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 overflow-hidden"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
+                
+                <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <feature.icon className="w-7 h-7 text-white" />
+                </div>
+                
+                <h3 className="text-xl font-bold mb-3 group-hover:text-blue-400 transition-colors">{feature.title}</h3>
+                <p className="text-slate-400 leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 px-6 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-slate-400 mb-8">
+              Pay only for what you use. No hidden fees. Cancel anytime.
+            </p>
+            
+            <div className="inline-flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+              <button
+                onClick={() => setActiveTab('hourly')}
+                className={`px-6 py-2 rounded-md transition-all ${activeTab === 'hourly' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              >
+                Hourly
+              </button>
+              <button
+                onClick={() => setActiveTab('monthly')}
+                className={`px-6 py-2 rounded-md transition-all ${activeTab === 'monthly' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              >
+                Monthly
+              </button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {pricingTiers.map((tier, idx) => (
+              <div
+                key={idx}
+                className={`relative bg-slate-800/50 backdrop-blur-xl border rounded-2xl p-6 hover:scale-105 transition-all duration-300 ${
+                  tier.popular ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-700'
+                }`}
+              >
+                {tier.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      POPULAR
+                    </span>
+                  </div>
+                )}
+
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold mb-2">{tier.name}</h3>
+                  <div className="text-3xl font-bold text-blue-400 mb-1">
+                    {activeTab === 'hourly' ? tier.hourly : tier.monthly}
+                  </div>
+                  <div className="text-sm text-slate-400">
+                    {activeTab === 'hourly' ? '/hour' : '/month'}
+                  </div>
+                </div>
+
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Cpu className="w-4 h-4 text-blue-400" />
+                    <span>{tier.cpu}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Server className="w-4 h-4 text-purple-400" />
+                    <span>{tier.ram}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <HardDrive className="w-4 h-4 text-green-400" />
+                    <span>{tier.storage}</span>
+                  </div>
+                </div>
+
+                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-6">
+                  <div className="text-xs text-green-400 font-semibold mb-1">Save {tier.savings} vs AWS</div>
+                  <div className="text-xs text-slate-400">AWS: {tier.aws}/mo</div>
+                </div>
+
+                <ul className="space-y-3 mb-6">
+                  {tier.features.map((feature, fidx) => (
+                    <li key={fidx} className="flex items-start space-x-2 text-sm text-slate-300">
+                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                  tier.popular
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg hover:shadow-blue-500/50'
+                    : 'bg-slate-700 hover:bg-slate-600'
+                }`}>
+                  Get Started
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-slate-400 mb-4">Need custom resources or GPU acceleration?</p>
+            <button className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center space-x-2">
+              <span>Contact us for custom pricing</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section id="comparison" className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              How We Stack Up
+            </h2>
+            <p className="text-xl text-slate-400">
+              Enterprise features without enterprise complexity or cost
+            </p>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl overflow-hidden">
+            <div className="grid grid-cols-4 bg-slate-900 border-b border-slate-700">
+              <div className="p-4 font-semibold">Feature</div>
+              <div className="p-4 font-semibold text-center border-l border-slate-700">Budget VPS</div>
+              <div className="p-4 font-semibold text-center border-l border-slate-700">AWS</div>
+              <div className="p-4 font-semibold text-center border-l border-slate-700 bg-blue-600/20">
+                <span className="text-blue-400">CloudForge</span>
+              </div>
+            </div>
+            {comparisonData.map((row, idx) => (
+              <div key={idx} className="grid grid-cols-4 border-b border-slate-800 last:border-0 hover:bg-slate-700/30 transition">
+                <div className="p-4 text-slate-300">{row.feature}</div>
+                <div className="p-4 text-center text-slate-400 border-l border-slate-800">{row.budget}</div>
+                <div className="p-4 text-center text-slate-400 border-l border-slate-800">{row.aws}</div>
+                <div className="p-4 text-center font-semibold text-blue-400 border-l border-slate-800 bg-blue-600/5">
+                  {row.us}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 px-6 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Loved by Developers
+            </h2>
+            <p className="text-xl text-slate-400">
+              Join hundreds of teams shipping faster with less complexity
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((test, idx) => (
+              <div key={idx} className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 hover:border-blue-500/50 transition-all">
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold">
+                    {test.avatar}
+                  </div>
+                  <div>
+                    <div className="font-semibold">{test.author}</div>
+                    <div className="text-sm text-slate-400">{test.role}</div>
+                  </div>
+                </div>
+                <p className="text-slate-300 leading-relaxed italic">"{test.quote}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-3xl p-12 backdrop-blur-xl">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ready to Deploy?
+            </h2>
+            <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+              Start with a free trial. No credit card required. Deploy your first instance in under 60 seconds.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all transform hover:scale-105">
+                Start Free Trial
+              </button>
+              <button className="border-2 border-slate-600 px-8 py-4 rounded-xl text-lg font-semibold hover:border-blue-500 hover:bg-blue-500/10 transition-all">
+                Schedule Demo
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800 py-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Cloud className="w-5 h-5" />
+                </div>
+                <span className="font-bold">CloudForge</span>
+              </div>
+              <p className="text-sm text-slate-400">
+                Enterprise infrastructure without the enterprise complexity.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-blue-400 transition">Features</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Pricing</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Documentation</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">API</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-blue-400 transition">About</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Blog</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Careers</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-blue-400 transition">Privacy</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Terms</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Security</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">SLA</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 pt-8 text-center text-sm text-slate-400">
+            © 2025 CloudForge. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

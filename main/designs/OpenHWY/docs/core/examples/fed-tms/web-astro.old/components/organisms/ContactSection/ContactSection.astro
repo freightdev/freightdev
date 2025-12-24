@@ -1,0 +1,25 @@
+---
+import Container from '@components/atoms/Container';
+import MapCard from '@components/molecules/MapCard';
+import ContactForm from './ContactForm.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Send us a message', description } = Astro.props as Props;
+---
+
+<Container maxWidth="xl">
+  <div class="grid gap-12 lg:grid-cols-2">
+    <div>
+      <slot name="intro">
+        <h2 class="text-3xl font-semibold mb-2">{title}</h2>
+        {description && <p class="text-text-secondary">{description}</p>}
+      </slot>
+      <ContactForm class="mt-6" />
+    </div>
+    <MapCard />
+  </div>
+</Container>

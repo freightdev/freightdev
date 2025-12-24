@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - Document Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+        flex-shrink: 0;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* FILTERS BAR */
+    .filters-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .filter-select {
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* CONTENT AREA */
+    .content-wrapper {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    .sidebar-categories {
+        width: 280px;
+        background: #16213e;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+        padding: 24px;
+    }
+
+    .category-section {
+        margin-bottom: 32px;
+    }
+
+    .category-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #666;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .category-item {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .category-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .category-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        color: #d946ef;
+    }
+
+    .category-count {
+        font-size: 12px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px;
+    }
+
+    /* STATS CARDS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #888;
+    }
+
+    /* DOCUMENT GRID */
+    .documents-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .documents-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .view-options {
+        display: flex;
+        gap: 8px;
+    }
+
+    .view-btn {
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #888;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .view-btn.active {
+        background: #d946ef;
+        color: white;
+        border-color: #d946ef;
+    }
+
+    .documents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .document-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .document-card:hover {
+        border-color: #d946ef;
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.3);
+        transform: translateY(-4px);
+    }
+
+    .document-icon-wrapper {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 16px;
+    }
+
+    .icon-pdf {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    .icon-image {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .icon-doc {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .icon-excel {
+        background: rgba(16, 185, 129, 0.2);
+    }
+
+    .document-name {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .document-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 12px;
+    }
+
+    .document-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .tag {
+        padding: 4px 8px;
+        background: rgba(217, 70, 239, 0.1);
+        border: 1px solid rgba(217, 70, 239, 0.3);
+        border-radius: 12px;
+        font-size: 11px;
+        color: #d946ef;
+    }
+
+    .document-actions {
+        display: flex;
+        gap: 8px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .doc-action-btn {
+        flex: 1;
+        padding: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: #888;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .doc-action-btn:hover {
+        background: rgba(217, 70, 239, 0.1);
+        border-color: #d946ef;
+        color: #d946ef;
+    }
+
+    /* UPLOAD ZONE */
+    .upload-zone {
+        border: 2px dashed rgba(217, 70, 239, 0.3);
+        border-radius: 16px;
+        padding: 48px;
+        text-align: center;
+        background: rgba(217, 70, 239, 0.05);
+        margin-bottom: 32px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .upload-zone:hover {
+        border-color: #d946ef;
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .upload-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+    }
+
+    .upload-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .upload-subtitle {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 20px;
+    }
+
+    .upload-formats {
+        font-size: 12px;
+        color: #666;
+    }
+
+    /* DOCUMENT TEMPLATES */
+    .templates-section {
+        margin-bottom: 32px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .template-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .template-card:hover {
+        border-color: #10b981;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .template-icon {
+        font-size: 40px;
+        margin-bottom: 16px;
+    }
+
+    .template-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .template-description {
+        font-size: 13px;
+        color: #888;
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .template-btn {
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .template-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    /* DOCUMENT VIEWER MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 90%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        padding: 24px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px;
+    }
+
+    .document-preview {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        margin-bottom: 24px;
+        color: #000;
+        min-height: 600px;
+    }
+
+    .modal-footer {
+        padding: 20px 32px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+
+    /* PENDING DOCUMENTS */
+    .pending-section {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 32px;
+    }
+
+    .pending-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .pending-icon {
+        font-size: 32px;
+    }
+
+    .pending-info {
+        flex: 1;
+    }
+
+    .pending-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f59e0b;
+        margin-bottom: 4px;
+    }
+
+    .pending-subtitle {
+        font-size: 13px;
+        color: #888;
+    }
+
+    .pending-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pending-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .pending-item-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .pending-item-icon {
+        font-size: 24px;
+    }
+
+    .pending-item-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .pending-item-name {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .pending-item-meta {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .request-btn {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .request-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    /* EXPIRING DOCUMENTS */
+    .expiring-alert {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .alert-icon {
+        font-size: 32px;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ef4444;
+        margin-bottom: 4px;
+    }
+
+    .alert-text {
+        font-size: 13px;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+                <div class="nav-badge">8</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">⏱️</div>
+                <div class="nav-label">ELD & HOS</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title">Document Management</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📊 Generate Report</button>
+                    <button class="btn btn-secondary">📤 Bulk Upload</button>
+                    <button class="btn btn-primary">➕ Upload Document</button>
+                </div>
+            </div>
+
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search documents...">
+                </div>
+                <select class="filter-select">
+                    <option>All Types</option>
+                    <option>Rate Confirmations</option>
+                    <option>BOL</option>
+                    <option>POD</option>
+                    <option>Invoices</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Dates</option>
+                    <option>Today</option>
+                    <option>This Week</option>
+                    <option>This Month</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Loads</option>
+                    <option>LD-2024-4527</option>
+                    <option>LD-2024-4529</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- DOCUMENT CATEGORIES SIDEBAR -->
+            <div class="sidebar-categories">
+                <div class="category-section">
+                    <div class="category-title">Document Types</div>
+                    <div class="category-item active">
+                        <span>📋 All Documents</span>
+                        <span class="category-count">347</span>
+                    </div>
+                    <div class="category-item">
+                        <span>📝 Rate Confirmations</span>
+                        <span class="category-count">89</span>
+                    </div>
+                    <div class="category-item">
+                        <span>📄 BOL (Bill of Lading)</span>
+                        <span class="category-count">76</span>
+                    </div>
+                    <div class="category-item">
+                        <span>✅ POD (Proof of Delivery)</span>
+                        <span class="category-count">68</span>
+                    </div>
+                    <div class="category-item">
+                        <span>💵 Invoices</span>
+                        <span class="category-count">54</span>
+                    </div>
+                    <div class="category-item">
+                        <span>📋 Carrier Packets</span>
+                        <span class="category-count">32</span>
+                    </div>
+                    <div class="category-item">
+                        <span>🚛 Lumper Receipts</span>
+                        <span class="category-count">28</span>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-title">Compliance</div>
+                    <div class="category-item">
+                        <span>🛡️ Insurance (COI)</span>
+                        <span class="category-count">8</span>
+                    </div>
+                    <div class="category-item">
+                        <span>📜 MC Authority</span>
+                        <span class="category-count">8</span>
+                    </div>
+                    <div class="category-item">
+                        <span>🔐 W9 Forms</span>
+                        <span class="category-count">8</span>
+                    </div>
+                    <div class="category-item">
+                        <span>🚗 Registration</span>
+                        <span class="category-count">8</span>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-title">Driver Documents</div>
+                    <div class="category-item">
+                        <span>🪪 CDL Licenses</span>
+                        <span class="category-count">8</span>
+                    </div>
+                    <div class="category-item">
+                        <span>🏥 Medical Cards</span>
+                        <span class="category-count">8</span>
+                    </div>
+                    <div class="category-item">
+                        <span>📋 Applications</span>
+                        <span class="category-count">12</span>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-title">Status</div>
+                    <div class="category-item">
+                        <span>⏳ Pending</span>
+                        <span class="category-count" style="background: rgba(245, 158, 11, 0.3); color: #f59e0b;">12</span>
+                    </div>
+                    <div class="category-item">
+                        <span>⚠️ Expiring Soon</span>
+                        <span class="category-count" style="background: rgba(239, 68, 68, 0.3); color: #ef4444;">5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT AREA -->
+            <div class="content">
+                <!-- STATS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-value" style="color: #3b82f6;">347</div>
+                        <div class="stat-label">Total Documents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-value" style="color: #f59e0b;">12</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-value" style="color: #ef4444;">5</div>
+                        <div class="stat-label">Expiring Soon</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📤</div>
+                        <div class="stat-value" style="color: #10b981;">28</div>
+                        <div class="stat-label">Uploaded Today</div>
+                    </div>
+                </div>
+
+                <!-- EXPIRING DOCUMENTS ALERT -->
+                <div class="expiring-alert">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">5 Documents Expiring Soon</div>
+                        <div class="alert-text">Insurance COI for John Smith expires in 7 days. Medical Card for Sarah Williams expires in 12 days.</div>
+                    </div>
+                    <button class="btn btn-secondary">View All</button>
+                </div>
+
+                <!-- PENDING DOCUMENTS -->
+                <div class="pending-section">
+                    <div class="pending-header">
+                        <div class="pending-icon">⏳</div>
+                        <div class="pending-info">
+                            <div class="pending-title">Pending Documents</div>
+                            <div class="pending-subtitle">Documents awaiting upload or approval</div>
+                        </div>
+                    </div>
+                    <div class="pending-list">
+                        <div class="pending-item">
+                            <div class="pending-item-info">
+                                <div class="pending-item-icon">✅</div>
+                                <div class="pending-item-details">
+                                    <div class="pending-item-name">POD for LD-2024-4527</div>
+                                    <div class="pending-item-meta">Needed from: John Smith • Delivered 2 hours ago</div>
+                                </div>
+                            </div>
+                            <button class="request-btn">📧 Request</button>
+                        </div>
+
+                        <div class="pending-item">
+                            <div class="pending-item-info">
+                                <div class="pending-item-icon">📋</div>
+                                <div class="pending-item-details">
+                                    <div class="pending-item-name">Carrier Packet - FreightLink Logistics</div>
+                                    <div class="pending-item-meta">Load: LD-2024-5847 • Requested 1 day ago</div>
+                                </div>
+                            </div>
+                            <button class="request-btn">🔄 Follow Up</button>
+                        </div>
+
+                        <div class="pending-item">
+                            <div class="pending-item-info">
+                                <div class="pending-item-icon">🚛</div>
+                                <div class="pending-item-details">
+                                    <div class="pending-item-name">Lumper Receipt - LD-2024-4529</div>
+                                    <div class="pending-item-meta">Needed from: Sarah Williams • Waiting 4 hours</div>
+                                </div>
+                            </div>
+                            <button class="request-btn">📧 Request</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOCUMENT TEMPLATES -->
+                <div class="templates-section">
+                    <div class="section-header">
+                        <div class="section-title">📝 Quick Generate Templates</div>
+                    </div>
+                    <div class="templates-grid">
+                        <div class="template-card">
+                            <div class="template-icon">📝</div>
+                            <div class="template-name">Rate Confirmation</div>
+                            <div class="template-description">Auto-generate rate con with load details, rates, pickup/delivery info</div>
+                            <button class="template-btn">Generate Rate Con</button>
+                        </div>
+
+                        <div class="template-card">
+                            <div class="template-icon">💵</div>
+                            <div class="template-name">Invoice</div>
+                            <div class="template-description">Professional invoice with your branding, payment terms, and load details</div>
+                            <button class="template-btn">Generate Invoice</button>
+                        </div>
+
+                        <div class="template-card">
+                            <div class="template-icon">📄</div>
+                            <div class="template-name">BOL</div>
+                            <div class="template-description">Bill of Lading with shipper/consignee info, commodity details, and signatures</div>
+                            <button class="template-btn">Generate BOL</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UPLOAD ZONE -->
+                <div class="upload-zone">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-title">Drop files here or click to upload</div>
+                    <div class="upload-subtitle">Upload documents, images, or PDFs</div>
+                    <div class="upload-formats">Supported formats: PDF, JPG, PNG, DOC, XLSX (Max 25MB)</div>
+                </div>
+
+                <!-- DOCUMENTS LIST -->
+                <div class="documents-header">
+                    <div class="documents-title">Recent Documents</div>
+                    <div class="view-options">
+                        <button class="view-btn active">📱 Grid</button>
+                        <button class="view-btn">📋 List</button>
+                    </div>
+                </div>
+
+                <div class="documents-grid">
+                    <!-- Rate Confirmation -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-pdf">
+                            📝
+                        </div>
+                        <div class="document-name">Rate_Con_LD-2024-4527.pdf</div>
+                        <div class="document-meta">
+                            <span>📅 Dec 18, 2024</span>
+                            <span>📦 247 KB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">Rate Con</span>
+                            <span class="tag">LD-4527</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">📧 Send</button>
+                        </div>
+                    </div>
+
+                    <!-- BOL -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-pdf">
+                            📄
+                        </div>
+                        <div class="document-name">BOL_LD-2024-4527.pdf</div>
+                        <div class="document-meta">
+                            <span>📅 Dec 18, 2024</span>
+                            <span>📦 189 KB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">BOL</span>
+                            <span class="tag">LD-4527</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">📧 Send</button>
+                        </div>
+                    </div>
+
+                    <!-- POD (Image) -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-image">
+                            📸
+                        </div>
+                        <div class="document-name">POD_LD-2024-4518.jpg</div>
+                        <div class="document-meta">
+                            <span>📅 Dec 18, 2024</span>
+                            <span>📦 1.2 MB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">POD</span>
+                            <span class="tag">LD-4518</span>
+                            <span class="tag">Signed</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">📧 Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Invoice -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-pdf">
+                            💵
+                        </div>
+                        <div class="document-name">Invoice_INV-2024-1047.pdf</div>
+                        <div class="document-meta">
+                            <span>📅 Dec 16, 2024</span>
+                            <span>📦 156 KB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">Invoice</span>
+                            <span class="tag">LD-4527</span>
+                            <span class="tag">Sent</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">📧 Resend</button>
+                        </div>
+                    </div>
+
+                    <!-- Carrier Packet -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-pdf">
+                            📋
+                        </div>
+                        <div class="document-name">Carrier_Packet_FreightLink.pdf</div>
+                        <div class="document-meta">
+                            <span>📅 Dec 15, 2024</span>
+                            <span>📦 4.2 MB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">Carrier Packet</span>
+                            <span class="tag">FreightLink</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">✏️ Fill</button>
+                        </div>
+                    </div>
+
+                    <!-- Insurance COI -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-pdf">
+                            🛡️
+                        </div>
+                        <div class="document-name">Insurance_COI_2024.pdf</div>
+                        <div class="document-meta">
+                            <span>📅 Jan 1, 2024</span>
+                            <span>📦 892 KB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">Insurance</span>
+                            <span class="tag">COI</span>
+                            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">Expires Soon</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">🔄 Renew</button>
+                        </div>
+                    </div>
+
+                    <!-- Lumper Receipt -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-image">
+                            🚛
+                        </div>
+                        <div class="document-name">Lumper_Receipt_LD-4530.jpg</div>
+                        <div class="document-meta">
+                            <span>📅 Dec 17, 2024</span>
+                            <span>📦 856 KB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">Lumper</span>
+                            <span class="tag">LD-4530</span>
+                            <span class="tag">$150</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">💰 Submit</button>
+                        </div>
+                    </div>
+
+                    <!-- CDL -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-image">
+                            🪪
+                        </div>
+                        <div class="document-name">CDL_John_Smith.jpg</div>
+                        <div class="document-meta">
+                            <span>📅 Mar 15, 2024</span>
+                            <span>📦 1.1 MB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">CDL</span>
+                            <span class="tag">John Smith</span>
+                            <span class="tag">Class A</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">✓ Verify</button>
+                        </div>
+                    </div>
+
+                    <!-- Medical Card -->
+                    <div class="document-card">
+                        <div class="document-icon-wrapper icon-image">
+                            🏥
+                        </div>
+                        <div class="document-name">Medical_Card_Sarah_Williams.jpg</div>
+                        <div class="document-meta">
+                            <span>📅 Jun 1, 2024</span>
+                            <span>📦 945 KB</span>
+                        </div>
+                        <div class="document-tags">
+                            <span class="tag">Medical</span>
+                            <span class="tag">Sarah Williams</span>
+                            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">Expires Soon</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="doc-action-btn">👁️ View</button>
+                            <button class="doc-action-btn">📥 Download</button>
+                            <button class="doc-action-btn">🔔 Alert</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DOCUMENT VIEWER MODAL -->
+<div class="modal" id="documentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Rate_Con_LD-2024-4527.pdf</div>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="document-preview">
+                <h2 style="text-align: center; margin-bottom: 20px;">RATE CONFIRMATION</h2>
+                <p style="text-align: center; margin-bottom: 30px;">Load #: LD-2024-4527</p>
+                
+                <div style="margin-bottom: 30px;">
+                    <strong>Carrier Information:</strong><br>
+                    Your Company LLC<br>
+                    MC# 123456<br>
+                    DOT# 789012
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <strong>Broker Information:</strong><br>
+                    FreightLink Logistics<br>
+                    MC# 654321
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <strong>Load Details:</strong><br>
+                    Equipment: Dry Van<br>
+                    Weight: 42,000 lbs<br>
+                    Commodity: Auto Parts
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <strong>Pickup:</strong><br>
+                    Date: December 18, 2024 - 8:00 PM<br>
+                    Location: Houston, TX 77002
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <strong>Delivery:</strong><br>
+                    Date: December 19, 2024 - 4:00 PM<br>
+                    Location: Austin, TX 78701
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <strong>Rate:</strong><br>
+                    Total: $2,450.00<br>
+                    Payment Terms: Net 30
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary">📧 Email</button>
+            <button class="btn btn-secondary">📥 Download</button>
+            <button class="btn btn-primary">✏️ Edit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeModal() {
+        document.getElementById('documentModal').classList.remove('show');
+    }
+
+    // Document card click handlers
+    document.querySelectorAll('.document-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('.doc-action-btn')) {
+                document.getElementById('documentModal').classList.add('show');
+            }
+        });
+    });
+
+    // Close modal on background click
+    document.getElementById('documentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Category selection
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

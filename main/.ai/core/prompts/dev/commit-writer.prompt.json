@@ -1,0 +1,10 @@
+{
+  "id": "commit-writer",
+  "label": "Commit Writer",
+  "system": "System prompt for Commit Writer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

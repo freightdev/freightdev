@@ -1,0 +1,754 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Mail, Send, Inbox, Star, Archive, Trash2, MoreVertical, Search, 
+  Filter, RefreshCw, Plus, Paperclip, Image, Smile, AtSign, Hash,
+  ChevronLeft, ChevronRight, Reply, ReplyAll, Forward, Download,
+  Tag, Flag, Clock, User, Users, Server, AlertCircle, CheckCircle,
+  Sparkles, Zap, Eye, EyeOff, Edit3, Code, FileText, Calendar,
+  Phone, Video, Link, Settings, X, Maximize2, Minimize2, Bot,
+  MessageSquare, Mic, Volume2, TrendingUp, Shield, Bell, Circle
+} from 'lucide-react';
+
+export default function CloudDashEmail() {
+  const [selectedFolder, setSelectedFolder] = useState('inbox');
+  const [selectedEmail, setSelectedEmail] = useState(null);
+  const [composing, setComposing] = useState(false);
+  const [composeMinimized, setComposeMinimized] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [aiProcessing, setAiProcessing] = useState(false);
+  const composeRef = useRef(null);
+
+  // Simulated emails
+  const emails = [
+    {
+      id: 1,
+      from: 'alerts@l1-vivobook.local',
+      fromType: 'server',
+      subject: 'High CPU Alert - L1-Vivobook',
+      preview: 'CPU usage has exceeded 85% threshold for 15 minutes...',
+      body: 'Alert: CPU usage on L1-Vivobook has exceeded 85% for 15 minutes. Current: 89%. Action may be required.',
+      time: '2m ago',
+      unread: true,
+      starred: false,
+      labels: ['alerts', 'critical'],
+      hasAttachment: false,
+      priority: 'high'
+    },
+    {
+      id: 2,
+      from: 'sarah.chen@acmecorp.com',
+      fromType: 'customer',
+      subject: 'Question about VM pricing',
+      preview: 'Hi, I noticed the pricing for 4 vCPU instances...',
+      body: 'Hi,\n\nI noticed the pricing for 4 vCPU instances and wanted to clarify if this includes bandwidth costs or if that\'s separate?\n\nThanks,\nSarah',
+      time: '1h ago',
+      unread: true,
+      starred: true,
+      labels: ['customer-support', 'billing'],
+      hasAttachment: false,
+      priority: 'normal'
+    },
+    {
+      id: 3,
+      from: 'backups@nomad-cluster.local',
+      fromType: 'server',
+      subject: 'Daily Backup Report - Success',
+      preview: 'All systems backed up successfully. Total size: 2.4TB...',
+      body: 'Daily backup completed successfully.\n\nBackup Summary:\n- L1-Vivobook: 650GB\n- L2-Yoga: 720GB\n- L3-TUF: 580GB\n- L4-Dell: 450GB\n\nTotal: 2.4TB\nDuration: 2h 15m',
+      time: '3h ago',
+      unread: false,
+      starred: false,
+      labels: ['system', 'backups'],
+      hasAttachment: true,
+      priority: 'low'
+    },
+    {
+      id: 4,
+      from: 'john.martinez@startupxyz.io',
+      fromType: 'customer',
+      subject: 'New Enterprise Plan Inquiry',
+      preview: 'We\'re looking to migrate 50+ VMs from AWS...',
+      body: 'Hi there,\n\nWe\'re a startup looking to migrate 50+ VMs from AWS to reduce costs. Can we schedule a call to discuss enterprise pricing and migration support?\n\nBest,\nJohn Martinez\nCTO, StartupXYZ',
+      time: '5h ago',
+      unread: false,
+      starred: true,
+      labels: ['sales', 'enterprise'],
+      hasAttachment: false,
+      priority: 'high'
+    },
+    {
+      id: 5,
+      from: 'consul@cluster.local',
+      fromType: 'server',
+      subject: 'Node Health Check Failed',
+      preview: 'Health check failed for L4-Dell node...',
+      body: 'Consul health check failed for node L4-Dell.\n\nService: nomad-client\nCheck: tcp-check\nStatus: critical\nLast success: 10m ago',
+      time: '12h ago',
+      unread: false,
+      starred: false,
+      labels: ['alerts', 'infrastructure'],
+      hasAttachment: false,
+      priority: 'high'
+    }
+  ];
+
+  const folders = [
+    { id: 'inbox', name: 'Inbox', icon: Inbox, count: 2, color: 'blue' },
+    { id: 'starred', name: 'Starred', icon: Star, count: 2, color: 'yellow' },
+    { id: 'sent', name: 'Sent', icon: Send, count: 0, color: 'green' },
+    { id: 'drafts', name: 'Drafts', icon: Edit3, count: 3, color: 'slate' },
+    { id: 'archive', name: 'Archive', icon: Archive, count: 145, color: 'purple' },
+    { id: 'trash', name: 'Trash', icon: Trash2, count: 12, color: 'red' }
+  ];
+
+  const labels = [
+    { id: 'alerts', name: 'Alerts', color: 'red', count: 2 },
+    { id: 'customer-support', name: 'Customer Support', color: 'blue', count: 5 },
+    { id: 'sales', name: 'Sales', color: 'green', count: 3 },
+    { id: 'system', name: 'System', color: 'slate', count: 8 },
+    { id: 'critical', name: 'Critical', color: 'orange', count: 1 }
+  ];
+
+  const aiSuggestions = {
+    'High CPU Alert': 'This server alert indicates L1-Vivobook is experiencing high CPU load. I recommend checking running VMs and potentially migrating workloads to L3-TUF which currently has lower utilization.',
+    'Question about VM pricing': 'This customer is asking about bandwidth costs. Our pricing includes 2TB/month bandwidth per instance. I can draft a response explaining this and offering a custom quote if they need more.',
+    'New Enterprise Plan Inquiry': 'High-value lead! This startup wants to migrate 50+ VMs. I recommend scheduling a call within 24 hours and preparing a custom enterprise proposal with migration support included.'
+  };
+
+  const handleAIAssist = (email) => {
+    setAiProcessing(true);
+    setTimeout(() => {
+      const suggestion = aiSuggestions[email.subject] || 'I can help you draft a response to this email. What would you like to say?';
+      setAiSuggestion(suggestion);
+      setShowAIAssistant(true);
+      setAiProcessing(false);
+    }, 1000);
+  };
+
+  const handleAIDraft = (type) => {
+    setAiProcessing(true);
+    setTimeout(() => {
+      let draft = '';
+      if (type === 'professional') {
+        draft = 'Dear [Name],\n\nThank you for reaching out. I wanted to follow up on your inquiry regarding...\n\nBest regards,\nCloudDash Team';
+      } else if (type === 'technical') {
+        draft = 'Hi,\n\nRegarding the issue you mentioned:\n\n- Root cause: [Analysis]\n- Resolution: [Steps]\n- Prevention: [Recommendations]\n\nLet me know if you need further assistance.\n\nTechnical Support';
+      } else if (type === 'quick') {
+        draft = 'Thanks for your message! I\'ll look into this and get back to you shortly.';
+      }
+      setEmailBody(draft);
+      setAiProcessing(false);
+      setShowAIAssistant(false);
+    }, 800);
+  };
+
+  const getPriorityColor = (priority) => {
+    switch(priority) {
+      case 'high': return 'text-red-400';
+      case 'normal': return 'text-blue-400';
+      case 'low': return 'text-slate-400';
+      default: return 'text-slate-400';
+    }
+  };
+
+  const getPriorityIcon = (priority) => {
+    switch(priority) {
+      case 'high': return AlertCircle;
+      case 'normal': return Circle;
+      case 'low': return Circle;
+      default: return Circle;
+    }
+  };
+
+  return (
+    <div className="h-screen flex flex-col bg-slate-950 text-white">
+      {/* Header */}
+      <div className="h-16 bg-slate-900 border-b border-slate-800 flex items-center px-6">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <Mail className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold">CloudMail</h1>
+            <p className="text-xs text-slate-400">Unified Email System</p>
+          </div>
+        </div>
+
+        <div className="flex-1 max-w-2xl mx-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search emails, servers, customers..."
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={() => setShowAIAssistant(!showAIAssistant)}
+            className="p-2 hover:bg-slate-800 rounded-lg transition-colors relative"
+            title="AI Assistant"
+          >
+            <Sparkles className="w-5 h-5 text-purple-400" />
+            {showAIAssistant && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
+            )}
+          </button>
+          <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+            <RefreshCw className="w-5 h-5" />
+          </button>
+          <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+            <Settings className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setComposing(true)}
+            className="ml-4 bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 rounded-lg font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Compose</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar */}
+        <div className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
+          <div className="p-4">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">Folders</h3>
+            <div className="space-y-1">
+              {folders.map(folder => (
+                <button
+                  key={folder.id}
+                  onClick={() => setSelectedFolder(folder.id)}
+                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all ${
+                    selectedFolder === folder.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  <folder.icon className="w-5 h-5" />
+                  <span className="flex-1 text-left text-sm font-medium">{folder.name}</span>
+                  {folder.count > 0 && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${
+                      selectedFolder === folder.id
+                        ? 'bg-white/20'
+                        : 'bg-slate-700'
+                    }`}>
+                      {folder.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-4 border-t border-slate-800">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">Labels</h3>
+            <div className="space-y-1">
+              {labels.map(label => (
+                <button
+                  key={label.id}
+                  className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all"
+                >
+                  <Tag className={`w-4 h-4 text-${label.color}-400`} />
+                  <span className="flex-1 text-left text-sm">{label.name}</span>
+                  <span className="text-xs text-slate-500">{label.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex-1"></div>
+
+          <div className="p-4 border-t border-slate-800">
+            <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 border border-purple-500/30 rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+                <h4 className="font-semibold text-sm">AI Assistant</h4>
+              </div>
+              <p className="text-xs text-slate-300 mb-3">Let AI help manage your emails, draft responses, and prioritize messages.</p>
+              <button 
+                onClick={() => setShowAIAssistant(true)}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold py-2 rounded-lg transition-all"
+              >
+                Enable AI Help
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Email List */}
+        <div className="w-96 bg-slate-900/50 border-r border-slate-800 flex flex-col">
+          <div className="h-14 border-b border-slate-800 flex items-center justify-between px-4">
+            <h2 className="font-semibold capitalize">{selectedFolder}</h2>
+            <div className="flex items-center space-x-2">
+              <button className="p-1.5 hover:bg-slate-800 rounded">
+                <Filter className="w-4 h-4" />
+              </button>
+              <button className="p-1.5 hover:bg-slate-800 rounded">
+                <MoreVertical className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {emails.map(email => (
+              <div
+                key={email.id}
+                onClick={() => setSelectedEmail(email)}
+                className={`border-b border-slate-800 p-4 cursor-pointer transition-all ${
+                  selectedEmail?.id === email.id
+                    ? 'bg-slate-800 border-l-4 border-l-blue-500'
+                    : 'hover:bg-slate-800/50'
+                } ${email.unread ? 'bg-slate-800/30' : ''}`}
+              >
+                <div className="flex items-start space-x-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    email.fromType === 'server' 
+                      ? 'bg-orange-500/20 text-orange-400' 
+                      : 'bg-blue-500/20 text-blue-400'
+                  }`}>
+                    {email.fromType === 'server' ? <Server className="w-5 h-5" /> : <User className="w-5 h-5" />}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={`text-sm font-semibold truncate ${email.unread ? 'text-white' : 'text-slate-300'}`}>
+                        {email.from}
+                      </span>
+                      <span className="text-xs text-slate-400 ml-2">{email.time}</span>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 mb-1">
+                      {email.starred && <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />}
+                      {email.hasAttachment && <Paperclip className="w-3 h-3 text-slate-400" />}
+                      {React.createElement(getPriorityIcon(email.priority), {
+                        className: `w-3 h-3 ${getPriorityColor(email.priority)}`
+                      })}
+                    </div>
+                    
+                    <h3 className={`text-sm truncate mb-1 ${email.unread ? 'font-semibold text-white' : 'text-slate-300'}`}>
+                      {email.subject}
+                    </h3>
+                    
+                    <p className="text-xs text-slate-400 truncate mb-2">{email.preview}</p>
+                    
+                    <div className="flex flex-wrap gap-1">
+                      {email.labels.map(labelId => {
+                        const label = labels.find(l => l.id === labelId);
+                        return label ? (
+                          <span
+                            key={labelId}
+                            className={`text-xs px-2 py-0.5 rounded-full bg-${label.color}-500/20 text-${label.color}-400 border border-${label.color}-500/30`}
+                          >
+                            {label.name}
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Email Content */}
+        <div className="flex-1 flex flex-col bg-slate-900/30">
+          {selectedEmail ? (
+            <>
+              <div className="h-16 border-b border-slate-800 flex items-center justify-between px-6">
+                <div className="flex items-center space-x-4">
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <Archive className="w-5 h-5" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <Flag className="w-5 h-5" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <Clock className="w-5 h-5" />
+                  </button>
+                  <div className="h-6 w-px bg-slate-700"></div>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <Tag className="w-5 h-5" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-slate-400">1 of {emails.length}</span>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="max-w-4xl mx-auto">
+                  {/* Email Header */}
+                  <div className="mb-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <h1 className="text-2xl font-bold text-white">{selectedEmail.subject}</h1>
+                      {selectedEmail.priority === 'high' && (
+                        <span className="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full border border-red-500/30">
+                          HIGH PRIORITY
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          selectedEmail.fromType === 'server' 
+                            ? 'bg-orange-500/20 text-orange-400' 
+                            : 'bg-blue-500/20 text-blue-400'
+                        }`}>
+                          {selectedEmail.fromType === 'server' ? <Server className="w-6 h-6" /> : <User className="w-6 h-6" />}
+                        </div>
+                        <div>
+                          <p className="font-semibold">{selectedEmail.from}</p>
+                          <p className="text-sm text-slate-400">to me</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-slate-400">{selectedEmail.time}</span>
+                    </div>
+                  </div>
+
+                  {/* Email Body */}
+                  <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 mb-6">
+                    <pre className="whitespace-pre-wrap font-sans text-slate-300 leading-relaxed">
+                      {selectedEmail.body}
+                    </pre>
+                  </div>
+
+                  {/* AI Suggestion Banner */}
+                  {aiSuggestion && (
+                    <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 rounded-xl p-4 mb-6">
+                      <div className="flex items-start space-x-3">
+                        <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm mb-2 flex items-center space-x-2">
+                            <span>AI Analysis</span>
+                            {aiProcessing && <RefreshCw className="w-3 h-3 animate-spin" />}
+                          </h4>
+                          <p className="text-sm text-slate-300 mb-3">{aiSuggestion}</p>
+                          <div className="flex flex-wrap gap-2">
+                            <button 
+                              onClick={() => handleAIDraft('professional')}
+                              className="text-xs bg-purple-600 hover:bg-purple-700 px-3 py-1.5 rounded-lg font-semibold transition-all"
+                            >
+                              Draft Professional Response
+                            </button>
+                            <button 
+                              onClick={() => handleAIDraft('technical')}
+                              className="text-xs bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg font-semibold transition-all"
+                            >
+                              Draft Technical Response
+                            </button>
+                            <button 
+                              onClick={() => handleAIDraft('quick')}
+                              className="text-xs bg-slate-600 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-semibold transition-all"
+                            >
+                              Quick Reply
+                            </button>
+                          </div>
+                        </div>
+                        <button onClick={() => setAiSuggestion('')} className="p-1 hover:bg-white/10 rounded">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-3">
+                    <button 
+                      onClick={() => {
+                        setComposing(true);
+                        handleAIAssist(selectedEmail);
+                      }}
+                      className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-all"
+                    >
+                      <Reply className="w-5 h-5" />
+                      <span>Reply</span>
+                    </button>
+                    <button className="flex items-center space-x-2 bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-lg font-semibold transition-all">
+                      <ReplyAll className="w-5 h-5" />
+                      <span>Reply All</span>
+                    </button>
+                    <button className="flex items-center space-x-2 bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-lg font-semibold transition-all">
+                      <Forward className="w-5 h-5" />
+                      <span>Forward</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <Mail className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-400 mb-2">No Email Selected</h3>
+                <p className="text-slate-500">Select an email from the list to view its content</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* AI Assistant Sidebar */}
+        {showAIAssistant && (
+          <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col">
+            <div className="h-14 border-b border-slate-800 flex items-center justify-between px-4">
+              <div className="flex items-center space-x-2">
+                <Bot className="w-5 h-5 text-purple-400" />
+                <h3 className="font-semibold">AI Assistant</h3>
+              </div>
+              <button onClick={() => setShowAIAssistant(false)} className="p-1.5 hover:bg-slate-800 rounded">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="bg-purple-600/10 border border-purple-500/30 rounded-lg p-4">
+                <h4 className="font-semibold text-sm mb-2 flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <span>Quick Actions</span>
+                </h4>
+                <div className="space-y-2">
+                  <button className="w-full text-left text-sm bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg transition-all">
+                    Summarize all unread emails
+                  </button>
+                  <button className="w-full text-left text-sm bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg transition-all">
+                    Prioritize by urgency
+                  </button>
+                  <button className="w-full text-left text-sm bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg transition-all">
+                    Draft replies to customers
+                  </button>
+                  <button className="w-full text-left text-sm bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg transition-all">
+                    Generate weekly summary
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-blue-600/10 border border-blue-500/30 rounded-lg p-4">
+                <h4 className="font-semibold text-sm mb-2 flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-blue-400" />
+                  <span>Email Insights</span>
+                </h4>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Unread emails</span>
+                    <span className="font-semibold">2</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">High priority</span>
+                    <span className="font-semibold text-red-400">3</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Needs response</span>
+                    <span className="font-semibold text-yellow-400">4</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Server alerts</span>
+                    <span className="font-semibold text-orange-400">2</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-600/10 border border-green-500/30 rounded-lg p-4">
+                <h4 className="font-semibold text-sm mb-2 flex items-center space-x-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>Suggested Responses</span>
+                </h4>
+                <p className="text-xs text-slate-400 mb-3">AI-generated responses ready to send</p>
+                <div className="space-y-2">
+                  <div className="bg-slate-800 p-3 rounded-lg">
+                    <p className="text-xs text-slate-300 mb-2">To: sarah.chen@acmecorp.com</p>
+                    <p className="text-xs text-slate-400 line-clamp-2">Hi Sarah, bandwidth is included in our pricing at 2TB/month per instance...</p>
+                    <button className="mt-2 text-xs text-blue-400 hover:text-blue-300">Review & Send</button>
+                  </div>
+                  <div className="bg-slate-800 p-3 rounded-lg">
+                    <p className="text-xs text-slate-300 mb-2">To: john.martinez@startupxyz.io</p>
+                    <p className="text-xs text-slate-400 line-clamp-2">Hi John, I'd love to discuss your enterprise migration. Available for a call...</p>
+                    <button className="mt-2 text-xs text-blue-400 hover:text-blue-300">Review & Send</button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-orange-600/10 border border-orange-500/30 rounded-lg p-4">
+                <h4 className="font-semibold text-sm mb-2 flex items-center space-x-2">
+                  <AlertCircle className="w-4 h-4 text-orange-400" />
+                  <span>Server Alerts Summary</span>
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="bg-slate-800 p-2 rounded">
+                    <p className="font-semibold text-red-400">Critical: L1-Vivobook CPU</p>
+                    <p className="text-slate-400">89% utilization for 15m</p>
+                  </div>
+                  <div className="bg-slate-800 p-2 rounded">
+                    <p className="font-semibold text-yellow-400">Warning: L4-Dell Health</p>
+                    <p className="text-slate-400">Consul check failed</p>
+                  </div>
+                </div>
+                <button className="mt-3 w-full text-xs bg-orange-600 hover:bg-orange-700 py-2 rounded-lg font-semibold">
+                  View All Alerts
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-800">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Ask AI anything about your emails..."
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-4 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-300">
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Compose Email Window */}
+      {composing && (
+        <div
+          ref={composeRef}
+          className={`fixed bg-slate-900 border border-slate-700 rounded-t-xl shadow-2xl transition-all ${
+            composeMinimized
+              ? 'bottom-0 right-6 w-80 h-12'
+              : 'bottom-0 right-6 w-[600px] h-[600px]'
+          }`}
+          style={{ zIndex: 1000 }}
+        >
+          {/* Compose Header */}
+          <div className="h-12 bg-slate-800 border-b border-slate-700 rounded-t-xl flex items-center justify-between px-4">
+            <h3 className="font-semibold text-sm">New Message</h3>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setComposeMinimized(!composeMinimized)}
+                className="p-1 hover:bg-slate-700 rounded"
+              >
+                {composeMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={() => setComposing(false)}
+                className="p-1 hover:bg-slate-700 rounded"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {!composeMinimized && (
+            <>
+              {/* Compose Form */}
+              <div className="p-4 space-y-3">
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-slate-400 w-12">To:</label>
+                  <input
+                    type="text"
+                    placeholder="recipient@example.com"
+                    className="flex-1 bg-slate-800 border-b border-slate-700 px-2 py-1 text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-slate-400 w-12">Cc:</label>
+                  <input
+                    type="text"
+                    placeholder="Optional"
+                    className="flex-1 bg-slate-800 border-b border-slate-700 px-2 py-1 text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-slate-400 w-12">Subject:</label>
+                  <input
+                    type="text"
+                    placeholder="Email subject"
+                    className="flex-1 bg-slate-800 border-b border-slate-700 px-2 py-1 text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* AI Draft Banner */}
+              {aiProcessing && (
+                <div className="px-4 pb-3">
+                  <div className="bg-purple-600/20 border border-purple-500/30 rounded-lg p-3 flex items-center space-x-2">
+                    <RefreshCw className="w-4 h-4 text-purple-400 animate-spin" />
+                    <span className="text-sm text-purple-300">AI is drafting your email...</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Email Body */}
+              <div className="flex-1 px-4 pb-4">
+                <textarea
+                  value={emailBody}
+                  onChange={(e) => setEmailBody(e.target.value)}
+                  placeholder="Write your message... (Press Ctrl+K for AI assistance)"
+                  className="w-full h-64 bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
+
+              {/* Compose Toolbar */}
+              <div className="border-t border-slate-700 p-4 flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Attach file">
+                    <Paperclip className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Insert image">
+                    <Image className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Insert link">
+                    <Link className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Emoji">
+                    <Smile className="w-4 h-4" />
+                  </button>
+                  <div className="h-6 w-px bg-slate-700"></div>
+                  <button 
+                    onClick={() => handleAIDraft('professional')}
+                    className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-purple-400" 
+                    title="AI Assist"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Templates">
+                    <FileText className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <button className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-semibold transition-all">
+                    Save Draft
+                  </button>
+                  <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg text-sm font-semibold transition-all flex items-center space-x-2">
+                    <Send className="w-4 h-4" />
+                    <span>Send</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

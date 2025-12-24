@@ -1,0 +1,151 @@
+---
+export interface Props {
+  footerLinks: {
+    product: Array<{ label: string; href: string }>;
+    company: Array<{ label: string; href: string }>;
+    resources: Array<{ label: string; href: string }>;
+  };
+}
+
+const { footerLinks } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="footer-logo">FED</div>
+      <p class="footer-description">
+        The revolutionary TMS platform for modern truck dispatchers. Automate your operations, scale your business, and maximize revenue with AI-powered tools trusted by 800+ dispatchers nationwide.
+      </p>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Product</div>
+      <ul class="footer-links">
+        {footerLinks.product.map(link => (
+          <li><a href={link.href} class="footer-link">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Company</div>
+      <ul class="footer-links">
+        {footerLinks.company.map(link => (
+          <li><a href={link.href} class="footer-link">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-section-title">Resources</div>
+      <ul class="footer-links">
+        {footerLinks.resources.map(link => (
+          <li><a href={link.href} class="footer-link">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div>
+      © 2024 FED Technologies LLC. All rights reserved. |
+      <a href="#" class="footer-bottom-link">Privacy</a> •
+      <a href="#" class="footer-bottom-link">Terms</a> •
+      <a href="#" class="footer-bottom-link">Security</a>
+    </div>
+    <div class="footer-made">Made with 💜 for dispatchers, by dispatchers</div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 80px 48px 40px;
+  }
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .footer-description {
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .footer-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-link {
+    color: #888;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .footer-link:hover {
+    color: #d946ef;
+  }
+
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-bottom-link {
+    color: #666;
+    text-decoration: none;
+  }
+
+  .footer-bottom-link:hover {
+    color: #d946ef;
+  }
+
+  .footer-made {
+    color: #888;
+  }
+
+  @media (max-width: 1024px) {
+    .footer-container {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

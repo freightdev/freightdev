@@ -1,0 +1,100 @@
+---
+export interface Props {
+  variant?: 'primary' | 'secondary' | 'outline' | 'white';
+  size?: 'small' | 'medium' | 'large';
+  href?: string;
+  class?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'medium',
+  href,
+  class: className = ''
+} = Astro.props;
+
+const Component = href ? 'a' : 'button';
+---
+
+<Component
+  href={href}
+  class:list={[
+    'btn',
+    `btn-${variant}`,
+    `btn-${size}`,
+    className
+  ]}
+>
+  <slot />
+</Component>
+
+<style>
+  .btn {
+    display: inline-block;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .btn-small {
+    padding: 12px 28px;
+    font-size: 15px;
+  }
+
+  .btn-medium {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+
+  .btn-large {
+    padding: 18px 40px;
+    font-size: 18px;
+    border-radius: 12px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(217, 70, 239, 0.5);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #d946ef;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+
+  .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-white {
+    background: white;
+    color: #d946ef;
+    border: none;
+  }
+
+  .btn-white:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(255, 255, 255, 0.3);
+  }
+</style>

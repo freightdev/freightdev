@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - ELD Integration & HOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 32px;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #d946ef;
+        border-bottom-color: #d946ef;
+    }
+
+    /* ELD PROVIDERS */
+    .eld-providers {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .provider-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .provider-card.connected {
+        border-color: #10b981;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, #16213e 100%);
+    }
+
+    .provider-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .provider-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+
+    .provider-name {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .provider-status {
+        font-size: 12px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        display: inline-block;
+    }
+
+    .status-connected {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .status-disconnected {
+        background: rgba(100, 116, 139, 0.2);
+        color: #64748b;
+    }
+
+    /* DRIVER HOS GRID */
+    .hos-grid {
+        display: grid;
+        gap: 20px;
+    }
+
+    .driver-hos-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+    }
+
+    .driver-hos-card:hover {
+        border-color: #d946ef;
+        box-shadow: 0 8px 20px rgba(217, 70, 239, 0.2);
+    }
+
+    .driver-hos-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .driver-hos-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .driver-hos-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .driver-hos-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .driver-hos-name {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .driver-hos-meta {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .driver-status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .status-driving {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .status-on-duty {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .status-sleeper {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .status-off-duty {
+        background: rgba(100, 116, 139, 0.2);
+        color: #64748b;
+    }
+
+    /* HOS CLOCKS */
+    .hos-clocks {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .hos-clock {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .clock-label {
+        font-size: 11px;
+        color: #666;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .clock-time {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .clock-time.critical {
+        color: #ef4444;
+    }
+
+    .clock-time.warning {
+        color: #f59e0b;
+    }
+
+    .clock-time.good {
+        color: #10b981;
+    }
+
+    .clock-subtitle {
+        font-size: 11px;
+        color: #888;
+    }
+
+    /* CIRCULAR PROGRESS */
+    .circular-progress {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 8px;
+    }
+
+    .progress-ring {
+        transform: rotate(-90deg);
+    }
+
+    .progress-ring-circle {
+        stroke: rgba(255, 255, 255, 0.1);
+        fill: transparent;
+        stroke-width: 8;
+    }
+
+    .progress-ring-progress {
+        fill: transparent;
+        stroke-width: 8;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.5s;
+    }
+
+    .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    /* HOS TIMELINE */
+    .hos-timeline {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .timeline-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #888;
+    }
+
+    .timeline-date {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .timeline-chart {
+        position: relative;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .timeline-bar {
+        position: absolute;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .bar-driving {
+        background: #10b981;
+    }
+
+    .bar-on-duty {
+        background: #f59e0b;
+    }
+
+    .bar-sleeper {
+        background: #3b82f6;
+    }
+
+    .bar-off-duty {
+        background: #64748b;
+    }
+
+    .timeline-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 11px;
+        color: #666;
+    }
+
+    /* HOS LOG ENTRIES */
+    .hos-log {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .log-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 16px;
+    }
+
+    .log-entry {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .log-time {
+        font-size: 13px;
+        font-weight: 700;
+        min-width: 70px;
+    }
+
+    .log-status {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .log-location {
+        font-size: 12px;
+        color: #888;
+        flex: 1;
+    }
+
+    .log-duration {
+        font-size: 12px;
+        color: #666;
+    }
+
+    /* VIOLATION ALERTS */
+    .violation-alerts {
+        margin-bottom: 24px;
+    }
+
+    .alert-card {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, #16213e 100%);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .alert-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(239, 68, 68, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ef4444;
+        margin-bottom: 4px;
+    }
+
+    .alert-description {
+        font-size: 13px;
+        color: #888;
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(217, 70, 239, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #888;
+    }
+
+    /* LEGEND */
+    .legend {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+    }
+
+    /* COMPLIANCE STATUS */
+    .compliance-status {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        margin-bottom: 24px;
+    }
+
+    .compliance-icon {
+        font-size: 32px;
+    }
+
+    .compliance-text {
+        flex: 1;
+    }
+
+    .compliance-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #10b981;
+        margin-bottom: 4px;
+    }
+
+    .compliance-subtitle {
+        font-size: 13px;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+ <div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">⏱️</div>
+                <div class="nav-label">ELD & HOS</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title">ELD Integration & HOS Tracking</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📊 HOS Report</button>
+                    <button class="btn btn-secondary">⚙️ Settings</button>
+                    <button class="btn btn-primary">🔌 Connect ELD</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">Live HOS Status</div>
+                <div class="tab">ELD Providers</div>
+                <div class="tab">Violations & Alerts</div>
+                <div class="tab">Compliance Reports</div>
+            </div>
+
+            <!-- OVERALL STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🚛</div>
+                    <div class="stat-value" style="color: #10b981;">8</div>
+                    <div class="stat-label">Drivers Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value" style="color: #3b82f6;">4</div>
+                    <div class="stat-label">Currently Driving</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-value" style="color: #ef4444;">2</div>
+                    <div class="stat-label">HOS Violations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" style="color: #10b981;">98.5%</div>
+                    <div class="stat-label">Compliance Rate</div>
+                </div>
+            </div>
+
+            <!-- ELD PROVIDERS -->
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">🔌 Connected ELD Providers</h3>
+            <div class="eld-providers">
+                <div class="provider-card connected">
+                    <div class="provider-icon">📱</div>
+                    <div class="provider-name">Geotab</div>
+                    <div class="provider-status status-connected">✓ Connected</div>
+                </div>
+
+                <div class="provider-card connected">
+                    <div class="provider-icon">🚛</div>
+                    <div class="provider-name">Samsara</div>
+                    <div class="provider-status status-connected">✓ Connected</div>
+                </div>
+
+                <div class="provider-card connected">
+                    <div class="provider-icon">⚡</div>
+                    <div class="provider-name">KeepTruckin</div>
+                    <div class="provider-status status-connected">✓ Connected</div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-icon">🔵</div>
+                    <div class="provider-name">Omnitracs</div>
+                    <div class="provider-status status-disconnected">Not Connected</div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-icon">🟢</div>
+                    <div class="provider-name">Verizon Connect</div>
+                    <div class="provider-status status-disconnected">Not Connected</div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-icon">🔴</div>
+                    <div class="provider-name">PeopleNet</div>
+                    <div class="provider-status status-disconnected">Not Connected</div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-icon">🟡</div>
+                    <div class="provider-name">Teletrac Navman</div>
+                    <div class="provider-status status-disconnected">Not Connected</div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-icon">🟣</div>
+                    <div class="provider-name">BigRoad</div>
+                    <div class="provider-status status-disconnected">Not Connected</div>
+                </div>
+            </div>
+
+            <!-- VIOLATION ALERTS -->
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px; margin-top: 32px;">⚠️ Active Violations & Alerts</h3>
+            <div class="violation-alerts">
+                <div class="alert-card">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">HOS Violation - Mike Johnson</div>
+                        <div class="alert-description">Driver exceeded 11-hour driving limit by 15 minutes on 12/17/2024</div>
+                    </div>
+                    <button class="btn btn-secondary" style="padding: 8px 16px;">Review</button>
+                </div>
+
+                <div class="alert-card">
+                    <div class="alert-icon">🔔</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Drive Time Warning - Sarah Williams</div>
+                        <div class="alert-description">Only 2 hours of drive time remaining before mandatory 10-hour break</div>
+                    </div>
+                    <button class="btn btn-secondary" style="padding: 8px 16px;">Notify</button>
+                </div>
+            </div>
+
+            <!-- DRIVER HOS STATUS -->
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px; margin-top: 32px;">👥 Live Driver HOS Status</h3>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color bar-driving"></div>
+                    <span>Driving</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bar-on-duty"></div>
+                    <span>On Duty (Not Driving)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bar-sleeper"></div>
+                    <span>Sleeper Berth</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bar-off-duty"></div>
+                    <span>Off Duty</span>
+                </div>
+            </div>
+
+            <div class="hos-grid">
+                <!-- Driver 1 - John Smith -->
+                <div class="driver-hos-card">
+                    <div class="driver-hos-header">
+                        <div class="driver-hos-info">
+                            <div class="driver-hos-avatar">JS</div>
+                            <div class="driver-hos-details">
+                                <div class="driver-hos-name">John Smith</div>
+                                <div class="driver-hos-meta">MC-123456 • Geotab ELD</div>
+                            </div>
+                        </div>
+                        <div class="driver-status-badge status-driving">
+                            <span>🚛</span>
+                            <span>Driving</span>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Status -->
+                    <div class="compliance-status">
+                        <div class="compliance-icon">✅</div>
+                        <div class="compliance-text">
+                            <div class="compliance-title">In Compliance</div>
+                            <div class="compliance-subtitle">No violations in the last 7 days</div>
+                        </div>
+                    </div>
+
+                    <!-- HOS Clocks -->
+                    <div class="hos-clocks">
+                        <div class="hos-clock">
+                            <div class="clock-label">Drive Time</div>
+                            <div class="clock-time good">6:45</div>
+                            <div class="clock-subtitle">of 11 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">On Duty</div>
+                            <div class="clock-time good">8:30</div>
+                            <div class="clock-subtitle">of 14 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Cycle</div>
+                            <div class="clock-time good">42:15</div>
+                            <div class="clock-subtitle">of 70 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Break</div>
+                            <div class="clock-time good">4:20</div>
+                            <div class="clock-subtitle">since last</div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Timeline -->
+                    <div class="hos-timeline">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Today's Activity</div>
+                            <div class="timeline-date">Dec 18, 2024</div>
+                        </div>
+                        <div class="timeline-chart">
+                            <div class="timeline-bar bar-off-duty" style="left: 0%; width: 33.3%;">Off Duty (8h)</div>
+                            <div class="timeline-bar bar-on-duty" style="left: 33.3%; width: 8.3%;">On Duty (2h)</div>
+                            <div class="timeline-bar bar-driving" style="left: 41.6%; width: 28.1%;">Driving (6h 45m)</div>
+                            <div class="timeline-bar bar-on-duty" style="left: 69.7%; width: 4.2%;">On Duty (1h)</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>12 AM</span>
+                            <span>6 AM</span>
+                            <span>12 PM</span>
+                            <span>6 PM</span>
+                            <span>12 AM</span>
+                        </div>
+                    </div>
+
+                    <!-- Recent Log Entries -->
+                    <div class="hos-log">
+                        <div class="log-title">Recent Activity</div>
+                        <div class="log-entry">
+                            <div class="log-time">2:45 PM</div>
+                            <div class="log-status status-driving">Driving</div>
+                            <div class="log-location">📍 I-10, Houston, TX</div>
+                            <div class="log-duration">2h 15m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">12:30 PM</div>
+                            <div class="log-status status-on-duty">On Duty</div>
+                            <div class="log-location">📍 Pickup Location, Houston</div>
+                            <div class="log-duration">1h</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">8:00 AM</div>
+                            <div class="log-status status-driving">Driving</div>
+                            <div class="log-location">📍 Dallas to Houston</div>
+                            <div class="log-duration">4h 30m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver 2 - Sarah Williams -->
+                <div class="driver-hos-card">
+                    <div class="driver-hos-header">
+                        <div class="driver-hos-info">
+                            <div class="driver-hos-avatar">SW</div>
+                            <div class="driver-hos-details">
+                                <div class="driver-hos-name">Sarah Williams</div>
+                                <div class="driver-hos-meta">MC-456789 • Samsara ELD</div>
+                            </div>
+                        </div>
+                        <div class="driver-status-badge status-driving">
+                            <span>🚛</span>
+                            <span>Driving</span>
+                        </div>
+                    </div>
+
+                    <!-- Warning Status -->
+                    <div class="compliance-status" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3);">
+                        <div class="compliance-icon">⚠️</div>
+                        <div class="compliance-text">
+                            <div class="compliance-title" style="color: #f59e0b;">Drive Time Warning</div>
+                            <div class="compliance-subtitle">Only 2 hours remaining before mandatory break</div>
+                        </div>
+                    </div>
+
+                    <!-- HOS Clocks -->
+                    <div class="hos-clocks">
+                        <div class="hos-clock">
+                            <div class="clock-label">Drive Time</div>
+                            <div class="clock-time warning">9:05</div>
+                            <div class="clock-subtitle">of 11 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">On Duty</div>
+                            <div class="clock-time warning">12:20</div>
+                            <div class="clock-subtitle">of 14 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Cycle</div>
+                            <div class="clock-time good">58:40</div>
+                            <div class="clock-subtitle">of 70 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Break</div>
+                            <div class="clock-time good">7:15</div>
+                            <div class="clock-subtitle">since last</div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="hos-timeline">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Today's Activity</div>
+                            <div class="timeline-date">Dec 18, 2024</div>
+                        </div>
+                        <div class="timeline-chart">
+                            <div class="timeline-bar bar-off-duty" style="left: 0%; width: 20.8%;">Off Duty (5h)</div>
+                            <div class="timeline-bar bar-on-duty" style="left: 20.8%; width: 6.25%;">On Duty (1h 30m)</div>
+                            <div class="timeline-bar bar-driving" style="left: 27.05%; width: 37.7%;">Driving (9h 5m)</div>
+                            <div class="timeline-bar bar-on-duty" style="left: 64.75%; width: 7.3%;">On Duty (1h 45m)</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>12 AM</span>
+                            <span>6 AM</span>
+                            <span>12 PM</span>
+                            <span>6 PM</span>
+                            <span>12 AM</span>
+                        </div>
+                    </div>
+
+                    <!-- Log Entries -->
+                    <div class="hos-log">
+                        <div class="log-title">Recent Activity</div>
+                        <div class="log-entry">
+                            <div class="log-time">3:10 PM</div>
+                            <div class="log-status status-driving">Driving</div>
+                            <div class="log-location">📍 I-85, Charlotte, NC</div>
+                            <div class="log-duration">5h 30m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">9:40 AM</div>
+                            <div class="log-status status-on-duty">On Duty</div>
+                            <div class="log-location">📍 Warehouse, Atlanta, GA</div>
+                            <div class="log-duration">1h 45m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">6:00 AM</div>
+                            <div class="log-status status-driving">Driving</div>
+                            <div class="log-location">📍 Birmingham to Atlanta</div>
+                            <div class="log-duration">3h 35m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver 3 - Mike Johnson -->
+                <div class="driver-hos-card">
+                    <div class="driver-hos-header">
+                        <div class="driver-hos-info">
+                            <div class="driver-hos-avatar">MJ</div>
+                            <div class="driver-hos-details">
+                                <div class="driver-hos-name">Mike Johnson</div>
+                                <div class="driver-hos-meta">MC-789012 • KeepTruckin ELD</div>
+                            </div>
+                        </div>
+                        <div class="driver-status-badge status-sleeper">
+                            <span>😴</span>
+                            <span>Sleeper Berth</span>
+                        </div>
+                    </div>
+
+                    <!-- Violation Status -->
+                    <div class="compliance-status" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);">
+                        <div class="compliance-icon">⚠️</div>
+                        <div class="compliance-text">
+                            <div class="compliance-title" style="color: #ef4444;">Recent HOS Violation</div>
+                            <div class="compliance-subtitle">Exceeded 11-hour driving limit on 12/17/2024</div>
+                        </div>
+                    </div>
+
+                    <!-- HOS Clocks -->
+                    <div class="hos-clocks">
+                        <div class="hos-clock">
+                            <div class="clock-label">Drive Time</div>
+                            <div class="clock-time good">0:00</div>
+                            <div class="clock-subtitle">of 11 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">On Duty</div>
+                            <div class="clock-time good">0:45</div>
+                            <div class="clock-subtitle">of 14 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Cycle</div>
+                            <div class="clock-time warning">64:30</div>
+                            <div class="clock-subtitle">of 70 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Rest Time</div>
+                            <div class="clock-time good">6:30</div>
+                            <div class="clock-subtitle">in sleeper</div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="hos-timeline">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Today's Activity</div>
+                            <div class="timeline-date">Dec 18, 2024</div>
+                        </div>
+                        <div class="timeline-chart">
+                            <div class="timeline-bar bar-off-duty" style="left: 0%; width: 33.3%;">Off Duty (8h)</div>
+                            <div class="timeline-bar bar-on-duty" style="left: 33.3%; width: 3.1%;">On Duty (45m)</div>
+                            <div class="timeline-bar bar-sleeper" style="left: 36.4%; width: 27.1%;">Sleeper (6h 30m)</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>12 AM</span>
+                            <span>6 AM</span>
+                            <span>12 PM</span>
+                            <span>6 PM</span>
+                            <span>12 AM</span>
+                        </div>
+                    </div>
+
+                    <!-- Log Entries -->
+                    <div class="hos-log">
+                        <div class="log-title">Recent Activity</div>
+                        <div class="log-entry">
+                            <div class="log-time">8:45 AM</div>
+                            <div class="log-status status-sleeper">Sleeper Berth</div>
+                            <div class="log-location">📍 Rest Stop, Phoenix, AZ</div>
+                            <div class="log-duration">6h 30m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">8:00 AM</div>
+                            <div class="log-status status-on-duty">On Duty</div>
+                            <div class="log-location">📍 Delivery Location</div>
+                            <div class="log-duration">45m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">12:00 AM</div>
+                            <div class="log-status status-off-duty">Off Duty</div>
+                            <div class="log-location">📍 Home Base</div>
+                            <div class="log-duration">8h</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver 4 - Maria Garcia -->
+                <div class="driver-hos-card">
+                    <div class="driver-hos-header">
+                        <div class="driver-hos-info">
+                            <div class="driver-hos-avatar">MG</div>
+                            <div class="driver-hos-details">
+                                <div class="driver-hos-name">Maria Garcia</div>
+                                <div class="driver-hos-meta">MC-345678 • Geotab ELD</div>
+                            </div>
+                        </div>
+                        <div class="driver-status-badge status-off-duty">
+                            <span>⏸️</span>
+                            <span>Off Duty</span>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Status -->
+                    <div class="compliance-status">
+                        <div class="compliance-icon">✅</div>
+                        <div class="compliance-text">
+                            <div class="compliance-title">In Compliance</div>
+                            <div class="compliance-subtitle">Available for dispatch in 2 hours</div>
+                        </div>
+                    </div>
+
+                    <!-- HOS Clocks -->
+                    <div class="hos-clocks">
+                        <div class="hos-clock">
+                            <div class="clock-label">Drive Time</div>
+                            <div class="clock-time good">11:00</div>
+                            <div class="clock-subtitle">Available</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">On Duty</div>
+                            <div class="clock-time good">14:00</div>
+                            <div class="clock-subtitle">Available</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Cycle</div>
+                            <div class="clock-time good">38:45</div>
+                            <div class="clock-subtitle">of 70 hours</div>
+                        </div>
+                        <div class="hos-clock">
+                            <div class="clock-label">Rest Time</div>
+                            <div class="clock-time good">8:15</div>
+                            <div class="clock-subtitle">off duty</div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="hos-timeline">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Today's Activity</div>
+                            <div class="timeline-date">Dec 18, 2024</div>
+                        </div>
+                        <div class="timeline-chart">
+                            <div class="timeline-bar bar-off-duty" style="left: 0%; width: 100%;">Off Duty (24h)</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>12 AM</span>
+                            <span>6 AM</span>
+                            <span>12 PM</span>
+                            <span>6 PM</span>
+                            <span>12 AM</span>
+                        </div>
+                    </div>
+
+                    <!-- Log Entries -->
+                    <div class="hos-log">
+                        <div class="log-title">Recent Activity</div>
+                        <div class="log-entry">
+                            <div class="log-time">7:00 PM</div>
+                            <div class="log-status status-off-duty">Off Duty</div>
+                            <div class="log-location">📍 Home, San Antonio, TX</div>
+                            <div class="log-duration">8h 15m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">5:30 PM</div>
+                            <div class="log-status status-on-duty">On Duty</div>
+                            <div class="log-location">📍 Delivery Complete</div>
+                            <div class="log-duration">1h 30m</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-time">10:00 AM</div>
+                            <div class="log-status status-driving">Driving</div>
+                            <div class="log-location">📍 Houston to San Antonio</div>
+                            <div class="log-duration">7h 30m</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

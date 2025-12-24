@@ -1,0 +1,21 @@
+# license.yaml — Declares rights and model behavior
+license_id: "license-001"
+type: "dual"
+
+code_license:
+  name: "Apache License 2.0"
+  reuse: true
+  commercial_use: true
+
+memory_license:
+  name: "CreativeML NOR v2"
+  scope: "beats, markers, trails, ribbons"
+  redistribution: false
+  remixing: true
+  credit_required: true
+
+terms:
+  trail_privacy: "marker-owner only"
+  ribbon_limit: 5
+  burn_irrevocable: true
+  resale_prohibited: true

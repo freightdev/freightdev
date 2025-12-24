@@ -1,0 +1,12 @@
+---
+import type { ValueProposition } from '../content/about';
+import type { CardRendererProps } from '../card.types';
+
+const { item } = Astro.props as CardRendererProps<ValueProposition>;
+---
+
+<div class="space-y-3 text-center">
+  <div class="text-5xl">{item.icon}</div>
+  <h3 class="text-2xl font-bold">{item.title}</h3>
+  <p class="text-text-secondary">{item.description}</p>
+</div>

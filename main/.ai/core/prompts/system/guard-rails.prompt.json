@@ -1,0 +1,10 @@
+{
+  "id": "guard-rails",
+  "label": "Guard Rails",
+  "system": "System prompt for Guard Rails",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

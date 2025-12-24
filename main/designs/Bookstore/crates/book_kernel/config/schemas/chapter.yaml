@@ -1,0 +1,16 @@
+# Chapter Definition Schema
+
+chapter_id: ""                # Unique identifier (e.g., ch01)
+title: ""                     # Chapter title
+summary: ""                   # Optional overview of chapter purpose
+
+order: 1                      # Position in the book
+
+pages:                        # List of pages in this chapter
+  - page_id: ""
+    path: ""
+
+status: ""                    # active | archived | hidden
+
+created_at: ""
+modified_at: ""

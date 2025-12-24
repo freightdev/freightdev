@@ -1,0 +1,24 @@
+# keeper.yaml — Defines the keeper role or build protocol
+keeper_id: "keeper-001"
+name: "booksmith"
+owner: "FedAI"
+
+roles:
+  - "tailor"         # helps users define their book
+  - "compiler"       # generates file structures
+  - "protector"      # encrypts and locks books
+
+build_options:
+  supported_templates:
+    - "dispatch-book"
+    - "training-manual"
+    - "agent-playbook"
+
+security:
+  enforce_trails: true
+  verify_licenses: true
+  auto_sign: false
+
+interface:
+  interactive_prompt: true
+  language_model: "mistral-7b-instruct"

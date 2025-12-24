@@ -1,0 +1,21 @@
+---
+interface Props {
+  title: string;
+  image?: string;
+  video?: string;
+}
+
+const { title, image, video } = Astro.props as Props;
+---
+
+{image && (
+  <div class="mt-12">
+    <img src={image} alt={title} class="rounded-2xl shadow-2xl w-full" loading="lazy" />
+  </div>
+)}
+
+{video && (
+  <div class="mt-12">
+    <video src={video} controls class="rounded-2xl shadow-2xl w-full" />
+  </div>
+)}

@@ -1,0 +1,42 @@
+# 🚨 APPROVAL REQUEST
+
+**From**: {{from_agent}}
+**Request ID**: {{request_id}}
+**Timestamp**: {{timestamp}}
+
+## Requested Action
+{{action_description}}
+
+## Risk Assessment
+- **Level**: {{risk_level}}
+- **Impact**: {{impact}}
+- **Reversibility**: {{reversible}}
+
+## Analysis
+{{analysis}}
+
+## Checks Performed
+{{#each checks}}
+{{#if passed}}✅{{else}}❌{{/if}} {{description}}
+{{/each}}
+
+## Recommendation
+**{{recommendation}}**
+
+Reasoning: {{reasoning}}
+
+## Options
+1. **APPROVE** - Proceed with action
+2. **DENY** - Reject and provide alternative
+3. **CONDITIONAL** - Approve with constraints
+4. **DEFER** - Request more information
+
+## Context
+```json
+{{context}}
+```
+
+---
+**CoDriver Decision Required**
+
+Approve this request? Please respond with decision and any constraints.

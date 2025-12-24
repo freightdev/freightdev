@@ -1,0 +1,24 @@
+# Ribbon Cache — ephemeral reenactable memory
+
+ribbon_id: ""
+linked_chapter_id: ""
+linked_page_id: ""
+linked_marker_id: ""
+
+summary: ""                    # High-level recap of what the marker did
+expires_in: 3600               # Seconds until ribbon expires (default: 1 hour)
+
+cache:
+  content: ""                  # Re-summarized or replayable output
+  retries_remaining: 5         # How many times the ribbon can be used
+  type: "text/generative"      # Type of ribbon cache: text/generative/audio/etc
+
+permissions:
+  readable_by: ["user", "owner", "marker"]
+  resellable: false            # Must be false unless explicitly unlocked
+  shareable: false 
+
+status: "valid"                # valid | expired | revoked
+
+created_at: ""
+expires_at: ""

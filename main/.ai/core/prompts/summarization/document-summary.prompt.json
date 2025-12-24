@@ -1,0 +1,10 @@
+{
+  "id": "document-summary",
+  "label": "Document Summary",
+  "system": "System prompt for Document Summary",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

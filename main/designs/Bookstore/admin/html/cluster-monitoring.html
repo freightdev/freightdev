@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K8s Cluster Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header .status {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.green { background: #10b981; }
+        .status-dot.yellow { background: #f59e0b; }
+        .status-dot.red { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid #2d3548;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .node-item, .pod-item {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid #667eea;
+        }
+
+        .node-item:last-child, .pod-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .node-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .node-location {
+            font-size: 12px;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .resource-bar {
+            margin: 8px 0;
+        }
+
+        .resource-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #9ca3af;
+        }
+
+        .bar-container {
+            background: #0a0e27;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .bar-fill.cpu {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+
+        .bar-fill.memory {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .bar-fill.warn {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .bar-fill.danger {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .metric {
+            background: #0a0e27;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .pod-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .pod-status.running { background: #065f46; color: #10b981; }
+        .pod-status.pending { background: #78350f; color: #f59e0b; }
+        .pod-status.failed { background: #7f1d1d; color: #ef4444; }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.95);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            background: #7f1d1d;
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 3px solid #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+
+        .spinner {
+            border: 3px solid #2d3548;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 K8s Cluster Monitor</h1>
+        <div class="status">
+            <div class="status-badge">
+                <span class="status-dot green"></span>
+                <span id="clusterStatus">Cluster Healthy</span>
+            </div>
+            <div class="status-badge">
+                <span>Last Update: <span id="lastUpdate">--:--:--</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="errorContainer"></div>
+
+    <div class="grid">
+        <!-- Cluster Overview -->
+        <div class="card">
+            <h2>📊 Cluster Overview</h2>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value" id="totalNodes">0</div>
+                    <div class="metric-label">Total Nodes</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="totalPods">0</div>
+                    <div class="metric-label">Running Pods</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="totalCPU">0</div>
+                    <div class="metric-label">Total vCPU</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="totalRAM">0 GB</div>
+                    <div class="metric-label">Total RAM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Usage -->
+        <div class="card">
+            <h2>⚡ Cluster Resources</h2>
+            <div class="resource-bar">
+                <div class="resource-label">
+                    <span>CPU Usage</span>
+                    <span id="cpuUsageText">0%</span>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-fill cpu" id="cpuBar" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="resource-bar">
+                <div class="resource-label">
+                    <span>Memory Usage</span>
+                    <span id="memUsageText">0%</span>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-fill memory" id="memBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nodes -->
+    <div class="card">
+        <h2>🖥️ Nodes</h2>
+        <div id="nodesContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>Loading nodes...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pods -->
+    <div class="card">
+        <h2>📦 Recent Pods</h2>
+        <div id="podsContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>Loading pods...</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="fetchClusterData()" id="refreshBtn">
+        <span>🔄</span>
+        <span>Refresh Data</span>
+    </button>
+
+    <script>
+        // Mock data generator (replace with actual K8s API calls)
+        function generateMockData() {
+            const nodes = [
+                {
+                    name: 'oracle-control',
+                    location: 'Oracle Cloud',
+                    cpu: { total: 4, used: 1.2 },
+                    memory: { total: 8, used: 3.5 },
+                    status: 'Ready',
+                    ip: '10.42.0.1'
+                },
+                {
+                    name: 'home-worker-1',
+                    location: 'Home Lab',
+                    cpu: { total: 8, used: 5.3 },
+                    memory: { total: 16, used: 10.2 },
+                    status: 'Ready',
+                    ip: '10.42.0.2'
+                },
+                {
+                    name: 'home-worker-2',
+                    location: 'Home Lab',
+                    cpu: { total: 12, used: 7.8 },
+                    memory: { total: 24, used: 16.5 },
+                    status: 'Ready',
+                    ip: '10.42.0.3'
+                },
+                {
+                    name: 'dev-machine',
+                    location: 'Home Lab',
+                    cpu: { total: 13, used: 2.1 },
+                    memory: { total: 5, used: 1.8 },
+                    status: 'Ready',
+                    ip: '10.42.0.5'
+                }
+            ];
+
+            const pods = [
+                { name: 'traefik-7d9f8', namespace: 'kube-system', node: 'oracle-control', status: 'Running' },
+                { name: 'consul-0', namespace: 'default', node: 'oracle-control', status: 'Running' },
+                { name: 'zitadel-db-0', namespace: 'auth', node: 'home-worker-1', status: 'Running' },
+                { name: 'client-app-xyz', namespace: 'client-a', node: 'home-worker-2', status: 'Running' },
+                { name: 'firecracker-vm-5', namespace: 'compute', node: 'home-worker-2', status: 'Running' },
+                { name: 'nomad-server', namespace: 'default', node: 'oracle-control', status: 'Running' },
+                { name: 'nebula-lighthouse', namespace: 'networking', node: 'oracle-control', status: 'Running' },
+                { name: 'build-job-abc', namespace: 'ci', node: 'dev-machine', status: 'Running' }
+            ];
+
+            return { nodes, pods };
+        }
+
+        function updateDashboard(data) {
+            const { nodes, pods } = data;
+
+            // Update overview metrics
+            const totalCPU = nodes.reduce((sum, n) => sum + n.cpu.total, 0);
+            const usedCPU = nodes.reduce((sum, n) => sum + n.cpu.used, 0);
+            const totalRAM = nodes.reduce((sum, n) => sum + n.memory.total, 0);
+            const usedRAM = nodes.reduce((sum, n) => sum + n.memory.used, 0);
+
+            document.getElementById('totalNodes').textContent = nodes.length;
+            document.getElementById('totalPods').textContent = pods.filter(p => p.status === 'Running').length;
+            document.getElementById('totalCPU').textContent = totalCPU;
+            document.getElementById('totalRAM').textContent = totalRAM + ' GB';
+
+            // Update resource bars
+            const cpuPercent = Math.round((usedCPU / totalCPU) * 100);
+            const memPercent = Math.round((usedRAM / totalRAM) * 100);
+
+            document.getElementById('cpuUsageText').textContent = `${cpuPercent}%`;
+            document.getElementById('cpuBar').style.width = cpuPercent + '%';
+            document.getElementById('cpuBar').className = 'bar-fill cpu' + (cpuPercent > 80 ? ' danger' : cpuPercent > 60 ? ' warn' : '');
+
+            document.getElementById('memUsageText').textContent = `${memPercent}%`;
+            document.getElementById('memBar').style.width = memPercent + '%';
+            document.getElementById('memBar').className = 'bar-fill memory' + (memPercent > 80 ? ' danger' : memPercent > 60 ? ' warn' : '');
+
+            // Render nodes
+            const nodesHTML = nodes.map(node => {
+                const cpuPercent = Math.round((node.cpu.used / node.cpu.total) * 100);
+                const memPercent = Math.round((node.memory.used / node.memory.total) * 100);
+
+                return `
+                    <div class="node-item">
+                        <div class="node-header">
+                            <span class="node-name">${node.name}</span>
+                            <span class="node-location">${node.location}</span>
+                        </div>
+                        <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px;">
+                            ${node.ip} • ${node.status}
+                        </div>
+                        <div class="resource-bar">
+                            <div class="resource-label">
+                                <span>CPU</span>
+                                <span>${node.cpu.used.toFixed(1)}/${node.cpu.total} (${cpuPercent}%)</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill cpu ${cpuPercent > 80 ? 'danger' : cpuPercent > 60 ? 'warn' : ''}" style="width: ${cpuPercent}%"></div>
+                            </div>
+                        </div>
+                        <div class="resource-bar">
+                            <div class="resource-label">
+                                <span>Memory</span>
+                                <span>${node.memory.used.toFixed(1)}/${node.memory.total} GB (${memPercent}%)</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill memory ${memPercent > 80 ? 'danger' : memPercent > 60 ? 'warn' : ''}" style="width: ${memPercent}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('nodesContainer').innerHTML = nodesHTML;
+
+            // Render pods
+            const podsHTML = pods.map(pod => `
+                <div class="pod-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="font-weight: 600;">${pod.name}</span>
+                        <span class="pod-status ${pod.status.toLowerCase()}">${pod.status}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #9ca3af;">
+                        ${pod.namespace} • ${pod.node}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('podsContainer').innerHTML = podsHTML;
+
+            // Update timestamp
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+        }
+
+        async function fetchClusterData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span><span>Refreshing...</span>';
+
+            try {
+                // TODO: Replace with actual K8s API calls
+                // Example:
+                // const response = await fetch('/api/cluster-status');
+                // const data = await response.json();
+                
+                // For now, use mock data
+                await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+                const data = generateMockData();
+                
+                updateDashboard(data);
+                document.getElementById('errorContainer').innerHTML = '';
+                document.getElementById('clusterStatus').textContent = 'Cluster Healthy';
+            } catch (error) {
+                document.getElementById('errorContainer').innerHTML = `
+                    <div class="error-msg">
+                        ⚠️ Failed to fetch cluster data: ${error.message}
+                    </div>
+                `;
+                document.getElementById('clusterStatus').textContent = 'Connection Error';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🔄</span><span>Refresh Data</span>';
+            }
+        }
+
+        // Initial load
+        fetchClusterData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(fetchClusterData, 30000);
+    </script>
+</body>
+</html>

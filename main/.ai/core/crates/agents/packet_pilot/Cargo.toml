@@ -1,0 +1,63 @@
+[package]
+name = "packetpilot"
+version = "0.0.1"
+edition = "2021"
+authors = ["Fast & Easy Dispatching LLC"]
+description = "Automates all paperwork and form interactions for freight loads"
+license = "Proprietary"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# HTTP & Email
+reqwest = { version = "0.11", features = ["json"] }
+lettre = "0.11"
+imap = "3.0"
+native-tls = "0.2"
+
+# PDF handling
+lopdf = "0.32"
+printpdf = "0.7"
+
+# Browser automation (for form filling)
+headless_chrome = "1.0"
+fantoccini = "0.20"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# Time & Date
+chrono = "0.4"
+
+# File handling
+base64 = "0.21"
+sha2 = "0.10"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Environment
+dotenvy = "0.15"
+
+# Crypto for signature
+rsa = "0.9"
+aes-gcm = "0.10"
+
+# Web server (for webhook endpoint)
+axum = "0.7"
+tower = "0.4"
+
+# UUID
+uuid = { version = "1.6", features = ["v4"] }
+
+[profile.release]
+opt-level = 3
+lto = true

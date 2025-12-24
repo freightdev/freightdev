@@ -1,0 +1,112 @@
+# HWY-TMS Middleware Configuration
+
+middlewares:
+  # =========================================================================
+  # Rate Limiting
+  # =========================================================================
+
+  rate-limit-auth:
+    type: rate_limit
+    requests_per_second: 10
+    burst: 20
+    key: ${client_ip}
+
+  rate-limit-api:
+    type: rate_limit
+    requests_per_second: 100
+    burst: 200
+    key: ${client_ip}
+
+  rate-limit-webhook:
+    type: rate_limit
+    requests_per_second: 50
+    burst: 100
+    key: ${client_ip}
+
+  rate-limit-downloads:
+    type: rate_limit
+    requests_per_second: 10
+    burst: 20
+    key: ${client_ip}
+
+  # =========================================================================
+  # JWT Authentication
+  # =========================================================================
+
+  jwt-auth:
+    type: jwt
+    secret: ${JWT_SECRET}  # Same as auth service
+    header: Authorization
+    required_claims:
+      - sub
+      - exp
+
+  # =========================================================================
+  # CORS
+  # =========================================================================
+
+  cors-api:
+    type: cors
+    allow_origins:
+      - https://open-hwy.com
+      - https://www.open-hwy.com
+      - https://portal.open-hwy.com
+      - http://localhost:3000
+      - http://localhost:5173
+    allow_methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allow_headers:
+      - Authorization
+      - Content-Type
+      - X-Requested-With
+    max_age: 86400
+
+  cors-downloads:
+    type: cors
+    allow_origins:
+      - "*"
+    allow_methods:
+      - GET
+    allow_headers:
+      - Range
+      - Accept-Encoding
+
+  # =========================================================================
+  # Compression
+  # =========================================================================
+
+  compression:
+    type: compress
+    algorithms:
+      - brotli
+      - gzip
+    min_size: 1024
+
+  # =========================================================================
+  # Security Headers
+  # =========================================================================
+
+  security-headers:
+    type: headers
+    add:
+      X-Frame-Options: DENY
+      X-Content-Type-Options: nosniff
+      X-XSS-Protection: "1; mode=block"
+      Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+      Referrer-Policy: strict-origin-when-cross-origin
+      Permissions-Policy: "geolocation=(), microphone=(), camera=()"
+
+  # =========================================================================
+  # Cache (Future)
+  # =========================================================================
+
+  cache-static:
+    type: cache
+    ttl: 3600
+    key: ${request_uri}
+    storage: memory
+    max_size: 1GB

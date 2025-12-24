@@ -1,0 +1,33 @@
+---
+export interface Props {
+  value: string;
+  label: string;
+}
+
+const { value, label } = Astro.props;
+---
+
+<div class="stat">
+  <div class="stat-value">{value}</div>
+  <div class="stat-label">{label}</div>
+</div>
+
+<style>
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 16px;
+    color: #888;
+  }
+</style>

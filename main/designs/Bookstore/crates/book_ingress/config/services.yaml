@@ -1,0 +1,62 @@
+# HWY-TMS Backend Services Configuration
+
+services:
+  # Auth Service (Torii) - Port 8001
+  torii:
+    endpoints:
+      - http://localhost:8001
+      - http://auth-service:8001  # Docker internal
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Payment Webhook Service - Port 8002
+  payment:
+    endpoints:
+      - http://localhost:8002
+      - http://payment-service:8002
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Nebula CA Service - Port 8003
+  nebula-ca:
+    endpoints:
+      - http://localhost:8003
+      - http://nebula-ca-service:8003
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Invite Service - Port 8004
+  invite:
+    endpoints:
+      - http://localhost:8004
+      - http://invite-service:8004
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+
+  # Download Service - Port 8005
+  download:
+    endpoints:
+      - http://localhost:8005
+      - http://download-service:8005
+    health_check:
+      path: /health
+      interval: 10
+      timeout: 5
+      unhealthy_threshold: 3
+      healthy_threshold: 2

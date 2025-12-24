@@ -1,0 +1,10 @@
+{
+  "id": "qwen1.5-1.8b-chat",
+  "name": "Qwen Chat",
+  "quantization": "Q4_K_M",
+  "variant": "Q4_K_M",
+  "size": "1.13 GB",
+  "license": "Tongyi Qianwen",
+  "path": "models/qwen1.5-1.8b-chat/Q4_K_M/model.gguf",
+  "source": "https://huggingface.co/tensorblock/Qwen1.5-1.8B-Chat-GGUF/resolve/main/qwen1.5-1.8b-chat.Q4_K_M.gguf"
+}

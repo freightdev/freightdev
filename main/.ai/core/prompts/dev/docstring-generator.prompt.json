@@ -1,0 +1,10 @@
+{
+  "id": "docstring-generator",
+  "label": "Docstring Generator",
+  "system": "System prompt for Docstring Generator",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

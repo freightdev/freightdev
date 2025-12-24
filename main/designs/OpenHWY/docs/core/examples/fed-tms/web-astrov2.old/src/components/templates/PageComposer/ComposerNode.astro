@@ -1,0 +1,18 @@
+---
+import { componentRegistry } from './component-registry';
+import type { ComponentNode } from './composer.types';
+import ComposerList from './ComposerList.astro';
+
+interface Props {
+  node: ComponentNode;
+}
+
+const { node } = Astro.props as Props;
+const Component = componentRegistry[node.component];
+---
+
+{Component && (
+  <Component {...node.props}>
+    {node.children && <ComposerList nodes={node.children} />}
+  </Component>
+)}

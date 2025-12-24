@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FED - CargoConnect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+    }
+
+    .app {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .logo {
+        padding: 24px;
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-profile {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .nav-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-section-title {
+        padding: 8px 24px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-item {
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+        background: rgba(217, 70, 239, 0.1);
+    }
+
+    .nav-item.active {
+        background: rgba(217, 70, 239, 0.2);
+        border-left: 3px solid #d946ef;
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-label {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .nav-badge {
+        background: #d946ef;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        flex: 1;
+        overflow-y: auto;
+        background: #0a0a0f;
+    }
+
+    .header {
+        background: #16213e;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 32px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .page-title-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .cargo-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .page-title-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        color: #888;
+    }
+
+    .connected-count {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #3b82f6;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .content {
+        padding: 32px;
+    }
+
+    /* SEARCH BAR */
+    .search-section {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 32px;
+    }
+
+    .search-header {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .search-input-wrapper {
+        flex: 1;
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        color: #666;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 14px 14px 14px 50px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #e0e0e0;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .search-filters {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+    }
+
+    .filter-select {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: #e0e0e0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* CONNECTED LOADBOARDS */
+    .loadboards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .loadboard-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .loadboard-card.connected {
+        border-color: #10b981;
+    }
+
+    .loadboard-card.disconnected {
+        border-color: rgba(239, 68, 68, 0.3);
+        opacity: 0.6;
+    }
+
+    .loadboard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .status-badge.connected {
+        background: #10b981;
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    }
+
+    .status-badge.disconnected {
+        background: #ef4444;
+    }
+
+    .loadboard-logo {
+        width: 60px;
+        height: 60px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+
+    .loadboard-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .loadboard-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 12px;
+        color: #888;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .subscription-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: #10b981;
+        margin-top: 8px;
+    }
+
+    .subscription-badge.expiring {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+
+    .subscription-badge.expired {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+    }
+
+    /* SEARCH RESULTS */
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .results-count {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .results-filters {
+        display: flex;
+        gap: 8px;
+    }
+
+    .filter-chip {
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-chip:hover, .filter-chip.active {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+    .load-card {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .load-card:hover {
+        border-color: #3b82f6;
+        background: rgba(59, 130, 246, 0.05);
+        transform: translateX(4px);
+    }
+
+    .load-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+
+    .load-route {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .location {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .location-city {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .location-state {
+        font-size: 13px;
+        color: #888;
+    }
+
+    .route-arrow {
+        font-size: 24px;
+        color: #3b82f6;
+    }
+
+    .load-rate {
+        text-align: right;
+    }
+
+    .rate-amount {
+        font-size: 28px;
+        font-weight: 700;
+        color: #10b981;
+    }
+
+    .rate-per-mile {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .load-details {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-label {
+        font-size: 11px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .load-source {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 4px 10px;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: #3b82f6;
+    }
+
+    .load-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .load-meta {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .load-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 8px 16px;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #3b82f6;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    /* TABS */
+    .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 32px;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        color: #888;
+    }
+
+    .tab:hover {
+        color: #e0e0e0;
+    }
+
+    .tab.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+    }
+
+    /* SUBSCRIPTION MANAGER */
+    .subscription-grid {
+        display: grid;
+        gap: 16px;
+    }
+
+    .subscription-card {
+        background: #16213e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .subscription-info {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .subscription-logo {
+        width: 64px;
+        height: 64px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+
+    .subscription-details {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .subscription-name {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .subscription-plan {
+        font-size: 14px;
+        color: #888;
+    }
+
+    .subscription-status {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .renewal-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: right;
+    }
+
+    .renewal-date {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .renewal-label {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .renewal-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: #3b82f6;
+    }
+
+    /* STATS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo">FED</div>
+<div class="user-profile">
+            <div class="user-avatar">J</div>
+            <div class="user-info">
+                <div class="user-name">Jesse</div>
+                <div class="user-role">Dispatcher</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core</div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🚛</div>
+                <div class="nav-label">Loads</div>
+                <div class="nav-badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👥</div>
+                <div class="nav-label">Drivers</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Live Tracking</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">Dispatch Board</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📅</div>
+                <div class="nav-label">Calendar</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📄</div>
+                <div class="nav-label">Documents</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Integrations</div>
+            <div class="nav-item active">
+                <div class="nav-icon">🔗</div>
+                <div class="nav-label">CargoConnect</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📎</div>
+                <div class="nav-label">PacketPilot</div>
+                <div class="nav-badge">3</div>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Financial</div>
+            <div class="nav-item">
+                <div class="nav-icon">💵</div>
+                <div class="nav-label">Invoices</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Payments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="header">
+            <div class="header-top">
+                <div class="page-title-section">
+                    <div class="cargo-icon">🔗</div>
+                    <div class="page-title-info">
+                        <div class="page-title">CargoConnect</div>
+                        <div class="page-subtitle">Unified Load Board Search Platform</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div class="connected-count">
+                        🟢 5 Load Boards Connected
+                    </div>
+                    <button class="btn btn-primary">➕ Add Load Board</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">Search Loads</div>
+                <div class="tab">My Loadboards</div>
+                <div class="tab">Subscriptions</div>
+                <div class="tab">Settings</div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">2,847</div>
+                    <div class="stat-label">Available Loads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Connected Boards</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$2.48</div>
+                    <div class="stat-label">Avg Rate/Mile</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Searches Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$847</div>
+                    <div class="stat-label">Monthly Cost</div>
+                </div>
+            </div>
+
+            <!-- CONNECTED LOADBOARDS -->
+            <div style="margin-bottom: 24px;">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Connected Load Boards</h3>
+                <div class="loadboards-grid">
+                    <div class="loadboard-card connected">
+                        <div class="status-badge connected"></div>
+                        <div class="loadboard-logo">📊</div>
+                        <div class="loadboard-name">DAT Load Board</div>
+                        <div class="loadboard-info">
+                            <div class="info-row">
+                                <span>Status:</span>
+                                <span style="color: #10b981;">Connected</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Loads Available:</span>
+                                <span>1,247</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Last Sync:</span>
+                                <span>2 min ago</span>
+                            </div>
+                        </div>
+                        <div class="subscription-badge">Active • Renews Dec 15</div>
+                    </div>
+
+                    <div class="loadboard-card connected">
+                        <div class="status-badge connected"></div>
+                        <div class="loadboard-logo">🚚</div>
+                        <div class="loadboard-name">Truckstop.com</div>
+                        <div class="loadboard-info">
+                            <div class="info-row">
+                                <span>Status:</span>
+                                <span style="color: #10b981;">Connected</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Loads Available:</span>
+                                <span>892</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Last Sync:</span>
+                                <span>5 min ago</span>
+                            </div>
+                        </div>
+                        <div class="subscription-badge">Active • Renews Jan 3</div>
+                    </div>
+
+                    <div class="loadboard-card connected">
+                        <div class="status-badge connected"></div>
+                        <div class="loadboard-logo">🔢</div>
+                        <div class="loadboard-name">123Loadboard</div>
+                        <div class="loadboard-info">
+                            <div class="info-row">
+                                <span>Status:</span>
+                                <span style="color: #10b981;">Connected</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Loads Available:</span>
+                                <span>534</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Last Sync:</span>
+                                <span>1 min ago</span>
+                            </div>
+                        </div>
+                        <div class="subscription-badge expiring">Expires in 12 days</div>
+                    </div>
+
+                    <div class="loadboard-card connected">
+                        <div class="status-badge connected"></div>
+                        <div class="loadboard-logo">📦</div>
+                        <div class="loadboard-name">Freight Waves</div>
+                        <div class="loadboard-info">
+                            <div class="info-row">
+                                <span>Status:</span>
+                                <span style="color: #10b981;">Connected</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Loads Available:</span>
+                                <span>124</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Last Sync:</span>
+                                <span>8 min ago</span>
+                            </div>
+                        </div>
+                        <div class="subscription-badge">Active • Renews Feb 1</div>
+                    </div>
+
+                    <div class="loadboard-card connected">
+                        <div class="status-badge connected"></div>
+                        <div class="loadboard-logo">🛣️</div>
+                        <div class="loadboard-name">Loadsmith</div>
+                        <div class="loadboard-info">
+                            <div class="info-row">
+                                <span>Status:</span>
+                                <span style="color: #10b981;">Connected</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Loads Available:</span>
+                                <span>50</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Last Sync:</span>
+                                <span>3 min ago</span>
+                            </div>
+                        </div>
+                        <div class="subscription-badge">Active • Renews Dec 28</div>
+                    </div>
+
+                    <div class="loadboard-card disconnected">
+                        <div class="status-badge disconnected"></div>
+                        <div class="loadboard-logo">🌐</div>
+                        <div class="loadboard-name">Direct Freight</div>
+                        <div class="loadboard-info">
+                            <div class="info-row">
+                                <span>Status:</span>
+                                <span style="color: #ef4444;">Disconnected</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Loads Available:</span>
+                                <span>—</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Last Sync:</span>
+                                <span>Never</span>
+                            </div>
+                        </div>
+                        <div class="subscription-badge expired">Subscription Expired</div>
+                    </div>
+
+                    <div class="loadboard-card" style="border-style: dashed; opacity: 0.5;">
+                        <div class="loadboard-logo" style="font-size: 40px;">➕</div>
+                        <div class="loadboard-name">Add Load Board</div>
+                        <div class="loadboard-info" style="text-align: center; color: #666;">
+                            Connect another load board to expand your search
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH SECTION -->
+            <div class="search-section">
+                <div class="search-header">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search by origin, destination, equipment type...">
+                    </div>
+                    <button class="btn btn-primary" style="padding: 14px 32px;">Search All Boards</button>
+                </div>
+                <div class="search-filters">
+                    <select class="filter-select">
+                        <option>Origin State</option>
+                        <option>Texas</option>
+                        <option>California</option>
+                        <option>Florida</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Destination State</option>
+                        <option>Texas</option>
+                        <option>California</option>
+                        <option>Florida</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Equipment Type</option>
+                        <option>Dry Van</option>
+                        <option>Flatbed</option>
+                        <option>Reefer</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Distance</option>
+                        <option>0-100 miles</option>
+                        <option>100-300 miles</option>
+                        <option>300+ miles</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Min Rate/Mile</option>
+                        <option>$2.00+</option>
+                        <option>$2.50+</option>
+                        <option>$3.00+</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SEARCH RESULTS -->
+            <div>
+                <div class="results-header">
+                    <div class="results-count">2,847 Loads Found</div>
+                    <div class="results-filters">
+                        <div class="filter-chip active">All Boards</div>
+                        <div class="filter-chip">DAT</div>
+                        <div class="filter-chip">Truckstop</div>
+                        <div class="filter-chip">123Loadboard</div>
+                        <div class="filter-chip">Highest Rate</div>
+                        <div class="filter-chip">Shortest Distance</div>
+                    </div>
+                </div>
+
+                <!-- Load Card 1 -->
+                <div class="load-card" style="position: relative;">
+                    <div class="load-source">DAT</div>
+                    <div class="load-header">
+                        <div class="load-route">
+                            <div class="location">
+                                <div class="location-city">Houston</div>
+                                <div class="location-state">TX 77019</div>
+                            </div>
+                            <div class="route-arrow">→</div>
+                            <div class="location">
+                                <div class="location-city">Austin</div>
+                                <div class="location-state">TX 78701</div>
+                            </div>
+                        </div>
+                        <div class="load-rate">
+                            <div class="rate-amount">$2,850</div>
+                            <div class="rate-per-mile">$2.75/mile</div>
+                        </div>
+                    </div>
+                    <div class="load-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Equipment</div>
+                            <div class="detail-value">Dry Van 53'</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Weight</div>
+                            <div class="detail-value">42,000 lbs</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Distance</div>
+                            <div class="detail-value">165 miles</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pickup</div>
+                            <div class="detail-value">Dec 19, 8:00 AM</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Delivery</div>
+                            <div class="detail-value">Dec 19, 4:00 PM</div>
+                        </div>
+                    </div>
+                    <div class="load-footer">
+                        <div class="load-meta">Posted 15 minutes ago • Electronics • Appointment required</div>
+                        <div class="load-actions">
+                            <button class="action-btn">📞 Contact Broker</button>
+                            <button class="action-btn">⭐ Save Load</button>
+                            <button class="action-btn">📋 Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load Card 2 -->
+                <div class="load-card" style="position: relative;">
+                    <div class="load-source">Truckstop.com</div>
+                    <div class="load-header">
+                        <div class="load-route">
+                            <div class="location">
+                                <div class="location-city">Dallas</div>
+                                <div class="location-state">TX 75219</div>
+                            </div>
+                            <div class="route-arrow">→</div>
+                            <div class="location">
+                                <div class="location-city">Phoenix</div>
+                                <div class="location-state">AZ 85023</div>
+                            </div>
+                        </div>
+                        <div class="load-rate">
+                            <div class="rate-amount">$3,450</div>
+                            <div class="rate-per-mile">$2.65/mile</div>
+                        </div>
+                    </div>
+                    <div class="load-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Equipment</div>
+                            <div class="detail-value">Reefer 53'</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Weight</div>
+                            <div class="detail-value">38,500 lbs</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Distance</div>
+                            <div class="detail-value">1,065 miles</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pickup</div>
+                            <div class="detail-value">Dec 20, 10:00 AM</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Delivery</div>
+                            <div class="detail-value">Dec 21, 6:00 PM</div>
+                        </div>
+                    </div>
+                    <div class="load-footer">
+                        <div class="load-meta">Posted 1 hour ago • Food & Beverage • Temp: 38°F</div>
+                        <div class="load-actions">
+                            <button class="action-btn">📞 Contact Broker</button>
+                            <button class="action-btn">⭐ Save Load</button>
+                            <button class="action-btn">📋 Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load Card 3 -->
+                <div class="load-card" style="position: relative;">
+                    <div class="load-source">123Loadboard</div>
+                    <div class="load-header">
+                        <div class="load-route">
+                            <div class="location">
+                                <div class="location-city">Chicago</div>
+                                <div class="location-state">IL 60601</div>
+                            </div>
+                            <div class="route-arrow">→</div>
+                            <div class="location">
+                                <div class="location-city">Atlanta</div>
+                                <div class="location-state">GA 30303</div>
+                            </div>
+                        </div>
+                        <div class="load-rate">
+                            <div class="rate-amount">$4,200</div>
+                            <div class="rate-per-mile">$2.85/mile</div>
+                        </div>
+                    </div>
+                    <div class="load-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Equipment</div>
+                            <div class="detail-value">Dry Van 53'</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Weight</div>
+                            <div class="detail-value">44,000 lbs</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Distance</div>
+                            <div class="detail-value">715 miles</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pickup</div>
+                            <div class="detail-value">Dec 21, 6:00 AM</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Delivery</div>
+                            <div class="detail-value">Dec 22, 3:00 PM</div>
+                        </div>
+                    </div>
+                    <div class="load-footer">
+                        <div class="load-meta">Posted 3 hours ago • Auto Parts • FCFS unloading</div>
+                        <div class="load-actions">
+                            <button class="action-btn">📞 Contact Broker</button>
+                            <button class="action-btn">⭐ Save Load</button>
+                            <button class="action-btn">📋 Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load Card 4 -->
+                <div class="load-card" style="position: relative;">
+                    <div class="load-source">Freight Waves</div>
+                    <div class="load-header">
+                        <div class="load-route">
+                            <div class="location">
+                                <div class="location-city">Los Angeles</div>
+                                <div class="location-state">CA 90001</div>
+                            </div>
+                            <div class="route-arrow">→</div>
+                            <div class="location">
+                                <div class="location-city">Seattle</div>
+                                <div class="location-state">WA 98101</div>
+                            </div>
+                        </div>
+                        <div class="load-rate">
+                            <div class="rate-amount">$5,800</div>
+                            <div class="rate-per-mile">$3.10/mile</div>
+                        </div>
+                    </div>
+                    <div class="load-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Equipment</div>
+                            <div class="detail-value">Flatbed 53'</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Weight</div>
+                            <div class="detail-value">46,000 lbs</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Distance</div>
+                            <div class="detail-value">1,135 miles</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pickup</div>
+                            <div class="detail-value">Dec 22, 7:00 AM</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Delivery</div>
+                            <div class="detail-value">Dec 24, 5:00 PM</div>
+                        </div>
+                    </div>
+                    <div class="load-footer">
+                        <div class="load-meta">Posted 30 minutes ago • Building Materials • Tarps required</div>
+                        <div class="load-actions">
+                            <button class="action-btn">📞 Contact Broker</button>
+                            <button class="action-btn">⭐ Save Load</button>
+                            <button class="action-btn">📋 Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load Card 5 -->
+                <div class="load-card" style="position: relative;">
+                    <div class="load-source">DAT</div>
+                    <div class="load-header">
+                        <div class="load-route">
+                            <div class="location">
+                                <div class="location-city">Miami</div>
+                                <div class="location-state">FL 33101</div>
+                            </div>
+                            <div class="route-arrow">→</div>
+                            <div class="location">
+                                <div class="location-city">New York</div>
+                                <div class="location-state">NY 10001</div>
+                            </div>
+                        </div>
+                        <div class="load-rate">
+                            <div class="rate-amount">$6,500</div>
+                            <div class="rate-per-mile">$2.95/mile</div>
+                        </div>
+                    </div>
+                    <div class="load-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Equipment</div>
+                            <div class="detail-value">Reefer 53'</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Weight</div>
+                            <div class="detail-value">40,000 lbs</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Distance</div>
+                            <div class="detail-value">1,285 miles</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pickup</div>
+                            <div class="detail-value">Dec 23, 5:00 AM</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Delivery</div>
+                            <div class="detail-value">Dec 25, 8:00 PM</div>
+                        </div>
+                    </div>
+                    <div class="load-footer">
+                        <div class="load-meta">Posted 5 hours ago • Produce • Temp: 34°F • Holiday delivery</div>
+                        <div class="load-actions">
+                            <button class="action-btn">📞 Contact Broker</button>
+                            <button class="action-btn">⭐ Save Load</button>
+                            <button class="action-btn">📋 Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBSCRIPTION MANAGER -->
+            <div style="margin-top: 48px;">
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">Subscription Manager</h3>
+                <div class="subscription-grid">
+                    <div class="subscription-card">
+                        <div class="subscription-info">
+                            <div class="subscription-logo">📊</div>
+                            <div class="subscription-details">
+                                <div class="subscription-name">DAT Load Board</div>
+                                <div class="subscription-plan">Power Pro Plan</div>
+                                <div class="subscription-status">
+                                    <span style="color: #10b981; font-size: 12px;">● Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="renewal-info">
+                            <div class="renewal-price">$299/mo</div>
+                            <div class="renewal-label">Next billing:</div>
+                            <div class="renewal-date">December 15, 2024</div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-card">
+                        <div class="subscription-info">
+                            <div class="subscription-logo">🚚</div>
+                            <div class="subscription-details">
+                                <div class="subscription-name">Truckstop.com</div>
+                                <div class="subscription-plan">Premium Plan</div>
+                                <div class="subscription-status">
+                                    <span style="color: #10b981; font-size: 12px;">● Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="renewal-info">
+                            <div class="renewal-price">$249/mo</div>
+                            <div class="renewal-label">Next billing:</div>
+                            <div class="renewal-date">January 3, 2025</div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-card" style="border-color: rgba(245, 158, 11, 0.3);">
+                        <div class="subscription-info">
+                            <div class="subscription-logo">🔢</div>
+                            <div class="subscription-details">
+                                <div class="subscription-name">123Loadboard</div>
+                                <div class="subscription-plan">Standard Plan</div>
+                                <div class="subscription-status">
+                                    <span style="color: #f59e0b; font-size: 12px;">⚠️ Expiring Soon</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="renewal-info">
+                            <div class="renewal-price">$149/mo</div>
+                            <div class="renewal-label">Expires in:</div>
+                            <div class="renewal-date" style="color: #f59e0b;">12 days</div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-card">
+                        <div class="subscription-info">
+                            <div class="subscription-logo">📦</div>
+                            <div class="subscription-details">
+                                <div class="subscription-name">Freight Waves</div>
+                                <div class="subscription-plan">Basic Plan</div>
+                                <div class="subscription-status">
+                                    <span style="color: #10b981; font-size: 12px;">● Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="renewal-info">
+                            <div class="renewal-price">$99/mo</div>
+                            <div class="renewal-label">Next billing:</div>
+                            <div class="renewal-date">February 1, 2025</div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-card">
+                        <div class="subscription-info">
+                            <div class="subscription-logo">🛣️</div>
+                            <div class="subscription-details">
+                                <div class="subscription-name">Loadsmith</div>
+                                <div class="subscription-plan">Starter Plan</div>
+                                <div class="subscription-status">
+                                    <span style="color: #10b981; font-size: 12px;">● Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="renewal-info">
+                            <div class="renewal-price">$49/mo</div>
+                            <div class="renewal-label">Next billing:</div>
+                            <div class="renewal-date">December 28, 2024</div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-card" style="border-color: rgba(239, 68, 68, 0.3); opacity: 0.7;">
+                        <div class="subscription-info">
+                            <div class="subscription-logo">🌐</div>
+                            <div class="subscription-details">
+                                <div class="subscription-name">Direct Freight</div>
+                                <div class="subscription-plan">Standard Plan</div>
+                                <div class="subscription-status">
+                                    <span style="color: #ef4444; font-size: 12px;">● Expired</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="renewal-info">
+                            <div class="renewal-price" style="color: #888;">$179/mo</div>
+                            <div class="renewal-label">Expired on:</div>
+                            <div class="renewal-date" style="color: #ef4444;">November 15, 2024</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

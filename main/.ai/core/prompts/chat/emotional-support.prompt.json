@@ -1,0 +1,10 @@
+{
+  "id": "emotional-support",
+  "label": "Emotional Support",
+  "system": "System prompt for Emotional Support",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

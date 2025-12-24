@@ -1,0 +1,158 @@
+id: archbox
+name: archbox server
+description: >
+  Local server protocol that communicates with and controls the remote archbox host.
+  Enables full system orchestration across sync, tunnels, services, containers,
+  filesystem, and development environments using a programmable interface.
+owner: Jesse Conley
+
+host:
+  system:
+    os: Alpine Linux
+    arch: amd64
+    headless: true
+    role:
+      - container_host
+      - infra_orchestrator
+      - tunnel_endpoint
+      - model_trainer
+      - dev_environment
+
+connection:
+  method:
+    - wireguard
+    - inlets
+    - tunnelto
+    - ssh (optional)
+  dns: coredns
+  dns_fallback: unbound
+  firewall: firewalld
+  fail2ban: true
+  crowdsec: true
+  access_control: teleport
+
+services:
+  proxy: traefik
+  tunnels:
+    - tunnelto
+    - inlets
+    - wireguard
+  secrets: vault
+  observability:
+    - prometheus
+    - grafana
+    - vector
+    - loki
+  logging: vector
+  identity: teleport
+  container_runtime: containerd
+  ci_cd: dagger
+  build_system: just
+  packaging:
+    - tar
+    - buildkit
+  environment:
+    - nix
+  firewalling:
+    - firewalld
+    - fail2ban
+    - crowdsec
+
+filesync:
+  tool: rsync
+  direction:
+    - push: local → archbox
+    - pull: archbox → local
+    - mirror: bidirectional
+  remote_dir: /home/jesse/dev/
+  local_dir: ~/dev/
+
+commands:
+  - tunnel
+  - verify
+  - who
+  - push
+  - pull
+  - mirror
+  - ls
+  - edit
+  - tail
+  - exec
+  - make
+  - run
+  - host
+  - containers
+  - services
+  - status
+  - deploy
+  - restart
+  - metrics
+  - logs
+  - journal
+  - port_forward
+  - jupyter_forward
+  - kernel_proxy
+
+containerd:
+  control:
+    - list
+    - start
+    - stop
+    - restart
+    - logs
+    - inspect
+  deploy_from:
+    - tar
+    - dockerfile
+    - image
+
+training:
+  model_serving:
+    - llama.cpp
+    - vllm
+  db:
+    - duckdb
+    - postgres
+    - tantivy
+  cache:
+    - redis
+  pubsub:
+    - nats
+  agent_sync:
+    - vector
+    - local cache
+    - zora
+  notebook_support:
+    - jupyterlab
+    - forward to local browser
+
+devops:
+  secrets_management: vault
+  build_flow: dagger
+  trigger:
+    - just
+    - nix
+  remote_editor:
+    - nano
+    - vim
+    - jupyter
+  runtime_logs:
+    - vector
+    - loki
+
+protocol:
+  interface: CLI + Rust SDK
+  compatible_with:
+    - codriver.agent
+    - local shell
+    - remote container
+  agent_access: true
+  direct_call:
+    enabled: true
+    format: archbox <command> [args...]
+
+metadata:
+  version: 0.1.0
+  editable: true
+  status: draft
+  schema: v1alpha1

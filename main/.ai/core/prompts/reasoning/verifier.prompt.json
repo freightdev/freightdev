@@ -1,0 +1,10 @@
+{
+  "id": "verifier",
+  "label": "Verifier",
+  "system": "System prompt for Verifier",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

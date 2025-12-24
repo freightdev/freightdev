@@ -1,0 +1,35 @@
+---
+import type { Alignment } from '@components/base';
+import { cn } from '@utils';
+import Button from '@components/atoms/Button';
+import type { HeroCta } from './hero.types';
+
+interface Props {
+  primary?: HeroCta;
+  secondary?: HeroCta;
+  alignment?: Alignment;
+}
+
+const { primary, secondary, alignment = 'center' } = Astro.props as Props;
+const hasActions = primary || secondary;
+const layoutClass = cn(
+  'flex flex-col sm:flex-row gap-4',
+  alignment === 'center' && 'justify-center',
+  alignment === 'right' && 'justify-end'
+);
+---
+
+{hasActions && (
+  <div class={layoutClass}>
+    {primary && (
+      <Button href={primary.href} variant={primary.variant ?? 'primary'} size="lg">
+        {primary.label}
+      </Button>
+    )}
+    {secondary && (
+      <Button href={secondary.href} variant={secondary.variant ?? 'outlined'} size="lg">
+        {secondary.label}
+      </Button>
+    )}
+  </div>
+)}

@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenHWY Dispatch Academy - Master the Art of Freight Dispatch</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ff88;
+            --primary-dark: #00cc6a;
+            --secondary: #1a1a2e;
+            --accent: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --gradient: linear-gradient(135deg, #00ff88, #00cc6a);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            -webkit-text-fill-color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-nav {
+            background: var(--gradient);
+            color: var(--secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+            background: radial-gradient(ellipse at bottom, #1a1a2e 0%, #0a0a0a 100%);
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .grid-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-20px); opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--secondary);
+            padding: 1.25rem 3rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            padding: 1.25rem 3rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            opacity: 0.9;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Interactive Dashboard Section */
+        .dashboard-section {
+            padding: 6rem 5%;
+            background: var(--secondary);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .dashboard-preview {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.active {
+            background: var(--primary);
+        }
+
+        .status-dot.pending {
+            background: #ffa500;
+        }
+
+        .status-dot.inactive {
+            background: #666;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .load-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .load-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .load-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .load-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .load-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .load-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .load-id {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .load-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary);
+        }
+
+        .status-assigned {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+
+        .load-route {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .load-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .load-detail {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Learning Path */
+        .learning-path {
+            padding: 6rem 5%;
+            background: var(--accent);
+        }
+
+        .path-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .path-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient);
+            transform: translateX(-50%);
+        }
+
+        .path-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .path-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .path-content {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .path-content:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .path-number {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            z-index: 2;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .path-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .path-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .path-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .path-features {
+            list-style: none;
+        }
+
+        .path-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .path-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Features Grid */
+        .features-section {
+            padding: 6rem 5%;
+            background: var(--secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 6rem 5%;
+            background: var(--accent);
+        }
+
+        .pricing-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: var(--secondary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .pricing-tier {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1rem 0;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 5%;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-description {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 5%;
+            background: var(--secondary);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links a:not(.cta-nav) {
+                display: none;
+            }
+
+            .path-item {
+                flex-direction: column !important;
+            }
+
+            .timeline-line {
+                display: none;
+            }
+
+            .path-number {
+                position: relative;
+                left: 0;
+                transform: none;
+                margin-bottom: 1rem;
+            }
+
+            .stats-row {
+                gap: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            animation: progressPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes progressPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-truck"></i>
+                OpenHWY Dispatch
+            </div>
+            <div class="nav-links">
+                <a href="#dashboard">Dashboard</a>
+                <a href="#learning">Learning Path</a>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#" class="cta-nav">Start Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="grid-lines"></div>
+            <div class="floating-elements">
+                <div class="floating-element" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+                <div class="floating-element" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+                <div class="floating-element" style="top: 40%; left: 50%; animation-delay: 2s;"></div>
+                <div class="floating-element" style="top: 80%; left: 20%; animation-delay: 3s;"></div>
+                <div class="floating-element" style="top: 30%; left: 70%; animation-delay: 4s;"></div>
+            </div>
+        </div>
+        <div class="hero-content fade-in">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                6 Years of Dispatch Experience. Compressed.
+            </div>
+            <h1>
+                Master Freight Dispatch.<br>
+                <span class="gradient-text">Fast. Interactive. Real.</span>
+            </h1>
+            <p class="hero-description">
+                Transform into a professional dispatcher through AI-powered training, 
+                real-world scenarios, and hands-on TMS experience. Build your reputation 
+                and get hired by top fleets.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">
+                    <i class="fas fa-play"></i> Start Training Free
+                </a>
+                <a href="#" class="btn-secondary">
+                    <i class="fas fa-eye"></i> Watch Demo
+                </a>
+            </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-number">10,000+</span>
+                    <span class="stat-label">Scenarios</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Hired Graduates</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Success Rate</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Dashboard Preview -->
+    <section id="dashboard" class="dashboard-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Live Dispatch Dashboard</h2>
+            <p class="section-subtitle">
+                Experience the thrill of real-time dispatching. Manage loads, coordinate drivers, 
+                handle logistics—all in our interactive training environment.
+            </p>
+        </div>
+        <div class="dashboard-preview fade-in">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <i class="fas fa-tachometer-alt"></i> Active Loads Board
+                </div>
+                <div class="status-indicators">
+                    <div class="status-dot active" title="Active Loads"></div>
+                    <div class="status-dot pending" title="Pending"></div>
+                    <div class="status-dot inactive" title="Completed"></div>
+                </div>
+            </div>
+            <div class="load-grid">
+                <div class="load-card">
+                    <div class="load-header">
+                        <span class="load-id">#LD-2847</span>
+                        <span class="load-status status-available">Available</span>
+                    </div>
+                    <div class="load-route">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Atlanta, GA → Dallas, TX
+                    </div>
+                    <div class="load-details">
+                        <div class="load-detail">
+                            <div class="detail-value">42,000</div>
+                            <div class="detail-label">Weight (lbs)</div>
+                        </div>
+                        <div class="load-detail">
+                            <div class="detail-value">$2,850</div>
+                            <div class="detail-label">Rate</div>
+                        </div>
+                        <div class="load-detail">
+                            <div class="detail-value">780 mi</div>
+                            <div class="detail-label">Distance</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="load-card">
+                    <div class="load-header">
+                        <span class="load-id">#LD-2848</span>
+                        <span class="load-status status-assigned">Assigned</span>
+                    </div>
+                    <div class="load-route">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Chicago, IL → Miami, FL
+                    </div>
+                    <div class="load-details">
+                        <div class="load-detail">
+                            <div class="detail-value">38,500</div>
+                            <div class="detail-label">Weight (lbs)</div>
+                        </div>
+                        <div class="load-detail">
+                            <div class="detail-value">$3,200</div>
+                            <div class="detail-label">Rate</div>
+                        </div>
+                        <div class="load-detail">
+                            <div class="detail-value">1,380 mi</div>
+                            <div class="detail-label">Distance</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="load-card">
+                    <div class="load-header">
+                        <span class="load-id">#LD-2849</span>
+                        <span class="load-status status-available">Available</span>
+                    </div>
+                    <div class="load-route">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Los Angeles, CA → Seattle, WA
+                    </div>
+                    <div class="load-details">
+                        <div class="load-detail">
+                            <div class="detail-value">45,000</div>
+                            <div class="detail-label">Weight (lbs)</div>
+                        </div>
+                        <div class="load-detail">
+                            <div class="detail-value">$4,100</div>
+                            <div class="detail-label">Rate</div>
+                        </div>
+                        <div class="load-detail">
+                            <div class="detail-value">1,135 mi</div>
+                            <div class="detail-label">Distance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+            <p style="text-align: center; color: var(--text-secondary); margin-top: 1rem;">
+                <i class="fas fa-info-circle"></i> Training Progress: 75% Complete - 5 scenarios remaining
+            </p>
+        </div>
+    </section>
+
+    <!-- Learning Path -->
+    <section id="learning" class="learning-path">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Your Journey to Pro Dispatcher</h2>
+            <p class="section-subtitle">
+                Progress through gamified scenarios like a video game. Build your logbook. 
+                Level up your skills. Get discovered by top fleets.
+            </p>
+        </div>
+        <div class="path-container">
+            <div class="path-timeline">
+                <div class="timeline-line"></div>
+                <div class="path-item fade-in">
+                    <div class="path-number">1</div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="path-title">Foundation Training</h3>
+                        <p class="path-description">
+                            Start with the fundamentals. Learn load planning, documentation, 
+                            HOS regulations through interactive scenarios.
+                        </p>
+                        <ul class="path-features">
+                            <li>Interactive load matching exercises</li>
+                            <li>Regulatory compliance training</li>
+                            <li>Documentation best practices</li>
+                            <li>No credit card required</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="path-item fade-in">
+                    <div class="path-number">2</div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="path-title">Build Your Logbook</h3>
+                        <p class="path-description">
+                            Every completed scenario and mastered skill adds to your professional logbook. 
+                            Showcase your expertise to potential employers.
+                        </p>
+                        <ul class="path-features">
+                            <li>Track completed scenarios</li>
+                            <li>Earn skill certifications</li>
+                            <li>Build professional reputation</li>
+                            <li>Get discovered by fleets</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="path-item fade-in">
+                    <div class="path-number">3</div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="path-title">AI-Powered Coaching</h3>
+                        <p class="path-description">
+                            Accelerate your learning with personalized AI tutors. Get instant feedback 
+                            and master advanced dispatching strategies.
+                        </p>
+                        <ul class="path-features">
+                            <li>24/7 AI tutoring available</li>
+                            <li>Personalized learning paths</li>
+                            <li>Advanced scenario training</li>
+                            <li>Real-time performance feedback</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="path-item fade-in">
+                    <div class="path-number">4</div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3 class="path-title">Mini TMS Practice</h3>
+                        <p class="path-description">
+                            Work in our simulated Transportation Management System. Handle real workflows 
+                            and master industry-standard tools.
+                        </p>
+                        <ul class="path-features">
+                            <li>Real TMS interface</li>
+                            <li>Load management workflows</li>
+                            <li>Driver coordination tools</li>
+                            <li>Documentation processing</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="path-item fade-in">
+                    <div class="path-number">5</div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3 class="path-title">Get Hired</h3>
+                        <p class="path-description">
+                            Connect with thousands of drivers and fleets looking for skilled dispatchers. 
+                            Your logbook becomes your resume.
+                        </p>
+                        <ul class="path-features">
+                            <li>Direct fleet connections</li>
+                            <li>Job matching system</li>
+                            <li>Salary negotiation tools</li>
+                            <li>Career placement support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Complete Dispatch Training Platform</h2>
+            <p class="section-subtitle">
+                Everything you need to become a professional freight dispatcher
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h3 class="feature-title">Gamified Learning</h3>
+                <p class="feature-description">
+                    Progress through levels, earn achievements, compete on leaderboards. 
+                    Learn dispatching like playing your favorite game.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">AI Scenarios</h3>
+                <p class="feature-description">
+                    Practice with dynamically generated scenarios. AI creates unique challenges 
+                    based on your skill level and learning pace.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">Community Learning</h3>
+                <p class="feature-description">
+                    Join study groups, share strategies, learn from other students. 
+                    Collaborate on complex scenarios together.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3 class="feature-title">Industry Certification</h3>
+                <p class="feature-description">
+                    Earn recognized certifications. Validate your skills with 
+                    industry-accepted credentials.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Performance Analytics</h3>
+                <p class="feature-description">
+                    Track your progress with detailed analytics. Identify strengths, 
+                    improve weaknesses, optimize your learning.
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h3 class="feature-title">Job Placement</h3>
+                <p class="feature-description">
+                    Direct connections to hiring fleets. Your training logbook 
+                    becomes your professional resume.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Choose Your Training Path</h2>
+            <p class="section-subtitle">
+                Start free, upgrade when you're ready to accelerate your career
+            </p>
+        </div>
+        <div class="pricing-container">
+            <div class="pricing-card fade-in">
+                <div class="pricing-tier">Self-Study</div>
+                <div class="pricing-price">Free</div>
+                <ul class="pricing-features">
+                    <li>Basic scenarios (50+)</li>
+                    <li>Foundation training modules</li>
+                    <li>Community forum access</li>
+                    <li>Basic progress tracking</li>
+                    <li>Completion certificate</li>
+                    <li>Logbook (basic features)</li>
+                </ul>
+                <a href="#" class="btn-secondary" style="width: 100%;">Start Free</a>
+            </div>
+            <div class="pricing-card featured fade-in">
+                <div class="pricing-tier">AI Accelerator</div>
+                <div class="pricing-price">$49<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>Everything in Free</li>
+                    <li>Unlimited AI tutoring</li>
+                    <li>Advanced scenarios (500+)</li>
+                    <li>Mini TMS full access</li>
+                    <li>Priority support</li>
+                    <li>Premium logbook features</li>
+                    <li>Job placement assistance</li>
+                </ul>
+                <a href="#" class="btn-primary" style="width: 100%;">Start Training</a>
+            </div>
+            <div class="pricing-card fade-in">
+                <div class="pricing-tier">Fleet Training</div>
+                <div class="pricing-price">Custom</div>
+                <ul class="pricing-features">
+                    <li>Team management dashboard</li>
+                    <li>Custom scenario creation</li>
+                    <li>Company branding options</li>
+                    <li>Advanced analytics</li>
+                    <li>Dedicated account manager</li>
+                    <li>API integration options</li>
+                    <li>On-site training available</li>
+                </ul>
+                <a href="#" class="btn-secondary" style="width: 100%;">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content fade-in">
+            <h2 class="cta-title">Ready to Launch Your Dispatch Career?</h2>
+            <p class="cta-description">
+                Join thousands of successful dispatchers who started their journey here. 
+                Build your skills, earn your certification, get hired by top fleets.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">
+                    <i class="fas fa-rocket"></i> Start Free Training
+                </a>
+                <a href="#" class="btn-secondary">
+                    <i class="fas fa-phone"></i> Schedule Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Features</a>
+                <a href="#">Pricing</a>
+                <a href="#">Success Stories</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="footer-copyright">
+                © 2024 OpenHWY Dispatch Academy. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(10, 10, 10, 0.98)';
+                navbar.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Interactive load cards
+        document.querySelectorAll('.load-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Simulate load selection
+                document.querySelectorAll('.load-card').forEach(c => {
+                    c.style.borderColor = 'var(--border-color)';
+                });
+                this.style.borderColor = 'var(--primary)';
+                
+                // Update progress bar
+                const progressBar = document.querySelector('.progress-fill');
+                const currentWidth = parseInt(progressBar.style.width);
+                if (currentWidth < 100) {
+                    progressBar.style.width = (currentWidth + 5) + '%';
+                }
+            });
+        });
+
+        // Dynamic floating elements
+        function createFloatingElement() {
+            const element = document.createElement('div');
+            element.className = 'floating-element';
+            element.style.left = Math.random() * 100 + '%';
+            element.style.top = Math.random() * 100 + '%';
+            element.style.animationDelay = Math.random() * 5 + 's';
+            element.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            
+            const heroBg = document.querySelector('.floating-elements');
+            if (heroBg) {
+                heroBg.appendChild(element);
+                
+                setTimeout(() => {
+                    element.remove();
+                }, 6000);
+            }
+        }
+
+        // Create new floating elements periodically
+        setInterval(createFloatingElement, 2000);
+
+        // Simulate real-time updates
+        function updateLoadStatus() {
+            const statuses = ['status-available', 'status-assigned'];
+            const statusTexts = ['Available', 'Assigned'];
+            
+            document.querySelectorAll('.load-status').forEach((status, index) => {
+                if (Math.random() > 0.7 && index > 0) { // Don't change the first one
+                    const newStatus = Math.random() > 0.5 ? 0 : 1;
+                    status.className = 'load-status ' + statuses[newStatus];
+                    status.textContent = statusTexts[newStatus];
+                }
+            });
+        }
+
+        // Update load statuses every 5 seconds
+        setInterval(updateLoadStatus, 5000);
+
+        // Add typing effect to hero title
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+
+        // Initialize typing effect on page load
+        window.addEventListener('load', function() {
+            const heroTitle = document.querySelector('.hero h1');
+            if (heroTitle) {
+                const originalText = heroTitle.innerHTML;
+                setTimeout(() => {
+                    typeWriter(heroTitle, originalText, 30);
+                }, 500);
+            }
+        });
+
+        // Add parallax effect to hero background
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const heroBg = document.querySelector('.hero-bg');
+            if (heroBg) {
+                heroBg.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // Simulate progress bar animation
+        function animateProgress() {
+            const progressBar = document.querySelector('.progress-fill');
+            if (progressBar) {
+                let width = 0;
+                const targetWidth = 75;
+                const increment = targetWidth / 100;
+                
+                const animation = setInterval(() => {
+                    if (width >= targetWidth) {
+                        clearInterval(animation);
+                    } else {
+                        width += increment;
+                        progressBar.style.width = width + '%';
+                    }
+                }, 20);
+            }
+        }
+
+        // Start progress animation when dashboard section is visible
+        const dashboardObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateProgress();
+                    dashboardObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        const dashboardSection = document.querySelector('.dashboard-preview');
+        if (dashboardSection) {
+            dashboardObserver.observe(dashboardSection);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+---
+import { footerConfig } from '@configs/navigation';
+import FooterBrand from './FooterBrand.astro';
+import FooterSections from './FooterSections.astro';
+import FooterSocial from './FooterSocial.astro';
+
+const config = footerConfig;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-background-card border-t border-background-elevated">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <FooterSections sections={config.sections} />
+    <div class="border-t border-background-elevated pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <FooterBrand brand={config.brand} />
+        <p class="text-text-secondary text-sm">
+          {config.copyright || `© ${currentYear} ${config.brand.name}. All rights reserved.`}
+        </p>
+        <FooterSocial social={config.social} />
+      </div>
+    </div>
+  </div>
+</footer>

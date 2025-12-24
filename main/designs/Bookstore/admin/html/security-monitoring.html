@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(252, 92, 125, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .security-status {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.secure { background: #10b981; }
+        .status-indicator.warning { background: #f59e0b; }
+        .status-indicator.critical { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .alert-bar {
+            background: #7f1d1d;
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: alertPulse 2s infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { border-color: #ef4444; }
+            50% { border-color: #dc2626; }
+        }
+
+        .alert-icon {
+            font-size: 24px;
+        }
+
+        .alert-text {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: #fca5a5;
+            margin-bottom: 4px;
+        }
+
+        .alert-desc {
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        .alert-action {
+            background: #ef4444;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #1a1f3a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #2d3548;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fc5c7d;
+            margin-bottom: 8px;
+        }
+
+        .metric-value.good { color: #10b981; }
+        .metric-value.warning { color: #f59e0b; }
+        .metric-value.critical { color: #ef4444; }
+
+        .metric-label {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .metric-change.up { color: #ef4444; }
+        .metric-change.down { color: #10b981; }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3548;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #e0e6ed;
+        }
+
+        .tab.active {
+            color: #fc5c7d;
+            border-bottom-color: #fc5c7d;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .threat-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid #ef4444;
+            transition: all 0.3s;
+        }
+
+        .threat-card:hover {
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
+        }
+
+        .threat-card.medium {
+            border-left-color: #f59e0b;
+        }
+
+        .threat-card.low {
+            border-left-color: #3b82f6;
+        }
+
+        .threat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .threat-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .threat-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .severity-badge.critical {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .severity-badge.high {
+            background: #78350f;
+            color: #fcd34d;
+        }
+
+        .severity-badge.medium {
+            background: #1e3a8a;
+            color: #93c5fd;
+        }
+
+        .severity-badge.low {
+            background: #065f46;
+            color: #6ee7b7;
+        }
+
+        .threat-details {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #1a1f3a;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #9ca3af;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-family: monospace;
+            color: #fc5c7d;
+        }
+
+        .threat-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: #2d3548;
+            border: none;
+            color: #9ca3af;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #3d4556;
+            color: #e0e6ed;
+        }
+
+        .action-btn.block {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .action-btn.block:hover {
+            background: #991b1b;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #2d3548;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -33px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fc5c7d;
+            border: 3px solid #1a1f3a;
+        }
+
+        .timeline-dot.success { background: #10b981; }
+        .timeline-dot.warning { background: #f59e0b; }
+        .timeline-dot.error { background: #ef4444; }
+
+        .timeline-content {
+            background: #1a1f3a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #2d3548;
+        }
+
+        .timeline-time {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+
+        .timeline-text {
+            font-size: 13px;
+        }
+
+        .chart-container {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fc5c7d;
+            margin-bottom: 16px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 150px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #fc5c7d, #6a82fb);
+            border-radius: 4px 4px 0 0;
+            min-height: 10px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: translateY(-4px);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+
+        .ip-list {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+        }
+
+        .ip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #0f1629;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .ip-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .ip-info {
+            flex: 1;
+        }
+
+        .ip-address {
+            font-family: monospace;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .ip-location {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .ip-count {
+            background: #7f1d1d;
+            color: #fca5a5;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .cert-item {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #2d3548;
+        }
+
+        .cert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .cert-domain {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .cert-expiry {
+            font-size: 12px;
+        }
+
+        .cert-expiry.soon {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .cert-expiry.expired {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .cert-details {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .threat-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Security Monitoring</h1>
+        <div class="security-status">
+            <div class="status-badge">
+                <span class="status-indicator secure"></span>
+                <span>Firewall: Active</span>
+            </div>
+            <div class="status-badge">
+                <span class="status-indicator secure"></span>
+                <span>IDS: Running</span>
+            </div>
+            <div class="status-badge">
+                <span class="status-indicator warning"></span>
+                <span>3 Threats Detected</span>
+            </div>
+            <div class="status-badge">
+                <span>Last Scan: <span id="lastScan">2 min ago</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Critical Alert -->
+    <div id="criticalAlert" style="display: none;" class="alert-bar">
+        <span class="alert-icon">🚨</span>
+        <div class="alert-text">
+            <div class="alert-title">Critical: Brute Force Attack Detected</div>
+            <div class="alert-desc">IP 185.220.101.42 attempting SSH login (127 failed attempts in 5 minutes)</div>
+        </div>
+        <button class="alert-action" onclick="blockIP('185.220.101.42')">Block IP</button>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value critical">3</div>
+            <div class="metric-label">Active Threats</div>
+            <div class="metric-change up">↑ 2 from yesterday</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">247</div>
+            <div class="metric-label">Failed Auth (24h)</div>
+            <div class="metric-change up">↑ 15%</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value warning">12</div>
+            <div class="metric-label">Blocked IPs</div>
+            <div class="metric-change up">↑ 3 today</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value good">0</div>
+            <div class="metric-label">Vulnerabilities</div>
+            <div class="metric-change down">All patched</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">1.2k</div>
+            <div class="metric-label">Firewall Blocks (24h)</div>
+            <div class="metric-change up">↑ 8%</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('threats')">🎯 Active Threats</button>
+        <button class="tab" onclick="switchTab('blocked')">🚫 Blocked IPs</button>
+        <button class="tab" onclick="switchTab('activity')">📊 Activity Log</button>
+        <button class="tab" onclick="switchTab('certs')">🔐 SSL Certificates</button>
+        <button class="tab" onclick="switchTab('analytics')">📈 Analytics</button>
+    </div>
+
+    <!-- Active Threats Tab -->
+    <div class="tab-content active" id="threats-tab">
+        <div id="threatsContainer"></div>
+    </div>
+
+    <!-- Blocked IPs Tab -->
+    <div class="tab-content" id="blocked-tab">
+        <div class="ip-list" id="blockedIPs"></div>
+    </div>
+
+    <!-- Activity Log Tab -->
+    <div class="tab-content" id="activity-tab">
+        <div class="timeline" id="activityLog"></div>
+    </div>
+
+    <!-- SSL Certificates Tab -->
+    <div class="tab-content" id="certs-tab">
+        <div id="certificatesContainer"></div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div class="tab-content" id="analytics-tab">
+        <div class="chart-container">
+            <div class="chart-title">Failed Login Attempts (Last 7 Days)</div>
+            <div class="bar-chart" id="loginChart"></div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">Threat Detection by Type</div>
+            <div class="bar-chart" id="threatChart"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'threats';
+
+        function generateMockData() {
+            return {
+                threats: [
+                    {
+                        id: 'threat-001',
+                        title: 'Brute Force Attack',
+                        severity: 'critical',
+                        time: '2 minutes ago',
+                        ip: '185.220.101.42',
+                        location: 'Russia',
+                        target: 'SSH (Port 22)',
+                        attempts: 127,
+                        description: 'Multiple failed SSH login attempts detected'
+                    },
+                    {
+                        id: 'threat-002',
+                        title: 'SQL Injection Attempt',
+                        severity: 'high',
+                        time: '15 minutes ago',
+                        ip: '103.45.219.88',
+                        location: 'China',
+                        target: 'Web App API',
+                        attempts: 8,
+                        description: 'Malicious SQL queries detected in API requests'
+                    },
+                    {
+                        id: 'threat-003',
+                        title: 'Port Scanning',
+                        severity: 'medium',
+                        time: '1 hour ago',
+                        ip: '45.142.213.50',
+                        location: 'Netherlands',
+                        target: 'Multiple Ports',
+                        attempts: 1024,
+                        description: 'Systematic port scanning detected across all services'
+                    },
+                    {
+                        id: 'threat-004',
+                        title: 'DDoS Attempt',
+                        severity: 'medium',
+                        time: '3 hours ago',
+                        ip: '194.88.104.25',
+                        location: 'Germany',
+                        target: 'Traefik Ingress',
+                        attempts: 5432,
+                        description: 'High volume of requests from single IP'
+                    }
+                ],
+                blockedIPs: [
+                    { ip: '185.220.101.42', location: 'Russia', attempts: 127, blocked: '2 min ago', reason: 'Brute force' },
+                    { ip: '103.45.219.88', location: 'China', attempts: 8, blocked: '15 min ago', reason: 'SQL injection' },
+                    { ip: '45.142.213.50', location: 'Netherlands', attempts: 1024, blocked: '1 hour ago', reason: 'Port scan' },
+                    { ip: '194.88.104.25', location: 'Germany', attempts: 5432, blocked: '3 hours ago', reason: 'DDoS attempt' },
+                    { ip: '198.98.51.189', location: 'USA', attempts: 45, blocked: '5 hours ago', reason: 'Suspicious activity' },
+                    { ip: '91.203.5.146', location: 'Ukraine', attempts: 234, blocked: '1 day ago', reason: 'Brute force' }
+                ],
+                activity: [
+                    { time: '14:32:15', type: 'error', text: 'Blocked brute force attempt from 185.220.101.42' },
+                    { time: '14:18:42', type: 'warning', text: 'SQL injection attempt detected and blocked' },
+                    { time: '13:45:23', type: 'success', text: 'SSL certificate renewed for api.example.com' },
+                    { time: '13:12:08', type: 'error', text: 'Port scanning detected from 45.142.213.50' },
+                    { time: '12:55:33', type: 'success', text: 'Firewall rules updated successfully' },
+                    { time: '11:23:17', type: 'warning', text: 'Unusual traffic spike detected' },
+                    { time: '10:45:52', type: 'success', text: 'Security scan completed: 0 vulnerabilities' },
+                    { time: '09:12:28', type: 'warning', text: 'Failed admin login attempt from 194.88.104.25' }
+                ],
+                certificates: [
+                    { domain: '*.example.com', issuer: "Let's Encrypt", expires: '45 days', status: 'valid' },
+                    { domain: 'api.example.com', issuer: "Let's Encrypt", expires: '12 days', status: 'soon' },
+                    { domain: 'auth.example.com', issuer: "Let's Encrypt", expires: '67 days', status: 'valid' },
+                    { domain: 'cdn.example.com', issuer: 'Cloudflare', expires: '89 days', status: 'valid' }
+                ],
+                loginAttempts: [45, 67, 123, 89, 234, 156, 247],
+                threatsByType: [
+                    { type: 'Brute Force', count: 127 },
+                    { type: 'SQL Injection', count: 45 },
+                    { type: 'Port Scan', count: 89 },
+                    { type: 'DDoS', count: 67 },
+                    { type: 'XSS', count: 23 }
+                ]
+            };
+        }
+
+        function renderThreats(threats) {
+            if (threats.length === 0) {
+                return '<div class="empty-state"><div class="empty-icon">✅</div><div>No active threats detected</div></div>';
+            }
+
+            return threats.map(threat => `
+                <div class="threat-card ${threat.severity}">
+                    <div class="threat-header">
+                        <div>
+                            <div class="threat-title">${threat.title}</div>
+                            <div class="threat-time">${threat.time}</div>
+                        </div>
+                        <span class="severity-badge ${threat.severity}">${threat.severity.toUpperCase()}</span>
+                    </div>
+
+                    <div class="threat-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Source IP</span>
+                            <span class="detail-value">${threat.ip}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">${threat.location}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Target</span>
+                            <span class="detail-value">${threat.target}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Attempts</span>
+                            <span class="detail-value">${threat.attempts}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Description</span>
+                            <span class="detail-value" style="font-family: inherit;">${threat.description}</span>
+                        </div>
+                    </div>
+
+                    <div class="threat-actions">
+                        <button class="action-btn" onclick="viewDetails('${threat.id}')">Details</button>
+                        <button class="action-btn" onclick="investigateIP('${threat.ip}')">Investigate</button>
+                        <button class="action-btn block" onclick="blockIP('${threat.ip}')">Block IP</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBlockedIPs(ips) {
+            return ips.map(ip => `
+                <div class="ip-item">
+                    <div class="ip-info">
+                        <div class="ip-address">${ip.ip}</div>
+                        <div class="ip-location">${ip.location} • ${ip.reason} • Blocked ${ip.blocked}</div>
+                    </div>
+                    <span class="ip-count">${ip.attempts} attempts</span>
+                    <button class="action-btn" onclick="unblockIP('${ip.ip}')">Unblock</button>
+                </div>
+            `).join('');
+        }
+
+        function renderActivity(activities) {
+            return activities.map(activity => `
+                <div class="timeline-item">
+                    <div class="timeline-dot ${activity.type}"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">${activity.time}</div>
+                        <div class="timeline-text">${activity.text}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCertificates(certs) {
+            return certs.map(cert => `
+                <div class="cert-item">
+                    <div class="cert-header">
+                        <div class="cert-domain">🔒 ${cert.domain}</div>
+                        <div class="cert-expiry ${cert.status === 'soon' ? 'soon' : ''}">${cert.expires}</div>
+                    </div>
+                    <div class="cert-details">
+                        Issuer: ${cert.issuer} • Status: ${cert.status === 'valid' ? 'Valid' : 'Expiring Soon'}
+                    </div>
+                    ${cert.status === 'soon' ? `
+                        <button class="action-btn" style="margin-top: 12px; width: 100%;" onclick="renewCert('${cert.domain}')">
+                            🔄 Renew Certificate
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderLoginChart(data) {
+            const max = Math.max(...data);
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            
+            return data.map((val, i) => `
+                <div class="bar" style="height: ${(val / max) * 100}%">
+                    <div class="bar-label">${days[i]}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderThreatChart(data) {
+            const max = Math.max(...data.map(d => d.count));
+            
+            return data.map(item => `
+                <div class="bar" style="height: ${(item.count / max) * 100}%">
+                    <div class="bar-label">${item.type}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const data = generateMockData();
+
+            // Render all tabs
+            document.getElementById('threatsContainer').innerHTML = renderThreats(data.threats);
+            document.getElementById('blockedIPs').innerHTML = renderBlockedIPs(data.blockedIPs);
+            document.getElementById('activityLog').innerHTML = renderActivity(data.activity);
+            document.getElementById('certificatesContainer').innerHTML = renderCertificates(data.certificates);
+            document.getElementById('loginChart').innerHTML = renderLoginChart(data.loginAttempts);
+            document.getElementById('threatChart').innerHTML = renderThreatChart(data.threatsByType);
+
+            // Show/hide critical alert
+            const criticalThreats = data.threats.filter(t => t.severity === 'critical');
+            if (criticalThreats.length > 0) {
+                document.getElementById('criticalAlert').style.display = 'flex';
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function blockIP(ip) {
+            if (confirm(`Block IP ${ip}?\n\nThis will add the IP to your firewall blacklist and drop all future traffic.`)) {
+                alert(`✅ IP ${ip} has been blocked.
+
+Firewall rules updated across:
+• Traefik (ingress)
+• iptables (all nodes)
+• Nebula ACLs
+
+All future traffic from this IP will be dropped.`);
+                document.getElementById('criticalAlert').style.display = 'none';
+                setTimeout(updateDashboard, 500);
+            }
+        }
+
+        function unblockIP(ip) {
+            if (confirm(`Unblock IP ${ip}?\n\nThis will remove the IP from your firewall blacklist.`)) {
+                alert(`✅ IP ${ip} has been unblocked.`);
+                setTimeout(updateDashboard, 500);
+            }
+        }
+
+        function viewDetails(id) {
+            alert(`Opening detailed threat analysis for ${id}...`);
+        }
+
+        function investigateIP(ip) {
+            alert(`Opening investigation panel for IP: ${ip}
+
+This would show:
+• WHOIS information
+• Geolocation data
+• Historical attack patterns
+• Reputation scores
+• Related IP addresses
+
+Checking threat intelligence databases...`);
+        }
+
+        function renewCert(domain) {
+            if (confirm(`Renew SSL certificate for ${domain}?\n\nThis will request a new certificate from Let's Encrypt.`)) {
+                alert(`🔄 Renewing certificate for ${domain}...
+
+This typically takes 30-60 seconds.
+The new certificate will be automatically deployed to all services.`);
+                setTimeout(updateDashboard, 500);
+            }
+        }
+
+        // Initial render
+        updateDashboard();
+
+        // Auto-refresh every 10 seconds
+        setInterval(updateDashboard, 10000);
+
+        // Update "last scan" timer
+        let scanMinutes = 2;
+        setInterval(() => {
+            scanMinutes++;
+            document.getElementById('lastScan').textContent = scanMinutes + ' min ago';
+        }, 60000);
+    </script>
+</body>
+</html>

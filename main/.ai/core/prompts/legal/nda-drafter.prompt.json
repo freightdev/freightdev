@@ -1,0 +1,10 @@
+{
+  "id": "nda-drafter",
+  "label": "Nda Drafter",
+  "system": "System prompt for Nda Drafter",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

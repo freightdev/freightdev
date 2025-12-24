@@ -1,0 +1,135 @@
+---
+import Badge from '@components/atoms/Badge';
+import Button from '@components/atoms/Button';
+import ServiceCard from './ServiceCard.astro';
+
+export interface Props {
+  badge: string;
+  title: string;
+  subtitle: string;
+  introTitle: string;
+  introText: string;
+  services: Array<{
+    title: string;
+    rate: string;
+    contract?: string;
+    description: string;
+    includes: string[];
+    ctaText: string;
+  }>;
+}
+
+const { badge, title, subtitle, introTitle, introText, services } = Astro.props;
+---
+
+<section class="section services-section" id="services">
+  <div class="container">
+    <div class="section-header">
+      <Badge variant="section">{badge}</Badge>
+      <h2 class="section-title" set:html={title} />
+      <p class="section-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="services-intro">
+      <div class="services-intro-title">{introTitle}</div>
+      <div class="services-intro-text">{introText}</div>
+    </div>
+
+    <div class="services-grid">
+      {services.map(service => (
+        <ServiceCard {...service} />
+      ))}
+    </div>
+
+    <div class="services-footer">
+      <p class="services-footer-text">
+        💼 Want a custom package? We can build a service plan tailored to your needs.
+      </p>
+      <Button variant="primary" size="large">
+        📞 Schedule Service Consultation
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #e0e0e0;
+  }
+
+  .section-subtitle {
+    font-size: 20px;
+    color: #888;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .services-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 60px;
+    padding: 32px;
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border: 1px solid rgba(217, 70, 239, 0.3);
+    border-radius: 20px;
+  }
+
+  .services-intro-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .services-intro-text {
+    font-size: 18px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 60px;
+  }
+
+  .services-footer {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .services-footer-text {
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 1024px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

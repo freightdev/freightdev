@@ -1,0 +1,10 @@
+{
+  "id": "copywriter",
+  "label": "Copywriter",
+  "system": "System prompt for Copywriter",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

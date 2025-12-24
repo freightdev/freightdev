@@ -1,0 +1,22 @@
+---
+import { Typography } from '@components';
+import type { SectionHeadingProps } from './section.types';
+import { getHeadingClasses } from './section.variants';
+
+const props = Astro.props as SectionHeadingProps;
+const wrapperClass = getHeadingClasses(props);
+---
+
+<div class={wrapperClass}>
+  {props.subtitle && <p class="eyebrow mb-3">{props.subtitle}</p>}
+  {props.title && (
+    <Typography.Heading level={2} align={props.align}>
+      {props.title}
+    </Typography.Heading>
+  )}
+  {props.description && (
+    <Typography.Text size="lg" tone="secondary" align={props.align}>
+      {props.description}
+    </Typography.Text>
+  )}
+</div>

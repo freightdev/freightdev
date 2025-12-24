@@ -1,0 +1,10 @@
+{
+  "id": "chain-of-thought",
+  "label": "Chain Of Thought",
+  "system": "System prompt for Chain Of Thought",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

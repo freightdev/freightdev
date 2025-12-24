@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(240, 147, 251, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-summary {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-value {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .savings-badge {
+            background: rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .cost-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .cost-card {
+            background: #1a1f3a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #2d3548;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .cost-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .cost-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f093fb;
+            margin-bottom: 8px;
+        }
+
+        .cost-label {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .cost-trend {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .cost-trend.up { color: #ef4444; }
+        .cost-trend.down { color: #10b981; }
+        .cost-trend.neutral { color: #9ca3af; }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3548;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #e0e6ed;
+        }
+
+        .tab.active {
+            color: #f093fb;
+            border-bottom-color: #f093fb;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .breakdown-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f093fb;
+        }
+
+        .breakdown-total {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e0e6ed;
+        }
+
+        .cost-item {
+            background: #0f1629;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .cost-item:hover {
+            background: #1a1f3a;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .item-details {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .item-cost {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f093fb;
+            margin-right: 16px;
+        }
+
+        .cost-bar {
+            flex: 0 0 100px;
+            height: 8px;
+            background: #0a0e27;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cost-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .chart-container {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f093fb;
+            margin-bottom: 16px;
+        }
+
+        .line-chart {
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .line-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #f093fb, #f5576c);
+            border-radius: 4px 4px 0 0;
+            min-height: 10px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .line-bar:hover {
+            opacity: 0.8;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: #f093fb;
+            white-space: nowrap;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .comparison-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+        }
+
+        .comparison-header {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .comparison-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f093fb;
+            margin-bottom: 12px;
+        }
+
+        .comparison-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .forecast-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+        }
+
+        .forecast-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #f093fb;
+            margin-bottom: 8px;
+        }
+
+        .forecast-label {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+
+        .forecast-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .forecast-item {
+            background: #0f1629;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .forecast-item-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e0e6ed;
+            margin-bottom: 4px;
+        }
+
+        .forecast-item-label {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .alert-card {
+            background: #78350f;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-icon {
+            font-size: 32px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: #fcd34d;
+            margin-bottom: 4px;
+        }
+
+        .alert-desc {
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        .recommendation-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3548;
+            margin-bottom: 16px;
+            border-left: 4px solid #10b981;
+        }
+
+        .recommendation-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #10b981;
+        }
+
+        .recommendation-desc {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .recommendation-savings {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .client-costs {
+            display: grid;
+            gap: 12px;
+        }
+
+        .client-cost-item {
+            background: #1a1f3a;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #2d3548;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-info {
+            flex: 1;
+        }
+
+        .client-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .client-usage {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .client-revenue {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .revenue-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f093fb;
+        }
+
+        .profit-margin {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .profit-margin.good {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .profit-margin.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .cost-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💰 Cost Analytics</h1>
+        <div class="header-summary">
+            <div class="summary-item">
+                <span>Monthly Total:</span>
+                <span class="summary-value" id="monthlyTotal">$0</span>
+            </div>
+            <div class="summary-item">
+                <span>Revenue:</span>
+                <span class="summary-value" id="monthlyRevenue">$0</span>
+            </div>
+            <div class="summary-item">
+                <span>Profit:</span>
+                <span class="summary-value" id="monthlyProfit">$0</span>
+            </div>
+            <div class="savings-badge">
+                Saving $2,847/mo vs AWS
+            </div>
+        </div>
+    </div>
+
+    <div class="cost-overview">
+        <div class="cost-card">
+            <div class="cost-value" id="cloudCost">$0</div>
+            <div class="cost-label">Oracle Cloud</div>
+            <div class="cost-trend neutral">Free Tier</div>
+        </div>
+        <div class="cost-card">
+            <div class="cost-value" id="homeCost">$0</div>
+            <div class="cost-label">Home Infrastructure</div>
+            <div class="cost-trend neutral">Electricity</div>
+        </div>
+        <div class="cost-card">
+            <div class="cost-value" id="cloudflareCost">$0</div>
+            <div class="cost-label">Cloudflare</div>
+            <div class="cost-trend neutral">Free Tier</div>
+        </div>
+        <div class="cost-card">
+            <div class="cost-value" id="domainCost">$0</div>
+            <div class="cost-label">Domains & SSL</div>
+            <div class="cost-trend neutral">/year</div>
+        </div>
+        <div class="cost-card">
+            <div class="cost-value" id="bandwidthCost">$0</div>
+            <div class="cost-label">Bandwidth</div>
+            <div class="cost-trend down">↓ 12%</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('breakdown')">📊 Cost Breakdown</button>
+        <button class="tab" onclick="switchTab('clients')">👥 Client Costs</button>
+        <button class="tab" onclick="switchTab('trends')">📈 Trends</button>
+        <button class="tab" onclick="switchTab('forecast')">🔮 Forecast</button>
+        <button class="tab" onclick="switchTab('savings')">💡 Savings</button>
+    </div>
+
+    <!-- Cost Breakdown Tab -->
+    <div class="tab-content active" id="breakdown-tab">
+        <div class="breakdown-card">
+            <div class="breakdown-header">
+                <h3 class="breakdown-title">Infrastructure Costs</h3>
+                <div class="breakdown-total" id="infraTotal">$0/mo</div>
+            </div>
+            <div id="infraCosts"></div>
+        </div>
+
+        <div class="breakdown-card">
+            <div class="breakdown-header">
+                <h3 class="breakdown-title">Operational Costs</h3>
+                <div class="breakdown-total" id="opTotal">$0/mo</div>
+            </div>
+            <div id="opCosts"></div>
+        </div>
+    </div>
+
+    <!-- Client Costs Tab -->
+    <div class="tab-content" id="clients-tab">
+        <div class="breakdown-card">
+            <div class="breakdown-header">
+                <h3 class="breakdown-title">Cost per Client</h3>
+            </div>
+            <div class="client-costs" id="clientCosts"></div>
+        </div>
+    </div>
+
+    <!-- Trends Tab -->
+    <div class="tab-content" id="trends-tab">
+        <div class="chart-container">
+            <div class="chart-title">Monthly Costs (Last 6 Months)</div>
+            <div class="line-chart" id="costTrendChart"></div>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <div class="comparison-header">Your Setup</div>
+                <div class="comparison-value" id="yourCost">$0/mo</div>
+                <div class="comparison-items">
+                    <div class="comparison-item">
+                        <span>Oracle (Free)</span>
+                        <span>$0</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Home Hardware</span>
+                        <span id="homeElectricity">$0</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Internet</span>
+                        <span id="internetCost">$0</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Domains</span>
+                        <span id="domainsMonthlyCost">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <div class="comparison-header">AWS Equivalent</div>
+                <div class="comparison-value" style="color: #ef4444;">$3,124/mo</div>
+                <div class="comparison-items">
+                    <div class="comparison-item">
+                        <span>EC2 Instances</span>
+                        <span>$1,248</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>EKS Cluster</span>
+                        <span>$876</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Load Balancers</span>
+                        <span>$432</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Data Transfer</span>
+                        <span>$568</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <div class="comparison-header">GCP Equivalent</div>
+                <div class="comparison-value" style="color: #ef4444;">$2,847/mo</div>
+                <div class="comparison-items">
+                    <div class="comparison-item">
+                        <span>Compute Engine</span>
+                        <span>$1,124</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>GKE Cluster</span>
+                        <span>$745</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Load Balancing</span>
+                        <span>$398</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Egress</span>
+                        <span>$580</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forecast Tab -->
+    <div class="tab-content" id="forecast-tab">
+        <div id="alerts-container"></div>
+
+        <div class="forecast-card">
+            <div class="forecast-value" id="forecastValue">$0</div>
+            <div class="forecast-label">Projected Cost (Next Month)</div>
+            <div class="forecast-details">
+                <div class="forecast-item">
+                    <div class="forecast-item-value" id="forecast3mo">$0</div>
+                    <div class="forecast-item-label">3 Months</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-item-value" id="forecast6mo">$0</div>
+                    <div class="forecast-item-label">6 Months</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-item-value" id="forecast12mo">$0</div>
+                    <div class="forecast-item-label">12 Months</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Cost Projection (Next 6 Months)</div>
+            <div class="line-chart" id="forecastChart"></div>
+        </div>
+    </div>
+
+    <!-- Savings Tab -->
+    <div class="tab-content" id="savings-tab">
+        <div id="recommendations-container"></div>
+    </div>
+
+    <script>
+        let currentTab = 'breakdown';
+
+        function generateMockData() {
+            return {
+                infrastructure: [
+                    { name: 'Oracle Cloud (Free Tier)', details: '4 ARM vCPU, 24GB RAM', cost: 0, percent: 0 },
+                    { name: 'Home Electricity', details: '~500W average, 24/7', cost: 85, percent: 65 },
+                    { name: 'Internet (Static IP)', details: 'Gigabit fiber', cost: 35, percent: 27 },
+                    { name: 'Cloudflare (Free)', details: 'CDN, DDoS protection', cost: 0, percent: 0 },
+                    { name: 'Hardware Amortization', details: 'Servers over 5 years', cost: 12, percent: 9 }
+                ],
+                operational: [
+                    { name: 'Domain Names', details: '5 domains @ $12/yr each', cost: 5, percent: 40 },
+                    { name: 'SSL Certificates', details: "Let's Encrypt (Free)", cost: 0, percent: 0 },
+                    { name: 'Backup Storage', details: 'Backblaze B2', cost: 3, percent: 24 },
+                    { name: 'Monitoring Services', details: 'UptimeRobot, etc.', cost: 0, percent: 0 },
+                    { name: 'DNS Hosting', details: 'Cloudflare (Free)', cost: 0, percent: 0 }
+                ],
+                clients: [
+                    { name: 'Acme Corporation', cost: 42, revenue: 149, resources: '8 vCPU, 16GB', profit: 107, margin: 72 },
+                    { name: 'Global Solutions', cost: 68, revenue: 299, resources: '12 vCPU, 24GB', profit: 231, margin: 77 },
+                    { name: 'DevShop LLC', cost: 18, revenue: 99, resources: '4 vCPU, 8GB', profit: 81, margin: 82 },
+                    { name: 'TechStart Inc', cost: 8, revenue: 0, resources: '2 vCPU, 4GB (Trial)', profit: -8, margin: -100 }
+                ],
+                costTrend: [98, 115, 128, 132, 135, 140],
+                forecast: [140, 145, 152, 158, 165, 172],
+                alerts: [
+                    { title: 'Electricity costs rising', desc: 'Home power consumption up 8% this month. Consider optimizing idle resource usage.', type: 'warning' },
+                    { title: 'Oracle free tier usage: 87%', desc: 'Approaching Oracle cloud resource limits. May need to optimize or scale horizontally.', type: 'warning' }
+                ],
+                recommendations: [
+                    { title: 'Optimize idle VM resources', desc: 'Pause or shutdown Firecracker VMs during off-peak hours (2am-6am). Estimated 40W reduction.', savings: '$8/month' },
+                    { title: 'Migrate build jobs to dev machine', desc: 'Currently running builds on home workers. Dev machine has idle capacity during nights/weekends.', savings: '$5/month' },
+                    { title: 'Enable Cloudflare caching', desc: 'Increase CDN cache hit ratio from 75% to 90%. Reduces home bandwidth by 15%.', savings: '$4/month' },
+                    { title: 'Consolidate low-usage VMs', desc: '3 VMs are running at <10% utilization. Combine workloads to reduce overhead.', savings: '$6/month' }
+                ]
+            };
+        }
+
+        function renderInfraCosts(costs) {
+            const total = costs.reduce((sum, c) => sum + c.cost, 0);
+            const max = Math.max(...costs.map(c => c.cost));
+
+            return costs.map(cost => `
+                <div class="cost-item">
+                    <div class="item-info">
+                        <div class="item-name">${cost.name}</div>
+                        <div class="item-details">${cost.details}</div>
+                    </div>
+                    <div class="item-cost">$${cost.cost}</div>
+                    <div class="cost-bar">
+                        <div class="cost-fill" style="width: ${cost.cost === 0 ? 5 : (cost.cost / max) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderClientCosts(clients) {
+            return clients.map(client => `
+                <div class="client-cost-item">
+                    <div class="client-info">
+                        <div class="client-name">${client.name}</div>
+                        <div class="client-usage">${client.resources} • Cost: $${client.cost}/mo</div>
+                    </div>
+                    <div class="client-revenue">
+                        <div class="revenue-amount">$${client.revenue}/mo</div>
+                        <div class="profit-margin ${client.margin > 50 ? 'good' : 'low'}">
+                            ${client.margin > 0 ? '+' : ''}${client.margin}% margin
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderChart(data, container) {
+            const max = Math.max(...data);
+            const labels = container === 'costTrendChart' 
+                ? ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+            return data.map((val, i) => `
+                <div class="line-bar" style="height: ${(val / max) * 100}%">
+                    <div class="bar-value">$${val}</div>
+                    <div class="bar-label">${labels[i]}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderAlerts(alerts) {
+            return alerts.map(alert => `
+                <div class="alert-card">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">${alert.title}</div>
+                        <div class="alert-desc">${alert.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecommendations(recommendations) {
+            return recommendations.map(rec => `
+                <div class="recommendation-card">
+                    <div class="recommendation-title">💡 ${rec.title}</div>
+                    <div class="recommendation-desc">${rec.desc}</div>
+                    <span class="recommendation-savings">Save ${rec.savings}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const data = generateMockData();
+
+            // Calculate totals
+            const infraTotal = data.infrastructure.reduce((sum, c) => sum + c.cost, 0);
+            const opTotal = data.operational.reduce((sum, c) => sum + c.cost, 0);
+            const monthlyTotal = infraTotal + opTotal;
+            const monthlyRevenue = data.clients.reduce((sum, c) => sum + c.revenue, 0);
+            const monthlyProfit = monthlyRevenue - monthlyTotal;
+
+            // Update header
+            document.getElementById('monthlyTotal').textContent = '$' + monthlyTotal;
+            document.getElementById('monthlyRevenue').textContent = '$' + monthlyRevenue;
+            document.getElementById('monthlyProfit').textContent = '$' + monthlyProfit;
+
+            // Update cost cards
+            document.getElementById('cloudCost').textContent = '$0';
+            document.getElementById('homeCost').textContent = '$' + data.infrastructure[1].cost;
+            document.getElementById('cloudflareCost').textContent = '$0';
+            document.getElementById('domainCost').textContent = '$60';
+            document.getElementById('bandwidthCost').textContent = '$' + data.infrastructure[2].cost;
+
+            // Render tabs
+            document.getElementById('infraCosts').innerHTML = renderInfraCosts(data.infrastructure);
+            document.getElementById('opCosts').innerHTML = renderInfraCosts(data.operational);
+            document.getElementById('infraTotal').textContent = '$' + infraTotal + '/mo';
+            document.getElementById('opTotal').textContent = '$' + opTotal + '/mo';
+
+            document.getElementById('clientCosts').innerHTML = renderClientCosts(data.clients);
+
+            document.getElementById('costTrendChart').innerHTML = renderChart(data.costTrend, 'costTrendChart');
+            document.getElementById('forecastChart').innerHTML = renderChart(data.forecast, 'forecastChart');
+
+            // Update comparison
+            document.getElementById('yourCost').textContent = ' + monthlyTotal + '/mo';
+            document.getElementById('homeElectricity').textContent = ' + data.infrastructure[1].cost;
+            document.getElementById('internetCost').textContent = ' + data.infrastructure[2].cost;
+            document.getElementById('domainsMonthlyCost').textContent = ' + data.operational[0].cost;
+
+            // Update forecast
+            const nextMonth = data.forecast[0];
+            const threeMonths = data.forecast[2];
+            const sixMonths = data.forecast[5];
+            const twelveMonths = Math.round(data.forecast[5] * 2);
+
+            document.getElementById('forecastValue').textContent = ' + nextMonth;
+            document.getElementById('forecast3mo').textContent = ' + threeMonths;
+            document.getElementById('forecast6mo').textContent = ' + sixMonths;
+            document.getElementById('forecast12mo').textContent = ' + twelveMonths;
+
+            document.getElementById('alerts-container').innerHTML = renderAlerts(data.alerts);
+            document.getElementById('recommendations-container').innerHTML = renderRecommendations(data.recommendations);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        // Initial render
+        updateDashboard();
+
+        // Auto-refresh every 30 seconds
+        setInterval(updateDashboard, 30000);
+    </script>
+</body>
+</html>

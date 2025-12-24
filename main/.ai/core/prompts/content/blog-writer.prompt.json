@@ -1,0 +1,10 @@
+{
+  "id": "blog-writer",
+  "label": "Blog Writer",
+  "system": "System prompt for Blog Writer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

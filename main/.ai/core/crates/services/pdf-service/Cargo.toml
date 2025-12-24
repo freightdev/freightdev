@@ -1,0 +1,49 @@
+[package]
+name = "pdf-service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Web framework
+axum = { version = "0.7", features = ["multipart"] }
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.6", features = ["fs", "trace"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# PDF processing
+pdf-extract = "0.7"
+lopdf = "0.32"
+
+# OCR (using tesseract)
+tesseract = { version = "0.15", optional = true }
+
+# Image processing for OCR
+image = "0.25"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
+
+# HTTP client for external APIs
+reqwest = { version = "0.12", features = ["json", "multipart"] }
+
+# File handling
+tempfile = "3"
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Database client
+surrealdb = "2"
+
+# Async traits
+async-trait = "0.1"
+
+[features]
+default = []
+ocr = ["tesseract"]

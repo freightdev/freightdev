@@ -1,0 +1,41 @@
+---
+import type { Alignment } from '@components/base';
+import { cn } from '@utils';
+
+interface Props {
+  as?: 'p' | 'span' | 'div';
+  size?: 'sm' | 'md' | 'lg';
+  align?: Alignment;
+  tone?: 'primary' | 'secondary' | 'tertiary';
+  class?: string;
+}
+
+const {
+  as: Tag = 'p',
+  size = 'md',
+  align = 'left',
+  tone = 'primary',
+  class: className,
+  ...rest
+} = Astro.props as Props;
+
+const classes = cn(
+  {
+    sm: 'text-sm',
+    md: 'text-base',
+    lg: 'text-lg',
+  }[size],
+  {
+    primary: 'text-text-primary',
+    secondary: 'text-text-secondary',
+    tertiary: 'text-text-tertiary',
+  }[tone],
+  align === 'center' && 'text-center',
+  align === 'right' && 'text-right',
+  className
+);
+---
+
+<Tag class={classes} {...rest}>
+  <slot />
+</Tag>

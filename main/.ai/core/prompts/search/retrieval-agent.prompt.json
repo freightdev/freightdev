@@ -1,0 +1,10 @@
+{
+  "id": "retrieval-agent",
+  "label": "Retrieval Agent",
+  "system": "System prompt for Retrieval Agent",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,162 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '@layouts/MainLayout.astro';
+import HeroSection from '@components/organisms/HeroSection';
+import { TrustSection } from '@components/organisms/Footer';
+import { FeatureSection } from '@components/organisms/FeatureCard';
+import { PricingSection } from '@components/organisms/PricingCard';
+import { ServicesSection } from '@components/organisms/ServiceCard';
+import { IntegrationsSection } from '@components/organisms/IntegrationCard';
+import { TestimonialsSection } from '@components/organisms/ReviewCard';
+import FAQSection from '@components/organisms/FAQSection';
+import CTASection from '@components/organisms/CTASection';
+
+// Query all content collections
+const features = (await getCollection('features')).sort((a, b) => a.data.order - b.data.order);
+const stats = (await getCollection('stats')).sort((a, b) => a.data.order - b.data.order);
+const pricing = (await getCollection('pricing')).sort((a, b) => a.data.order - b.data.order);
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const integrations = (await getCollection('integrations')).sort((a, b) => a.data.order - b.data.order);
+const testimonials = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
+const faqs = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+
+// Hero Section Data
+const heroData = {
+  badge: '( The Most Advanced Truck Dispatching Platform Ever Built',
+  title: 'Dispatch Like a Pro.<br>Scale Like a Boss.',
+  subtitle: 'The all-in-one TMS that automates your entire dispatch operation. Manage loads, drivers, payments, compliance, and communicationpowered by AI that never sleeps.',
+  primaryCTA: {
+    text: '=€ Start Free Trial',
+    href: '#software-pricing'
+  },
+  secondaryCTA: {
+    text: '=Ë See Dispatch Services',
+    href: '#services'
+  },
+  stats: stats.map(s => ({ value: s.data.value, label: s.data.label }))
+};
+
+// Trust Badges Data
+const trustBadges = [
+  { icon: '', text: 'FMCSA Compliant' },
+  { icon: '=', text: 'SOC 2 Certified' },
+  { icon: '¡', text: '99.9% Uptime' },
+  { icon: '<Æ', text: 'Award-Winning Support' },
+];
+
+// Features Section Data
+const featuresData = {
+  badge: 'POWERFUL FEATURES',
+  title: 'Everything You Need.<br>Nothing You Don\'t.',
+  subtitle: 'Built by dispatchers, for dispatchers. Every feature designed to save you time and make you more money.',
+  features: features.map(f => ({
+    icon: f.data.icon,
+    title: f.data.title,
+    description: f.data.description
+  }))
+};
+
+// Pricing Section Data
+const pricingData = {
+  badge: 'SOFTWARE PRICING',
+  title: 'Choose Your Growth Plan',
+  subtitle: 'Start with a 14-day free trial. No credit card required. Cancel anytime.',
+  pricingTiers: pricing.map(p => ({
+    name: p.data.name,
+    description: p.data.description,
+    price: p.data.price,
+    period: p.data.period,
+    note: p.data.note,
+    badge: p.data.badge,
+    featured: p.data.featured,
+    features: p.data.features,
+    ctaText: p.data.ctaText,
+    ctaVariant: p.data.ctaVariant
+  }))
+};
+
+// Services Section Data
+const servicesData = {
+  badge: 'DISPATCH SERVICES',
+  title: 'Let Our Experts Do<br>The Heavy Lifting',
+  subtitle: 'Focus on growing your fleet while our professional dispatchers handle the day-to-day operations.',
+  introTitle: '=› White-Glove Dispatch Services',
+  introText: 'Our experienced dispatch team has moved over $50M in freight. We find better loads, negotiate higher rates, and handle all the paperworkso you can focus on what matters most.',
+  services: services.map(s => ({
+    title: s.data.title,
+    rate: s.data.rateDisplay,
+    contract: s.data.contract,
+    description: s.data.description,
+    includes: s.data.includes,
+    ctaText: s.data.ctaText
+  }))
+};
+
+// Integrations Section Data
+const integrationsData = {
+  badge: 'INTEGRATIONS',
+  title: 'Powerful Integrations<br>That Save You Time',
+  subtitle: 'Connect with the tools you already use. Automate your workflow end-to-end.',
+  integrations: integrations.map(i => ({
+    name: i.data.name,
+    logo: i.data.logo,
+    badge: i.data.badge,
+    description: i.data.description,
+    tiers: i.data.tiers
+  }))
+};
+
+// Testimonials Section Data
+const testimonialsData = {
+  badge: 'TESTIMONIALS',
+  title: 'Don\'t Take Our Word For It',
+  subtitle: 'See what real dispatchers are saying about FED.',
+  testimonials: testimonials.map(t => ({
+    rating: t.data.rating,
+    text: t.data.text,
+    authorName: t.data.author.name,
+    authorInitials: t.data.author.initials,
+    authorRole: t.data.author.role
+  }))
+};
+
+// FAQ Section Data
+const faqData = {
+  badge: 'FAQ',
+  title: 'Questions? We\'ve Got Answers.',
+  faqs: faqs.map(f => ({
+    question: f.data.question,
+    answer: f.data.answer
+  }))
+};
+
+// CTA Section Data
+const ctaData = {
+  title: 'Ready to 10x Your<br>Dispatch Business?',
+  subtitle: 'Join 800+ dispatchers who\'ve already made the switch. Start your free trial todayno credit card required.',
+  primaryCTA: {
+    text: '=€ Start 14-Day Free Trial',
+    href: '#software-pricing'
+  },
+  secondaryCTA: {
+    text: '=Þ Schedule a Demo',
+    href: '#'
+  },
+  note: '=³ No credit card required "  Cancel anytime " < Free onboarding included'
+};
+---
+
+<MainLayout
+  title="FED - Revolutionary Truck Dispatching Platform | TMS Software"
+  description="The all-in-one TMS that automates your entire dispatch operation. Manage loads, drivers, payments, compliance, and communicationpowered by AI that never sleeps."
+>
+  <HeroSection {...heroData} />
+  <TrustSection title="Trusted by Leading Dispatch Companies" badges={trustBadges} />
+  <FeatureSection {...featuresData} />
+  <PricingSection {...pricingData} />
+  <ServicesSection {...servicesData} />
+  <IntegrationsSection {...integrationsData} />
+  <TestimonialsSection {...testimonialsData} />
+  <FAQSection {...faqData} />
+  <CTASection {...ctaData} />
+</MainLayout>

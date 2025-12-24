@@ -1,0 +1,24 @@
+# beat.yaml — Defines a rhythm, flow, or execution style
+beat_id: "beat-001"
+name: "dispatching"
+category: "logistics"
+
+tempo:
+  bpm: 120
+  sync: true
+
+style:
+  flow: "linear"           # linear | branching | reactive
+  tone: "professional"
+  theme: "blueprint"
+
+allowed_markers:
+  - "marker-001"
+  - "marker-002"
+
+permissions:
+  public_usage: true
+  remixable: true
+
+created_by: "FedAI"
+created_at: "2025-07-23"

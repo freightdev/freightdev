@@ -1,0 +1,10 @@
+{
+  "id": "document-finder",
+  "label": "Document Finder",
+  "system": "System prompt for Document Finder",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

@@ -1,0 +1,11 @@
+---
+import type { FAQ } from '../content/faqs';
+import type { CardRendererProps } from '../card.types';
+
+const { item } = Astro.props as CardRendererProps<FAQ>;
+---
+
+<div class="space-y-3">
+  <h3 class="text-xl font-semibold">{item.question}</h3>
+  <p class="text-text-secondary">{item.answer}</p>
+</div>

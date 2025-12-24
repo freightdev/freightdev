@@ -1,0 +1,780 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Server, Cpu, HardDrive, Activity, Network, Database, Users, Settings, 
+  Terminal, Bell, Mail, MessageSquare, ChevronRight, ChevronDown, Plus,
+  Play, Pause, Trash2, RefreshCw, Download, Upload, Eye, Lock, Zap,
+  Cloud, Box, Layers, GitBranch, Package, Shield, Globe, BarChart3,
+  AlertCircle, CheckCircle, XCircle, Clock, TrendingUp, TrendingDown,
+  Menu, X, Search, Filter, MoreVertical, ExternalLink, Copy, Edit,
+  Power, Gauge, Wifi, WifiOff, HelpCircle, FileText, Code
+} from 'lucide-react';
+
+export default function CloudDash() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
+  const [activeView, setActiveView] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('overview');
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [notifications, setNotifications] = useState(3);
+  const [messages, setMessages] = useState(5);
+
+  // Simulated real-time data
+  const [cpuUsage, setCpuUsage] = useState(45);
+  const [memUsage, setMemUsage] = useState(62);
+  const [diskUsage, setDiskUsage] = useState(38);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCpuUsage(prev => Math.max(20, Math.min(95, prev + (Math.random() - 0.5) * 10)));
+      setMemUsage(prev => Math.max(30, Math.min(90, prev + (Math.random() - 0.5) * 5)));
+      setDiskUsage(prev => Math.max(20, Math.min(80, prev + (Math.random() - 0.5) * 2)));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const sidebarItems = [
+    { 
+      id: 'overview', 
+      name: 'Overview', 
+      icon: BarChart3,
+      children: [
+        { id: 'dashboard', name: 'Dashboard', icon: Activity },
+        { id: 'analytics', name: 'Analytics', icon: TrendingUp }
+      ]
+    },
+    { 
+      id: 'compute', 
+      name: 'Compute', 
+      icon: Server,
+      children: [
+        { id: 'instances', name: 'Instances', icon: Box },
+        { id: 'templates', name: 'Templates', icon: Layers },
+        { id: 'snapshots', name: 'Snapshots', icon: GitBranch }
+      ]
+    },
+    { 
+      id: 'storage', 
+      name: 'Storage', 
+      icon: HardDrive,
+      children: [
+        { id: 'volumes', name: 'Volumes', icon: Database },
+        { id: 'backups', name: 'Backups', icon: Download },
+        { id: 'images', name: 'Images', icon: Package }
+      ]
+    },
+    { 
+      id: 'networking', 
+      name: 'Networking', 
+      icon: Network,
+      children: [
+        { id: 'vpn', name: 'VPN Mesh', icon: Shield },
+        { id: 'loadbalancers', name: 'Load Balancers', icon: Zap },
+        { id: 'firewall', name: 'Firewall', icon: Lock }
+      ]
+    },
+    { 
+      id: 'orchestration', 
+      name: 'Orchestration', 
+      icon: Layers,
+      children: [
+        { id: 'nomad', name: 'Nomad', icon: Box },
+        { id: 'consul', name: 'Consul', icon: Globe },
+        { id: 'jobs', name: 'Jobs', icon: Play }
+      ]
+    },
+    { 
+      id: 'customers', 
+      name: 'Customers', 
+      icon: Users,
+      children: [
+        { id: 'accounts', name: 'Accounts', icon: Users },
+        { id: 'billing', name: 'Billing', icon: Activity },
+        { id: 'usage', name: 'Usage', icon: BarChart3 }
+      ]
+    },
+    { 
+      id: 'monitoring', 
+      name: 'Monitoring', 
+      icon: Activity,
+      children: [
+        { id: 'metrics', name: 'Metrics', icon: Gauge },
+        { id: 'logs', name: 'Logs', icon: FileText },
+        { id: 'alerts', name: 'Alerts', icon: AlertCircle }
+      ]
+    },
+    { id: 'settings', name: 'Settings', icon: Settings }
+  ];
+
+  const tabs = ['Overview', 'Metrics', 'Logs', 'Events', 'Configuration'];
+
+  const hosts = [
+    { id: 1, name: 'L1-Vivobook', cpu: 45, mem: 62, disk: 38, vms: 12, status: 'online' },
+    { id: 2, name: 'L2-Yoga', cpu: 67, mem: 71, disk: 42, vms: 15, status: 'online' },
+    { id: 3, name: 'L3-TUF', cpu: 23, mem: 45, disk: 31, vms: 8, status: 'online' },
+    { id: 4, name: 'L4-Dell', cpu: 89, mem: 88, disk: 55, vms: 6, status: 'warning' }
+  ];
+
+  const instances = [
+    { id: 'vm-001', name: 'prod-web-01', host: 'L1-Vivobook', cpu: 2, mem: 4, status: 'running', uptime: '15d 3h' },
+    { id: 'vm-002', name: 'prod-api-01', host: 'L2-Yoga', cpu: 4, mem: 8, status: 'running', uptime: '12d 18h' },
+    { id: 'vm-003', name: 'dev-test-01', host: 'L1-Vivobook', cpu: 1, mem: 2, status: 'running', uptime: '2h 45m' },
+    { id: 'vm-004', name: 'staging-db-01', host: 'L3-TUF', cpu: 8, mem: 16, status: 'running', uptime: '8d 12h' },
+    { id: 'vm-005', name: 'prod-worker-01', host: 'L4-Dell', cpu: 2, mem: 4, status: 'stopped', uptime: '-' }
+  ];
+
+  const recentEvents = [
+    { time: '2m ago', event: 'VM vm-003 started', type: 'success' },
+    { time: '15m ago', event: 'Backup completed for L2-Yoga', type: 'success' },
+    { time: '1h ago', event: 'High CPU usage on L4-Dell', type: 'warning' },
+    { time: '2h ago', event: 'Customer signup: acme-corp', type: 'info' },
+    { time: '3h ago', event: 'Failover triggered: vm-002', type: 'warning' }
+  ];
+
+  const SidebarItem = ({ item, level = 0 }) => {
+    const [expanded, setExpanded] = useState(true);
+    const hasChildren = item.children && item.children.length > 0;
+
+    return (
+      <div>
+        <div
+          onClick={() => {
+            if (hasChildren) setExpanded(!expanded);
+            else setActiveView(item.id);
+          }}
+          className={`flex items-center space-x-3 px-4 py-2.5 cursor-pointer transition-all ${
+            activeView === item.id
+              ? 'bg-blue-600 text-white'
+              : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+          } ${level > 0 ? 'pl-8' : ''}`}
+        >
+          <item.icon className="w-5 h-5 flex-shrink-0" />
+          {!sidebarCollapsed && (
+            <>
+              <span className="flex-1 text-sm font-medium">{item.name}</span>
+              {hasChildren && (
+                expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
+              )}
+            </>
+          )}
+        </div>
+        {hasChildren && expanded && !sidebarCollapsed && (
+          <div>
+            {item.children.map(child => (
+              <SidebarItem key={child.id} item={child} level={level + 1} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="h-screen flex flex-col bg-slate-950 text-white overflow-hidden">
+      {/* Top Menu Bar (VSCode style) */}
+      <div className="h-8 bg-slate-900 border-b border-slate-800 flex items-center px-2 text-xs">
+        <div className="flex space-x-4">
+          <button className="px-2 py-1 hover:bg-slate-800 rounded">File</button>
+          <button className="px-2 py-1 hover:bg-slate-800 rounded">View</button>
+          <button className="px-2 py-1 hover:bg-slate-800 rounded">Infrastructure</button>
+          <button className="px-2 py-1 hover:bg-slate-800 rounded">Tools</button>
+          <button className="px-2 py-1 hover:bg-slate-800 rounded">Help</button>
+        </div>
+        <div className="flex-1"></div>
+        <div className="flex items-center space-x-2 text-slate-400">
+          <Wifi className="w-3 h-3" />
+          <span>Connected</span>
+          <span className="mx-2">|</span>
+          <span>CloudDash v1.0.0</span>
+        </div>
+      </div>
+
+      {/* Main Header */}
+      <div className="h-16 bg-slate-900 border-b border-slate-800 flex items-center px-6">
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="p-2 hover:bg-slate-800 rounded-lg mr-4"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <Cloud className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold">CloudDash</h1>
+            <p className="text-xs text-slate-400">Infrastructure Control Center</p>
+          </div>
+        </div>
+
+        <div className="flex-1 max-w-2xl mx-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search instances, hosts, customers..."
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <button className="relative p-2 hover:bg-slate-800 rounded-lg">
+            <Bell className="w-5 h-5" />
+            {notifications > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            )}
+          </button>
+          <button className="relative p-2 hover:bg-slate-800 rounded-lg">
+            <Mail className="w-5 h-5" />
+            {messages > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-blue-500 rounded-full text-xs flex items-center justify-center">
+                {messages}
+              </span>
+            )}
+          </button>
+          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center font-bold text-sm">
+            A
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar */}
+        <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300`}>
+          <div className="flex-1 overflow-y-auto py-4">
+            {sidebarItems.map(item => (
+              <SidebarItem key={item.id} item={item} />
+            ))}
+          </div>
+          
+          {!sidebarCollapsed && (
+            <div className="p-4 border-t border-slate-800">
+              <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg p-4">
+                <h3 className="font-semibold mb-2">System Health</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>4 Hosts Online</span>
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                  </div>
+                  <div className="flex justify-between">
+                    <span>41 VMs Running</span>
+                    <Activity className="w-4 h-4 text-blue-400" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Tab Bar */}
+          <div className="h-12 bg-slate-900 border-b border-slate-800 flex items-center px-4 space-x-1">
+            {tabs.map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab.toLowerCase())}
+                className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-all ${
+                  activeTab === tab.toLowerCase()
+                    ? 'bg-slate-800 text-white border-b-2 border-blue-500'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+            <div className="flex-1"></div>
+            <button className="p-2 hover:bg-slate-800 rounded">
+              <Plus className="w-4 h-4" />
+            </button>
+            <button className="p-2 hover:bg-slate-800 rounded">
+              <RefreshCw className="w-4 h-4" />
+            </button>
+            <button className="p-2 hover:bg-slate-800 rounded">
+              <Filter className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {activeView === 'dashboard' && (
+              <div className="space-y-6">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-4 gap-6">
+                  <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <Server className="w-8 h-8 text-blue-400" />
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div className="text-3xl font-bold mb-1">54</div>
+                    <div className="text-sm text-slate-400">Total vCPUs</div>
+                    <div className="mt-2 text-xs text-green-400">+12% utilization</div>
+                  </div>
+
+                  <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <Cpu className="w-8 h-8 text-purple-400" />
+                      <Activity className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div className="text-3xl font-bold mb-1">84GB</div>
+                    <div className="text-sm text-slate-400">Total RAM</div>
+                    <div className="mt-2 text-xs text-blue-400">{memUsage}% used</div>
+                  </div>
+
+                  <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <Box className="w-8 h-8 text-green-400" />
+                      <Play className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div className="text-3xl font-bold mb-1">41</div>
+                    <div className="text-sm text-slate-400">Running VMs</div>
+                    <div className="mt-2 text-xs text-green-400">4 stopped</div>
+                  </div>
+
+                  <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <Users className="w-8 h-8 text-orange-400" />
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div className="text-3xl font-bold mb-1">127</div>
+                    <div className="text-sm text-slate-400">Active Customers</div>
+                    <div className="mt-2 text-xs text-green-400">+8 this week</div>
+                  </div>
+                </div>
+
+                {/* Hosts Overview */}
+                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl">
+                  <div className="p-6 border-b border-slate-700 flex items-center justify-between">
+                    <h2 className="text-xl font-bold">Host Servers</h2>
+                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium flex items-center space-x-2">
+                      <Plus className="w-4 h-4" />
+                      <span>Add Host</span>
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      {hosts.map(host => (
+                        <div key={host.id} className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-blue-500/50 transition-all">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className={`w-3 h-3 rounded-full ${host.status === 'online' ? 'bg-green-400' : 'bg-yellow-400'} animate-pulse`}></div>
+                              <div>
+                                <h3 className="font-semibold">{host.name}</h3>
+                                <p className="text-xs text-slate-400">{host.vms} VMs running</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <button className="p-2 hover:bg-slate-700 rounded">
+                                <Terminal className="w-4 h-4" />
+                              </button>
+                              <button className="p-2 hover:bg-slate-700 rounded">
+                                <Settings className="w-4 h-4" />
+                              </button>
+                              <button className="p-2 hover:bg-slate-700 rounded">
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-3 gap-4">
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs text-slate-400">CPU</span>
+                                <span className="text-xs font-semibold">{host.cpu}%</span>
+                              </div>
+                              <div className="w-full bg-slate-700 rounded-full h-2">
+                                <div
+                                  className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all"
+                                  style={{ width: `${host.cpu}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs text-slate-400">Memory</span>
+                                <span className="text-xs font-semibold">{host.mem}%</span>
+                              </div>
+                              <div className="w-full bg-slate-700 rounded-full h-2">
+                                <div
+                                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
+                                  style={{ width: `${host.mem}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs text-slate-400">Disk</span>
+                                <span className="text-xs font-semibold">{host.disk}%</span>
+                              </div>
+                              <div className="w-full bg-slate-700 rounded-full h-2">
+                                <div
+                                  className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all"
+                                  style={{ width: `${host.disk}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Instances */}
+                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-xl">
+                  <div className="p-6 border-b border-slate-700">
+                    <h2 className="text-xl font-bold">Recent Instances</h2>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-slate-900/50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Instance</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Host</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Resources</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Uptime</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800">
+                        {instances.map(instance => (
+                          <tr key={instance.id} className="hover:bg-slate-900/30 transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center space-x-3">
+                                <Box className="w-5 h-5 text-blue-400" />
+                                <div>
+                                  <div className="font-medium">{instance.name}</div>
+                                  <div className="text-xs text-slate-400">{instance.id}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-sm">{instance.host}</td>
+                            <td className="px-6 py-4 text-sm">{instance.cpu}vCPU / {instance.mem}GB</td>
+                            <td className="px-6 py-4">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                instance.status === 'running' 
+                                  ? 'bg-green-400/10 text-green-400' 
+                                  : 'bg-slate-400/10 text-slate-400'
+                              }`}>
+                                {instance.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-sm">{instance.uptime}</td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center space-x-2">
+                                <button className="p-1.5 hover:bg-slate-700 rounded" title="Console">
+                                  <Terminal className="w-4 h-4" />
+                                </button>
+                                {instance.status === 'running' ? (
+                                  <button className="p-1.5 hover:bg-slate-700 rounded" title="Stop">
+                                    <Pause className="w-4 h-4" />
+                                  </button>
+                                ) : (
+                                  <button className="p-1.5 hover:bg-slate-700 rounded" title="Start">
+                                    <Play className="w-4 h-4" />
+                                  </button>
+                                )}
+                                <button className="p-1.5 hover:bg-slate-700 rounded" title="More">
+                                  <MoreVertical className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeView === 'instances' && (
+              <div className="text-center py-12">
+                <Box className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Instances View</h3>
+                <p className="text-slate-400">Connect to your Nomad/Firecracker backend here</p>
+              </div>
+            )}
+
+            {activeView === 'settings' && (
+              <div className="text-center py-12">
+                <Settings className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Settings View</h3>
+                <p className="text-slate-400">Configure your CloudDash instance</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Sidebar - Monitoring */}
+        {rightSidebarOpen && (
+          <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col">
+            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+              <h3 className="font-semibold">Live Monitoring</h3>
+              <button onClick={() => setRightSidebarOpen(false)}>
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* System Metrics */}
+              <div>
+                <h4 className="text-sm font-semibold mb-3 flex items-center space-x-2">
+                  <Activity className="w-4 h-4" />
+                  <span>System Metrics</span>
+                </h4>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-400">CPU Usage</span>
+                      <span className="font-semibold">{Math.round(cpuUsage)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-700 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${cpuUsage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-400">Memory</span>
+                      <span className="font-semibold">{Math.round(memUsage)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-700 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${memUsage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-400">Disk I/O</span>
+                      <span className="font-semibold">{Math.round(diskUsage)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-700 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${diskUsage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Network Activity */}
+              <div>
+                <h4 className="text-sm font-semibold mb-3 flex items-center space-x-2">
+                  <Network className="w-4 h-4" />
+                  <span>Network</span>
+                </h4>
+                <div className="bg-slate-800/50 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400">↓ Inbound</span>
+                    <span className="font-semibold text-green-400">245 Mbps</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400">↑ Outbound</span>
+                    <span className="font-semibold text-blue-400">128 Mbps</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400">Active Connections</span>
+                    <span className="font-semibold">1,247</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Stats */}
+              <div>
+                <h4 className="text-sm font-semibold mb-3 flex items-center space-x-2">
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Quick Stats</span>
+                </h4>
+                <div className="space-y-2">
+                  <div className="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-xs">Uptime</span>
+                    </div>
+                    <span className="text-xs font-semibold">99.97%</span>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-3 h-3 text-blue-400" />
+                      <span className="text-xs">Avg Response</span>
+                    </div>
+                    <span className="text-xs font-semibold">45ms</span>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Zap className="w-3 h-3 text-yellow-400" />
+                      <span className="text-xs">Requests/sec</span>
+                    </div>
+                    <span className="text-xs font-semibold">2.4K</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Events */}
+              <div>
+                <h4 className="text-sm font-semibold mb-3 flex items-center space-x-2">
+                  <Activity className="w-4 h-4" />
+                  <span>Recent Events</span>
+                </h4>
+                <div className="space-y-2">
+                  {recentEvents.map((event, idx) => (
+                    <div key={idx} className="bg-slate-800/50 rounded-lg p-3">
+                      <div className="flex items-start space-x-2">
+                        {event.type === 'success' && <CheckCircle className="w-4 h-4 text-green-400 mt-0.5" />}
+                        {event.type === 'warning' && <AlertCircle className="w-4 h-4 text-yellow-400 mt-0.5" />}
+                        {event.type === 'info' && <Activity className="w-4 h-4 text-blue-400 mt-0.5" />}
+                        <div className="flex-1">
+                          <p className="text-xs text-slate-300">{event.event}</p>
+                          <p className="text-xs text-slate-500 mt-1">{event.time}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Alerts */}
+              <div>
+                <h4 className="text-sm font-semibold mb-3 flex items-center space-x-2">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>Active Alerts</span>
+                </h4>
+                <div className="space-y-2">
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                    <div className="flex items-start space-x-2">
+                      <AlertCircle className="w-4 h-4 text-yellow-400 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-yellow-400">High CPU on L4-Dell</p>
+                        <p className="text-xs text-slate-400 mt-1">CPU usage at 89% for 15m</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                    <div className="flex items-start space-x-2">
+                      <Activity className="w-4 h-4 text-blue-400 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-blue-400">Backup Running</p>
+                        <p className="text-xs text-slate-400 mt-1">L2-Yoga backup 67% complete</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bottom Status Bar */}
+      <div className="h-8 bg-slate-900 border-t border-slate-800 flex items-center px-4 text-xs">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setTerminalOpen(!terminalOpen)}
+            className="flex items-center space-x-2 hover:bg-slate-800 px-2 py-1 rounded"
+          >
+            <Terminal className="w-3 h-3" />
+            <span>Terminal</span>
+          </button>
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-slate-400">System Online</span>
+          </div>
+          <span className="text-slate-400">|</span>
+          <span className="text-slate-400">4 Hosts Connected</span>
+          <span className="text-slate-400">|</span>
+          <span className="text-slate-400">41 VMs Active</span>
+        </div>
+
+        <div className="flex-1"></div>
+
+        <div className="flex items-center space-x-4">
+          <button className="hover:bg-slate-800 px-2 py-1 rounded flex items-center space-x-2">
+            <MessageSquare className="w-3 h-3" />
+            <span className="text-slate-400">Messages</span>
+            {messages > 0 && (
+              <span className="bg-blue-500 text-white rounded-full px-1.5 text-xs">{messages}</span>
+            )}
+          </button>
+          <button className="hover:bg-slate-800 px-2 py-1 rounded flex items-center space-x-2">
+            <Bell className="w-3 h-3" />
+            <span className="text-slate-400">Notifications</span>
+            {notifications > 0 && (
+              <span className="bg-red-500 text-white rounded-full px-1.5 text-xs">{notifications}</span>
+            )}
+          </button>
+          <span className="text-slate-400">|</span>
+          <span className="text-slate-400">CPU: {Math.round(cpuUsage)}%</span>
+          <span className="text-slate-400">MEM: {Math.round(memUsage)}%</span>
+          <span className="text-slate-400">|</span>
+          <button 
+            onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+            className="hover:bg-slate-800 px-2 py-1 rounded"
+          >
+            <Activity className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+
+      {/* Terminal Overlay */}
+      {terminalOpen && (
+        <div className="fixed bottom-8 left-0 right-0 h-80 bg-slate-950 border-t-2 border-blue-500 shadow-2xl z-50 flex flex-col">
+          <div className="h-10 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Terminal className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold">SSH Terminal</span>
+              </div>
+              <select className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs">
+                <option>L1-Vivobook (root@192.168.1.101)</option>
+                <option>L2-Yoga (root@192.168.1.102)</option>
+                <option>L3-TUF (root@192.168.1.103)</option>
+                <option>L4-Dell (root@192.168.1.104)</option>
+                <option>Oracle-Control (root@control.example.com)</option>
+              </select>
+              <button className="px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs">
+                New Session
+              </button>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button className="p-1 hover:bg-slate-800 rounded">
+                <Copy className="w-3 h-3" />
+              </button>
+              <button className="p-1 hover:bg-slate-800 rounded">
+                <Settings className="w-3 h-3" />
+              </button>
+              <button 
+                onClick={() => setTerminalOpen(false)}
+                className="p-1 hover:bg-slate-800 rounded"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 bg-black p-4 font-mono text-sm overflow-y-auto">
+            <div className="text-green-400">
+              <span className="text-blue-400">root@L1-Vivobook</span>
+              <span className="text-white">:</span>
+              <span className="text-purple-400">~</span>
+              <span className="text-white">$ </span>
+              <span className="animate-pulse">_</span>
+            </div>
+            <div className="text-slate-400 mt-2">
+              # Connected to L1-Vivobook (ASUS Vivobook i9)
+              <br />
+              # 20 vCPU | 24GB RAM | 1TB NVMe
+              <br />
+              # Type 'help' for available commands
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

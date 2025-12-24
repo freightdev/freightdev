@@ -1,0 +1,25 @@
+######################
+# Main Gitignore Paths
+######################
+
+.env/
+store/
+
+# SSL certificates
+keys/
+certs/
+*.pem
+*.key
+*.crt
+
+# Project builds
+build/
+node_modules/
+__pycache__/
+target/
+*.lock
+.next/
+.turbo/
+.svelte-kit/
+.storybook/
+.venv/

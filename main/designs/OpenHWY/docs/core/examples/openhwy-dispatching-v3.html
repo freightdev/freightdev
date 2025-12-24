@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drivers & Fleets - Help Us Train the Future | OpenHWY</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Brand Colors */
+            --road-black: #0a0a0f;
+            --asphalt-gray: #1a1a2e;
+            --concrete-gray: #2a2a3e;
+            --yellow-line: #fbbf24;
+            --warning-orange: #f97316;
+            --truck-red: #ef4444;
+            --highway-blue: #3b82f6;
+            --forest-green: #10b981;
+            --sky-blue: #60a5fa;
+            --sunrise-purple: #a855f7;
+            --white: #ffffff;
+            --off-white: #f9fafb;
+            --text-gray: #9ca3af;
+            --border-gray: rgba(255, 255, 255, 0.1);
+            
+            /* Gradients */
+            --gradient-sunrise: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #ef4444 100%);
+            --gradient-highway: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+            --gradient-forest: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-night: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--road-black);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 48px;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-gray);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.scrolled {
+            padding: 16px 48px;
+            background: rgba(10, 10, 15, 0.95);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .logo-badge {
+            padding: 4px 10px;
+            background: var(--truck-red);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+        }
+
+        .nav-cta {
+            padding: 12px 28px;
+            background: var(--gradient-sunrise);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.5);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 140px 48px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(239, 68, 68, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(249, 115, 22, 0.15) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--truck-red);
+            margin-bottom: 32px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-title {
+            font-size: 84px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 28px;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-title-line1 {
+            color: var(--white);
+            display: block;
+        }
+
+        .hero-title-line2 {
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+            max-width: 950px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-subtitle strong {
+            color: var(--yellow-line);
+            font-weight: 700;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .btn-hero {
+            padding: 20px 48px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.4s;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hero span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary-hero {
+            background: var(--gradient-sunrise);
+            color: white;
+            box-shadow: 0 10px 40px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-primary-hero:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn-secondary-hero {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary-hero:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--truck-red);
+            transform: translateY(-4px);
+        }
+
+        .driver-stats {
+            display: flex;
+            gap: 48px;
+            justify-content: center;
+            margin-top: 60px;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 56px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        /* URGENT SECTION */
+        .urgent-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+            position: relative;
+        }
+
+        .urgent-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .urgent-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid var(--truck-red);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--truck-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 32px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .urgent-title {
+            font-size: 64px;
+            font-weight: 900;
+            margin-bottom: 32px;
+            line-height: 1.2;
+        }
+
+        .urgent-title-gradient {
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .urgent-description {
+            font-size: 22px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .urgent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .urgent-card {
+            background: var(--gradient-night);
+            border: 3px solid var(--truck-red);
+            border-radius: 32px;
+            padding: 48px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .urgent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-sunrise);
+        }
+
+        .urgent-number {
+            font-size: 72px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+
+        .urgent-label {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+
+        .urgent-sublabel {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* FREE OFFER SECTION */
+        .free-offer-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+        }
+
+        .free-offer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 60px;
+            background: var(--gradient-sunrise);
+            border-radius: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .free-offer-container::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .free-offer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .free-offer-badge {
+            display: inline-block;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 28px;
+        }
+
+        .free-offer-title {
+            font-size: 56px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .free-offer-subtitle {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 48px;
+            line-height: 1.6;
+        }
+
+        .free-offer-button {
+            padding: 24px 60px;
+            background: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--road-black);
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .free-offer-button:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        /* SERVICES SECTION */
+        .services-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-eyebrow {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--forest-green);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 28px;
+        }
+
+        .services-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .services-subtitle {
+            font-size: 22px;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .services-intro {
+            max-width: 900px;
+            margin: 0 auto 80px;
+            padding: 40px;
+            background: var(--gradient-night);
+            border: 2px solid var(--yellow-line);
+            border-radius: 28px;
+            text-align: center;
+        }
+
+        .services-intro-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .services-intro-text {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--gradient-night);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 48px 40px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-forest);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--forest-green);
+            box-shadow: 0 30px 80px rgba(16, 185, 129, 0.3);
+        }
+
+        .service-icon {
+            font-size: 56px;
+            margin-bottom: 24px;
+        }
+
+        .service-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .service-rate {
+            font-size: 56px;
+            font-weight: 900;
+            background: var(--gradient-forest);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .service-period {
+            font-size: 16px;
+            color: var(--text-gray);
+            margin-bottom: 24px;
+        }
+
+        .service-description {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .service-features li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .service-features li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--forest-green);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .service-cta {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-forest);
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .service-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ELDA FOR DRIVERS */
+        .elda-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+        }
+
+        .elda-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .elda-visual {
+            width: 100%;
+            height: 600px;
+            background: var(--gradient-night);
+            border: 4px solid var(--highway-blue);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elda-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+        }
+
+        .elda-content {
+        }
+
+        .elda-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--highway-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .elda-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 28px;
+            line-height: 1.2;
+        }
+
+        .elda-description {
+            font-size: 19px;
+            color: var(--text-gray);
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .elda-description strong {
+            color: var(--white);
+        }
+
+        .elda-features {
+            list-style: none;
+            margin: 32px 0;
+        }
+
+        .elda-features li {
+            padding: 16px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-size: 17px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .elda-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .elda-pricing {
+            padding: 32px;
+            background: var(--gradient-night);
+            border: 2px solid var(--highway-blue);
+            border-radius: 20px;
+            margin-top: 32px;
+        }
+
+        .elda-pricing-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .elda-pricing-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .pricing-option {
+            flex: 1;
+            padding: 20px;
+            background: var(--concrete-gray);
+            border: 2px solid var(--border-gray);
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-option:hover {
+            border-color: var(--highway-blue);
+            transform: translateY(-4px);
+        }
+
+        .pricing-option-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .pricing-option-price {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .pricing-option-desc {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* SHADOW DISPATCHER */
+        .shadow-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+        }
+
+        .shadow-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .shadow-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 28px;
+        }
+
+        .shadow-title-gradient {
+            background: var(--gradient-highway);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .shadow-description {
+            font-size: 22px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .shadow-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .shadow-card {
+            background: var(--gradient-night);
+            border: 2px solid var(--border-gray);
+            border-radius: 28px;
+            padding: 40px;
+            transition: all 0.4s;
+        }
+
+        .shadow-card:hover {
+            border-color: var(--highway-blue);
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(59, 130, 246, 0.3);
+        }
+
+        .shadow-card-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        .shadow-card-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .shadow-card-text {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* TRUCKER TALES */
+        .tales-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+        }
+
+        .tales-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tales-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .tales-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--sunrise-purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 28px;
+        }
+
+        .tales-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .tales-title-gradient {
+            background: linear-gradient(135deg, var(--sunrise-purple) 0%, var(--highway-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tales-subtitle {
+            font-size: 22px;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .tales-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .tales-visual {
+            padding: 60px;
+            background: var(--gradient-night);
+            border: 3px solid var(--sunrise-purple);
+            border-radius: 32px;
+            text-align: center;
+            font-size: 120px;
+        }
+
+        .tales-info {
+        }
+
+        .tales-description {
+            font-size: 19px;
+            color: var(--text-gray);
+            line-height: 1.9;
+            margin-bottom: 32px;
+        }
+
+        .tales-description strong {
+            color: var(--white);
+        }
+
+        .tales-features {
+            list-style: none;
+        }
+
+        .tales-features li {
+            padding: 16px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-size: 17px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .tales-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* WHEELER TOOLS */
+        .wheeler-section {
+            padding: 120px 48px;
+            background: var(--asphalt-gray);
+        }
+
+        .wheeler-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .wheeler-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .wheeler-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .wheeler-title-gradient {
+            background: var(--gradient-forest);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wheeler-subtitle {
+            font-size: 22px;
+            color: var(--text-gray);
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .wheeler-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .wheeler-card {
+            background: var(--gradient-night);
+            border: 3px solid var(--border-gray);
+            border-radius: 32px;
+            padding: 48px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wheeler-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-forest);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .wheeler-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .wheeler-card:hover {
+            border-color: var(--forest-green);
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(16, 185, 129, 0.3);
+        }
+
+        .wheeler-card-icon {
+            font-size: 72px;
+            margin-bottom: 28px;
+        }
+
+        .wheeler-card-name {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .wheeler-card-tagline {
+            font-size: 18px;
+            color: var(--forest-green);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .wheeler-card-description {
+            font-size: 17px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        .wheeler-card-use-cases {
+            list-style: none;
+        }
+
+        .wheeler-card-use-cases li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .wheeler-card-use-cases li:last-child {
+            border-bottom: none;
+        }
+
+        /* FINAL CTA */
+        .final-cta-section {
+            padding: 120px 48px;
+            background: var(--road-black);
+        }
+
+        .final-cta-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .final-cta-title {
+            font-size: 64px;
+            font-weight: 900;
+            margin-bottom: 28px;
+            line-height: 1.2;
+        }
+
+        .final-cta-gradient {
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .final-cta-subtitle {
+            font-size: 24px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+            line-height: 1.7;
+        }
+
+        .final-cta-button {
+            padding: 24px 60px;
+            background: var(--gradient-sunrise);
+            border: none;
+            border-radius: 20px;
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.4);
+        }
+
+        .final-cta-button:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 80px rgba(251, 191, 36, 0.6);
+        }
+
+        .final-cta-note {
+            margin-top: 32px;
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 2px solid var(--border-gray);
+            padding: 60px 48px 40px;
+            background: var(--asphalt-gray);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 36px;
+            font-weight: 900;
+            background: var(--gradient-sunrise);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .footer-tagline {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--yellow-line);
+        }
+
+        .footer-bottom {
+            padding-top: 32px;
+            border-top: 1px solid var(--border-gray);
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 64px; }
+            .urgent-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: 1fr; }
+            .elda-container { grid-template-columns: 1fr; }
+            .tales-content { grid-template-columns: 1fr; }
+            .wheeler-grid { grid-template-columns: 1fr; }
+            .shadow-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 48px; }
+            .urgent-title { font-size: 42px; }
+            .free-offer-title { font-size: 36px; }
+            .services-title { font-size: 36px; }
+            .driver-stats { flex-direction: column; gap: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo">OpenHWY</div>
+                <div class="logo-badge">FOR DRIVERS</div>
+            </div>
+            <div class="nav-links">
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#elda" class="nav-link">ELDA AI</a>
+                <a href="#tools" class="nav-link">Wheeler Tools</a>
+                <a href="#tales" class="nav-link">Your Story</a>
+                <button class="nav-cta">🚛 Join Driver Pool</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                🚨 WE NEED YOUR HELP
+            </div>
+            <h1 class="hero-title">
+                <span class="hero-title-line1">Help Us Train</span>
+                <span class="hero-title-line2">The Future of Dispatchers</span>
+            </h1>
+            <p class="hero-subtitle">
+                We're building <strong>OpenHWY</strong>—a platform that trains dispatchers the RIGHT way. But we need <strong>drivers and fleets</strong> to help us test it. Join the driver pool, get your <strong>first month FREE</strong>, and help shape the future.
+            </p>
+            <div class="hero-cta-group">
+                <button class="btn-hero btn-primary-hero">
+                    <span>🎁 Get First Month Free</span>
+                </button>
+                <button class="btn-hero btn-secondary-hero">
+                    <span>📖 Learn More</span>
+                </button>
+            </div>
+            
+            <div class="driver-stats">
+                <div class="stat">
+                    <div class="stat-value">500</div>
+                    <div class="stat-label">Drivers Needed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">FREE</div>
+                    <div class="stat-label">First Month</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">1,300</div>
+                    <div class="stat-label">Dispatchers in Training</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- URGENT NEED SECTION -->
+    <section class="urgent-section">
+        <div class="urgent-container">
+            <div class="urgent-badge">⏰ TIME-SENSITIVE</div>
+            <h2 class="urgent-title">
+                We Need <span class="urgent-title-gradient">500 Drivers</span> Right Now
+            </h2>
+            <p class="urgent-description">
+                We're training 1,300 new dispatchers on OpenHWY. They're learning the RIGHT way—respecting drivers, understanding HOS, finding good loads. But they need <strong>real drivers to work with</strong> so they can prove themselves.
+            </p>
+            
+            <div class="urgent-grid">
+                <div class="urgent-card">
+                    <div class="urgent-number">500</div>
+                    <div class="urgent-label">Drivers Needed</div>
+                    <div class="urgent-sublabel">To match with graduating dispatchers</div>
+                </div>
+                
+                <div class="urgent-card">
+                    <div class="urgent-number">1,300</div>
+                    <div class="urgent-label">Dispatchers Waiting</div>
+                    <div class="urgent-sublabel">Certified & ready to work</div>
+                </div>
+                
+                <div class="urgent-card">
+                    <div class="urgent-number">FREE</div>
+                    <div class="urgent-label">First Month</div>
+                    <div class="urgent-sublabel">Then 8-12% based on service</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FREE FIRST MONTH -->
+    <section class="free-offer-section">
+        <div class="free-offer-container">
+            <div class="free-offer-content">
+                <div class="free-offer-badge">🎁 BETA DRIVER BONUS</div>
+                <h2 class="free-offer-title">
+                    Your First Month is FREE
+                </h2>
+                <p class="free-offer-subtitle">
+                    Sign up now, get matched with a freshly-trained dispatcher, and pay NOTHING for the first month. After that, only pay if you love them. Fair?
+                </p>
+                <button class="free-offer-button">
+                    🚛 Claim Free Month
+                </button>
+            </div>
+        </div>
+    </section>
+
+        <!-- TRUCKER TALES -->
+    <section class="tales-section" id="tales">
+        <div class="tales-container">
+            <div class="tales-header">
+                <div class="tales-badge">📖 TRUCKER TALES</div>
+                <h2 class="tales-title">
+                    Your Story <span class="tales-title-gradient">Matters</span>
+                </h2>
+                <p class="tales-subtitle">
+                    Dispatchers need to hear from REAL drivers. Your experiences—good and bad—teach them what matters on the road.
+                </p>
+            </div>
+            
+            <div class="tales-content">
+                <div class="tales-visual">
+                    🎤
+                </div>
+                
+                <div class="tales-info">
+                    <p class="tales-description">
+                        <strong>Trucker Tales</strong> is our platform for driver stories. Share what you've learned, what frustrates you, what makes a good dispatcher vs a bad one. Your stories become part of the OpenHWY training curriculum—teaching the next generation the RIGHT way.
+                    </p>
+                    
+                    <ul class="tales-features">
+                        <li>
+                            <div class="feature-icon">🎙️</div>
+                            <div>
+                                <strong>Share your stories</strong><br>
+                                <span style="color: var(--text-gray); font-size: 15px;">Good dispatchers, bad dispatchers, crazy loads, close calls. Tell your story.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🎓</div>
+                            <div>
+                                <strong>Teach dispatchers</strong><br>
+                                <span style="color: var(--text-gray); font-size: 15px;">Your experiences become lessons. Future dispatchers learn from what you lived.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">💰</div>
+                            <div>
+                                <strong>Get paid for your stories</strong><br>
+                                <span style="color: var(--text-gray); font-size: 15px;">Popular stories earn revenue share. Your voice, your income.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🌍</div>
+                            <div>
+                                <strong>Build your legacy</strong><br>
+                                <span style="color: var(--text-gray); font-size: 15px;">Your knowledge doesn't die with you. It teaches forever.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section class="services-section" id="services">
+        <div class="services-header">
+            <div class="section-eyebrow">💼 DISPATCH SERVICES</div>
+            <h2 class="services-title">
+                The Same Services We've Offered <span style="background: var(--gradient-forest); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">For 6 Years</span>
+            </h2>
+            <p class="services-subtitle">
+                Fast & Easy Dispatching LLC has been dispatching trucks since 2018. These are the same service plans we've always used—now we're scaling beyond just me.
+            </p>
+        </div>
+        
+        <div class="services-intro">
+            <div class="services-intro-title">🚀 Why This Works</div>
+            <p class="services-intro-text">
+                We train dispatchers the RIGHT way on OpenHWY. Then they join <strong>FED's Fleet</strong> and get matched with drivers like you. You get a trained, certified dispatcher who actually understands the job. We take a small cut to keep the lights on.
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            <!-- Full Dispatch -->
+            <div class="service-card">
+                <div class="service-icon">🎯</div>
+                <h3 class="service-title">Full Dispatch</h3>
+                <div class="service-rate">8%</div>
+                <div class="service-period">of gross revenue</div>
+                <p class="service-description">
+                    Complete hands-off dispatching. Your dedicated dispatcher finds loads, negotiates rates, handles paperwork, tracks deliveries, and follows up on payments. You just drive.
+                </p>
+                <ul class="service-features">
+                    <li><span class="check-icon">✓</span> Dedicated dispatcher (matched to you)</li>
+                    <li><span class="check-icon">✓</span> 24/7 load search & booking</li>
+                    <li><span class="check-icon">✓</span> Rate negotiation</li>
+                    <li><span class="check-icon">✓</span> All paperwork handled</li>
+                    <li><span class="check-icon">✓</span> Check calls & tracking</li>
+                    <li><span class="check-icon">✓</span> Invoice & payment follow-up</li>
+                    <li><span class="check-icon">✓</span> Route planning</li>
+                    <li><span class="check-icon">✓</span> Crisis support</li>
+                </ul>
+                <button class="service-cta">Get Started (First Month FREE)</button>
+            </div>
+            
+            <!-- JIT Load Finder -->
+            <div class="service-card">
+                <div class="service-icon">⚡</div>
+                <h3 class="service-title">JIT Load Finder</h3>
+                <div class="service-rate">12%</div>
+                <div class="service-period">per load booked</div>
+                <p class="service-description">
+                    Just-In-Time load finding when you need it. We find the load, you negotiate it, we handle the paperwork. Perfect if you like control but hate admin work.
+                </p>
+                <ul class="service-features">
+                    <li><span class="check-icon">✓</span> On-demand load search (call anytime)</li>
+                    <li><span class="check-icon">✓</span> Pre-vetted load recommendations</li>
+                    <li><span class="check-icon">✓</span> Rate analysis & insights</li>
+                    <li><span class="check-icon">✓</span> We hand load to you (you negotiate)</li>
+                    <li><span class="check-icon">✓</span> You handle check calls</li>
+                    <li><span class="check-icon">✓</span> We handle ALL paperwork</li>
+                    <li><span class="check-icon">✓</span> BOL & POD management</li>
+                    <li><span class="check-icon">✓</span> Invoice generation</li>
+                </ul>
+                <button class="service-cta">Get Started (First Month FREE)</button>
+            </div>
+            
+            <!-- Paperwork Handler -->
+            <div class="service-card">
+                <div class="service-icon">📄</div>
+                <h3 class="service-title">Paperwork Handler</h3>
+                <div class="service-rate">3%</div>
+                <div class="service-period">of gross revenue</div>
+                <p class="service-description">
+                    You find your own loads, you negotiate, you handle check calls—we just do the paperwork nightmare. Cheapest option for independent drivers.
+                </p>
+                <ul class="service-features">
+                    <li><span class="check-icon">✓</span> Rate confirmation processing</li>
+                    <li><span class="check-icon">✓</span> Carrier packet submission</li>
+                    <li><span class="check-icon">✓</span> BOL & POD management</li>
+                    <li><span class="check-icon">✓</span> Invoice generation & submission</li>
+                    <li><span class="check-icon">✓</span> Document filing & organization</li>
+                    <li><span class="check-icon">✓</span> Payment tracking</li>
+                    <li><span class="check-icon">✓</span> Compliance documentation</li>
+                    <li><span class="check-icon">✓</span> You keep full control</li>
+                </ul>
+                <button class="service-cta">Get Started (First Month FREE)</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ELDA FOR DRIVERS -->
+    <section class="elda-section" id="elda">
+        <div class="elda-container">
+            <div class="elda-visual">
+                👩‍🏫
+            </div>
+            
+            <div class="elda-content">
+                <div class="elda-badge">🤖 ELDA - FOR DRIVERS TOO</div>
+                <h2 class="elda-title">
+                    Talk to ELDA Anytime
+                </h2>
+                <p class="elda-description">
+                    <strong>ELDA isn't just for dispatchers.</strong> She's available to YOU too. Teach her your preferences, your routes, your style. She learns from you and shares that knowledge with your dispatcher so they understand exactly how you like to work.
+                </p>
+                
+                <ul class="elda-features">
+                    <li>
+                        <div class="feature-icon">💬</div>
+                        <div>
+                            <strong>Talk anytime, judgment-free</strong><br>
+                            <span style="color: var(--text-gray); font-size: 15px;">Need to vent? Stressed? Lonely on the road? ELDA listens. She doesn't judge. She's just there.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">🎯</div>
+                        <div>
+                            <strong>Teach her your preferences</strong><br>
+                            <span style="color: var(--text-gray); font-size: 15px;">"I hate going to California." "I prefer reefer loads." "I need to be home every 2 weeks." She remembers and tells your dispatcher.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">📚</div>
+                        <div>
+                            <strong>Share your stories (Trucker Tales)</strong><br>
+                            <span style="color: var(--text-gray); font-size: 15px;">Your experiences help train future dispatchers. Tell your story, help them learn what matters to drivers.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">⚡</div>
+                        <div>
+                            <strong>Even teach ELDA new tricks</strong><br>
+                            <span style="color: var(--text-gray); font-size: 15px;">If you know something about trucking that ELDA doesn't, teach her. She learns from drivers and gets smarter for everyone.</span>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div class="elda-pricing">
+                    <div class="elda-pricing-title">ELDA Pricing for Drivers:</div>
+                    <div class="elda-pricing-options">
+                        <div class="pricing-option">
+                            <div class="pricing-option-name">FREE</div>
+                            <div class="pricing-option-price">$0</div>
+                            <div class="pricing-option-desc">Talk to ELDA anytime, share preferences</div>
+                        </div>
+                        <div class="pricing-option">
+                            <div class="pricing-option-name">AI ACCESS</div>
+                            <div class="pricing-option-price">$99<span style="font-size: 16px;">/mo</span></div>
+                            <div class="pricing-option-desc">Unlimited AI conversations + Wheeler Tools</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SHADOW A DISPATCHER -->
+    <section class="shadow-section">
+        <div class="shadow-container">
+            <h2 class="shadow-title">
+                Shadow a Dispatcher's <span class="shadow-title-gradient">Journey</span>
+            </h2>
+            <p class="shadow-description">
+                Watch dispatchers-in-training progress through OpenHWY. Leave comments on their profiles. Root for them. When they graduate, they'll remember you believed in them—and you'll get a dispatcher who WANTS to prove themselves.
+            </p>
+            
+            <div class="shadow-grid">
+                <div class="shadow-card">
+                    <div class="shadow-card-icon">👀</div>
+                    <h3 class="shadow-card-title">Watch Their Progress</h3>
+                    <p class="shadow-card-text">
+                        See what modules they've completed, their quiz scores, their practice TMS work. You know if they're serious before they even graduate.
+                    </p>
+                </div>
+                
+                <div class="shadow-card">
+                    <div class="shadow-card-icon">💬</div>
+                    <h3 class="shadow-card-title">Leave Comments</h3>
+                    <p class="shadow-card-text">
+                        "Keep going! I'm looking for a flatbed dispatcher and you're 80% done." Comments like this motivate them to finish strong.
+                    </p>
+                </div>
+                
+                <div class="shadow-card">
+                    <div class="shadow-card-icon">🤝</div>
+                    <h3 class="shadow-card-title">Get Matched First</h3>
+                    <p class="shadow-card-text">
+                        Dispatchers remember who encouraged them. When they graduate, FED matches them with drivers who supported their journey first.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHEELER TOOLS -->
+    <section class="wheeler-section" id="tools">
+        <div class="wheeler-container">
+            <div class="wheeler-header">
+                <div class="section-eyebrow">🤖 WHEELER AGENTS</div>
+                <h2 class="wheeler-title">
+                    Tools Built <span class="wheeler-title-gradient">For Drivers & Dispatchers</span>
+                </h2>
+                <p class="wheeler-subtitle">
+                    The Wheeler Agents aren't just for dispatchers—they're for YOU too. Automate the bullshit so you can focus on driving.
+                </p>
+            </div>
+            
+            <div class="wheeler-grid">
+                <div class="wheeler-card">
+                    <div class="wheeler-card-icon">📎</div>
+                    <h3 class="wheeler-card-name">Packet Pilot</h3>
+                    <div class="wheeler-card-tagline">Paperwork? Done.</div>
+                    <p class="wheeler-card-description">
+                        Find a good load but hate the 1-hour paperwork grind? <strong>Packet Pilot fills it out for you automatically.</strong> Carrier packets, rate confirmations, BOLs—done in seconds, not hours.
+                    </p>
+                    <ul class="wheeler-card-use-cases">
+                        <li><span class="check-icon">✓</span> Auto-fill carrier packets</li>
+                        <li><span class="check-icon">✓</span> Rate confirmation processing</li>
+                        <li><span class="check-icon">✓</span> BOL generation</li>
+                        <li><span class="check-icon">✓</span> Document organization</li>
+                        <li><span class="check-icon">✓</span> Signature handling</li>
+                    </ul>
+                </div>
+                
+                <div class="wheeler-card">
+                    <div class="wheeler-card-icon">🔗</div>
+                    <h3 class="wheeler-card-name">Cargo Connect</h3>
+                    <div class="wheeler-card-tagline">Find loads faster.</div>
+                    <p class="wheeler-card-description">
+                        <strong>Connect ALL your load boards in one place.</strong> DAT, Truckstop, 123Loadboard—search them all at once. No more tab-switching. Cargo Connect finds the best loads across every board you're subscribed to.
+                    </p>
+                    <ul class="wheeler-card-use-cases">
+                        <li><span class="check-icon">✓</span> Search all load boards at once</li>
+                        <li><span class="check-icon">✓</span> Smart filtering (rate, route, cargo type)</li>
+                        <li><span class="check-icon">✓</span> Real-time rate analysis</li>
+                        <li><span class="check-icon">✓</span> Load alerts (get notified instantly)</li>
+                        <li><span class="check-icon">✓</span> Only works with YOUR subscriptions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta-section">
+        <div class="final-cta-container">
+            <h2 class="final-cta-title">
+                Ready to Help Train <span class="final-cta-gradient">The Future</span>?
+            </h2>
+            <p class="final-cta-subtitle">
+                Join 500 drivers helping us build OpenHWY. Get your first month FREE, talk to ELDA, shadow dispatchers, share your story, and get matched with a dispatcher who actually gets it.
+            </p>
+            <button class="final-cta-button">
+                🚛 Join Driver Pool (First Month FREE)
+            </button>
+            <p class="final-cta-note">
+                ✅ No commitment &nbsp;•&nbsp; 🎁 First month completely free &nbsp;•&nbsp; 💬 Talk to ELDA instantly
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">OpenHWY</div>
+            <p class="footer-tagline">
+                Training the future of truck dispatchers. Built by a driver, for drivers.
+            </p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">For Dispatchers</a>
+                <a href="#" class="footer-link">For Drivers</a>
+                <a href="#" class="footer-link">Our Story</a>
+                <a href="#" class="footer-link">Trucker Tales</a>
+                <a href="#" class="footer-link">Contact</a>
+                <a href="#" class="footer-link">Privacy</a>
+                <a href="#" class="footer-link">Terms</a>
+            </div>
+            <div class="footer-bottom">
+                © 2024 Fast & Easy Dispatching LLC • Built with 💛 for drivers, by a driver
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

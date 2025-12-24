@@ -1,0 +1,10 @@
+{
+  "id": "call-summary",
+  "label": "Call Summary",
+  "system": "System prompt for Call Summary",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

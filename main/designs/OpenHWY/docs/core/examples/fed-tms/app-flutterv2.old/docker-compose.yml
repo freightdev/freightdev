@@ -1,0 +1,11 @@
+services:
+  flutter-app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        ENV_FILE: ./.env
+    ports:
+      - '5200:5200'
+    env_file:
+      - ./.env

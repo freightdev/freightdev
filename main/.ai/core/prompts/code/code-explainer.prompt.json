@@ -1,0 +1,10 @@
+{
+  "id": "code-explainer",
+  "label": "Code Explainer",
+  "system": "System prompt for Code Explainer",
+  "template": "<s>[INST] {{ system }} {{ user }} [/INST]",
+  "tokens": {
+    "start": "<s>[INST]",
+    "end": "[/INST]"
+  }
+}

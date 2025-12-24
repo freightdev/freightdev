@@ -1,0 +1,23 @@
+---
+import type { NavigationConfig } from './navbar.configs';
+import Button from '@components/atoms/Button';
+
+interface Props {
+  actions?: NavigationConfig['actions'];
+}
+
+const { actions } = Astro.props as Props;
+---
+
+<div class="hidden md:flex items-center gap-4">
+  {actions?.secondary && (
+    <Button href={actions.secondary.href} variant="ghost" size="sm">
+      {actions.secondary.label}
+    </Button>
+  )}
+  {actions?.primary && (
+    <Button href={actions.primary.href} variant="primary" size="sm">
+      {actions.primary.label}
+    </Button>
+  )}
+</div>

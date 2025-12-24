@@ -1,0 +1,25 @@
+---
+import type { FeatureCategory } from '../content/features';
+import type { CardRendererProps } from '../card.types';
+import FeatureCategoryFeature from './FeatureCategoryFeature.astro';
+
+const { item, index } = Astro.props as CardRendererProps<FeatureCategory>;
+const wrapperClass =
+  index % 2 === 1
+    ? 'bg-background-card py-16 px-4 sm:px-6 lg:px-8 -mx-4 sm:-mx-6 lg:-mx-8'
+    : '';
+---
+
+<div class={wrapperClass}>
+  <div class="max-w-7xl mx-auto space-y-8">
+    <div class="flex items-center gap-4">
+      <div class="text-6xl">{item.icon}</div>
+      <h2 class="text-4xl font-bold">{item.title}</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+      {item.features.map((feature) => (
+        <FeatureCategoryFeature feature={feature} />
+      ))}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+---
+import { navigationConfig } from '@configs/navigation';
+import NavbarActions from './NavbarActions.astro';
+import NavbarBrand from './NavbarBrand.astro';
+import NavbarLinks from './NavbarLinks.astro';
+import NavbarMobile from './NavbarMobileMenu.astro';
+import type { NavbarProps } from './navbar.types';
+import { navbarScript } from './navbar.scripts';
+
+const { config = navigationConfig } = Astro.props as NavbarProps;
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-background-elevated">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <NavbarBrand brand={config.brand} />
+      <NavbarLinks links={config.links} />
+      <NavbarActions actions={config.actions} />
+      <NavbarMobile config={config} />
+    </div>
+  </div>
+</nav>
+
+<script is:inline>{navbarScript}</script>

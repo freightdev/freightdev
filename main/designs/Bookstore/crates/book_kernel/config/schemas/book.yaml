@@ -1,0 +1,25 @@
+# Book Manifest Schema
+
+id: ""                    # Unique ID or slug
+title: ""                 # Book title
+subtitle: ""              # Optional subtitle
+author: ""                # Creator or actor ID
+created_at: ""            # ISO timestamp
+modified_at: ""           # Last updated
+
+
+pages:                    # List of structured page metadata
+  - page_id: ""
+    title: ""
+    path: ""
+    status: ""            # active | torn | burned | redacted
+    burned_by: ""
+
+bets: []                  # Paths to bound BET files (execution laws)
+beat: []                  # Paths to applied beat/style files
+agents: []                # List of attached agents (agent IDs)
+markers: []               # List of attached marker paths or IDs
+ribbons: []               # List of attached Ribbon cache references
+trails: []                # List of attached Trail log references
+
+
