@@ -1,0 +1,3927 @@
+.
+├── bookmark
+│   ├── AUTHORS
+│   ├── Cargo.toml
+│   ├── CODE_OF_CONDUCT.md
+│   ├── CODEOWNERS
+│   ├── config
+│   │   ├── examples
+│   │   │   ├── ai-agent.yaml
+│   │   │   ├── full-system.yaml
+│   │   │   ├── k3s-cluster.yaml
+│   │   │   └── simple-user.yaml
+│   │   ├── schemas
+│   │   │   ├── beat.yaml
+│   │   │   ├── bet.yaml
+│   │   │   ├── book.yaml
+│   │   │   ├── chapter.yaml
+│   │   │   ├── cover.yaml
+│   │   │   ├── ink.yaml
+│   │   │   ├── keeper.yaml
+│   │   │   ├── license.yaml
+│   │   │   ├── marker.yaml
+│   │   │   ├── mark.yaml
+│   │   │   ├── page.yaml
+│   │   │   ├── ribbon.yaml
+│   │   │   ├── stroke.yaml
+│   │   │   └── trail.yaml
+│   │   └── templates
+│   │       ├── ai-agent-workspace.yaml
+│   │       ├── arch-linux-base.yaml
+│   │       ├── debian-13-server.yaml
+│   │       └── docker-development.yaml
+│   ├── CONTRIBUTING.md
+│   ├── display
+│   │   ├── covers
+│   │   │   ├── back
+│   │   │   │   └── .gitkeep
+│   │   │   ├── front
+│   │   │   │   └── .gitkeep
+│   │   │   ├── README.md
+│   │   │   └── side
+│   │   │       └── .gitkeep
+│   │   ├── pages
+│   │   │   ├── about
+│   │   │   │   └── .gitkeep
+│   │   │   ├── account
+│   │   │   │   └── .gitkeep
+│   │   │   ├── address
+│   │   │   │   └── .gitkeep
+│   │   │   ├── admin
+│   │   │   │   └── .gitkeep
+│   │   │   ├── article
+│   │   │   │   └── .gitkeep
+│   │   │   ├── blog
+│   │   │   │   └── .gitkeep
+│   │   │   ├── canva
+│   │   │   │   └── .gitkeep
+│   │   │   ├── career
+│   │   │   │   └── .gitkeep
+│   │   │   ├── cart
+│   │   │   │   └── .gitkeep
+│   │   │   ├── checkin
+│   │   │   │   └── .gitkeep
+│   │   │   ├── checkout
+│   │   │   │   └── .gitkeep
+│   │   │   ├── codespace
+│   │   │   │   └── .gitkeep
+│   │   │   ├── community
+│   │   │   │   └── .gitkeep
+│   │   │   ├── contact
+│   │   │   │   └── .gitkeep
+│   │   │   ├── contract
+│   │   │   │   └── .gitkeep
+│   │   │   ├── cookie
+│   │   │   │   └── .gitkeep
+│   │   │   ├── dashboard
+│   │   │   │   └── .gitkeep
+│   │   │   ├── discussion
+│   │   │   │   └── .gitkeep
+│   │   │   ├── doc
+│   │   │   │   └── .gitkeep
+│   │   │   ├── download
+│   │   │   │   └── .gitkeep
+│   │   │   ├── email
+│   │   │   │   └── .gitkeep
+│   │   │   ├── explore
+│   │   │   │   └── .gitkeep
+│   │   │   ├── feature
+│   │   │   │   └── .gitkeep
+│   │   │   ├── feedback
+│   │   │   │   └── .gitkeep
+│   │   │   ├── forums
+│   │   │   │   └── .gitkeep
+│   │   │   ├── freight
+│   │   │   │   └── .gitkeep
+│   │   │   ├── home
+│   │   │   │   └── .gitkeep
+│   │   │   ├── issue
+│   │   │   │   └── .gitkeep
+│   │   │   ├── landing
+│   │   │   │   └── .gitkeep
+│   │   │   ├── layout
+│   │   │   │   └── views
+│   │   │   │       ├── app
+│   │   │   │       │   └── .gitkeep
+│   │   │   │       ├── auth
+│   │   │   │       │   └── .gitkeep
+│   │   │   │       ├── .gitkeep
+│   │   │   │       └── store
+│   │   │   │           └── .gitkeep
+│   │   │   ├── login
+│   │   │   │   └── .gitkeep
+│   │   │   ├── logout
+│   │   │   │   └── .gitkeep
+│   │   │   ├── managing
+│   │   │   │   └── .gitkeep
+│   │   │   ├── marketing
+│   │   │   │   └── .gitkeep
+│   │   │   ├── marketplace
+│   │   │   │   └── .gitkeep
+│   │   │   ├── onboarding
+│   │   │   │   └── .gitkeep
+│   │   │   ├── order
+│   │   │   │   └── .gitkeep
+│   │   │   ├── password-reset
+│   │   │   │   └── .gitkeep
+│   │   │   ├── personal
+│   │   │   │   └── .gitkeep
+│   │   │   ├── platform
+│   │   │   │   └── .gitkeep
+│   │   │   ├── playground
+│   │   │   │   └── .gitkeep
+│   │   │   ├── playlist
+│   │   │   │   └── .gitkeep
+│   │   │   ├── portal
+│   │   │   │   └── .gitkeep
+│   │   │   ├── pricing
+│   │   │   │   └── .gitkeep
+│   │   │   ├── privacy
+│   │   │   │   └── .gitkeep
+│   │   │   ├── profile
+│   │   │   │   └── .gitkeep
+│   │   │   ├── project
+│   │   │   │   └── .gitkeep
+│   │   │   ├── recommendation
+│   │   │   │   └── .gitkeep
+│   │   │   ├── register
+│   │   │   │   └── .gitkeep
+│   │   │   ├── request
+│   │   │   │   └── .gitkeep
+│   │   │   ├── sandbox
+│   │   │   │   └── .gitkeep
+│   │   │   ├── security
+│   │   │   │   └── .gitkeep
+│   │   │   ├── service
+│   │   │   │   └── .gitkeep
+│   │   │   ├── setting
+│   │   │   │   └── .gitkeep
+│   │   │   ├── showcase
+│   │   │   │   └── .gitkeep
+│   │   │   ├── sign-in
+│   │   │   │   └── .gitkeep
+│   │   │   ├── sign-out
+│   │   │   │   └── .gitkeep
+│   │   │   ├── status
+│   │   │   │   └── .gitkeep
+│   │   │   ├── storage
+│   │   │   │   └── .gitkeep
+│   │   │   ├── store
+│   │   │   │   └── .gitkeep
+│   │   │   ├── subscription
+│   │   │   │   └── .gitkeep
+│   │   │   ├── support
+│   │   │   │   └── business
+│   │   │   │       └── .gitkeep
+│   │   │   ├── term
+│   │   │   │   └── .gitkeep
+│   │   │   ├── user
+│   │   │   │   └── .gitkeep
+│   │   │   └── wallet
+│   │   │       └── .gitkeep
+│   │   ├── scrolls
+│   │   │   ├── admin
+│   │   │   │   └── .gitkeep
+│   │   │   ├── advertising
+│   │   │   │   └── .gitkeep
+│   │   │   ├── banner
+│   │   │   │   └── .gitkeep
+│   │   │   ├── chat
+│   │   │   │   └── .gitkeep
+│   │   │   ├── error
+│   │   │   │   └── .gitkeep
+│   │   │   ├── faq
+│   │   │   │   └── .gitkeep
+│   │   │   ├── feedback
+│   │   │   │   └── .gitkeep
+│   │   │   ├── help
+│   │   │   │   └── .gitkeep
+│   │   │   ├── history
+│   │   │   │   └── .gitkeep
+│   │   │   ├── layout
+│   │   │   │   └── views
+│   │   │   │       ├── app
+│   │   │   │       │   └── .gitkeep
+│   │   │   │       ├── auth
+│   │   │   │       │   └── .gitkeep
+│   │   │   │       ├── .gitkeep
+│   │   │   │       └── store
+│   │   │   │           └── .gitkeep
+│   │   │   ├── loading
+│   │   │   │   └── .gitkeep
+│   │   │   ├── logging
+│   │   │   │   └── .gitkeep
+│   │   │   ├── map
+│   │   │   │   └── .gitkeep
+│   │   │   ├── me
+│   │   │   │   └── .gitkeep
+│   │   │   ├── media
+│   │   │   │   └── .gitkeep
+│   │   │   ├── menu
+│   │   │   │   └── .gitkeep
+│   │   │   ├── message
+│   │   │   │   └── .gitkeep
+│   │   │   ├── modal
+│   │   │   │   └── .gitkeep
+│   │   │   ├── payment
+│   │   │   │   └── .gitkeep
+│   │   │   ├── phone
+│   │   │   │   └── .gitkeep
+│   │   │   ├── popup
+│   │   │   │   └── .gitkeep
+│   │   │   ├── progress
+│   │   │   │   └── .gitkeep
+│   │   │   ├── review
+│   │   │   │   └── .gitkeep
+│   │   │   ├── search
+│   │   │   │   └── .gitkeep
+│   │   │   ├── tool
+│   │   │   │   └── .gitkeep
+│   │   │   ├── upload
+│   │   │   │   └── .gitkeep
+│   │   │   ├── user
+│   │   │   │   └── .gitkeep
+│   │   │   ├── utility
+│   │   │   │   └── .gitkeep
+│   │   │   └── weather
+│   │   │       └── .gitkeep
+│   │   └── src
+│   │       ├── box
+│   │       │   ├── deposit
+│   │       │   │   └── .gitkeep
+│   │       │   ├── .gitkeep
+│   │       │   └── return
+│   │       │       └── .gitkeep
+│   │       ├── cart
+│   │       │   ├── checkout
+│   │       │   │   └── .gitkeep
+│   │       │   └── .gitkeep
+│   │       ├── case
+│   │       │   └── .gitkeep
+│   │       ├── rack
+│   │       │   └── .gitkeep
+│   │       ├── shelf
+│   │       │   └── .gitkeep
+│   │       ├── stand
+│   │       │   └── .gitkeep
+│   │       └── wall
+│   │           └── .gitkeep
+│   ├── docs
+│   │   ├── architecture.md
+│   │   ├── bookmark-stub.md
+│   │   ├── core
+│   │   │   ├── api
+│   │   │   │   └── integration.md
+│   │   │   ├── beats
+│   │   │   │   └── intro.md
+│   │   │   ├── bets
+│   │   │   │   └── intro.md
+│   │   │   ├── books
+│   │   │   │   └── intro.md
+│   │   │   ├── commands
+│   │   │   │   ├── init
+│   │   │   │   │   ├── mark-init--agent.md
+│   │   │   │   │   ├── mark-init--db.md
+│   │   │   │   │   └── mark-init.md
+│   │   │   │   ├── mark-beat.md
+│   │   │   │   ├── mark-exec.md
+│   │   │   │   └── mark-tempo.md
+│   │   │   ├── FAQs
+│   │   │   │   ├── actor.md
+│   │   │   │   ├── agent.md
+│   │   │   │   ├── beat.md
+│   │   │   │   ├── bet.md
+│   │   │   │   ├── clock.md
+│   │   │   │   ├── delay.md
+│   │   │   │   ├── ink.md
+│   │   │   │   ├── marker.md
+│   │   │   │   ├── mark.md
+│   │   │   │   ├── pulse.md
+│   │   │   │   ├── ribbon.md
+│   │   │   │   ├── stroke.md
+│   │   │   │   ├── sync.md
+│   │   │   │   ├── tempo.md
+│   │   │   │   └── trail.md
+│   │   │   ├── markers
+│   │   │   │   └── intro.md
+│   │   │   ├── marks
+│   │   │   │   └── intro.md
+│   │   │   ├── memory
+│   │   │   │   └── intro.md
+│   │   │   ├── ribbons
+│   │   │   │   └── intro.md
+│   │   │   └── trails
+│   │   │       └── intro.md
+│   │   ├── directory-structure.md
+│   │   ├── economy
+│   │   │   └── cost-structure.md
+│   │   ├── filetype-map.md
+│   │   ├── README.md
+│   │   └── stroke.md
+│   ├── .env.dev
+│   ├── .env.prod
+│   ├── .env.staging
+│   ├── .idea
+│   │   ├── beat
+│   │   │   ├── connect.beat
+│   │   │   ├── fallback.beat
+│   │   │   ├── linking.beat
+│   │   │   ├── mark.beat
+│   │   │   ├── marker.beat
+│   │   │   ├── passing.beat
+│   │   │   ├── routing.beat
+│   │   │   ├── signing.beat
+│   │   │   ├── summary.beat
+│   │   │   ├── system.beat
+│   │   │   ├── tempo.beat
+│   │   │   ├── trail.beat
+│   │   │   └── writing.baet
+│   │   ├── bet
+│   │   │   ├── agent.bet
+│   │   │   ├── README.md
+│   │   │   ├── system.bet
+│   │   │   └── user.bet
+│   │   ├── mark
+│   │   │   ├── bet.mrk
+│   │   │   ├── boot.mrk
+│   │   │   ├── ink.mrk
+│   │   │   └── marker.mrk
+│   │   ├── marker
+│   │   │   ├── fallback.mrkr
+│   │   │   ├── linking.mrkr
+│   │   │   ├── mark.mrkr
+│   │   │   ├── passing.mrkr
+│   │   │   ├── routing.mrkr
+│   │   │   ├── signing.mrkr
+│   │   │   ├── summary.mrkr
+│   │   │   ├── system.mrkr
+│   │   │   ├── tempo.mrkr
+│   │   │   ├── trail.mrkr
+│   │   │   └── writing.mrkr
+│   │   ├── memory
+│   │   │   ├── agent.mem
+│   │   │   ├── mark.mem
+│   │   │   └── user.mem
+│   │   ├── ribbon
+│   │   │   ├── boot.rib
+│   │   │   ├── cache
+│   │   │   │   └── summary_gpt4o.rib
+│   │   │   ├── index.json
+│   │   │   ├── intro.rib
+│   │   │   ├── summary.rib
+│   │   │   └── welcome.rib
+│   │   └── trail
+│   │       ├── agent.trl
+│   │       ├── bet.trl
+│   │       ├── ink.trl
+│   │       ├── marker.trl
+│   │       ├── mark.trl
+│   │       └── user.trl
+│   ├── LICENSE
+│   ├── .meta
+│   │   ├── index.json
+│   │   └── schemas
+│   │       ├── beat.schema.json
+│   │       ├── bet.schema.json
+│   │       ├── marker.schema.json
+│   │       ├── mark.schema.json
+│   │       ├── memory.schema.json
+│   │       ├── ribbon.schema.json
+│   │       └── trail.schema.json
+│   ├── README.md
+│   ├── rules
+│   │   ├── beat
+│   │   │   ├── connect.beat
+│   │   │   ├── fallback.beat
+│   │   │   ├── linking.beat
+│   │   │   ├── mark.beat
+│   │   │   ├── marker.beat
+│   │   │   ├── passing.beat
+│   │   │   ├── routing.beat
+│   │   │   ├── signing.beat
+│   │   │   ├── summary.beat
+│   │   │   ├── system.beat
+│   │   │   ├── tempo.beat
+│   │   │   ├── trail.beat
+│   │   │   └── writing.baet
+│   │   ├── bet
+│   │   │   ├── agent.bet
+│   │   │   ├── README.md
+│   │   │   ├── system.bet
+│   │   │   └── user.bet
+│   │   ├── mark
+│   │   │   ├── bet.mrk
+│   │   │   ├── boot.mrk
+│   │   │   ├── ink.mrk
+│   │   │   └── marker.mrk
+│   │   ├── marker
+│   │   │   ├── fallback.mrkr
+│   │   │   ├── linking.mrkr
+│   │   │   ├── mark.mrkr
+│   │   │   ├── passing.mrkr
+│   │   │   ├── routing.mrkr
+│   │   │   ├── signing.mrkr
+│   │   │   ├── summary.mrkr
+│   │   │   ├── system.mrkr
+│   │   │   ├── tempo.mrkr
+│   │   │   ├── trail.mrkr
+│   │   │   └── writing.mrkr
+│   │   ├── ribbon
+│   │   │   ├── cache
+│   │   │   │   └── summary_gpt4o.rib
+│   │   │   ├── index.json
+│   │   │   ├── init.rib
+│   │   │   ├── intro.rib
+│   │   │   ├── store
+│   │   │   ├── summary.rib
+│   │   │   └── welcome.rib
+│   │   └── trail
+│   │       ├── boot.trl
+│   │       ├── index.json
+│   │       ├── store
+│   │       │   ├── agent.trl
+│   │       │   ├── bet.trl
+│   │       │   ├── ink.trl
+│   │       │   ├── marker.trl
+│   │       │   └── user.trl
+│   │       ├── tmp
+│   │       │   └── abc123.trl
+│   │       └── user-session.trl
+│   ├── scripts
+│   │   ├── build.sh
+│   │   ├── install.sh
+│   │   ├── setup.sh
+│   │   └── test.sh
+│   ├── SECURITY.md
+│   └── src
+│       ├── api
+│       │   ├── handlers.rs
+│       │   ├── middleware.rs
+│       │   ├── mod.rs
+│       │   ├── routes.rs
+│       │   └── server.rs
+│       ├── cli
+│       │   ├── args.rs
+│       │   ├── commands.rs
+│       │   ├── mod.rs
+│       │   └── output.rs
+│       ├── commands
+│       │   ├── mark
+│       │   │   ├── actor.rs
+│       │   │   ├── agent.rs
+│       │   │   ├── beat.rs
+│       │   │   ├── bet.rs
+│       │   │   ├── clock.rs
+│       │   │   ├── delay.rs
+│       │   │   ├── limit.rs
+│       │   │   ├── load.rs
+│       │   │   ├── mem.rs
+│       │   │   ├── parse.rs
+│       │   │   ├── pulse.rs
+│       │   │   ├── rate.rs
+│       │   │   ├── registry.rs
+│       │   │   ├── ribbon.rs
+│       │   │   ├── stem.rs
+│       │   │   ├── store.rs
+│       │   │   ├── trail.rs
+│       │   │   ├── validate.rs
+│       │   │   ├── walk.rs
+│       │   │   └── well.rs
+│       │   └── pass
+│       │       ├── ink.rs
+│       │       ├── ribbon.rs
+│       │       ├── state.rs
+│       │       ├── store.rs
+│       │       └── stroke.rs
+│       ├── config
+│       │   ├── mod.rs
+│       │   └── settings.rs
+│       ├── crates
+│       │   ├── beat-sync
+│       │   │   └── .gitkeep
+│       │   ├── bet-engine
+│       │   │   └── .gitkeep
+│       │   ├── bookos-glossary
+│       │   │   ├── index.md
+│       │   │   ├── what-is-a-beat.md
+│       │   │   ├── what-is-a-bet.md
+│       │   │   ├── what-is-a-clock.md
+│       │   │   ├── what-is-a-delay.md
+│       │   │   ├── what-is-a-marker.md
+│       │   │   ├── what-is-a-mark.md
+│       │   │   ├── what-is-an-actor.md
+│       │   │   ├── what-is-an-agent.md
+│       │   │   ├── what-is-an-inkstroke.md
+│       │   │   ├── what-is-an-inkwell.md
+│       │   │   ├── what-is-a-ppur.md
+│       │   │   ├── what-is-a-pulse.md
+│       │   │   ├── what-is-a-ribbon.md
+│       │   │   ├── what-is-a-stroke.md
+│       │   │   ├── what-is-a-sync.md
+│       │   │   ├── what-is-a-tempo.md
+│       │   │   ├── what-is-a-trail.md
+│       │   │   └── what-is-ink.md
+│       │   ├── ink-burn
+│       │   │   └── .gitkeep
+│       │   ├── ink_trails
+│       │   │   └── .gitkeep
+│       │   ├── keeper-db
+│       │   │   └── .gitkeep
+│       │   ├── key-mark
+│       │   │   └── .gitkeep
+│       │   ├── marker-router
+│       │   │   └── .gitkeep
+│       │   ├── memory-scroll
+│       │   │   └── .gitkeep
+│       │   ├── ribbon-trail
+│       │   │   └── .gitkeep
+│       │   └── token_stroke
+│       │       └── .gitkeep
+│       ├── crypto
+│       │   ├── encryption.rs
+│       │   ├── hashing.rs
+│       │   ├── keys.rs
+│       │   └── mod.rs
+│       ├── executor
+│       │   ├── containers.rs
+│       │   ├── k3s.rs
+│       │   ├── mod.rs
+│       │   ├── network.rs
+│       │   ├── services.rs
+│       │   ├── storage.rs
+│       │   ├── system.rs
+│       │   ├── users.rs
+│       │   └── vms.rs
+│       ├── kernel
+│       │   ├── beat.rs
+│       │   ├── bet.rs
+│       │   └── tempo.rs
+│       ├── lib.rs
+│       ├── main.rs
+│       ├── parser
+│       │   ├── manifest.rs
+│       │   ├── mod.rs
+│       │   ├── schema.rs
+│       │   └── validator.rs
+│       ├── syscall
+│       │   ├── bind.rs
+│       │   ├── check.rs
+│       │   ├── dispatch.rs
+│       │   ├── exec.rs
+│       │   ├── fs.rs
+│       │   ├── mark.rs
+│       │   ├── mem.rs
+│       │   ├── net.rs
+│       │   ├── open.rs
+│       │   ├── read.rs
+│       │   ├── set.rs
+│       │   └── sync.rs
+│       ├── templates
+│       │   ├── loader.rs
+│       │   ├── mod.rs
+│       │   └── registry.rs
+│       ├── tracker
+│       │   ├── audit.rs
+│       │   ├── database.rs
+│       │   ├── marks.rs
+│       │   ├── mod.rs
+│       │   └── stats.rs
+│       └── utils
+│           ├── error.rs
+│           ├── logger.rs
+│           ├── mod.rs
+│           └── system_info.rs
+├── .env
+│   ├── ai
+│   │   ├── apps
+│   │   │   ├── chat-agency
+│   │   │   │   ├── ai_query.py
+│   │   │   │   ├── analytics.py
+│   │   │   │   ├── batch_query.py
+│   │   │   │   ├── config.toml
+│   │   │   │   ├── conversation_indexer.py
+│   │   │   │   ├── EXAMPLES.md
+│   │   │   │   ├── .gitignore
+│   │   │   │   ├── query_artifacts.py
+│   │   │   │   ├── query_conversations.py
+│   │   │   │   ├── query_templates.py
+│   │   │   │   ├── QUICK_REFERENCE.md
+│   │   │   │   ├── README.md
+│   │   │   │   ├── setup_indexer.sh
+│   │   │   │   └── templates
+│   │   │   │       └── fed_project_example.json
+│   │   │   ├── code-agency
+│   │   │   │   ├── backend
+│   │   │   │   │   ├── agents
+│   │   │   │   │   │   ├── agency_bridge.py
+│   │   │   │   │   │   ├── base.py
+│   │   │   │   │   │   ├── chat_agent.py
+│   │   │   │   │   │   ├── client.py
+│   │   │   │   │   │   ├── code_agent.py
+│   │   │   │   │   │   ├── codriver_agent.py
+│   │   │   │   │   │   ├── coordinator_agent.py
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── monitor.py
+│   │   │   │   │   │   ├── router.py
+│   │   │   │   │   │   └── worker.py
+│   │   │   │   │   ├── app
+│   │   │   │   │   │   ├── api
+│   │   │   │   │   │   ├── auth
+│   │   │   │   │   │   ├── config.py
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── main.py
+│   │   │   │   │   │   ├── services
+│   │   │   │   │   │   ├── static
+│   │   │   │   │   │   └── templates
+│   │   │   │   │   ├── ide
+│   │   │   │   │   │   ├── file_manager.py
+│   │   │   │   │   │   ├── github_client.py
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   └── terminal.py
+│   │   │   │   │   ├── inference
+│   │   │   │   │   │   ├── generator.py
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── model_manager.py
+│   │   │   │   │   │   └── sampler.py
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── memory
+│   │   │   │   │   │   ├── context.py
+│   │   │   │   │   │   ├── database.py
+│   │   │   │   │   │   ├── embeddings.py
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── models.py
+│   │   │   │   │   │   └── storage.py
+│   │   │   │   │   └── utils
+│   │   │   │   │       ├── helpers.py
+│   │   │   │   │       ├── __init__.py
+│   │   │   │   │       ├── logger.py
+│   │   │   │   │       └── migrations.py
+│   │   │   │   ├── docker
+│   │   │   │   │   ├── docker-compose.test.yml
+│   │   │   │   │   ├── docker-compose.yml
+│   │   │   │   │   ├── Dockerfile
+│   │   │   │   │   ├── Dockerfile.gpu
+│   │   │   │   │   ├── .dockerignore
+│   │   │   │   │   └── nginx.conf
+│   │   │   │   ├── docs
+│   │   │   │   │   ├── ARCHITECTURE.md
+│   │   │   │   │   ├── CLAUDE.md
+│   │   │   │   │   ├── DATABASE-MIGRATIONS.md
+│   │   │   │   │   ├── DATA-STRUCTURE.md
+│   │   │   │   │   ├── HOW-TO-USE.md
+│   │   │   │   │   ├── INSTALLATION.md
+│   │   │   │   │   ├── MODELS-YOU-CAN-RUN.md
+│   │   │   │   │   ├── PROJECT-STATE.md
+│   │   │   │   │   ├── QUICKSTART.md
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── .env
+│   │   │   │   ├── .env.example
+│   │   │   │   ├── .gitignore
+│   │   │   │   ├── pyproject.toml
+│   │   │   │   ├── scripts
+│   │   │   │   │   ├── add_missing_docstrings.py
+│   │   │   │   │   ├── ai-control.sh
+│   │   │   │   │   ├── generate_model_configs.py
+│   │   │   │   │   ├── python-make-init.sh
+│   │   │   │   │   ├── setup.sh
+│   │   │   │   │   └── update_with_env_pairs.py
+│   │   │   │   └── tests
+│   │   │   │       ├── api
+│   │   │   │       │   ├── test_auth_api.py
+│   │   │   │       │   ├── test_health_api.py
+│   │   │   │       │   ├── test_ide_api.py
+│   │   │   │       │   └── test_websocket_api.py
+│   │   │   │       ├── conftest.py
+│   │   │   │       ├── database
+│   │   │   │       │   ├── test_duckdb.py
+│   │   │   │       │   └── test_postgreSQL.py
+│   │   │   │       ├── e2e
+│   │   │   │       │   ├── test_admin_workflows.py
+│   │   │   │       │   ├── test_coding_session.py
+│   │   │   │       │   ├── test_multi_user.py
+│   │   │   │       │   └── test_user_onboarding.py
+│   │   │   │       ├── intergration
+│   │   │   │       │   ├── test_auth_flow.py
+│   │   │   │       │   ├── test_chat_flow.py
+│   │   │   │       │   ├── test_ide_workflow.py
+│   │   │   │       │   └── test_websocket_chat.py
+│   │   │   │       ├── performance
+│   │   │   │       │   ├── test_concurrent_users.py
+│   │   │   │       │   ├── test_large_file_handling.py
+│   │   │   │       │   ├── test_memory_usage.py
+│   │   │   │       │   └── test_model_inference_speed.py
+│   │   │   │       ├── README.md
+│   │   │   │       ├── test_agents.py
+│   │   │   │       ├── test_auth.py
+│   │   │   │       ├── test_auth_routes.py
+│   │   │   │       ├── test_chat_api.py
+│   │   │   │       └── unit
+│   │   │   │           ├── test_agents
+│   │   │   │           ├── test_auth
+│   │   │   │           ├── test_inference
+│   │   │   │           └── test_memory
+│   │   │   ├── lead-agency
+│   │   │   │   ├── ARCHITECTURE.md
+│   │   │   │   ├── backend
+│   │   │   │   │   ├── app
+│   │   │   │   │   │   ├── agents
+│   │   │   │   │   │   ├── api
+│   │   │   │   │   │   ├── config
+│   │   │   │   │   │   ├── core
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── main.py
+│   │   │   │   │   │   └── models
+│   │   │   │   │   ├── Dockerfile
+│   │   │   │   │   └── requirements.txt
+│   │   │   │   ├── docker-compose.yml
+│   │   │   │   ├── .env.example
+│   │   │   │   ├── frontend
+│   │   │   │   │   ├── index.html
+│   │   │   │   │   ├── package.json
+│   │   │   │   │   ├── package-lock.json
+│   │   │   │   │   ├── postcss.config.js
+│   │   │   │   │   ├── src
+│   │   │   │   │   │   ├── App.tsx
+│   │   │   │   │   │   ├── components
+│   │   │   │   │   │   ├── index.css
+│   │   │   │   │   │   ├── main.tsx
+│   │   │   │   │   │   └── types
+│   │   │   │   │   ├── tailwind.config.js
+│   │   │   │   │   ├── tsconfig.json
+│   │   │   │   │   ├── tsconfig.node.json
+│   │   │   │   │   └── vite.config.ts
+│   │   │   │   ├── .idea
+│   │   │   │   │   ├── lead_collection
+│   │   │   │   │   │   ├── freelance-development
+│   │   │   │   │   │   └── freight-industry
+│   │   │   │   │   └── version_01
+│   │   │   │   │       ├── 001-schema.sql
+│   │   │   │   │       ├── ai-resopnse-handler.json
+│   │   │   │   │       ├── App.css
+│   │   │   │   │       ├── App.jsx
+│   │   │   │   │       ├── config.toml
+│   │   │   │   │       ├── cvs_import.js
+│   │   │   │   │       ├── docker-compose.yml
+│   │   │   │   │       ├── Dockerfile
+│   │   │   │   │       ├── Dockerfile_
+│   │   │   │   │       ├── Dockerfile_0
+│   │   │   │   │       ├── .dockerignore
+│   │   │   │   │       ├── .env
+│   │   │   │   │       ├── .env.production
+│   │   │   │   │       ├── index.html
+│   │   │   │   │       ├── index.js
+│   │   │   │   │       ├── index.js_
+│   │   │   │   │       ├── linkedin.js
+│   │   │   │   │       ├── MIGRATION-TO-SURREAL.md
+│   │   │   │   │       ├── package.json
+│   │   │   │   │       ├── package.json_
+│   │   │   │   │       ├── package.json_0
+│   │   │   │   │       ├── README.md
+│   │   │   │   │       ├── server.js
+│   │   │   │   │       ├── STATE.md
+│   │   │   │   │       └── web_scraper.js
+│   │   │   │   ├── logs
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── README.md
+│   │   │   │   └── scripts
+│   │   │   │       └── auto-search.sh
+│   │   │   └── testing-agency
+│   │   │       ├── docker-compose.yml
+│   │   │       ├── docs
+│   │   │       │   ├── ARCHITECTURE.md
+│   │   │       │   └── GUILDES.md
+│   │   │       ├── drizzle.config.ts
+│   │   │       ├── e2e
+│   │   │       │   └── demo.test.ts
+│   │   │       ├── .env.example
+│   │   │       ├── eslint.config.js
+│   │   │       ├── .gitignore
+│   │   │       ├── messages
+│   │   │       │   ├── en.json
+│   │   │       │   └── es.json
+│   │   │       ├── .npmrc
+│   │   │       ├── package.json
+│   │   │       ├── playwright.config.ts
+│   │   │       ├── pnpm-lock.yaml
+│   │   │       ├── .prettierignore
+│   │   │       ├── .prettierrc
+│   │   │       ├── README.md
+│   │   │       ├── src
+│   │   │       │   ├── app.css
+│   │   │       │   ├── app.d.ts
+│   │   │       │   ├── app.html
+│   │   │       │   ├── demo.spec.ts
+│   │   │       │   ├── hooks.server.ts
+│   │   │       │   ├── hooks.ts
+│   │   │       │   ├── lib
+│   │   │       │   │   ├── assets
+│   │   │       │   │   ├── components
+│   │   │       │   │   ├── index.ts
+│   │   │       │   │   ├── server
+│   │   │       │   │   ├── services
+│   │   │       │   │   ├── stores
+│   │   │       │   │   ├── types
+│   │   │       │   │   └── utils
+│   │   │       │   └── routes
+│   │   │       │       ├── demo
+│   │   │       │       ├── +layout.svelte
+│   │   │       │       ├── +page.svelte
+│   │   │       │       ├── page.svelte.spec.ts
+│   │   │       │       ├── services
+│   │   │       │       ├── testing
+│   │   │       │       └── test-suites
+│   │   │       ├── static
+│   │   │       │   └── robots.txt
+│   │   │       ├── svelte.config.js
+│   │   │       ├── tsconfig.json
+│   │   │       ├── vite.config.ts
+│   │   │       └── vitest-setup-client.ts
+│   │   ├── build-1.rs
+│   │   ├── build-2.rs
+│   │   ├── build-3.rs
+│   │   ├── build.rs
+│   │   ├── Cargo.toml
+│   │   ├── Cargo.v1.toml
+│   │   ├── chats
+│   │   │   ├── codriver.txt
+│   │   │   └── helpbox_context.json
+│   │   ├── config
+│   │   │   ├── agentd
+│   │   │   │   ├── agents.yaml
+│   │   │   │   ├── configs
+│   │   │   │   │   ├── freight-sources.yaml
+│   │   │   │   │   ├── housing-sources.yaml
+│   │   │   │   │   └── trucking-sources.yaml
+│   │   │   │   ├── database.yaml
+│   │   │   │   ├── init-db.surql
+│   │   │   │   └── persistence.yaml
+│   │   │   ├── agent_settings.toml
+│   │   │   ├── audit_and_logging.toml
+│   │   │   ├── autonomous_behavior.toml
+│   │   │   ├── clusterd
+│   │   │   │   ├── callbox_node.yaml
+│   │   │   │   ├── helpbox_node.yaml
+│   │   │   │   ├── hostbox_node.yaml
+│   │   │   │   └── workbox_node.yaml
+│   │   │   ├── cluster_node.toml
+│   │   │   ├── code_generation.toml
+│   │   │   ├── communication_settings.toml
+│   │   │   ├── database_analytics.toml
+│   │   │   ├── experimental_features.toml
+│   │   │   ├── lead_generation.toml
+│   │   │   ├── safety_and_limits.toml
+│   │   │   └── systemd
+│   │   │       ├── codriver-auth.service
+│   │   │       ├── codriver-email.service
+│   │   │       ├── codriver-payment.service
+│   │   │       ├── codriver-user.service
+│   │   │       ├── housing-collector.service
+│   │   │       ├── housing-collector.timer
+│   │   │       ├── lead-analyzer.service
+│   │   │       ├── lead-manager.service
+│   │   │       ├── lead-scraper-daily.service
+│   │   │       ├── lead-scraper-daily.timer
+│   │   │       ├── lead-scraper.service
+│   │   │       ├── llamacpp.service
+│   │   │       ├── surrealdb.service
+│   │   │       ├── trucking-collector.service
+│   │   │       └── trucking-collector.timer
+│   │   ├── crates
+│   │   │   ├── agents
+│   │   │   │   ├── big_bear
+│   │   │   │   │   ├── Cargo..toml
+│   │   │   │   │   └── src
+│   │   │   │   │       ├── alert_engine.rs
+│   │   │   │   │       ├── alert_system.rs
+│   │   │   │   │       ├── bin
+│   │   │   │   │       ├── geo_cache.rs
+│   │   │   │   │       ├── geo_mapper.rs
+│   │   │   │   │       ├── incident_feed.rs
+│   │   │   │   │       ├── report_collector.rs
+│   │   │   │   │       └── weigh_station_tracker.rs
+│   │   │   │   ├── cargo_connect
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       ├── bin
+│   │   │   │   │       ├── credential_vault.rs
+│   │   │   │   │       ├── filter_engine.rs
+│   │   │   │   │       ├── load_boards.rs
+│   │   │   │   │       ├── load_fetcher.rs
+│   │   │   │   │       ├── score_ranker.rs
+│   │   │   │   │       └── session_manager.rs
+│   │   │   │   ├── .idea
+│   │   │   │   │   ├── auto_assist
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── diesel_driver
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── error_echo
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── fuel_factor
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── ghost_guard
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── highway_helper
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── iron_insight
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── jackknife_jailer
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── key_keeper
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── memory_mark
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── night_nexus
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── oversize_overseer
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── quick_quote
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── radar_reach
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── secret_safe
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── unit_usage
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── voice_validator
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── xeno_xeno
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   ├── yes_yes
+│   │   │   │   │   │   └── README.md
+│   │   │   │   │   └── zone_zipper
+│   │   │   │   │       └── README.md
+│   │   │   │   ├── legal_logger
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       ├── bin
+│   │   │   │   │       ├── compression.rs
+│   │   │   │   │       ├── encryption_module.rs
+│   │   │   │   │       ├── ledger_writer.rs
+│   │   │   │   │       ├── signature_engine.rs
+│   │   │   │   │       └── timestamp_engine.rs
+│   │   │   │   ├── packet_pilot
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       ├── bin
+│   │   │   │   │       ├── email_monitor.rs
+│   │   │   │   │       ├── form_filler.rs
+│   │   │   │   │       ├── pdf_processor.rs
+│   │   │   │   │       ├── protocol_detector.rs
+│   │   │   │   │       └── signature_handler.rs
+│   │   │   │   ├── trucker_tales
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       ├── bin
+│   │   │   │   │       ├── emotion_enhancer.rs
+│   │   │   │   │       ├── format_converter.rs
+│   │   │   │   │       ├── publishing.rs
+│   │   │   │   │       ├── story_structurer.rs
+│   │   │   │   │       └── tale_listener.rs
+│   │   │   │   └── whisper_witness
+│   │   │   │       ├── Cargo.toml
+│   │   │   │       └── src
+│   │   │   │           ├── audio_listener.rs
+│   │   │   │           ├── bin
+│   │   │   │           ├── broker_tactics.rs
+│   │   │   │           ├── tactic_detector.rs
+│   │   │   │           ├── transcript_summarizer.rs
+│   │   │   │           └── whisper_engine.rs
+│   │   │   ├── managers
+│   │   │   │   ├── conversation-manager
+│   │   │   │   │   ├── build.sh
+│   │   │   │   │   ├── BUILD_SUMMARY.md
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   ├── configs
+│   │   │   │   │   │   └── config.toml
+│   │   │   │   │   ├── examples.sh
+│   │   │   │   │   ├── README.md
+│   │   │   │   │   ├── src
+│   │   │   │   │   │   ├── analyzer.rs
+│   │   │   │   │   │   ├── entities.rs
+│   │   │   │   │   │   ├── main.rs
+│   │   │   │   │   │   ├── models.rs
+│   │   │   │   │   │   ├── parser.rs
+│   │   │   │   │   │   ├── patterns.rs
+│   │   │   │   │   │   └── storage.rs
+│   │   │   │   │   └── USAGE.md
+│   │   │   │   ├── database-manager
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       └── main.rs
+│   │   │   │   └── service-manager
+│   │   │   │       ├── Cargo.lock
+│   │   │   │       ├── Cargo.toml
+│   │   │   │       └── src
+│   │   │   │           └── main.rs
+│   │   │   ├── services
+│   │   │   │   ├── audit-service
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   ├── docs
+│   │   │   │   │   │   └── audit-checks.md
+│   │   │   │   │   └── src
+│   │   │   │   │       └── main.rs
+│   │   │   │   ├── message-service
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       └── main.rs
+│   │   │   │   ├── pdf-service
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       └── main.rs
+│   │   │   │   ├── screen-service
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       └── main.rs
+│   │   │   │   └── vision-service
+│   │   │   │       ├── Cargo.lock
+│   │   │   │       ├── Cargo.toml
+│   │   │   │       └── src
+│   │   │   │           └── main.rs
+│   │   │   └── tools
+│   │   │       ├── api-gateway
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── code-assistant
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── data-collector
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       ├── main.rs
+│   │   │       │       └── markdown_generator.rs
+│   │   │       ├── file-operations
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── lead-analyzer
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── lead-handler
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── lead-scraper
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── prompt-controller
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── screen-handler
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── vision-handler
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── web-scraper
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       ├── web-searcher
+│   │   │       │   ├── Cargo.lock
+│   │   │       │   ├── Cargo.toml
+│   │   │       │   └── src
+│   │   │       │       └── main.rs
+│   │   │       └── workflow-engine
+│   │   │           ├── Cargo.lock
+│   │   │           ├── Cargo.toml
+│   │   │           └── src
+│   │   │               └── lib.rs
+│   │   ├── devtools
+│   │   │   ├── agent
+│   │   │   │   ├── agency-client.py
+│   │   │   │   ├── audit_components.sh
+│   │   │   │   ├── audit-system-status.sh
+│   │   │   │   ├── build-all.sh
+│   │   │   │   ├── check-models-integrity.sh
+│   │   │   │   ├── code-indexer.py
+│   │   │   │   ├── collection-webhook.py
+│   │   │   │   ├── data-collector-orchestrator.py
+│   │   │   │   ├── deep-scan.sh
+│   │   │   │   ├── download-models.sh
+│   │   │   │   ├── index-models.sh
+│   │   │   │   ├── index-prompts.sh
+│   │   │   │   ├── install-models.sh
+│   │   │   │   ├── lead-system
+│   │   │   │   │   ├── daily-digest.sh
+│   │   │   │   │   ├── quick-test.sh
+│   │   │   │   │   ├── scrape-leads.sh
+│   │   │   │   │   ├── start-lead-system.sh
+│   │   │   │   │   ├── status-lead-system.sh
+│   │   │   │   │   ├── stop-lead-system.sh
+│   │   │   │   │   └── test_leads.py
+│   │   │   │   ├── list-models.sh
+│   │   │   │   ├── list-prompts.sh
+│   │   │   │   ├── ollama-cluster.py
+│   │   │   │   ├── pre-flight.sh
+│   │   │   │   ├── pull-models.sh
+│   │   │   │   ├── setup-auto-sync.sh
+│   │   │   │   ├── setup-data-collectors.sh
+│   │   │   │   ├── start-agency.sh
+│   │   │   │   ├── start-all-services.sh
+│   │   │   │   ├── start-auto-collection.sh
+│   │   │   │   ├── start.sh
+│   │   │   │   ├── state-restore.sh
+│   │   │   │   ├── state-sync.sh
+│   │   │   │   ├── status-check.sh
+│   │   │   │   ├── status.sh
+│   │   │   │   ├── stop-agency.sh
+│   │   │   │   ├── stop.sh
+│   │   │   │   ├── system-status.sh
+│   │   │   │   ├── test-db.sh
+│   │   │   │   ├── trigger-collection-api.sh
+│   │   │   │   └── validate-models.sh
+│   │   │   ├── common
+│   │   │   │   ├── analyze-full-projects.zsh
+│   │   │   │   ├── barrel-typescript-ui.sh
+│   │   │   │   ├── c++-api-extractor.sh
+│   │   │   │   ├── check-for-duplicates.zsh
+│   │   │   │   ├── check-ollama-cluster.py
+│   │   │   │   ├── check-recent-outputs.sh
+│   │   │   │   ├── cleanup-whitespaces.sh
+│   │   │   │   ├── convert-json-o-yaml.sh
+│   │   │   │   ├── convert-yaml-o-json.sh
+│   │   │   │   ├── git-keep-helper.sh
+│   │   │   │   ├── helpful-auto-fix.zsh
+│   │   │   │   ├── push-file-updates.sh
+│   │   │   │   ├── remove-barrel-typescript-ui.sh
+│   │   │   │   └── reverse-init-collector.zsh
+│   │   │   ├── core
+│   │   │   │   ├── fix_ssh_config.sh
+│   │   │   │   ├── github-repo-selector.zsh
+│   │   │   │   └── sync-identity.zsh
+│   │   │   ├── golang
+│   │   │   │   ├── go-auto-fix.sh
+│   │   │   │   ├── go-build-errors.sh
+│   │   │   │   ├── go-comprehensive-check.sh
+│   │   │   │   ├── go-debug-toolkit.sh
+│   │   │   │   ├── go-fix-content.sh
+│   │   │   │   ├── go-quick-debug.sh
+│   │   │   │   ├── go-scaffold-check.sh
+│   │   │   │   └── go-tools.zsh
+│   │   │   ├── model
+│   │   │   │   ├── api-extractor.sh
+│   │   │   │   ├── check-models-integrity.sh
+│   │   │   │   ├── crust
+│   │   │   │   │   ├── fix_imports.rs
+│   │   │   │   │   ├── gen_mods.rs
+│   │   │   │   │   └── scan_src.rs
+│   │   │   │   ├── download-models.sh
+│   │   │   │   ├── index-models.sh
+│   │   │   │   ├── index-prompts.sh
+│   │   │   │   ├── install-llama-engine.sh
+│   │   │   │   ├── install-models.sh
+│   │   │   │   ├── list-models.sh
+│   │   │   │   ├── list-prompts.sh
+│   │   │   │   ├── pull-models.sh
+│   │   │   │   └── validate-models.sh
+│   │   │   ├── system
+│   │   │   │   ├── installs
+│   │   │   │   │   ├── install-dependencies.zsh
+│   │   │   │   │   ├── install-infrastructure.zsh
+│   │   │   │   │   ├── install_llama_cpp.sh
+│   │   │   │   │   ├── install-miniconda.sh
+│   │   │   │   │   ├── install-poetry.sh
+│   │   │   │   │   ├── install-systems.zsh
+│   │   │   │   │   ├── install-tools.zsh
+│   │   │   │   │   ├── install-yq.sh
+│   │   │   │   │   └── install-zsh-5.9.zsh
+│   │   │   │   └── setups
+│   │   │   │       ├── opt
+│   │   │   │       │   ├── firecracker
+│   │   │   │       │   ├── nginx
+│   │   │   │       │   ├── ollama
+│   │   │   │       │   ├── openvino
+│   │   │   │       │   ├── proxmox
+│   │   │   │       │   ├── vscodium
+│   │   │   │       │   └── zed
+│   │   │   │       └── sys
+│   │   │   │           └── alpine
+│   │   │   ├── testing
+│   │   │   │   ├── go_test
+│   │   │   │   │   ├── go.mod
+│   │   │   │   │   └── main.go
+│   │   │   │   ├── node_test
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── package.json
+│   │   │   │   ├── python_test
+│   │   │   │   │   └── python_test.py
+│   │   │   │   ├── pytorch_test
+│   │   │   │   │   ├── core
+│   │   │   │   │   │   ├── config.py
+│   │   │   │   │   │   └── logic.py
+│   │   │   │   │   ├── deploy.sh
+│   │   │   │   │   ├── docs
+│   │   │   │   │   │   ├── INSTALL.md
+│   │   │   │   │   │   └── QUICKSTART.md
+│   │   │   │   │   ├── main.py
+│   │   │   │   │   ├── README.md
+│   │   │   │   │   └── src
+│   │   │   │   │       ├── generate.py
+│   │   │   │   │       ├── handlers.py
+│   │   │   │   │       ├── helpers.py
+│   │   │   │   │       ├── utils.py
+│   │   │   │   │       └── validators.py
+│   │   │   │   ├── rust_test
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── src
+│   │   │   │   │       └── main.rs
+│   │   │   │   └── verify-dev-setup.sh
+│   │   │   ├── _untested
+│   │   │   │   ├── archive-manager-v1.sh
+│   │   │   │   ├── archive-manager-v2.sh
+│   │   │   │   ├── backup-manager-v1.sh
+│   │   │   │   ├── backup-manager-v2.sh
+│   │   │   │   ├── enterprise_setup.zsh
+│   │   │   │   ├── environment
+│   │   │   │   │   ├── env-acces-bootstrap-v1.sh
+│   │   │   │   │   ├── env-bootstrap-v1.sh
+│   │   │   │   │   ├── env-bootstrap-v2.zsh
+│   │   │   │   │   ├── env-containerd-v1.sh
+│   │   │   │   │   ├── env-init-v1.zsh
+│   │   │   │   │   ├── env-list-and-load-v1.zsh
+│   │   │   │   │   ├── env-loader-v1.zsh
+│   │   │   │   │   ├── env-loader-v2.zsh
+│   │   │   │   │   ├── env-load-order-v1.zsh
+│   │   │   │   │   ├── env-load-secrets-v1.zsh
+│   │   │   │   │   ├── env-prompt-for-backup-v1.zsh
+│   │   │   │   │   ├── env-quick-launch-v1.zsh
+│   │   │   │   │   └── env-sandbox-v1.sh
+│   │   │   │   ├── generate-enterprise-leptos.sh
+│   │   │   │   ├── quick_archives.sh
+│   │   │   │   ├── quick_backups.sh
+│   │   │   │   ├── setup_python-project.sh
+│   │   │   │   └── system
+│   │   │   │       ├── boostrap.sh
+│   │   │   │       ├── build-perf-storage.sh
+│   │   │   │       ├── check-system-health.sh
+│   │   │   │       ├── cloudflare-lockdown.sh
+│   │   │   │       ├── deploy-secure.sh
+│   │   │   │       ├── start-exit-node.zsh
+│   │   │   │       ├── system-health-check.zsh
+│   │   │   │       ├── test-system.zsh
+│   │   │   │       ├── tune-my-nvme.sh
+│   │   │   │       └── watch-exit-node.zsh
+│   │   │   └── utility
+│   │   │       ├── bash_helpers.sh
+│   │   │       ├── .broken
+│   │   │       │   ├── config_readers.sh
+│   │   │       │   └── dotfiles_setups.sh
+│   │   │       └── package_helpers.sh
+│   │   ├── docs
+│   │   │   ├── API.md
+│   │   │   ├── ARCHITECTURE.md
+│   │   │   ├── CODRIVER-ADAPTATION-PLAN.md
+│   │   │   ├── CODRIVER-CONTEXT-PRESERVATION.md
+│   │   │   ├── CODRIVER-FINAL-ARCHITECTURE.md
+│   │   │   ├── CODRIVER-PROJECT-STATUS.md
+│   │   │   ├── CODRIVER-V0.2-CODE-GENERATION.md
+│   │   │   ├── CODRIVER-V0-SHIPPED.md
+│   │   │   ├── COMMANDS.md
+│   │   │   ├── HOW-CODRIVER-LEARNS.md
+│   │   │   ├── HOW-TO-WORK-WITH-CODRIVER.md
+│   │   │   ├── MANUAL.md
+│   │   │   ├── MODELS.md
+│   │   │   └── TEACH-CODRIVER-QUICK-REF.md
+│   │   ├── .env.example
+│   │   ├── .gitignore
+│   │   ├── jobs
+│   │   │   ├── active
+│   │   │   │   └── .gitkeep
+│   │   │   ├── completed
+│   │   │   │   ├── Component.tsx
+│   │   │   │   ├── generated_code.tsx
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── LeadDashboard.tsx
+│   │   │   │   └── LoadCard.tsx
+│   │   │   ├── progress
+│   │   │   │   └── .gitkeep
+│   │   │   ├── queue
+│   │   │   │   └── .gitkeep
+│   │   │   └── state
+│   │   │       └── .gitkeep
+│   │   ├── lib
+│   │   │   ├── llama_wrapper.c
+│   │   │   ├── llama_wrapper.h
+│   │   │   └── types
+│   │   │       ├── agency.proto
+│   │   │       ├── commands.proto
+│   │   │       └── config.template.toml
+│   │   ├── LLAMA.md
+│   │   ├── README.md
+│   │   ├── src
+│   │   │   ├── api
+│   │   │   │   ├── extractors
+│   │   │   │   │   ├── auth.rs
+│   │   │   │   │   ├── json.rs
+│   │   │   │   │   └── mod.rs
+│   │   │   │   ├── handlers
+│   │   │   │   │   ├── batch.rs
+│   │   │   │   │   ├── inference.rs
+│   │   │   │   │   ├── mod.rs
+│   │   │   │   │   ├── streaming.rs
+│   │   │   │   │   └── websocket.rs
+│   │   │   │   ├── middleware
+│   │   │   │   │   ├── auth.rs
+│   │   │   │   │   ├── cors.rs
+│   │   │   │   │   ├── logging.rs
+│   │   │   │   │   ├── metrics.rs
+│   │   │   │   │   ├── mod.rs
+│   │   │   │   │   └── rate_limit.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── responses
+│   │   │   │   │   ├── error.rs
+│   │   │   │   │   ├── mod.rs
+│   │   │   │   │   ├── streaming.rs
+│   │   │   │   │   └── success.rs
+│   │   │   │   ├── routes
+│   │   │   │   │   ├── admin.rs
+│   │   │   │   │   ├── chat.rs
+│   │   │   │   │   ├── completions.rs
+│   │   │   │   │   ├── embeddings.rs
+│   │   │   │   │   ├── health.rs
+│   │   │   │   │   ├── models.rs
+│   │   │   │   │   └── mod.rs
+│   │   │   │   └── server.rs
+│   │   │   ├── bin
+│   │   │   │   └── ai_v0.rs
+│   │   │   ├── bindings
+│   │   │   │   └── mod.rs
+│   │   │   ├── configs
+│   │   │   │   ├── mod.rs
+│   │   │   │   └── pronunciation_config.rs
+│   │   │   ├── constants
+│   │   │   │   ├── default.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   └── values.rs
+│   │   │   ├── context
+│   │   │   │   ├── context.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   └── _utils.rs
+│   │   │   ├── core
+│   │   │   │   ├── agent.rs
+│   │   │   │   ├── command.rs
+│   │   │   │   ├── core.old
+│   │   │   │   │   ├── context_pool.rs
+│   │   │   │   │   ├── engine.rs
+│   │   │   │   │   ├── memory_manager.rs
+│   │   │   │   │   ├── mod.rs
+│   │   │   │   │   ├── rate_limit.rs
+│   │   │   │   │   └── thread_pool.rs
+│   │   │   │   ├── llm.rs
+│   │   │   │   ├── models.rs
+│   │   │   │   ├── monitor.rs
+│   │   │   │   ├── service.rs
+│   │   │   │   ├── system.rs
+│   │   │   │   ├── tools.rs
+│   │   │   │   └── workflows.rs
+│   │   │   ├── database
+│   │   │   │   ├── connection.rs
+│   │   │   │   ├── models.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   └── queries.rs
+│   │   │   ├── errors
+│   │   │   │   ├── api.rs
+│   │   │   │   ├── error.rs
+│   │   │   │   ├── llama.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── _utils.rs
+│   │   │   │   └── validation.rs
+│   │   │   ├── handlers
+│   │   │   │   ├── auth.rs
+│   │   │   │   ├── database.rs
+│   │   │   │   ├── inference.rs
+│   │   │   │   ├── middleware.rs
+│   │   │   │   ├── model.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── response.rs
+│   │   │   │   ├── route.rs
+│   │   │   │   ├── runtime.rs
+│   │   │   │   ├── token.rs
+│   │   │   │   └── _utils.rs
+│   │   │   ├── lib.rs
+│   │   │   ├── lib.v1.rs
+│   │   │   ├── loaders
+│   │   │   │   ├── cache.rs
+│   │   │   │   ├── gguf.rs
+│   │   │   │   ├── model.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   └── validation.rs
+│   │   │   ├── main.rs
+│   │   │   ├── main.v1.rs
+│   │   │   ├── models
+│   │   │   │   ├── chat.rs
+│   │   │   │   ├── completion.rs
+│   │   │   │   ├── config.rs
+│   │   │   │   ├── embeddings.rs
+│   │   │   │   ├── model.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── request.rs
+│   │   │   │   ├── response.rs
+│   │   │   │   └── _utils.rs
+│   │   │   ├── prompts
+│   │   │   │   ├── chat_formats.rs
+│   │   │   │   ├── format.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── system.rs
+│   │   │   │   ├── templates.rs
+│   │   │   │   └── tokenize.rs
+│   │   │   ├── runtimes
+│   │   │   │   ├── async.rs
+│   │   │   │   ├── batch.rs
+│   │   │   │   ├── interactive-1.rs
+│   │   │   │   ├── interactive.rs
+│   │   │   │   ├── model_check-1.rs
+│   │   │   │   ├── model_check.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── streaming.rs
+│   │   │   │   ├── _utils.rs
+│   │   │   │   └── websocket.rs
+│   │   │   ├── tokens
+│   │   │   │   ├── batch-1.rs
+│   │   │   │   ├── batch.rs
+│   │   │   │   ├── batch.v1.rs
+│   │   │   │   ├── check.rs
+│   │   │   │   ├── decode.rs
+│   │   │   │   ├── encode.rs
+│   │   │   │   ├── encoding.rs
+│   │   │   │   ├── mod.rs
+│   │   │   │   ├── tokenize-1.rs
+│   │   │   │   ├── tokenize.rs
+│   │   │   │   └── vocab.rs
+│   │   │   └── utils
+│   │   │       ├── config.rs
+│   │   │       ├── file_utils.rs
+│   │   │       ├── formating.rs
+│   │   │       ├── health.rs
+│   │   │       ├── logging.rs
+│   │   │       ├── metrics.rs
+│   │   │       └── mod.rs
+│   │   ├── tests
+│   │   │   ├── api_tests.rs
+│   │   │   ├── bench
+│   │   │   │   └── inference_bench.rs
+│   │   │   ├── cli_tests.rs
+│   │   │   ├── common
+│   │   │   │   ├── fixtures
+│   │   │   │   │   └── tests_model.rs
+│   │   │   │   └── mod.rs
+│   │   │   ├── examples
+│   │   │   │   ├── batch_demo.rs
+│   │   │   │   └── interactive_demo.rs
+│   │   │   ├── integration_tests.rs
+│   │   │   ├── model_tests.rs
+│   │   │   ├── pronunciation_tests.rs
+│   │   │   ├── runtime_tests.rs
+│   │   │   └── token_tests.rs
+│   │   └── wrapper.h
+│   ├── srv
+│   │   ├── admin
+│   │   │   ├── .index
+│   │   │   │   ├── html
+│   │   │   │   │   ├── client-management-portal.html
+│   │   │   │   │   ├── cluster-monitoring.html
+│   │   │   │   │   ├── cost-analytics.html
+│   │   │   │   │   ├── deployment-pipeline.html
+│   │   │   │   │   ├── firecracker-vm-management.html
+│   │   │   │   │   ├── network-topology-map.html
+│   │   │   │   │   ├── security-monitoring.html
+│   │   │   │   │   └── service-monitoring.html
+│   │   │   │   └── react
+│   │   │   │       ├── cloud-auth-page
+│   │   │   │       ├── cloud-compute-page
+│   │   │   │       ├── cloud-control-center
+│   │   │   │       ├── cloud-email-page
+│   │   │   │       ├── cloud-landing-page
+│   │   │   │       ├── cloud-payment-page
+│   │   │   │       └── cloud-storage-page
+│   │   │   └── Jesse_Conley
+│   │   │       ├── docs
+│   │   │       │   ├── build-stories
+│   │   │       │   │   ├── but-you-said
+│   │   │       │   │   ├── ill-do-it-anyway
+│   │   │       │   │   ├── i-wrote-it-anyway
+│   │   │       │   │   └── long-way-home
+│   │   │       │   ├── business-ideas
+│   │   │       │   ├── design-prices
+│   │   │       │   │   ├── development
+│   │   │       │   │   ├── package
+│   │   │       │   │   ├── pricing-notes.txt
+│   │   │       │   │   ├── schema
+│   │   │       │   │   └── service
+│   │   │       │   └── system-studies
+│   │   │       │       ├── building
+│   │   │       │       ├── code
+│   │   │       │       ├── databases
+│   │   │       │       ├── designs
+│   │   │       │       ├── diagrams
+│   │   │       │       ├── environments
+│   │   │       │       ├── FAQ
+│   │   │       │       ├── languages
+│   │   │       │       ├── math
+│   │   │       │       ├── memory
+│   │   │       │       ├── security
+│   │   │       │       ├── server
+│   │   │       │       ├── social-media
+│   │   │       │       └── structure
+│   │   │       └── .envs
+│   │   │           ├── admin.mrk
+│   │   │           └── zbox.mrk
+│   │   ├── client
+│   │   │   ├── Avery_Wiggins
+│   │   │   │   ├── designs
+│   │   │   │   │   ├── azhya-twins-enoch
+│   │   │   │   │   │   ├── ai-core.js
+│   │   │   │   │   │   ├── GPT4o-NOTES.md
+│   │   │   │   │   │   ├── package.json
+│   │   │   │   │   │   ├── pyproject.toml
+│   │   │   │   │   │   ├── README.md
+│   │   │   │   │   │   ├── server.js
+│   │   │   │   │   │   ├── stock-predictor.py
+│   │   │   │   │   │   ├── voice-handler.js
+│   │   │   │   │   │   └── web-builder.mjs
+│   │   │   │   │   ├── flutter-memorial
+│   │   │   │   │   │   ├── analysis_options.yaml
+│   │   │   │   │   │   ├── android
+│   │   │   │   │   │   ├── Dockerfile
+│   │   │   │   │   │   ├── .gitignore
+│   │   │   │   │   │   ├── ios
+│   │   │   │   │   │   ├── lib
+│   │   │   │   │   │   ├── linux
+│   │   │   │   │   │   ├── macos
+│   │   │   │   │   │   ├── .metadata
+│   │   │   │   │   │   ├── pubspec.yaml
+│   │   │   │   │   │   ├── README.md
+│   │   │   │   │   │   ├── test
+│   │   │   │   │   │   ├── web
+│   │   │   │   │   │   └── windows
+│   │   │   │   │   └── owlusive-treasures
+│   │   │   │   │       ├── AUTHORS
+│   │   │   │   │       ├── CODE_OF_CONDUCT.md
+│   │   │   │   │       ├── CODEOWNERS
+│   │   │   │   │       ├── CONTRIBUTING.md
+│   │   │   │   │       ├── docs
+│   │   │   │   │       ├── download
+│   │   │   │   │       ├── idea
+│   │   │   │   │       ├── LICENSE
+│   │   │   │   │       ├── pages
+│   │   │   │   │       ├── README.md
+│   │   │   │   │       └── SECURITY.md
+│   │   │   │   └── .envs
+│   │   │   │       ├── client.mrk
+│   │   │   │       └── zbox.mrk
+│   │   │   ├── .index
+│   │   │   │   └── index.html
+│   │   │   ├── Mindy_Wiggins
+│   │   │   │   ├── assets
+│   │   │   │   │   ├── audios
+│   │   │   │   │   │   ├── 172778860541899 (1).mp4
+│   │   │   │   │   │   ├── 20240701_200247.mp4
+│   │   │   │   │   │   ├── 20240711_184013.mp4
+│   │   │   │   │   │   ├── 20240711_184041.mp4
+│   │   │   │   │   │   ├── 20240711_184242.mp4
+│   │   │   │   │   │   ├── 20240720_205936.mp4
+│   │   │   │   │   │   ├── 20240720_210219.mp4
+│   │   │   │   │   │   ├── 20240722_221542.mp4
+│   │   │   │   │   │   ├── 2025-01-02-155533413.mp4
+│   │   │   │   │   │   ├── 20250107_184505.mp4
+│   │   │   │   │   │   ├── 20250107_232411.mp4
+│   │   │   │   │   │   ├── 20250527_025242.mp4
+│   │   │   │   │   │   ├── 20250610_024901.mp4
+│   │   │   │   │   │   ├── 20250711_003129.mp4
+│   │   │   │   │   │   ├── 20250711_003405.mp4
+│   │   │   │   │   │   ├── 20250711_003510.mp4
+│   │   │   │   │   │   ├── 20250711_003615.mp4
+│   │   │   │   │   │   ├── 20250711_003720.mp4
+│   │   │   │   │   │   ├── 20250711_003833.mp4
+│   │   │   │   │   │   ├── 20250711_003952.mp4
+│   │   │   │   │   │   ├── 20250711_004055.mp4
+│   │   │   │   │   │   ├── 20250711_204550.mp4
+│   │   │   │   │   │   ├── 2025-07-14-023109567.mp4
+│   │   │   │   │   │   ├── 20250730_065336.mp4
+│   │   │   │   │   │   ├── 20250730_065456.mp4
+│   │   │   │   │   │   ├── 20250730_065552.mp4
+│   │   │   │   │   │   ├── 20250730_065629.mp4
+│   │   │   │   │   │   ├── 20250803_000555.mp4
+│   │   │   │   │   │   ├── 20250806_021839.mp4
+│   │   │   │   │   │   ├── 20250809_212058.mp4
+│   │   │   │   │   │   ├── 20250809_212318.mp4
+│   │   │   │   │   │   ├── 20250814_210548.mp4
+│   │   │   │   │   │   ├── 20250821_081121.mp4
+│   │   │   │   │   │   ├── 20250821_081328.mp4
+│   │   │   │   │   │   ├── 20250821_081459.mp4
+│   │   │   │   │   │   ├── 20250821_113236.mp4
+│   │   │   │   │   │   ├── 20250821_113418~2.mp4
+│   │   │   │   │   │   ├── 20250821_113418.mp4
+│   │   │   │   │   │   ├── 20250822_232216.mp4
+│   │   │   │   │   │   ├── 20250830_235525.mp4
+│   │   │   │   │   │   ├── 20250831_163139.mp4
+│   │   │   │   │   │   ├── 20250831_163232.mp4
+│   │   │   │   │   │   ├── 20250831_163711.mp4
+│   │   │   │   │   │   ├── 20250831_163953.mp4
+│   │   │   │   │   │   ├── 20250901_223151.mp4
+│   │   │   │   │   │   ├── 20250901_223815.mp4
+│   │   │   │   │   │   ├── 20250904_172941.mp4
+│   │   │   │   │   │   ├── 20250904_172948.mp4
+│   │   │   │   │   │   ├── 20250907_225802.mp4
+│   │   │   │   │   │   ├── 20250907_230610.mp4
+│   │   │   │   │   │   ├── 20250908_004937.mp4
+│   │   │   │   │   │   ├── 20250909_214034.mp4
+│   │   │   │   │   │   ├── 20250910_204029.mp4
+│   │   │   │   │   │   ├── 20250910_212056.mp4
+│   │   │   │   │   │   ├── 20250911_212505.mp4
+│   │   │   │   │   │   ├── 20250911_212617.mp4
+│   │   │   │   │   │   ├── 20250916_112646.mp4
+│   │   │   │   │   │   ├── 20250916_231604.mp4
+│   │   │   │   │   │   ├── 20250917_041814.mp4
+│   │   │   │   │   │   ├── 20250917_174314.mp4
+│   │   │   │   │   │   ├── 20250917_174849.mp4
+│   │   │   │   │   │   ├── 20250917_175024.mp4
+│   │   │   │   │   │   ├── 20250917_175540.mp4
+│   │   │   │   │   │   ├── 20250918_194057.mp4
+│   │   │   │   │   │   ├── 20250922_221437.mp4
+│   │   │   │   │   │   ├── 3a50d907ec4f64387b8d55ac13e101d7.mp4
+│   │   │   │   │   │   ├── QVZjQVVteWI0ZDFvV09paQ.mp4
+│   │   │   │   │   │   ├── QVZlUlZUMTgwMWJOMEl0eQ.mp4
+│   │   │   │   │   │   ├── VID_20221224_163311d.mp4
+│   │   │   │   │   │   ├── VID_20221224_163311.mp4
+│   │   │   │   │   │   └── VID_20221224_163342.mp4
+│   │   │   │   │   ├── images
+│   │   │   │   │   │   ├── 0f6a2d449d41497d99b973d75a6b5aed.jpg
+│   │   │   │   │   │   ├── 1000000447.jpg
+│   │   │   │   │   │   ├── 1000000452.jpg
+│   │   │   │   │   │   ├── 1000001239.jpg
+│   │   │   │   │   │   ├── 1000001247.jpg
+│   │   │   │   │   │   ├── 1000001267.jpg
+│   │   │   │   │   │   ├── 1000001269.jpg
+│   │   │   │   │   │   ├── 1000001271.jpg
+│   │   │   │   │   │   ├── 117e7643-1786-4d9f-9da2-bac15a8a903a.jpg
+│   │   │   │   │   │   ├── 139a0c06-1a80-4c93-b981-a46715cf3bfd.jpg
+│   │   │   │   │   │   ├── 1747918025509.jpg
+│   │   │   │   │   │   ├── 1748948727102.jpg
+│   │   │   │   │   │   ├── 20201123_104711.jpg
+│   │   │   │   │   │   ├── 20201123_104718.jpg
+│   │   │   │   │   │   ├── 20201123_104718-PHOTO_FRAME.jpg
+│   │   │   │   │   │   ├── 20201206_001728.jpg
+│   │   │   │   │   │   ├── 20201206_001728-PHOTO_FRAME.jpg
+│   │   │   │   │   │   ├── 20210508_100101.jpg
+│   │   │   │   │   │   ├── 20210526_145009.jpg
+│   │   │   │   │   │   ├── 20210604_162614.jpg
+│   │   │   │   │   │   ├── 20210604_162616.jpg
+│   │   │   │   │   │   ├── 20210604_162619.jpg
+│   │   │   │   │   │   ├── 20210604_162624.jpg
+│   │   │   │   │   │   ├── 20210720_124618.jpg
+│   │   │   │   │   │   ├── 20210720_124720.jpg
+│   │   │   │   │   │   ├── 20210720_124724.jpg
+│   │   │   │   │   │   ├── 20210720_124817.jpg
+│   │   │   │   │   │   ├── 20210720_124819.jpg
+│   │   │   │   │   │   ├── 20210720_124821.jpg
+│   │   │   │   │   │   ├── 20210720_124825.jpg
+│   │   │   │   │   │   ├── 20210720_124829.jpg
+│   │   │   │   │   │   ├── 20210720_124847.jpg
+│   │   │   │   │   │   ├── 20210814_085934.jpg
+│   │   │   │   │   │   ├── 20210824_172354.jpg
+│   │   │   │   │   │   ├── 20210824_172401.jpg
+│   │   │   │   │   │   ├── 20210824_172407.jpg
+│   │   │   │   │   │   ├── 20210824_172428.jpg
+│   │   │   │   │   │   ├── 20210824_172439.jpg
+│   │   │   │   │   │   ├── 20210826_162800.jpg
+│   │   │   │   │   │   ├── 20210831_150409(1).jpg
+│   │   │   │   │   │   ├── 20210831_150409.jpg
+│   │   │   │   │   │   ├── 20210910_140233.jpg
+│   │   │   │   │   │   ├── 20210910_140233-PHOTO_FRAME.jpg
+│   │   │   │   │   │   ├── 20210910_140240.jpg
+│   │   │   │   │   │   ├── 20210926_150021.jpg
+│   │   │   │   │   │   ├── 20210926_150025.jpg
+│   │   │   │   │   │   ├── 20210926_150036.jpg
+│   │   │   │   │   │   ├── 20210926_150038.jpg
+│   │   │   │   │   │   ├── 20210926_150212.jpg
+│   │   │   │   │   │   ├── 20210926_150214.jpg
+│   │   │   │   │   │   ├── 20210926_150221.jpg
+│   │   │   │   │   │   ├── 20210926_150222.jpg
+│   │   │   │   │   │   ├── 20210926_150252.jpg
+│   │   │   │   │   │   ├── 20210926_150449.jpg
+│   │   │   │   │   │   ├── 20210926_150459.jpg
+│   │   │   │   │   │   ├── 20210926_150505.jpg
+│   │   │   │   │   │   ├── 20210926_150509.jpg
+│   │   │   │   │   │   ├── 20210926_150512.jpg
+│   │   │   │   │   │   ├── 20210926_150514.jpg
+│   │   │   │   │   │   ├── 20210926_150520.jpg
+│   │   │   │   │   │   ├── 20210926_150525.jpg
+│   │   │   │   │   │   ├── 20210926_150527.jpg
+│   │   │   │   │   │   ├── 20210926_150533.jpg
+│   │   │   │   │   │   ├── 20211010_181836.jpg
+│   │   │   │   │   │   ├── 20211111_173057_HDR.jpg
+│   │   │   │   │   │   ├── 20211111_173237~2.jpg
+│   │   │   │   │   │   ├── 20211111_173237~3.jpg
+│   │   │   │   │   │   ├── 20211111_173238.jpg
+│   │   │   │   │   │   ├── 20211111_173520.jpg
+│   │   │   │   │   │   ├── 20211111_173536.jpg
+│   │   │   │   │   │   ├── 20211111_173537.jpg
+│   │   │   │   │   │   ├── 20211114_182954(1).jpg
+│   │   │   │   │   │   ├── 20211114_182954(2).jpg
+│   │   │   │   │   │   ├── 20211115_023544_HDR.jpg
+│   │   │   │   │   │   ├── 20211115_023634_HDR.jpg
+│   │   │   │   │   │   ├── 20211115_023700.jpg
+│   │   │   │   │   │   ├── 20220627_090606.jpg
+│   │   │   │   │   │   ├── 20220801_154352.jpg
+│   │   │   │   │   │   ├── 20220801_154353.jpg
+│   │   │   │   │   │   ├── 20220801_154358.jpg
+│   │   │   │   │   │   ├── 20220802_145043.jpg
+│   │   │   │   │   │   ├── 20220831_025135.jpg
+│   │   │   │   │   │   ├── 20220915_214200.jpg
+│   │   │   │   │   │   ├── 20220924_143955.jpg
+│   │   │   │   │   │   ├── 20220929_205636.jpg
+│   │   │   │   │   │   ├── 20221213_182101.jpg
+│   │   │   │   │   │   ├── 20221213_182116.jpg
+│   │   │   │   │   │   ├── 2023-02-18(1)d.jpg
+│   │   │   │   │   │   ├── 2023-02-18(1).jpg
+│   │   │   │   │   │   ├── 2023-02-18(5).jpg
+│   │   │   │   │   │   ├── 2023-02-18(6).jpg
+│   │   │   │   │   │   ├── 2023-02-18(7).jpg
+│   │   │   │   │   │   ├── 2023-02-18(8).jpg
+│   │   │   │   │   │   ├── 2023-02-18d.jpg
+│   │   │   │   │   │   ├── 2023-02-18.jpg
+│   │   │   │   │   │   ├── 2023-02-18-PHOTO_FRAME(1).jpg
+│   │   │   │   │   │   ├── 2023-02-18-PHOTO_FRAME.jpg
+│   │   │   │   │   │   ├── 2023-06-01(11).jpg
+│   │   │   │   │   │   ├── 2023-06-01(15).jpg
+│   │   │   │   │   │   ├── 2023-06-01(16).jpg
+│   │   │   │   │   │   ├── 2023-06-01(17).jpg
+│   │   │   │   │   │   ├── 2023-06-01(18).jpg
+│   │   │   │   │   │   ├── 2023-06-01(19).jpg
+│   │   │   │   │   │   ├── 2023-06-01(1)dd.jpg
+│   │   │   │   │   │   ├── 2023-06-01(1)d.jpg
+│   │   │   │   │   │   ├── 2023-06-01(1).jpg
+│   │   │   │   │   │   ├── 2023-06-01(20).jpg
+│   │   │   │   │   │   ├── 2023-06-01(21).jpg
+│   │   │   │   │   │   ├── 2023-06-01(22).jpg
+│   │   │   │   │   │   ├── 2023-06-01(2).jpg
+│   │   │   │   │   │   ├── 2023-06-01(3).jpg
+│   │   │   │   │   │   ├── 2023-06-01(4).jpg
+│   │   │   │   │   │   ├── 2023-06-01(5)d.jpg
+│   │   │   │   │   │   ├── 2023-06-01(5).jpg
+│   │   │   │   │   │   ├── 2023-06-01(6).jpg
+│   │   │   │   │   │   ├── 2023-06-01(7).jpg
+│   │   │   │   │   │   ├── 2023-06-01d.jpg
+│   │   │   │   │   │   ├── 2023-06-01.jpg
+│   │   │   │   │   │   ├── 20231105_191710.jpg
+│   │   │   │   │   │   ├── 20231108_073403-COLLAGE.jpg
+│   │   │   │   │   │   ├── 20240626_102926.jpg
+│   │   │   │   │   │   ├── 20240626_102928.jpg
+│   │   │   │   │   │   ├── 20240628_015544.jpg
+│   │   │   │   │   │   ├── 20240725_165028.jpg
+│   │   │   │   │   │   ├── 20240725_172745.jpg
+│   │   │   │   │   │   ├── 20240819_215106.jpg
+│   │   │   │   │   │   ├── 20240819_215108.jpg
+│   │   │   │   │   │   ├── 20240819_215110.jpg
+│   │   │   │   │   │   ├── 20240819_215112.jpg
+│   │   │   │   │   │   ├── 20240819_215117.jpg
+│   │   │   │   │   │   ├── 20240819_215156.jpg
+│   │   │   │   │   │   ├── 20240820_180843.jpg
+│   │   │   │   │   │   ├── 20240828_202425.jpg
+│   │   │   │   │   │   ├── 20240906_154132.jpg
+│   │   │   │   │   │   ├── 20240906_154135.jpg
+│   │   │   │   │   │   ├── 20240906_154146.jpg
+│   │   │   │   │   │   ├── 20240906_154156.jpg
+│   │   │   │   │   │   ├── 20240906_154203.jpg
+│   │   │   │   │   │   ├── 20240906_154206.jpg
+│   │   │   │   │   │   ├── 20240906_154210.jpg
+│   │   │   │   │   │   ├── 20240906_154215.jpg
+│   │   │   │   │   │   ├── 20240918_190204.jpg
+│   │   │   │   │   │   ├── 20240918_190205.jpg
+│   │   │   │   │   │   ├── 20241130_204955.jpg
+│   │   │   │   │   │   ├── 20241130_205900.jpg
+│   │   │   │   │   │   ├── 20241130_210003.jpg
+│   │   │   │   │   │   ├── 20241130_210047.jpg
+│   │   │   │   │   │   ├── 20241130_210211.jpg
+│   │   │   │   │   │   ├── 20241130_210326.jpg
+│   │   │   │   │   │   ├── 20241130_210505.jpg
+│   │   │   │   │   │   ├── 20241130_210632.jpg
+│   │   │   │   │   │   ├── 20241130_210751.jpg
+│   │   │   │   │   │   ├── 20241130_210751_remastered.jpg
+│   │   │   │   │   │   ├── 20241130_210958.jpg
+│   │   │   │   │   │   ├── 20241130_211103.jpg
+│   │   │   │   │   │   ├── 20241130_211214.jpg
+│   │   │   │   │   │   ├── 20241130_211412.jpg
+│   │   │   │   │   │   ├── 20241130_211559.jpg
+│   │   │   │   │   │   ├── 20241130_211940~2.jpg
+│   │   │   │   │   │   ├── 20241130_211940~3.jpg
+│   │   │   │   │   │   ├── 20241130_211940.jpg
+│   │   │   │   │   │   ├── 20241201_144716.jpg
+│   │   │   │   │   │   ├── 20241201_144753.jpg
+│   │   │   │   │   │   ├── 20241201_144827.jpg
+│   │   │   │   │   │   ├── 20241201_144903~2.jpg
+│   │   │   │   │   │   ├── 20241201_144903.jpg
+│   │   │   │   │   │   ├── 20241203_232631.jpg
+│   │   │   │   │   │   ├── 20241203_232633.jpg
+│   │   │   │   │   │   ├── 20241203_232634.jpg
+│   │   │   │   │   │   ├── 20250131_163859.jpg
+│   │   │   │   │   │   ├── 20250131_205824.jpg
+│   │   │   │   │   │   ├── 20250131_205824_resized.jpg
+│   │   │   │   │   │   ├── 20250413_233650.jpg
+│   │   │   │   │   │   ├── 20250413_233851.jpg
+│   │   │   │   │   │   ├── 20250413_233852.jpg
+│   │   │   │   │   │   ├── 20250413_233853.jpg
+│   │   │   │   │   │   ├── 20250413_233912.jpg
+│   │   │   │   │   │   ├── 20250413_233914.jpg
+│   │   │   │   │   │   ├── 20250413_233942.jpg
+│   │   │   │   │   │   ├── 20250413_233943.jpg
+│   │   │   │   │   │   ├── 20250413_233944.jpg
+│   │   │   │   │   │   ├── 20250413_233945.jpg
+│   │   │   │   │   │   ├── 20250413_233946.jpg
+│   │   │   │   │   │   ├── 20250413_233947.jpg
+│   │   │   │   │   │   ├── 20250413_233949.jpg
+│   │   │   │   │   │   ├── 20250413_233950.jpg
+│   │   │   │   │   │   ├── 20250525_065143.jpg
+│   │   │   │   │   │   ├── 20250525_065253.jpg
+│   │   │   │   │   │   ├── 20250602_190657(0).jpg
+│   │   │   │   │   │   ├── 20250602_190657.jpg
+│   │   │   │   │   │   ├── 20250705_192053.jpg
+│   │   │   │   │   │   ├── 20250711_003015.jpg
+│   │   │   │   │   │   ├── 20250711_003024.jpg
+│   │   │   │   │   │   ├── 20250711_003030.jpg
+│   │   │   │   │   │   ├── 20250711_003031.jpg
+│   │   │   │   │   │   ├── 20250711_003032.jpg
+│   │   │   │   │   │   ├── 20250721_034351.jpg
+│   │   │   │   │   │   ├── 20250722_220703.jpg
+│   │   │   │   │   │   ├── 20250727_233018.jpg
+│   │   │   │   │   │   ├── 20250727_233038.jpg
+│   │   │   │   │   │   ├── 20250727_233042.jpg
+│   │   │   │   │   │   ├── 20250727_233044.jpg
+│   │   │   │   │   │   ├── 20250727_233047.jpg
+│   │   │   │   │   │   ├── 20250727_233049.jpg
+│   │   │   │   │   │   ├── 20250727_233319.jpg
+│   │   │   │   │   │   ├── 20250727_233321.jpg
+│   │   │   │   │   │   ├── 20250727_233357.jpg
+│   │   │   │   │   │   ├── 20250727_233406.jpg
+│   │   │   │   │   │   ├── 20250727_233450.jpg
+│   │   │   │   │   │   ├── 20250802_235829.jpg
+│   │   │   │   │   │   ├── 20250802_235849.jpg
+│   │   │   │   │   │   ├── 20250802_235852.jpg
+│   │   │   │   │   │   ├── 20250802_235900.jpg
+│   │   │   │   │   │   ├── 20250803_000142.jpg
+│   │   │   │   │   │   ├── 20250803_000308.jpg
+│   │   │   │   │   │   ├── 20250803_000313.jpg
+│   │   │   │   │   │   ├── 20250803_000345.jpg
+│   │   │   │   │   │   ├── 20250807_023948.jpg
+│   │   │   │   │   │   ├── 20250830_235428.jpg
+│   │   │   │   │   │   ├── 20250830_235432.jpg
+│   │   │   │   │   │   ├── 20250831_170435.jpg
+│   │   │   │   │   │   ├── 20250901_222240.jpg
+│   │   │   │   │   │   ├── 20250901_222251.jpg
+│   │   │   │   │   │   ├── 20250901_222306.jpg
+│   │   │   │   │   │   ├── 20250901_222313.jpg
+│   │   │   │   │   │   ├── 20250901_222507.jpg
+│   │   │   │   │   │   ├── 20250901_222521.jpg
+│   │   │   │   │   │   ├── 20250901_222541.jpg
+│   │   │   │   │   │   ├── 20250901_222604.jpg
+│   │   │   │   │   │   ├── 20250901_222712.jpg
+│   │   │   │   │   │   ├── 20250916_112454.jpg
+│   │   │   │   │   │   ├── 20250916_112457.jpg
+│   │   │   │   │   │   ├── 20250916_112500.jpg
+│   │   │   │   │   │   ├── 20250916_112509.jpg
+│   │   │   │   │   │   ├── 20250916_112514.jpg
+│   │   │   │   │   │   ├── 20250916_112517.jpg
+│   │   │   │   │   │   ├── 20250916_112522.jpg
+│   │   │   │   │   │   ├── 20250916_112528.jpg
+│   │   │   │   │   │   ├── 20250916_112533.jpg
+│   │   │   │   │   │   ├── 20250916_112537.jpg
+│   │   │   │   │   │   ├── 20250916_112541.jpg
+│   │   │   │   │   │   ├── 20250916_112550.jpg
+│   │   │   │   │   │   ├── 20250916_112554.jpg
+│   │   │   │   │   │   ├── 20250916_112558.jpg
+│   │   │   │   │   │   ├── 20250916_112603.jpg
+│   │   │   │   │   │   ├── 20250916_112607.jpg
+│   │   │   │   │   │   ├── 20250916_112613.jpg
+│   │   │   │   │   │   ├── 20250917_111606.jpg
+│   │   │   │   │   │   ├── 20250917_111715.jpg
+│   │   │   │   │   │   ├── 20250917_111726.jpg
+│   │   │   │   │   │   ├── 20250917_111729.jpg
+│   │   │   │   │   │   ├── 20250917_111758.jpg
+│   │   │   │   │   │   ├── 20250917_111804.jpg
+│   │   │   │   │   │   ├── 20250917_111808.jpg
+│   │   │   │   │   │   ├── 20250918_173105.jpg
+│   │   │   │   │   │   ├── 20250918_173106.jpg
+│   │   │   │   │   │   ├── 20250918_173111.jpg
+│   │   │   │   │   │   ├── 20250918_173119.jpg
+│   │   │   │   │   │   ├── 20250918_173126.jpg
+│   │   │   │   │   │   ├── 2907ad9adc600b3bdb35b422e7c65469.jpg
+│   │   │   │   │   │   ├── 2a296aabd2098155bdb6f3ad16266be8.jpg
+│   │   │   │   │   │   ├── 3ceee5fa-87c4-4936-a413-2e88f88ed990.jpg
+│   │   │   │   │   │   ├── 50852e68-cc99-4fa5-9f99-caf1d9bbd9a5.jpg
+│   │   │   │   │   │   ├── 5ce5a29879f5cbbbccfba4cffd9b8055.jpg
+│   │   │   │   │   │   ├── 5d9e34cd-c0fc-42ee-adb3-7aa43356d45a.jpg
+│   │   │   │   │   │   ├── 706ac4f8-f817-4925-8575-ab284d28bc39.jpg
+│   │   │   │   │   │   ├── 7b89733d65984f86f70d040018ee1e65--harley-davids.jpg
+│   │   │   │   │   │   ├── a4c706c4-ad91-4301-8cd9-b50df509c8ab.jpg
+│   │   │   │   │   │   ├── b4e6e9d5-a266-4fae-9496-e9622afcb1ef.jpg
+│   │   │   │   │   │   ├── FB_IMG_1561586369973-COLLAGE.jpg
+│   │   │   │   │   │   ├── FB_IMG_1569505753975-COLLAGE.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570461756315.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570461775862.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570463411408.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570463526842.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570463539090.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570463554166.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570463592151.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570533646243.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570533656186.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570533665316.jpg
+│   │   │   │   │   │   ├── FB_IMG_1570533796331.jpg
+│   │   │   │   │   │   ├── FB_IMG_1574167798213.jpg
+│   │   │   │   │   │   ├── FB_IMG_1576377410067.jpg
+│   │   │   │   │   │   ├── FB_IMG_1576854004138.jpg
+│   │   │   │   │   │   ├── FB_IMG_1577374810761.jpg
+│   │   │   │   │   │   ├── FB_IMG_1577375133289.jpg
+│   │   │   │   │   │   ├── FB_IMG_1577375140629.jpg
+│   │   │   │   │   │   ├── FB_IMG_1577375157995.jpg
+│   │   │   │   │   │   ├── FB_IMG_1601917921523d.jpg
+│   │   │   │   │   │   ├── FB_IMG_1601917921523.jpg
+│   │   │   │   │   │   ├── FB_IMG_1602145156756.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603654570296.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603654621022.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603654856713.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603655486990.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603655547620.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603655643624.jpg
+│   │   │   │   │   │   ├── FB_IMG_1603656381591.jpg
+│   │   │   │   │   │   ├── FB_IMG_1635513571681.jpg
+│   │   │   │   │   │   ├── FB_IMG_1640308911161.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654851633125.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654851640914.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654851663391.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654851668730.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654851677271.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654851687043.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654852083503.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654852094067.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654852097563.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654852103214.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654852110089.jpg
+│   │   │   │   │   │   ├── FB_IMG_1654853173643.jpg
+│   │   │   │   │   │   ├── FB_IMG_1670633112286.jpg
+│   │   │   │   │   │   ├── FB_IMG_1671150022207.jpg
+│   │   │   │   │   │   ├── FB_IMG_1671395393887.jpg
+│   │   │   │   │   │   ├── FB_IMG_1671395408666.jpg
+│   │   │   │   │   │   ├── FB_IMG_1671395419978.jpg
+│   │   │   │   │   │   ├── FB_IMG_1671395437480.jpg
+│   │   │   │   │   │   ├── FB_IMG_1688950480827.jpg
+│   │   │   │   │   │   ├── FB_IMG_1688950818156.jpg
+│   │   │   │   │   │   ├── FB_IMG_1696968221275.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735930905557.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735930920217.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735930939672.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931047460.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931065040.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931083132.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931094973.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931112596.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931136737.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931146840.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931162980.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931227246.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931232242.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931237684.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931241938.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931287697.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931302014.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931316089.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931323989.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931332405.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931338315~2.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931338315.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931378420.jpg
+│   │   │   │   │   │   ├── FB_IMG_1735931386042.jpg
+│   │   │   │   │   │   ├── IMG_20220612_145354231~2.jpg
+│   │   │   │   │   │   ├── IMG_20220616_150209311-PHOTO_FRAME.jpg
+│   │   │   │   │   │   ├── IMG_20220723_023001_(1080_x_1080_pixel)_resized.jpg
+│   │   │   │   │   │   ├── IMG_20220902_145143509.jpg
+│   │   │   │   │   │   ├── IMG_20220902_145245334d.jpg
+│   │   │   │   │   │   ├── IMG_20220902_145245334.jpg
+│   │   │   │   │   │   ├── IMG_20221018_200139_01.jpg
+│   │   │   │   │   │   ├── IMG_20230707_190610.jpg
+│   │   │   │   │   │   ├── IMG_20230707_190619.jpg
+│   │   │   │   │   │   ├── IMG_20230707_190622.jpg
+│   │   │   │   │   │   ├── IMG_20230722_153123.jpg
+│   │   │   │   │   │   ├── IMG_20230918_191837.jpg
+│   │   │   │   │   │   ├── IMG_20231025_151158713.jpg
+│   │   │   │   │   │   ├── IMG_20231025_151208151.jpg
+│   │   │   │   │   │   ├── IMG_20231025_151216027.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183326037_HDR.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183338344.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183346546_HDR.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183356029_HDR.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183357512_HDR.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183405289.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183412551.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183417822.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183423879.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183426285.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183431749.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183449582.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183456474.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183526458.jpg
+│   │   │   │   │   │   ├── IMG_20231029_183538264.jpg
+│   │   │   │   │   │   ├── IMG_20231201_155529780_BURST001~2.jpg
+│   │   │   │   │   │   ├── IMG_20240703_235349.jpg
+│   │   │   │   │   │   ├── IMG_20240704_162558~2.jpg
+│   │   │   │   │   │   ├── IMG_20240801_230940~2.jpg
+│   │   │   │   │   │   ├── IMG_20240801_230940.jpg
+│   │   │   │   │   │   ├── IMG_20241224_143325.jpg
+│   │   │   │   │   │   ├── IMG_20250112_154012.jpg
+│   │   │   │   │   │   ├── IMG_20250203_082913.jpg
+│   │   │   │   │   │   ├── IMG_20250614_204537.jpg
+│   │   │   │   │   │   ├── IMG_20250616_215448_625.jpg
+│   │   │   │   │   │   ├── love.jpg
+│   │   │   │   │   │   ├── magical world.jpg
+│   │   │   │   │   │   ├── moon dreams.jpg
+│   │   │   │   │   │   ├── Moon .jpg
+│   │   │   │   │   │   ├── MoonPhase Galaxy.jpg
+│   │   │   │   │   │   ├── mushrooms.jpg
+│   │   │   │   │   │   ├── PART_1718920612163_image000000.jpg
+│   │   │   │   │   │   ├── PART_1718920612999_1718594061769.jpg
+│   │   │   │   │   │   ├── PART_1719516829891_1000000093.jpg
+│   │   │   │   │   │   ├── PART_1719516841847_1000000091.jpg
+│   │   │   │   │   │   ├── PART_1719516853249_1000000089.jpg
+│   │   │   │   │   │   ├── PART_1719516892883_1000000092.jpg
+│   │   │   │   │   │   ├── PART_1719604384885_image.jpg
+│   │   │   │   │   │   ├── PART_1719694373464_mms-89E5E23BFB.jpg
+│   │   │   │   │   │   ├── PART_1719694373532_image.jpg
+│   │   │   │   │   │   ├── PART_1719770904910_1000000093.jpg
+│   │   │   │   │   │   ├── PART_1719770904990_1000000091.jpg
+│   │   │   │   │   │   ├── PART_1719770905055_1000000089.jpg
+│   │   │   │   │   │   ├── PART_1719770905122_1000000092.jpg
+│   │   │   │   │   │   ├── PART_1719770944414_image000000.jpg
+│   │   │   │   │   │   ├── PART_1719770945020_1718594061769.jpg
+│   │   │   │   │   │   ├── PART_1719770949643_image.jpg
+│   │   │   │   │   │   ├── PART_1719770950018_mms-89E5E23BFB.jpg
+│   │   │   │   │   │   ├── PART_1719770950063_image.jpg
+│   │   │   │   │   │   ├── received_1214798056036713.jpg
+│   │   │   │   │   │   ├── received_1399530613547583.jpg
+│   │   │   │   │   │   ├── received_146543387633708.jpg
+│   │   │   │   │   │   ├── received_1640687352975365.jpg
+│   │   │   │   │   │   ├── received_2271648503048038.jpg
+│   │   │   │   │   │   ├── received_289904835059742.jpg
+│   │   │   │   │   │   ├── received_2955335111445483.jpg
+│   │   │   │   │   │   ├── received_359344049608708.jpg
+│   │   │   │   │   │   ├── received_396314425544286~2.jpg
+│   │   │   │   │   │   ├── received_396314425544286.jpg
+│   │   │   │   │   │   ├── received_432474985264244.jpg
+│   │   │   │   │   │   ├── received_458857815674484.jpg
+│   │   │   │   │   │   ├── received_4929495787160215.jpg
+│   │   │   │   │   │   ├── received_559893642021649.jpg
+│   │   │   │   │   │   ├── received_747121377071949~2.jpg
+│   │   │   │   │   │   ├── received_747121377071949~3.jpg
+│   │   │   │   │   │   ├── received_761592281926056.jpg
+│   │   │   │   │   │   ├── received_765280521145117.jpg
+│   │   │   │   │   │   ├── received_794431665056450.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-034424_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-034435_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-034438_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-034440_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-034529_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-034927_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035042_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035242_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035251_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035318_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035507_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035513_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035520_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035533_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035555_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220801-035604_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20220927-113759_Toon Blast.jpg
+│   │   │   │   │   │   ├── Screenshot_20240609_175834_Tips.jpg
+│   │   │   │   │   │   ├── Screenshot_20240609_175846_Galaxy Themes.jpg
+│   │   │   │   │   │   ├── Screenshot_20240619_120342_Google.jpg
+│   │   │   │   │   │   ├── Screenshot_20240624_182755_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20240624_182801_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20240624_182812_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20240624_182820_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20240624_182826_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20240726_165101_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_144742_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_144751_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145202_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145227_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145416_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145418_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145421_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145446_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145537_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_145544_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240729_150039_Zodiac.jpg
+│   │   │   │   │   │   ├── Screenshot_20240819_184746_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010037_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010113_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010419_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010425_Tuya Smart-edit-20241127141618.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010425_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010509_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241001_010620_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241006_035136_Tuya Smart-edit-20241127140405.jpg
+│   │   │   │   │   │   ├── Screenshot_20241006_035136_Tuya Smart.jpg
+│   │   │   │   │   │   ├── Screenshot_20241202_120314_Amazon Shopping.jpg
+│   │   │   │   │   │   ├── Screenshot_20241202_120519_Amazon Shopping.jpg
+│   │   │   │   │   │   ├── Screenshot_20241202_120640_Amazon Shopping.jpg
+│   │   │   │   │   │   ├── Screenshot_20241202_120914_Amazon Shopping.jpg
+│   │   │   │   │   │   ├── Screenshot_20241204_082924_Samsung Internetd.jpg
+│   │   │   │   │   │   ├── Screenshot_20241204_082924_Samsung Internet.jpg
+│   │   │   │   │   │   ├── Screenshot_20241204_082934_Samsung Internet.jpg
+│   │   │   │   │   │   ├── Screenshot_20241204_083549_Samsung Internet~2.jpg
+│   │   │   │   │   │   ├── Screenshot_20241204_083549_Samsung Internet.jpg
+│   │   │   │   │   │   ├── Screenshot_20241210_151025_One UI Home.jpg
+│   │   │   │   │   │   ├── Screenshot_20250120_161931_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_104407_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_110011_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_110228_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_160818_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_160834_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161010_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161113_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161138_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161144_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161213_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161229_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161258_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250207_161311_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250226_223409_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20250226_223423_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20250226_223428_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20250301_190658_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20250425_005851_Gmail.jpg
+│   │   │   │   │   │   ├── Screenshot_20250425_010642_Messages.jpg
+│   │   │   │   │   │   ├── Screenshot_20250425_010658_Messages.jpg
+│   │   │   │   │   │   ├── Screenshot_20250512_110440_Messenger.jpg
+│   │   │   │   │   │   ├── Screenshot_20250512_110505_Messenger.jpg
+│   │   │   │   │   │   ├── Screenshot_20250527_172537_CloudEdge.jpg
+│   │   │   │   │   │   ├── Screenshot_20250527_172633_CloudEdge.jpg
+│   │   │   │   │   │   ├── Screenshot_20250527_172748_CloudEdge.jpg
+│   │   │   │   │   │   ├── Screenshot_20250527_172832_CloudEdge.jpg
+│   │   │   │   │   │   ├── Screenshot_20250530_141849_CloudEdge.jpg
+│   │   │   │   │   │   ├── Screenshot_20250530_185745_CloudEdge.jpg
+│   │   │   │   │   │   ├── Screenshot_20250530_214321_Photos.jpg
+│   │   │   │   │   │   ├── Screenshot_20250622_064654_Drive.jpg
+│   │   │   │   │   │   ├── Screenshot_20250622_155109_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20250626_130635_Call.jpg
+│   │   │   │   │   │   ├── Screenshot_20250702_144125_Permission controller.jpg
+│   │   │   │   │   │   ├── Screenshot_20250704_084817_Samsung Internet.jpg
+│   │   │   │   │   │   ├── Screenshot_20250718_013245_Samsung Internet.jpg
+│   │   │   │   │   │   ├── Screenshot_20250719_231855_Samsung Internet.jpg
+│   │   │   │   │   │   ├── Screenshot_20250727_230902_Messages.jpg
+│   │   │   │   │   │   ├── Screenshot_20250729_181046_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20250729_181118_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20250729_181131_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20250803_105122_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20250809_153421_Messages.jpg
+│   │   │   │   │   │   ├── Screenshot_20250809_153436_Messages.jpg
+│   │   │   │   │   │   ├── Screenshot_20250809_153445_Messages.jpg
+│   │   │   │   │   │   ├── Screenshot_20250910_030055_Chrome.jpg
+│   │   │   │   │   │   ├── Screenshot_20250915_232349_Service mode.jpg
+│   │   │   │   │   │   ├── Screenshot_20250916_124511_Settings.jpg
+│   │   │   │   │   │   ├── Screenshot_20250921_031941_Facebook.jpg
+│   │   │   │   │   │   ├── Screenshot_20250921_032012_Facebook.jpg
+│   │   │   │   │   │   ├── Skull.jpg
+│   │   │   │   │   │   ├── s-l300.jpg
+│   │   │   │   │   │   ├── Terri's 💜's.jpg
+│   │   │   │   │   │   ├── trashed-1671008376-Screenshot_2022-11-02-08-42-(1).jpg
+│   │   │   │   │   │   ├── trashed-1671008376-Screenshot_2022-11-02-08-42-.jpg
+│   │   │   │   │   │   ├── Tree of Life.jpg
+│   │   │   │   │   │   ├── VID_20240416_211144959_exported_0~2.jpg
+│   │   │   │   │   │   ├── VID_20240416_211144959_exported_0.jpg
+│   │   │   │   │   │   ├── VID_20240514_222411450_exported_1067.jpg
+│   │   │   │   │   │   └── VID_20250128_213210_exported_1255.jpg
+│   │   │   │   │   ├── meta
+│   │   │   │   │   │   ├── 20191106_191342.jpg.json
+│   │   │   │   │   │   ├── 20191106_191402.jpg.json
+│   │   │   │   │   │   ├── 20191112_192221.mp4.json
+│   │   │   │   │   │   ├── 20191112_192530.mp4.json
+│   │   │   │   │   │   ├── 20191112_193318.mp4.json
+│   │   │   │   │   │   ├── 20191112_204615-ANIMATION.gif.json
+│   │   │   │   │   │   ├── 20191206_195837.jpg.json
+│   │   │   │   │   │   ├── 20191208_140258.jpg.json
+│   │   │   │   │   │   ├── 20191208_140301.jpg.json
+│   │   │   │   │   │   ├── 20191208_140307.jpg.json
+│   │   │   │   │   │   ├── 20191216_145816.jpg.json
+│   │   │   │   │   │   ├── 20191216_145832.jpg.json
+│   │   │   │   │   │   ├── 20200808_005837.jpg.json
+│   │   │   │   │   │   ├── 20200827_094913.jpg.json
+│   │   │   │   │   │   ├── 20200827_094958.jpg.json
+│   │   │   │   │   │   ├── 20200827_095000.jpg.json
+│   │   │   │   │   │   ├── 20200827_095107_HDR.jpg.json
+│   │   │   │   │   │   ├── 20200827_095139.jpg.json
+│   │   │   │   │   │   ├── 20200827_185956.jpg.json
+│   │   │   │   │   │   ├── 20200827_190752.jpg.json
+│   │   │   │   │   │   ├── 20200827_190754.jpg.json
+│   │   │   │   │   │   ├── 20200827_191036.jpg.json
+│   │   │   │   │   │   ├── 20200827_191101.jpg.json
+│   │   │   │   │   │   ├── 20200827_191417.jpg.json
+│   │   │   │   │   │   ├── 20200827_191742.jpg.json
+│   │   │   │   │   │   ├── 20200827_192124.jpg.json
+│   │   │   │   │   │   ├── 20200827_192133.jpg.json
+│   │   │   │   │   │   ├── 20200827_192546.jpg.json
+│   │   │   │   │   │   ├── 20200827_192547.jpg.json
+│   │   │   │   │   │   ├── 20200827_192551.jpg.json
+│   │   │   │   │   │   ├── 20200827_193131.jpg.json
+│   │   │   │   │   │   ├── 20200827_193132.jpg.json
+│   │   │   │   │   │   ├── 20200827_193238.jpg.json
+│   │   │   │   │   │   ├── 20200827_193244.jpg.json
+│   │   │   │   │   │   ├── 20200827_193301.jpg.json
+│   │   │   │   │   │   ├── 20200827_202529.jpg.json
+│   │   │   │   │   │   ├── 20200905_185647.jpg.json
+│   │   │   │   │   │   ├── 20200914_193002.jpg.json
+│   │   │   │   │   │   ├── 20210526_145009.jpg.json
+│   │   │   │   │   │   ├── 20210720_124503.jpg.json
+│   │   │   │   │   │   ├── 20210720_124551.jpg.json
+│   │   │   │   │   │   ├── 20210720_124611d.jpg.json
+│   │   │   │   │   │   ├── 20210720_124611.jpg.json
+│   │   │   │   │   │   ├── 20210720_124613d.jpg.json
+│   │   │   │   │   │   ├── 20210720_124613.jpg.json
+│   │   │   │   │   │   ├── 20210720_124618.jpg.json
+│   │   │   │   │   │   ├── 20210720_124720.jpg.json
+│   │   │   │   │   │   ├── 20210720_124724.jpg.json
+│   │   │   │   │   │   ├── 20210720_124817.jpg.json
+│   │   │   │   │   │   ├── 20210720_124819.jpg.json
+│   │   │   │   │   │   ├── 20210720_124821.jpg.json
+│   │   │   │   │   │   ├── 20210720_124825.jpg.json
+│   │   │   │   │   │   ├── 20210720_124829.jpg.json
+│   │   │   │   │   │   ├── 20210720_124847.jpg.json
+│   │   │   │   │   │   ├── 20210824_172354.jpg.json
+│   │   │   │   │   │   ├── 20210824_172357.jpg.json
+│   │   │   │   │   │   ├── 20210824_172401.jpg.json
+│   │   │   │   │   │   ├── 20210824_172421.jpg.json
+│   │   │   │   │   │   ├── 20210824_172428.jpg.json
+│   │   │   │   │   │   ├── 20210824_172439.jpg.json
+│   │   │   │   │   │   ├── 20211010_181827.jpg.json
+│   │   │   │   │   │   ├── 20211010_181836.jpg.json
+│   │   │   │   │   │   ├── 20211111_173057_HDR.jpg.json
+│   │   │   │   │   │   ├── 20211111_173237~2.jpg.json
+│   │   │   │   │   │   ├── 20211111_173237~3.jpg.json
+│   │   │   │   │   │   ├── 20211111_173238.jpg.json
+│   │   │   │   │   │   ├── 20211111_173520.jpg.json
+│   │   │   │   │   │   ├── 20211111_173536.jpg.json
+│   │   │   │   │   │   ├── 20211111_173537.jpg.json
+│   │   │   │   │   │   ├── 20211114_182954(1).jpg.json
+│   │   │   │   │   │   ├── 20211114_182954(2).jpg.json
+│   │   │   │   │   │   ├── 20211115_023544_HDR.jpg.json
+│   │   │   │   │   │   ├── 20211115_023634_HDR.jpg.json
+│   │   │   │   │   │   ├── 20211115_023647_HDR.jpg.json
+│   │   │   │   │   │   ├── 20211115_023700.jpg.json
+│   │   │   │   │   │   ├── 20220202_191919.mp4.json
+│   │   │   │   │   │   ├── 20220205_153813.jpg.json
+│   │   │   │   │   │   ├── 20220205_153819.jpg.json
+│   │   │   │   │   │   ├── 20220512_000009.jpg.json
+│   │   │   │   │   │   ├── 20220512_000024.jpg.json
+│   │   │   │   │   │   ├── 20220512_000054.jpg.json
+│   │   │   │   │   │   ├── 20220512_000105.jpg.json
+│   │   │   │   │   │   ├── 20220512_000108.jpg.json
+│   │   │   │   │   │   ├── 20221213_182101.jpg.json
+│   │   │   │   │   │   ├── 20221213_182116.jpg.json
+│   │   │   │   │   │   ├── 2023-02-18d.jpg.json
+│   │   │   │   │   │   ├── 2023-02-18.jpg(10).json
+│   │   │   │   │   │   ├── 2023-02-18.jpg(1).json
+│   │   │   │   │   │   ├── 2023-02-18.jpg(7).json
+│   │   │   │   │   │   ├── 2023-02-18.jpg(8).json
+│   │   │   │   │   │   ├── 2023-02-18.jpg(9).json
+│   │   │   │   │   │   ├── 2023-02-18.jpg.json
+│   │   │   │   │   │   ├── 2023-06-01dd.jpg.json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(1).json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(2).json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(3).json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(4)d.json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(4).json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(5)d.json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(5).json
+│   │   │   │   │   │   ├── 2023-06-01.jpg(8).json
+│   │   │   │   │   │   ├── 2023-06-01.jpg.json
+│   │   │   │   │   │   ├── 2023-06-01sd.jpg.json
+│   │   │   │   │   │   ├── 20231105_191710.jpg.json
+│   │   │   │   │   │   ├── 20231108_073403-COLLAGE.jpg.json
+│   │   │   │   │   │   ├── 8b90b0749bb4ec644264d711991762a7.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1566226877703-COLLAGE.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1570463419990.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1570533796331.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1570533856398.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1573639521058.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574040268661.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574040278543.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574040288048.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574040315611.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574040322588.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574167798213.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574173851450d.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1574173851450.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1576377410067.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1576854004138.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1577111333474.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1587567012015.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1601917915784.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1601917921523.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1601917936657.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1601917975829.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1601918000032.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1603655486990.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1603655518229.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1603655537583.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1603655547620.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1603655643624.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1603656381591.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1635513571681.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1640308911161.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851633125.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851640914.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851647424.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851651938.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851656794.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851656794-PHOTO_FRAME.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654851663391.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654853162514.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1654853173643.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1670633112286.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671150022207.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671395393887.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671395408666.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671395419978.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671395437480.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671395448495.jpg.json
+│   │   │   │   │   │   ├── FB_IMG_1671395460999.jpg.json
+│   │   │   │   │   │   ├── IMG_20191223_162804579-PHOTO_FRAME.jpg.json
+│   │   │   │   │   │   ├── IMG_20191223_162902663.jpg.json
+│   │   │   │   │   │   ├── IMG_20191223_162906350.jpg.json
+│   │   │   │   │   │   ├── IMG_20201025_145028.jpg.json
+│   │   │   │   │   │   ├── IMG_20220616_150221333.jpg.json
+│   │   │   │   │   │   ├── IMG_20230707_190547.jpg.json
+│   │   │   │   │   │   ├── IMG_20230707_190552.jpg.json
+│   │   │   │   │   │   ├── IMG_20230707_190602.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183426285.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183431749.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183449582.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183456474.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183503648.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183526458.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183530018_HDR.jpg.json
+│   │   │   │   │   │   ├── IMG_20231029_183538264.jpg.json
+│   │   │   │   │   │   ├── IMG_20231101_023229858_HDR.jpg.json
+│   │   │   │   │   │   ├── IMG_20231101_023242102_HDR.jpg.json
+│   │   │   │   │   │   ├── IMG_20231120_163339777.jpg.json
+│   │   │   │   │   │   ├── metadatad.json
+│   │   │   │   │   │   ├── metadata.json
+│   │   │   │   │   │   ├── MOVIE.mp4.json
+│   │   │   │   │   │   ├── MOVIE-SNIPPET.mp4.json
+│   │   │   │   │   │   ├── QVZjb0FIckwwUFZaX3lRTA.mp4.json
+│   │   │   │   │   │   ├── QVZjN29UU0lMcVc3ZW5obw.mp4.json
+│   │   │   │   │   │   ├── QVZkcFpkTmI5RXVqQnZkZw.mp4.json
+│   │   │   │   │   │   ├── QVZkX1lHQWVDektXeVlCUw.mp4.json
+│   │   │   │   │   │   ├── QVZlb1g2UXRVTENHRWRPcQ.mp4.json
+│   │   │   │   │   │   ├── QVZlNnQ4RklQY1o2NndaNA.mp4.json
+│   │   │   │   │   │   ├── QVZlSE9lRUx1ZjhILUxZNw.mp4.json
+│   │   │   │   │   │   ├── QVZlY1ZJUzFlMFJUanZSdg.mp4.json
+│   │   │   │   │   │   ├── QVZmQlRreVhxVkJTRzBBbA.mp4.json
+│   │   │   │   │   │   ├── received_1399530613547583.jpeg.json
+│   │   │   │   │   │   ├── received_1423224757854566.jpeg.json
+│   │   │   │   │   │   ├── received_1460372687460913.jpeg.json
+│   │   │   │   │   │   ├── received_2271648503048038.jpeg.json
+│   │   │   │   │   │   ├── received_2276893689132782.webp.json
+│   │   │   │   │   │   ├── received_369135821967885.webp.json
+│   │   │   │   │   │   ├── received_396314425544286~2.jpeg.json
+│   │   │   │   │   │   ├── received_396314425544286.jpeg.json
+│   │   │   │   │   │   ├── received_408340660014069.jpeg.json
+│   │   │   │   │   │   ├── received_432474985264244.webp.json
+│   │   │   │   │   │   ├── received_439071549993085.jpeg.json
+│   │   │   │   │   │   ├── received_458442028202443.jpeg.json
+│   │   │   │   │   │   ├── received_709027702938451.jpeg.json
+│   │   │   │   │   │   ├── received_765280521145117.webp.json
+│   │   │   │   │   │   ├── received_865093290504149.jpeg.json
+│   │   │   │   │   │   ├── Screenshot_20220520-140823_Facebook.jpg.json
+│   │   │   │   │   │   ├── Screenshot_20231118-005246.png.json
+│   │   │   │   │   │   ├── Screenshot_20231119-222012.png.json
+│   │   │   │   │   │   └── VID_20230707_190420.mp4.json
+│   │   │   │   │   └── UNKNOWN
+│   │   │   │   │       ├── PART_1718920619109
+│   │   │   │   │       ├── PART_1718920619241
+│   │   │   │   │       ├── PART_1718920619312
+│   │   │   │   │       ├── PART_1718920619372
+│   │   │   │   │       ├── PART_1718920619442
+│   │   │   │   │       ├── PART_1719770948756
+│   │   │   │   │       ├── PART_1719770948823
+│   │   │   │   │       ├── PART_1719770948885
+│   │   │   │   │       ├── PART_1719770948954
+│   │   │   │   │       └── PART_1719770949028
+│   │   │   │   └── .envs
+│   │   │   │       ├── client.mrk
+│   │   │   │       └── zbox.mrk
+│   │   │   ├── Rebecca_Dyer
+│   │   │   │   ├── assets
+│   │   │   │   │   ├── audios
+│   │   │   │   │   │   └── 605SS.mp4
+│   │   │   │   │   ├── images
+│   │   │   │   │   │   ├── AJ & Sissi
+│   │   │   │   │   │   ├── brian
+│   │   │   │   │   │   ├── Brian Senior Pics
+│   │   │   │   │   │   ├── Bub
+│   │   │   │   │   │   ├── Carl
+│   │   │   │   │   │   ├── Carls Wedding
+│   │   │   │   │   │   ├── colton
+│   │   │   │   │   │   ├── Cousins
+│   │   │   │   │   │   ├── Dad
+│   │   │   │   │   │   ├── Dad and Mom
+│   │   │   │   │   │   ├── Dogs
+│   │   │   │   │   │   ├── Graduation
+│   │   │   │   │   │   ├── Harley
+│   │   │   │   │   │   ├── jesse
+│   │   │   │   │   │   ├── Josh
+│   │   │   │   │   │   ├── Katie
+│   │   │   │   │   │   ├── me
+│   │   │   │   │   │   ├── Mia
+│   │   │   │   │   │   ├── misc
+│   │   │   │   │   │   ├── Ryan
+│   │   │   │   │   │   ├── Scan
+│   │   │   │   │   │   ├── Tats
+│   │   │   │   │   │   ├── UNKNOWN
+│   │   │   │   │   │   ├── wedding
+│   │   │   │   │   │   ├── WEDDING
+│   │   │   │   │   │   └── XMAS 2011
+│   │   │   │   │   ├── music
+│   │   │   │   │   │   ├── 3 Doors Down
+│   │   │   │   │   │   ├── Buckcherry
+│   │   │   │   │   │   ├── Finger Eleven
+│   │   │   │   │   │   ├── Jason Mraz
+│   │   │   │   │   │   ├── Papa Roach
+│   │   │   │   │   │   ├── Puddle of Mudd
+│   │   │   │   │   │   ├── Soulja Boy
+│   │   │   │   │   │   ├── Taylor Swift
+│   │   │   │   │   │   ├── Three Days Grace
+│   │   │   │   │   │   └── Unknown Artist
+│   │   │   │   │   ├── UNKNOWN
+│   │   │   │   │   │   ├── 1000 word essay 4 court.docx
+│   │   │   │   │   │   ├── 1580124andersonericMedical Packet.pdf
+│   │   │   │   │   │   ├── 2012 Benefits.pdf
+│   │   │   │   │   │   ├── Argumentative Essay.docx
+│   │   │   │   │   │   ├── Back Up Your Files to the Cloud.pdf
+│   │   │   │   │   │   ├── Compare-Contrast Essay.docx
+│   │   │   │   │   │   ├── DIAGNOSTIC ESSAY.docx
+│   │   │   │   │   │   ├── DownloadSanDiskSecureAccess_Mac.pdf
+│   │   │   │   │   │   ├── Drama Essay.docx
+│   │   │   │   │   │   ├── Dream Cars2.docx
+│   │   │   │   │   │   ├── Dream Cars.docx
+│   │   │   │   │   │   ├── eng 114 1st response.docx
+│   │   │   │   │   │   ├── Fiction Essay.docx
+│   │   │   │   │   │   ├── FOUND.000
+│   │   │   │   │   │   ├── HPB OEE DMAIC_Feb.pptx
+│   │   │   │   │   │   ├── HS-Standard Assessment 4.docx
+│   │   │   │   │   │   ├── IndexerVolumeGuid
+│   │   │   │   │   │   ├── Literary Analysis2.docx
+│   │   │   │   │   │   ├── LRSA.docx
+│   │   │   │   │   │   ├── Mode Essay.doc
+│   │   │   │   │   │   ├── NATHANIEL HAWTHORNE.docx
+│   │   │   │   │   │   ├── new resume.docx
+│   │   │   │   │   │   ├── P.55.rtf
+│   │   │   │   │   │   ├── Poet Report.docx
+│   │   │   │   │   │   ├── Poetry Essay.docx
+│   │   │   │   │   │   ├── Poetry Essay.odt
+│   │   │   │   │   │   ├── PortableVaultInstallerMemorexV2051.exe
+│   │   │   │   │   │   ├── Reading Response #3.docx
+│   │   │   │   │   │   ├── Reading Response #4.docx
+│   │   │   │   │   │   ├── Reflective Letter.docx
+│   │   │   │   │   │   ├── Research Paper #1.odt
+│   │   │   │   │   │   ├── Research Paper #2.docx
+│   │   │   │   │   │   ├── Response #2 for eng 114.docx
+│   │   │   │   │   │   ├── response #3-animal rights.docx
+│   │   │   │   │   │   ├── RESPONSE ESSAY.docx
+│   │   │   │   │   │   ├── Resume 2013.docx
+│   │   │   │   │   │   ├── RunSanDiskSecureAccess_Win.exe
+│   │   │   │   │   │   ├── SanDisk_SecureAccess_QSG.pdf
+│   │   │   │   │   │   ├── shop til we drop.docx
+│   │   │   │   │   │   ├── System Volume Information
+│   │   │   │   │   │   ├── template for resume.docx
+│   │   │   │   │   │   ├── WMPInfo.xml
+│   │   │   │   │   │   └── WPSettings.dat
+│   │   │   │   │   └── videos
+│   │   │   │   │       ├── DBO Line 1.mpg
+│   │   │   │   │       ├── DBO Line 5.mpg
+│   │   │   │   │       ├── HPB Line 19.mpg
+│   │   │   │   │       ├── HPB Line 20.mpg
+│   │   │   │   │       ├── HPB Line 21.mpg
+│   │   │   │   │       ├── HPB Line 22.mpg
+│   │   │   │   │       ├── squeegeed.mpg
+│   │   │   │   │       ├── squeegee.mpg
+│   │   │   │   │       ├── VAW Line 2.mpg
+│   │   │   │   │       └── VAW Line 6.mpg
+│   │   │   │   └── .envs
+│   │   │   │       ├── client.mrk
+│   │   │   │       └── zbox.mrk
+│   │   │   └── Shawn_Rambo
+│   │   │       ├── designs
+│   │   │       │   └── nails-by-rambo
+│   │   │       │       └── pages
+│   │   │       └── .envs
+│   │   │           ├── client.mrk
+│   │   │           └── zbox.mrk
+│   │   ├── database
+│   │   │   ├── dragonflydb
+│   │   │   │   └── .gitkeep
+│   │   │   ├── duckdb
+│   │   │   │   └── .gitkeep
+│   │   │   ├── .index
+│   │   │   │   └── index.html
+│   │   │   └── surrealdb
+│   │   │       └── .gitkeep
+│   │   ├── docker
+│   │   │   ├── caddy
+│   │   │   │   ├── Caddyfile
+│   │   │   │   └── Dockerfile
+│   │   │   ├── cloudflared
+│   │   │   │   ├── .cloudflared
+│   │   │   │   │   ├── config.yml
+│   │   │   │   │   └── edae7d3d-59b6-40e4-9269-55eb65581cd7.json
+│   │   │   │   └── docker-compose.yml
+│   │   │   ├── duckdb
+│   │   │   │   └── Dockerfile
+│   │   │   ├── gitea
+│   │   │   │   └── Dockerfile
+│   │   │   ├── .index
+│   │   │   │   └── index.html
+│   │   │   ├── mariadb
+│   │   │   │   └── Dockerfile
+│   │   │   ├── n8n
+│   │   │   │   └── docker-compose.yml
+│   │   │   ├── neo4j
+│   │   │   │   └── Dockerfile
+│   │   │   ├── nextcloud
+│   │   │   │   └── docker-compose.yml
+│   │   │   ├── nginx
+│   │   │   │   ├── core
+│   │   │   │   │   ├── configs
+│   │   │   │   │   │   └── nginx.conf
+│   │   │   │   │   ├── services
+│   │   │   │   │   │   └── nginx.service
+│   │   │   │   │   └── templates
+│   │   │   │   │       ├── helpbox.conf
+│   │   │   │   │       ├── hostbox.conf
+│   │   │   │   │       └── workbox.conf
+│   │   │   │   ├── Dockerfile
+│   │   │   │   ├── nginx.conf
+│   │   │   │   └── setup-nginx.sh
+│   │   │   ├── ollama
+│   │   │   │   └── Dockerfile
+│   │   │   ├── openhands
+│   │   │   │   └── docker-compose.yml
+│   │   │   ├── openvino
+│   │   │   │   ├── docker-compose.yml
+│   │   │   │   └── Dockerfile
+│   │   │   ├── open-webui
+│   │   │   │   └── docker-compose.yml
+│   │   │   ├── piwigo
+│   │   │   │   └── docker-compose.yml
+│   │   │   ├── postgres
+│   │   │   │   └── Dockerfile
+│   │   │   ├── redis
+│   │   │   │   └── Dockerfile
+│   │   │   ├── surrealdb
+│   │   │   │   └── Dockerfile
+│   │   │   └── zitadel
+│   │   │       └── Dockerfile
+│   │   ├── model
+│   │   │   ├── assets
+│   │   │   │   ├── prompts
+│   │   │   │   │   ├── agent-task.hbs
+│   │   │   │   │   ├── approval-request.hbs
+│   │   │   │   │   ├── assistant.md
+│   │   │   │   │   ├── chat
+│   │   │   │   │   │   ├── casual-convo.prompt.json
+│   │   │   │   │   │   ├── emotional-support.prompt.json
+│   │   │   │   │   │   ├── humorist.prompt.json
+│   │   │   │   │   │   ├── roleplay-character.prompt.json
+│   │   │   │   │   │   └── socratic-guide.prompt.json
+│   │   │   │   │   ├── code
+│   │   │   │   │   │   ├── code-debugger.prompt.json
+│   │   │   │   │   │   ├── code-explainer.prompt.json
+│   │   │   │   │   │   ├── code-optimizer.prompt.json
+│   │   │   │   │   │   ├── code-reviewer.prompt.json
+│   │   │   │   │   │   └── code-rewriter.prompt.json
+│   │   │   │   │   ├── content
+│   │   │   │   │   │   ├── blog-writer.prompt.json
+│   │   │   │   │   │   ├── copywriter.prompt.json
+│   │   │   │   │   │   ├── newsletter-drafter.prompt.json
+│   │   │   │   │   │   ├── product-description.prompt.json
+│   │   │   │   │   │   └── tweet-generator.prompt.json
+│   │   │   │   │   ├── coordinator.md
+│   │   │   │   │   ├── creative
+│   │   │   │   │   │   ├── lore-builder.prompt.json
+│   │   │   │   │   │   ├── novelist.prompt.json
+│   │   │   │   │   │   ├── poet.prompt.json
+│   │   │   │   │   │   └── story-prompt-engine.prompt.json
+│   │   │   │   │   ├── custom
+│   │   │   │   │   │   ├── model-training.md
+│   │   │   │   │   │   ├── override-techniques.md
+│   │   │   │   │   │   └── system-architecture.md
+│   │   │   │   │   ├── customs
+│   │   │   │   │   ├── data
+│   │   │   │   │   │   ├── dataframe-debugger.prompt.json
+│   │   │   │   │   │   ├── json-schema-generator.prompt.json
+│   │   │   │   │   │   ├── log-summarizer.prompt.json
+│   │   │   │   │   │   └── table-analyzer.prompt.json
+│   │   │   │   │   ├── dev
+│   │   │   │   │   │   ├── api-drafter.prompt.json
+│   │   │   │   │   │   ├── commit-writer.prompt.json
+│   │   │   │   │   │   ├── dev-coach.prompt.json
+│   │   │   │   │   │   └── docstring-generator.prompt.json
+│   │   │   │   │   ├── legal
+│   │   │   │   │   │   ├── legalese-translator.prompt.json
+│   │   │   │   │   │   ├── nda-drafter.prompt.json
+│   │   │   │   │   │   └── terms-reviewer.prompt.json
+│   │   │   │   │   ├── memory
+│   │   │   │   │   │   ├── memory-auditor.prompt.json
+│   │   │   │   │   │   ├── memory-refresher.prompt.json
+│   │   │   │   │   │   └── memory-summary.prompt.json
+│   │   │   │   │   ├── moderation
+│   │   │   │   │   │   ├── content-flagger.prompt.json
+│   │   │   │   │   │   ├── nsfw-filter.prompt.json
+│   │   │   │   │   │   └── safety-checker.prompt.json
+│   │   │   │   │   ├── reasoning
+│   │   │   │   │   │   ├── chain-of-thought.prompt.json
+│   │   │   │   │   │   ├── fact-checker.prompt.json
+│   │   │   │   │   │   ├── planner.prompt.json
+│   │   │   │   │   │   └── verifier.prompt.json
+│   │   │   │   │   ├── saved
+│   │   │   │   │   │   └── index.prompts.yaml
+│   │   │   │   │   ├── search
+│   │   │   │   │   │   ├── document-finder.prompt.json
+│   │   │   │   │   │   ├── retrieval-agent.prompt.json
+│   │   │   │   │   │   ├── site-scanner.prompt.json
+│   │   │   │   │   │   └── web-searcher.prompt.json
+│   │   │   │   │   ├── summarization
+│   │   │   │   │   │   ├── call-summary.prompt.json
+│   │   │   │   │   │   ├── document-summary.prompt.json
+│   │   │   │   │   │   ├── news-digester.prompt.json
+│   │   │   │   │   │   └── realtime-transcript-summary.prompt.json
+│   │   │   │   │   ├── system
+│   │   │   │   │   │   ├── default-assistant.prompt.json
+│   │   │   │   │   │   ├── guard-rails.prompt.json
+│   │   │   │   │   │   ├── minimalist-system.prompt.json
+│   │   │   │   │   │   └── verbose-instructor.prompt.json
+│   │   │   │   │   ├── task
+│   │   │   │   │   │   ├── lead_analysis.md
+│   │   │   │   │   │   ├── outreach_message.md
+│   │   │   │   │   │   ├── task-decomposer.prompt.json
+│   │   │   │   │   │   ├── task-router.prompt.json
+│   │   │   │   │   │   ├── task-solver.prompt.json
+│   │   │   │   │   │   └── task-verifier.prompt.json
+│   │   │   │   │   └── voice
+│   │   │   │   │       ├── radio-announcer.prompt.json
+│   │   │   │   │       ├── tone-analyzer.prompt.json
+│   │   │   │   │       ├── voice-coach.prompt.json
+│   │   │   │   │       └── voice-style-selector.prompt.json
+│   │   │   │   └── providers
+│   │   │   │       ├── huggingface
+│   │   │   │       │   ├── codellama-7b.json
+│   │   │   │       │   ├── mythomax-l2-13b.json
+│   │   │   │       │   ├── nous-hermes-llama2-7b.json
+│   │   │   │       │   ├── openchat-3.5-1210.json
+│   │   │   │       │   ├── osmosis-apply-1.7b.json
+│   │   │   │       │   ├── qwen1.5-1.8b-chat.json
+│   │   │   │       │   ├── tinyllama-1.1b-chat.json
+│   │   │   │       │   ├── yi-1.5-9b-chat.json
+│   │   │   │       │   └── zephyr-7b.json
+│   │   │   │       └── Modelfile
+│   │   │   └── .index
+│   │   │       └── index.html
+│   │   └── service
+│   │       ├── email
+│   │       │   ├── bin
+│   │       │   │   └── email-service
+│   │       │   ├── cmd
+│   │       │   │   └── server
+│   │       │   │       └── main.go
+│   │       │   ├── email-service.log
+│   │       │   ├── .env
+│   │       │   ├── .env.example
+│   │       │   ├── .gitignore
+│   │       │   ├── go.mod
+│   │       │   ├── go.sum
+│   │       │   ├── internal
+│   │       │   │   ├── config
+│   │       │   │   │   └── config.go
+│   │       │   │   ├── handlers
+│   │       │   │   │   └── handlers.go
+│   │       │   │   └── services
+│   │       │   │       └── email_service.go
+│   │       │   ├── Makefile
+│   │       │   ├── pkg
+│   │       │   │   └── .gitkeep
+│   │       │   └── README.md
+│   │       ├── .index
+│   │       │   └── index.html
+│   │       ├── ollama
+│   │       │   ├── api
+│   │       │   │   ├── grpc-api.go
+│   │       │   │   ├── handler
+│   │       │   │   │   ├── authentication-handler.go
+│   │       │   │   │   └── websocket-handler.go
+│   │       │   │   ├── rest-api.go
+│   │       │   │   └── routing
+│   │       │   │       └── model-routing.go
+│   │       │   ├── cmd
+│   │       │   │   └── main.go
+│   │       │   ├── configs
+│   │       │   │   ├── constants.yaml
+│   │       │   │   ├── features.yaml
+│   │       │   │   ├── limits.yaml
+│   │       │   │   ├── model
+│   │       │   │   │   ├── personas.yaml
+│   │       │   │   │   └── prompt-templates.yaml
+│   │       │   │   ├── models.yaml
+│   │       │   │   └── server.yaml
+│   │       │   ├── databases
+│   │       │   │   └── storage-database.go
+│   │       │   ├── debug-go
+│   │       │   ├── docker
+│   │       │   │   ├── docker-compose.yaml
+│   │       │   │   ├── Dockerfile
+│   │       │   │   └── gpu.dockerfile
+│   │       │   ├── docs
+│   │       │   │   ├── API.md
+│   │       │   │   ├── ARCHITECTURE.md
+│   │       │   │   ├── PROJECT_CONTEXT.md
+│   │       │   │   └── SETUP.md
+│   │       │   ├── go.mod
+│   │       │   ├── go.sum
+│   │       │   ├── managers
+│   │       │   │   ├── config-manager.go
+│   │       │   │   ├── conversation-manager.go
+│   │       │   │   ├── disk-manager.go
+│   │       │   │   ├── inference-manager.go
+│   │       │   │   ├── memory-manager.go
+│   │       │   │   ├── model-manager.go
+│   │       │   │   ├── session-manager.go
+│   │       │   │   ├── token-manager.go
+│   │       │   │   └── websocket-manager.go
+│   │       │   ├── models
+│   │       │   │   ├── chat-model.go
+│   │       │   │   ├── code-model.go
+│   │       │   │   └── reasoning-model.go
+│   │       │   ├── scripts
+│   │       │   │   ├── analyze-ocs-structure.sh
+│   │       │   │   ├── ocs-debug.sh
+│   │       │   │   └── quick-setup-ocs.sh
+│   │       │   └── src
+│   │       │       ├── tools
+│   │       │       │   ├── code-tools.go
+│   │       │       │   ├── file-tools.go
+│   │       │       │   └── search-tools.go
+│   │       │       ├── types
+│   │       │       │   └── tool-types.go
+│   │       │       └── utils
+│   │       │           ├── generate.go
+│   │       │           └── mapping.go
+│   │       ├── payment
+│   │       │   ├── cmd
+│   │       │   │   └── server
+│   │       │   │       └── main.go
+│   │       │   ├── .env
+│   │       │   ├── .env.example
+│   │       │   ├── go.mod
+│   │       │   ├── internal
+│   │       │   │   ├── core
+│   │       │   │   │   ├── config
+│   │       │   │   │   ├── domain
+│   │       │   │   │   └── infra
+│   │       │   │   └── src
+│   │       │   │       ├── api
+│   │       │   │       ├── base
+│   │       │   │       ├── pkg
+│   │       │   │       └── ports
+│   │       │   ├── Makefile
+│   │       │   ├── README.md
+│   │       │   └── scripts
+│   │       │       ├── build.sh
+│   │       │       ├── deploy.sh
+│   │       │       ├── migrate.sh
+│   │       │       └── smoke_test.sh
+│   │       └── profile
+│   │           ├── cmd
+│   │           │   └── server
+│   │           │       └── main.go
+│   │           ├── .env
+│   │           ├── go.mod
+│   │           ├── internal
+│   │           │   ├── core
+│   │           │   │   ├── config
+│   │           │   │   ├── domain
+│   │           │   │   └── infra
+│   │           │   └── src
+│   │           │       ├── api
+│   │           │       ├── base
+│   │           │       └── pkg
+│   │           ├── Makefile
+│   │           └── README.md
+│   └── var
+│       ├── data
+│       │   ├── chat-agency
+│       │   │   └── outputs
+│       │   │       ├── conversations.duckdb
+│       │   │       └── queries
+│       │   │           ├── fast_easy_dispatch
+│       │   │           ├── fed_tms
+│       │   │           ├── flutter_conversations
+│       │   │           ├── openhwy
+│       │   │           ├── project_language_keypoints.md
+│       │   │           ├── project_language_summary.md
+│       │   │           └── test_query
+│       │   └── surrealdb
+│       │       ├── 000016.sst
+│       │       ├── CURRENT
+│       │       ├── IDENTITY
+│       │       ├── LOCK
+│       │       ├── LOG
+│       │       ├── LOG.old.1762589845919112
+│       │       ├── MANIFEST-000013
+│       │       ├── OPTIONS-000007
+│       │       └── OPTIONS-000015
+│       ├── runtime
+│       │   └── pids
+│       │       ├── api-gateway.pid
+│       │       ├── code-assistant.pid
+│       │       ├── command-coordinator.pid
+│       │       ├── coordinator.pid
+│       │       ├── data-collector.pid
+│       │       ├── file-ops.pid
+│       │       ├── messaging-service.pid
+│       │       ├── openvino-vision.pid
+│       │       ├── pdf-service.pid
+│       │       ├── screen-controller.pid
+│       │       ├── service-manager.pid
+│       │       ├── trading-agent.pid
+│       │       ├── vision-controller.pid
+│       │       ├── web-scraper.pid
+│       │       └── web-search.pid
+│       └── state
+│           ├── current.json
+│           ├── health.json
+│           └── queue.json
+├── .gitignore
+├── index.tree
+├── marketeer
+│   ├── Cargo.toml
+│   ├── config
+│   │   ├── marketeer.yaml
+│   │   ├── middlewares.yaml
+│   │   ├── registration.yaml
+│   │   ├── routes.yaml
+│   │   └── services.yaml
+│   ├── Dockerfile
+│   ├── .env.example
+│   ├── README.md
+│   └── src
+│       ├── admin
+│       │   ├── mod.rs
+│       │   └── server.rs
+│       ├── config
+│       │   ├── loader.rs
+│       │   ├── mod.rs
+│       │   ├── types.rs
+│       │   └── validator.rs
+│       ├── lib.rs
+│       ├── main.rs
+│       ├── middleware
+│       │   ├── auth.rs
+│       │   ├── cors.rs
+│       │   ├── mod.rs
+│       │   └── rate_limit.rs
+│       ├── router
+│       │   ├── matcher.rs
+│       │   └── mod.rs
+│       ├── server
+│       │   ├── mod.rs
+│       │   ├── server.rs
+│       │   └── upstream.rs
+│       ├── static
+│       │   └── mod.rs
+│       └── tls
+│           └── mod.rs
+├── openhwy
+│   ├── apps
+│   │   ├── app
+│   │   │   ├── analysis_options.yaml
+│   │   │   ├── devtools_options.yaml
+│   │   │   ├── docker-compose.yml
+│   │   │   ├── Dockerfile
+│   │   │   ├── .env.dev
+│   │   │   ├── .env.prod
+│   │   │   ├── .gitignore
+│   │   │   ├── lib
+│   │   │   │   ├── app.dart
+│   │   │   │   ├── core
+│   │   │   │   │   ├── bootstraps
+│   │   │   │   │   │   └── bootstrap.dart
+│   │   │   │   │   ├── configs
+│   │   │   │   │   │   ├── env.dart
+│   │   │   │   │   │   └── flavors.dart
+│   │   │   │   │   ├── errors
+│   │   │   │   │   │   ├── exception.dart
+│   │   │   │   │   │   └── failure.dart
+│   │   │   │   │   ├── models
+│   │   │   │   │   │   ├── company.dart
+│   │   │   │   │   │   ├── document.dart
+│   │   │   │   │   │   ├── driver.dart
+│   │   │   │   │   │   ├── invoice.dart
+│   │   │   │   │   │   ├── load.dart
+│   │   │   │   │   │   ├── message.dart
+│   │   │   │   │   │   ├── payment.dart
+│   │   │   │   │   │   └── user.dart
+│   │   │   │   │   ├── providers
+│   │   │   │   │   │   ├── auth_provider.dart
+│   │   │   │   │   │   ├── document_provider.dart
+│   │   │   │   │   │   ├── driver_provider.dart
+│   │   │   │   │   │   ├── invoice_provider.dart
+│   │   │   │   │   │   ├── load_provider.dart
+│   │   │   │   │   │   ├── message_provider.dart
+│   │   │   │   │   │   └── payment_provider.dart
+│   │   │   │   │   ├── services
+│   │   │   │   │   │   ├── api_client.dart
+│   │   │   │   │   │   ├── auth_service.dart
+│   │   │   │   │   │   ├── cloud_storage_service.dart
+│   │   │   │   │   │   ├── database_service.dart
+│   │   │   │   │   │   ├── document_service.dart
+│   │   │   │   │   │   ├── driver_service.dart
+│   │   │   │   │   │   ├── http_client.dart
+│   │   │   │   │   │   ├── invoice_service.dart
+│   │   │   │   │   │   ├── load_service.dart
+│   │   │   │   │   │   ├── local_storage_service.dart
+│   │   │   │   │   │   ├── logger.dart
+│   │   │   │   │   │   ├── message_service.dart
+│   │   │   │   │   │   └── payment_service.dart
+│   │   │   │   │   ├── styles
+│   │   │   │   │   │   ├── app_theme.dart
+│   │   │   │   │   │   ├── colors.dart
+│   │   │   │   │   │   ├── theme.dart
+│   │   │   │   │   │   └── typography.dart
+│   │   │   │   │   ├── utils
+│   │   │   │   │   │   └── theme.dart
+│   │   │   │   │   └── widgets
+│   │   │   │   │       ├── app_drawer.dart
+│   │   │   │   │       └── main_navigation.dart
+│   │   │   │   ├── main1.dart
+│   │   │   │   ├── main.dart
+│   │   │   │   ├── pages
+│   │   │   │   │   ├── accounting_page.dart
+│   │   │   │   │   ├── compliance_page.dart
+│   │   │   │   │   ├── dispatch_page.dart
+│   │   │   │   │   ├── onboarding_page.dart
+│   │   │   │   │   ├── settings_page.dart
+│   │   │   │   │   └── training_page.dart
+│   │   │   │   ├── router.dart
+│   │   │   │   ├── screens
+│   │   │   │   │   ├── accounting
+│   │   │   │   │   │   ├── invoice_details_screen.dart
+│   │   │   │   │   │   ├── invoices_list_screen.dart
+│   │   │   │   │   │   ├── invoices_screen.dart
+│   │   │   │   │   │   ├── invoicing_screen.dart
+│   │   │   │   │   │   └── payments_screen.dart
+│   │   │   │   │   ├── compliance
+│   │   │   │   │   │   ├── documents_manager_screen.dart
+│   │   │   │   │   │   ├── documents_screen.dart
+│   │   │   │   │   │   ├── eld_screen.dart
+│   │   │   │   │   │   ├── hos_screen.dart
+│   │   │   │   │   │   ├── hos_tracking_screen.dart
+│   │   │   │   │   │   └── reports_screen.dart
+│   │   │   │   │   ├── dashboard
+│   │   │   │   │   │   ├── calendar_dispatch_screen.dart
+│   │   │   │   │   │   ├── calendar_screen.dart
+│   │   │   │   │   │   ├── create_load_screen.dart
+│   │   │   │   │   │   ├── dashboard_screen.dart
+│   │   │   │   │   │   ├── dashboardv2_screen.dart
+│   │   │   │   │   │   ├── driver_details_screen.dart
+│   │   │   │   │   │   ├── drivers_screen.dart
+│   │   │   │   │   │   ├── loadboard_screen.dart
+│   │   │   │   │   │   ├── load_detail_screen.dart
+│   │   │   │   │   │   ├── load_details_screen.dart
+│   │   │   │   │   │   ├── loads_list_screen.dart
+│   │   │   │   │   │   ├── loads_screen.dart
+│   │   │   │   │   │   └── tracking_screen.dart
+│   │   │   │   │   ├── notifications
+│   │   │   │   │   │   ├── messages_screen.dart
+│   │   │   │   │   │   ├── messaging_screen.dart
+│   │   │   │   │   │   ├── notifications_screen.dart
+│   │   │   │   │   │   └── response_model.dart
+│   │   │   │   │   ├── onboarding
+│   │   │   │   │   │   └── company_screen.dart
+│   │   │   │   │   ├── reports
+│   │   │   │   │   │   └── analytics_screen.dart
+│   │   │   │   │   ├── settings
+│   │   │   │   │   │   ├── company_screen.dart
+│   │   │   │   │   │   ├── profile_screen.dart
+│   │   │   │   │   │   └── settings_main_screen.dart
+│   │   │   │   │   ├── splash
+│   │   │   │   │   │   └── splash_screen.dart
+│   │   │   │   │   └── training
+│   │   │   │   │       └── courses_screen.dart
+│   │   │   │   └── widgets
+│   │   │   │       ├── app_button.dart
+│   │   │   │       ├── app_card.dart
+│   │   │   │       ├── app_drawer.dart
+│   │   │   │       ├── app_empty_state.dart
+│   │   │   │       ├── app_icon.dart
+│   │   │   │       ├── app_loader.dart
+│   │   │   │       ├── app_search_bar.dart
+│   │   │   │       ├── app_stat_card.dart
+│   │   │   │       ├── app_text_field.dart
+│   │   │   │       ├── detail_card.dart
+│   │   │   │       ├── driver_card.dart
+│   │   │   │       ├── driver_detail_card.dart
+│   │   │   │       ├── load_card.dart
+│   │   │   │       ├── load_status_badge.dart
+│   │   │   │       ├── notification_tile.dart
+│   │   │   │       ├── rate_confirmation_form.dart
+│   │   │   │       ├── setup_card.dart
+│   │   │   │       └── video_card.dart
+│   │   │   └── pubspec.yaml
+│   │   └── web
+│   │       ├── ARCHITECTURE.md
+│   │       ├── astro.config.mjs
+│   │       ├── docker-compose.yml
+│   │       ├── Dockerfile
+│   │       ├── .env.example
+│   │       ├── .gitignore
+│   │       ├── package.json
+│   │       ├── package-lock.json
+│   │       ├── .prettierrc
+│   │       ├── public
+│   │       │   └── favicon.svg
+│   │       ├── src
+│   │       │   ├── api
+│   │       │   │   ├── client.ts
+│   │       │   │   └── middleware
+│   │       │   │       └── index.ts
+│   │       │   ├── env.d.ts
+│   │       │   ├── lib
+│   │       │   │   ├── components
+│   │       │   │   │   ├── atoms
+│   │       │   │   │   ├── islands
+│   │       │   │   │   ├── molecules
+│   │       │   │   │   ├── .old
+│   │       │   │   │   ├── organisms
+│   │       │   │   │   └── templates
+│   │       │   │   ├── configs.ts
+│   │       │   │   ├── constants.ts
+│   │       │   │   ├── layouts
+│   │       │   │   │   ├── AuthLayout.astro
+│   │       │   │   │   ├── BaseLayout.astro
+│   │       │   │   │   ├── MainLayout.astro
+│   │       │   │   │   └── PaymentLayout.astro
+│   │       │   │   ├── pages
+│   │       │   │   │   ├── admin
+│   │       │   │   │   ├── api
+│   │       │   │   │   ├── auth
+│   │       │   │   │   ├── docs
+│   │       │   │   │   ├── home
+│   │       │   │   │   ├── index.astro
+│   │       │   │   │   └── index.v2.astro
+│   │       │   │   ├── styles
+│   │       │   │   │   ├── global1.css
+│   │       │   │   │   ├── global.css
+│   │       │   │   │   ├── typography.css
+│   │       │   │   │   └── utilities.css
+│   │       │   │   ├── types
+│   │       │   │   │   ├── api.ts
+│   │       │   │   │   ├── content.ts
+│   │       │   │   │   ├── index.ts
+│   │       │   │   │   └── page.ts
+│   │       │   │   ├── utils
+│   │       │   │   │   ├── classNames.ts
+│   │       │   │   │   ├── cn.ts
+│   │       │   │   │   ├── index.ts
+│   │       │   │   │   ├── props.ts
+│   │       │   │   │   └── ui.ts
+│   │       │   │   └── utils.ts
+│   │       │   └── routes.ts
+│   │       ├── tailwind.config.mjs
+│   │       └── tsconfig.json
+│   ├── docs
+│   │   ├── architecture.md
+│   │   ├── BIG_VISION.md
+│   │   ├── CLAUDE.md
+│   │   ├── content
+│   │   │   ├── All Files-20251224T055707Z-3-001.zip
+│   │   │   ├── content01
+│   │   │   │   ├── All Files
+│   │   │   │   │   └── Business Files
+│   │   │   │   │       └── ~Fast&Easy Dispatching LLC~
+│   │   │   │   ├── Chat GPT Memory.docx
+│   │   │   │   ├── Elda AI Builder & AI Builds.docx
+│   │   │   │   ├── Elda_AI_Builder.docx
+│   │   │   │   ├── E.L.D.A. Assistant Course.docx
+│   │   │   │   ├── E.L.D.A. Dispatching Course.docx
+│   │   │   │   ├── E.L.D.A. Dispatching Course INFO.docx
+│   │   │   │   ├── E.L.D.A. Effortless Course.docx
+│   │   │   │   ├── E.L.D.A. Logistics Course.docx
+│   │   │   │   ├── First AI build set-up.docx
+│   │   │   │   ├── Packet Pilot (PP) Workflow Overview.docx
+│   │   │   │   ├── Untitled document.docx
+│   │   │   │   ├── Untitled spreadsheet.xlsx
+│   │   │   │   └── Website Build.docx
+│   │   │   ├── context02
+│   │   │   │   ├── $193  --PAID--$7 extra was Paid.docx
+│   │   │   │   ├── 3 Equipment Types Cheat Sheet(1).docx
+│   │   │   │   ├── 3 Equipment Types Cheat Sheet.docx
+│   │   │   │   ├── 5097941_1615238204.mp3
+│   │   │   │   ├── 5097977_1615238308.mp3
+│   │   │   │   ├── 8 STEPS MARK J. KOHLER.eml
+│   │   │   │   ├── Adobe Reader(1).png
+│   │   │   │   ├── Adobe Reader.png
+│   │   │   │   ├── Billing FD101.docx
+│   │   │   │   ├── Billing.png
+│   │   │   │   ├── BOL sample(1).pdf
+│   │   │   │   ├── BOL sample.pdf
+│   │   │   │   ├── Book of Business.xlsx
+│   │   │   │   ├── Broker Carrier Packet Preview(1).pdf
+│   │   │   │   ├── Broker Carrier Packet Preview.pdf
+│   │   │   │   ├── Brokers for NEW MC(1).docx
+│   │   │   │   ├── Brokers for NEW MC.docx
+│   │   │   │   ├── Brokers INFO(1).docx
+│   │   │   │   ├── Brokers INFO.docx
+│   │   │   │   ├── Broker Training.png
+│   │   │   │   ├── Business Expances .xlsx
+│   │   │   │   ├── CargoVan Sprinter Van Load Boards and Contacts(1).pdf
+│   │   │   │   ├── CargoVan Sprinter Van Load Boards and Contacts.pdf
+│   │   │   │   ├── Carrier Agreement Packet.docx
+│   │   │   │   ├── Carrier Agreement Packet.pdf
+│   │   │   │   ├── Carrier Profile.docx
+│   │   │   │   ├── Carrier Profile Sheet - Master Copy.docx
+│   │   │   │   ├── Carriers FD101.docx
+│   │   │   │   ├── Carriers.png
+│   │   │   │   ├── Chat GPT Memory.docx
+│   │   │   │   ├── COI preview(1).pdf
+│   │   │   │   ├── COI preview.pdf
+│   │   │   │   ├── Cold Call Cheat Sheet(1).docx
+│   │   │   │   ├── Cold Call Cheat Sheet.docx
+│   │   │   │   ├── Constant Contact.png
+│   │   │   │   ├── Course Descriptions and Seminar_.docx
+│   │   │   │   ├── Credit Card Authorization(1).docx
+│   │   │   │   ├── Credit Card Authorization.docx
+│   │   │   │   ├── Credit Card Authorization.pdf
+│   │   │   │   ├── Daily Process FD101.docx
+│   │   │   │   ├── Daily Process.png
+│   │   │   │   ├── DAT.eml
+│   │   │   │   ├── DAT Load Board(1).png
+│   │   │   │   ├── DAT Load Board (2).pdf
+│   │   │   │   ├── DAT Load Board.pdf
+│   │   │   │   ├── DAT Load Board.png
+│   │   │   │   ├── Dispatcher Agreement.docx
+│   │   │   │   ├── Dispatcher Agreement.pdf
+│   │   │   │   ├── Dispatcher Carrier - Limited Power.docx
+│   │   │   │   ├── Dispatcher Carrier - Limited Power.pdf
+│   │   │   │   ├── Dispatcher Roles(1).pdf
+│   │   │   │   ├── Dispatcher Roles.pdf
+│   │   │   │   ├── Dispatcher Training(1).pdf
+│   │   │   │   ├── Dispatcher Training 4(1).pdf
+│   │   │   │   ├── Dispatcher Training 4.pdf
+│   │   │   │   ├── Dispatcher Training.pdf
+│   │   │   │   ├── Dispatcher Training.png
+│   │   │   │   ├── Document 1.docx
+│   │   │   │   ├── Document 2.docx
+│   │   │   │   ├── Document 3.docx
+│   │   │   │   ├── Docusign.png
+│   │   │   │   ├── Doodly (2).png
+│   │   │   │   ├── Doodly.png
+│   │   │   │   ├── Drivers and Emails.xlsx
+│   │   │   │   ├── Eamil Script.docx
+│   │   │   │   ├── E-Fax(1).png
+│   │   │   │   ├── E-Fax.png
+│   │   │   │   ├── EIN # - Fast&Easy Dispatching LLC(1).pdf
+│   │   │   │   ├── EIN # - Fast&Easy Dispatching LLC.pdf
+│   │   │   │   ├── Elda AI Builder & AI Builds.docx
+│   │   │   │   ├── Elda_AI_Builder.docx
+│   │   │   │   ├── E.L.D.A. Assistant Course.docx
+│   │   │   │   ├── E.L.D.A. Dispatching Course.docx
+│   │   │   │   ├── E.L.D.A. Dispatching Course INFO.docx
+│   │   │   │   ├── E.L.D.A. Effortless Course.docx
+│   │   │   │   ├── E.L.D.A. Logistics Course.docx
+│   │   │   │   ├── Email Ideas for Freight Dispatcher 101.docx
+│   │   │   │   ├── Emailing Policy-English (1).pdf
+│   │   │   │   ├── Email_s For Constants Contact.xlsx
+│   │   │   │   ├── Facebook Ad Copies.docx
+│   │   │   │   ├── Facebook Ads.png
+│   │   │   │   ├── Facebook Group Agreements (3).png
+│   │   │   │   ├── Facebook Group Agreements.png
+│   │   │   │   ├── Factoring and Bond Info(1).pdf
+│   │   │   │   ├── Factoring and Bond Info.pdf
+│   │   │   │   ├── Factoring Company - Payment Deduction(1).docx
+│   │   │   │   ├── Factoring Company - Payment Deduction.docx
+│   │   │   │   ├── Factoring Company - Payment Deduction.pdf
+│   │   │   │   ├── FAST & EASY (6).png
+│   │   │   │   ├── First AI build set-up.docx
+│   │   │   │   ├── Flash Drive for Work Documents.png
+│   │   │   │   ├── Flatbed Trailer.png
+│   │   │   │   ├── Footer.png
+│   │   │   │   ├── Form_W-9 2020.pdf
+│   │   │   │   ├── FullColor_1280x1024.pdf
+│   │   │   │   ├── Full Dispatcher Agreement.docx
+│   │   │   │   ├── Full Dispatcher Agreement.pdf
+│   │   │   │   ├── GENERIC Factoring Company - Payment Deduction.pdf
+│   │   │   │   ├── GENERIC Full Dispatcher Agreement.pdf
+│   │   │   │   ├── GENERIC Load Finder Agreement.pdf
+│   │   │   │   ├── GENERIC Paperwork Only Agreement.pdf
+│   │   │   │   ├── GENERIC Rate Agreement.pdf
+│   │   │   │   ├── Go Daddy and Microsoft 365(1).pdf
+│   │   │   │   ├── Go Daddy and Microsoft 365.pdf
+│   │   │   │   ├── Groceries List.docx
+│   │   │   │   ├── Half Dispatcher Agreement for Ray C. Williams.docx
+│   │   │   │   ├── have lesson title at top.png
+│   │   │   │   ├── Hotshot neededs.docx
+│   │   │   │   ├── IMG_2097.jpg
+│   │   │   │   ├──  Incident Report Statement.docx
+│   │   │   │   ├── index(1).html
+│   │   │   │   ├── index(2).html
+│   │   │   │   ├── index.html
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Intro Slide.pptx
+│   │   │   │   ├── Items Needed.docx
+│   │   │   │   ├── Knowledge FD101.docx
+│   │   │   │   ├── Knowledge.png
+│   │   │   │   ├── Landing Page(1).png
+│   │   │   │   ├── Landing Page.png
+│   │   │   │   ├── Laptop for Work and Personal Use.png
+│   │   │   │   ├── Laptop Protection Plan.png
+│   │   │   │   ├── Layover Prices(1).docx
+│   │   │   │   ├── Layover Prices.docx
+│   │   │   │   ├── LLC Certification(1).pdf
+│   │   │   │   ├── LLC Certification.pdf
+│   │   │   │   ├── load board log ins(1).pdf
+│   │   │   │   ├── load board log ins.pdf
+│   │   │   │   ├── Load Cheat Sheet(1).docx
+│   │   │   │   ├── Load Cheat Sheet.docx
+│   │   │   │   ├── Load Finder Agreement Carrier Package.docx
+│   │   │   │   ├── Load Finder Agreement.docx
+│   │   │   │   ├── Load Finder Agreement.pdf
+│   │   │   │   ├── LOGO(1).pdf
+│   │   │   │   ├── LOGO.pdf
+│   │   │   │   ├── MC Authority.pdf
+│   │   │   │   ├── MC authority preview(1).pdf
+│   │   │   │   ├── MC authority preview.pdf
+│   │   │   │   ├── MJK Business Plan 8 Steps(1).png
+│   │   │   │   ├── MJK Business Plan 8 Steps.png
+│   │   │   │   ├── Module 1 quiz(1).pdf
+│   │   │   │   ├── Module 1 quiz.pdf
+│   │   │   │   ├── Module 2 quiz(1).pdf
+│   │   │   │   ├── Module 2 quiz.pdf
+│   │   │   │   ├── Module 3 Quiz(1).pdf
+│   │   │   │   ├── Module 3 Quiz.pdf
+│   │   │   │   ├── new.docx
+│   │   │   │   ├── NOA preview(1).pdf
+│   │   │   │   ├── NOA preview.pdf
+│   │   │   │   ├── Operating Agreement - Fast&Easy Dispatching LLC(1).docx
+│   │   │   │   ├── Operating Agreement - Fast&Easy Dispatching LLC.docx
+│   │   │   │   ├── Packet Pilot (PP) Workflow Overview.docx
+│   │   │   │   ├── Paperwork Only Agreement Carrier Package.docx
+│   │   │   │   ├── Paperwork Only Agreement.docx
+│   │   │   │   ├── Paperwork Only Agreement.pdf
+│   │   │   │   ├── PDFEscape.png
+│   │   │   │   ├── Personal & Business Monthly & Annual Bills.xlsx
+│   │   │   │   ├── Personal Vault.lnk
+│   │   │   │   ├── Pitch 10.mp3
+│   │   │   │   ├── Pitch 12.mp3
+│   │   │   │   ├── Pitch 1.mp3
+│   │   │   │   ├── Pitch 2.mp3
+│   │   │   │   ├── Pitch 4.mp3
+│   │   │   │   ├── Pitch 5.mp3
+│   │   │   │   ├── Pitch 6.mp3
+│   │   │   │   ├── Pitch 7.mp3
+│   │   │   │   ├── Pitch 8.mp3
+│   │   │   │   ├── Pitch 9.mp3
+│   │   │   │   ├── pop-up.html
+│   │   │   │   ├── PressPlay (Special Offer - Toonly) Receipt Order # PK-PRLO03JK9E.eml
+│   │   │   │   ├── PRO# 0247108 $1,800 USD.pdf
+│   │   │   │   ├── PRO# 100162   $2,800 USD.pdf
+│   │   │   │   ├── PRO# 14771050 $2,100 USD.pdf
+│   │   │   │   ├── PRO# 5875596 $1,700 USD.pdf
+│   │   │   │   ├── PRO# 6083555 $2,900 USD.pdf
+│   │   │   │   ├── PRO# 6098185 $1,000 USD.pdf
+│   │   │   │   ├── PRO# 660808   $1,850 USD.pdf
+│   │   │   │   ├── PRO# 7199       $1,400 USD.pdf
+│   │   │   │   ├── programming_projects - Shortcut.lnk
+│   │   │   │   ├── Questions for Brokers.docx
+│   │   │   │   ├── Quickbooks (1).PDF
+│   │   │   │   ├── Quickbooks .PDF
+│   │   │   │   ├── Rate Agreement(1).docx
+│   │   │   │   ├── Rate Agreement(2).docx
+│   │   │   │   ├── Rate Agreement.docx
+│   │   │   │   ├── Rate Agreement for Ray C. Williams.docx
+│   │   │   │   ├── Rate Agreement.pdf
+│   │   │   │   ├── Reefer Trailer.png
+│   │   │   │   ├── Screen Cast.pdf
+│   │   │   │   ├── Screenshot (10).png
+│   │   │   │   ├── Screenshot (1.5).png
+│   │   │   │   ├── Screenshot (227).png
+│   │   │   │   ├── Screenshot (228).png
+│   │   │   │   ├── Screenshot (229).png
+│   │   │   │   ├── Screenshot (230).png
+│   │   │   │   ├── Screenshot (231).png
+│   │   │   │   ├── Screenshot (232).png
+│   │   │   │   ├── Screenshot (233).png
+│   │   │   │   ├── Screenshot (234).png
+│   │   │   │   ├── Screenshot (235).png
+│   │   │   │   ├── Screenshot (236).png
+│   │   │   │   ├── Screenshot (237).png
+│   │   │   │   ├── Screenshot (45).png
+│   │   │   │   ├── Screenshot (46).png
+│   │   │   │   ├── Screenshot (51).png
+│   │   │   │   ├── Screenshot (52).png
+│   │   │   │   ├── Screenshot (64).png
+│   │   │   │   ├── Screenshot (75).png
+│   │   │   │   ├── Screenshot (7).png
+│   │   │   │   ├── Screenshot (85).png
+│   │   │   │   ├── Screenshot (88).png
+│   │   │   │   ├── Screenshot (89).png
+│   │   │   │   ├── Screenshot (92).png
+│   │   │   │   ├── Screenshot (9).png
+│   │   │   │   ├── script.js
+│   │   │   │   ├── scripts(1).js
+│   │   │   │   ├── scripts.js
+│   │   │   │   ├── Seminar Training Script_.docx
+│   │   │   │   ├── Speechelo (1).png
+│   │   │   │   ├── Speechelo (2).png
+│   │   │   │   ├── Speechelo (3).png
+│   │   │   │   ├── style.css
+│   │   │   │   ├── styles(1).css
+│   │   │   │   ├── styles.css
+│   │   │   │   ├── Terms and Agreements_.docx
+│   │   │   │   ├── Text Into Script.pptx
+│   │   │   │   ├── Text Script.docx
+│   │   │   │   ├── Things Drivers May Ask.docx
+│   │   │   │   ├── Things To Do.xlsx
+│   │   │   │   ├── Thinks I need to create your video.docx
+│   │   │   │   ├── Thumbnail Blaster (2).eml
+│   │   │   │   ├── Thumbnail Blaster.eml
+│   │   │   │   ├── ThumpBlaster.eml
+│   │   │   │   ├── Toonly Enterprise (1-time) Receipt Order # PK-P6EJKDDN6L.eml
+│   │   │   │   ├── Toonly Standard (in app) Receipt Order # PK-PMWQ079D9W.eml
+│   │   │   │   ├── Toonplates book Receipt Order # PK-PKE3R8Q39L.eml
+│   │   │   │   ├── TotalAV Viris Protection.png
+│   │   │   │   ├── Traffic and Funnels(1).png
+│   │   │   │   ├── Traffic and Funnels.png
+│   │   │   │   ├── Truck Cost and Expenses(1).pdf
+│   │   │   │   ├── Truck Cost and Expenses.pdf
+│   │   │   │   ├── Trucking Industry.png
+│   │   │   │   ├── Untitled document(1).docx
+│   │   │   │   ├── Untitled document(1).pdf
+│   │   │   │   ├── Untitled document(2).docx
+│   │   │   │   ├── Untitled document(3).docx
+│   │   │   │   ├── Untitled document(4).docx
+│   │   │   │   ├── Untitled document(5).docx
+│   │   │   │   ├── Untitled document.docx
+│   │   │   │   ├── Untitled document.pdf
+│   │   │   │   ├── Untitled presentation(1).pptx
+│   │   │   │   ├── Untitled presentation.pptx
+│   │   │   │   ├── Untitled spreadsheet.xlsx
+│   │   │   │   ├── Upsell Script for Purchase Screen.png
+│   │   │   │   ├── Van Trailer.png
+│   │   │   │   ├── Video Script _Billing_.docx
+│   │   │   │   ├── Video Script _Carriers_.docx
+│   │   │   │   ├── Video Script _Daily Process_.docx
+│   │   │   │   ├── Video Script _Knowledge_.docx
+│   │   │   │   ├── Video Script _Trucking Industry_.docx
+│   │   │   │   ├── Video Script _What is a Dispatcher_.docx
+│   │   │   │   ├── Video Script _Your Business_.docx
+│   │   │   │   ├── _VM-ADDTRAN1_DATA_VISUALLP_DOCUMENTS_380605A.PDF
+│   │   │   │   ├── W9 preview(1).pdf
+│   │   │   │   ├── W9 preview.pdf
+│   │   │   │   ├── Website and App Notes for Business.docx
+│   │   │   │   ├── Website Build.docx
+│   │   │   │   ├── Website.code-workspace
+│   │   │   │   ├── WEBSITE IDEAS.docx
+│   │   │   │   ├── Website To Do List.docx
+│   │   │   │   ├── Welcome to the World of Independent Freight Dispatching.docx
+│   │   │   │   ├── What is a Dispatcher FD101.docx
+│   │   │   │   ├── What is a Dispatcher.png
+│   │   │   │   ├── WIX - 2 Emails(1).pdf
+│   │   │   │   ├── WIX - 2 Emails.pdf
+│   │   │   │   ├── WIX - Business Phone Line.pdf
+│   │   │   │   ├── WIX - Epic Form Builder(1).pdf
+│   │   │   │   ├── WIX - Epic Form Builder.pdf
+│   │   │   │   ├── WIX - Pro(1).pdf
+│   │   │   │   ├── WIX - Pro.pdf
+│   │   │   │   ├── Workmens Comp..pdf
+│   │   │   │   ├── Your Business FD101.docx
+│   │   │   │   └── Your Business.png
+│   │   │   ├── drive-download-20251120T025703Z-1-002.zip
+│   │   │   └── drive-download-20251120T030025Z-1-001.zip
+│   │   ├── design.md
+│   │   ├── diagram.md
+│   │   ├── DOMAIN
+│   │   ├── examples
+│   │   │   ├── dashboard
+│   │   │   │   ├── fed-calendar.html
+│   │   │   │   ├── fed-cargo-connect.html
+│   │   │   │   ├── fed-dashboard.html
+│   │   │   │   ├── fed-dispatch-board.html
+│   │   │   │   ├── fed-documents.html
+│   │   │   │   ├── fed-drivers.html
+│   │   │   │   ├── fed-elda
+│   │   │   │   ├── fed-eld.html
+│   │   │   │   ├── fed-invoicing.html
+│   │   │   │   ├── fed-landing-page.html
+│   │   │   │   ├── fed-live-tracking.html
+│   │   │   │   ├── fed-loads.html
+│   │   │   │   ├── fed-messaging.html
+│   │   │   │   ├── fed-packet-pilot.html
+│   │   │   │   ├── fed-payments.html
+│   │   │   │   └── fed-training-center.html
+│   │   │   ├── highway-landing.html
+│   │   │   ├── openhwy-dispatching.html
+│   │   │   ├── openhwy-dispatching-v1.html
+│   │   │   ├── openhwy-dispatching-v2.html
+│   │   │   ├── openhwy-dispatching-v3.html
+│   │   │   ├── openhwy-tales-v1.md
+│   │   │   ├── openhwy-wheelers.html
+│   │   │   ├── openhwy-wheelers-v1.html
+│   │   │   └── wheeler-landing.html
+│   │   ├── idea.md
+│   │   ├── intro.md
+│   │   ├── license.md
+│   │   ├── mission.md
+│   │   ├── openhwy-tales.md
+│   │   ├── overview.md
+│   │   ├── pricing-strategy.md
+│   │   ├── PROMPT.md
+│   │   ├── README.md
+│   │   ├── roadmap.md
+│   │   ├── SCHEMA.md
+│   │   ├── schemas
+│   │   │   └── protocol
+│   │   │       ├── access
+│   │   │       │   ├── access_conditions.protocol.yaml
+│   │   │       │   ├── audit_access.protocol.yaml
+│   │   │       │   └── override_access.protocol.yaml
+│   │   │       ├── agent
+│   │   │       │   ├── codriver.protocol.yaml
+│   │   │       │   └── trakapay.protocol.yaml
+│   │   │       ├── badges
+│   │   │       │   ├── assigning_badge.protocol.yaml
+│   │   │       │   ├── badge_clock.protocol.yaml
+│   │   │       │   └── badge_linking.protocol.yaml
+│   │   │       ├── blocking
+│   │   │       │   ├── redemption_path.protocol.yaml
+│   │   │       │   └── training_gateway.protocol.yaml
+│   │   │       ├── core
+│   │   │       │   ├── acces.protocol.yaml
+│   │   │       │   ├── agent.protocol.yaml
+│   │   │       │   ├── badge.protocol.yaml
+│   │   │       │   ├── blocking.protocol.yaml
+│   │   │       │   ├── core.protocol.yaml
+│   │   │       │   ├── defense.protocol.yaml
+│   │   │       │   ├── ethics.protocol.yaml
+│   │   │       │   ├── identity.protocol.yaml
+│   │   │       │   ├── key_mark.protocol.yaml
+│   │   │       │   ├── ledger.protocol.yaml
+│   │   │       │   ├── license.protocol.yaml
+│   │   │       │   ├── model.protocol.yaml
+│   │   │       │   ├── platform.protocol.yaml
+│   │   │       │   ├── security.protocol.yaml
+│   │   │       │   ├── system.protocol.yaml
+│   │   │       │   └── tool.protocol.yaml
+│   │   │       ├── defense
+│   │   │       │   ├── federated_agent_routing.protocol.yaml
+│   │   │       │   ├── forceful_key_trace.protocol.yaml
+│   │   │       │   └── model_logic_trace.protocol.yaml
+│   │   │       ├── ethics
+│   │   │       │   ├── agent_ethics.protocol.yaml
+│   │   │       │   ├── behavior_mapping.protocol.yaml
+│   │   │       │   ├── in-the-loop_dispatch.protocol.yaml
+│   │   │       │   ├── license_ethics.protocol.yaml
+│   │   │       │   ├── model_ethics.protocol.yaml
+│   │   │       │   ├── platform_ethics.protocol.yaml
+│   │   │       │   ├── platform_isolation.protocol.yaml
+│   │   │       │   ├── report_chain.protocol.yaml
+│   │   │       │   └── tattle_tale.protocol.yaml
+│   │   │       ├── identity
+│   │   │       │   ├── key_identity.protocol.yaml
+│   │   │       │   └── peer_identity.protocol.yaml
+│   │   │       ├── ledger
+│   │   │       │   ├── permissioned_read.protocol.yaml
+│   │   │       │   ├── report_ingestion.protocol.yaml
+│   │   │       │   └── write_only.protocol.yaml
+│   │   │       ├── license
+│   │   │       │   ├── create_license.protocol.yaml
+│   │   │       │   ├── license_verification.protocol.yaml
+│   │   │       │   └── suspend_license.protocol.yaml
+│   │   │       ├── model
+│   │   │       │   ├── agent_blacklisting.protocol.yaml
+│   │   │       │   ├── agent_whitelisting.protocol.yaml
+│   │   │       │   ├── eco.protocol.yaml
+│   │   │       │   ├── elda.protocol.yaml
+│   │   │       │   ├── fed.protocol.yaml
+│   │   │       │   ├── hwy.protocol.yaml
+│   │   │       │   └── twins.protocol.yaml
+│   │   │       ├── platform
+│   │   │       │   ├── 8teenwheelers.protocol.yaml
+│   │   │       │   ├── bookstore.protocol.yaml
+│   │   │       │   ├── client_tales.protocol.yaml
+│   │   │       │   ├── fedispatching.protocol.yaml
+│   │   │       │   ├── open-hwy.protocol.yaml
+│   │   │       │   ├── owlusive_treasures.protocol.yaml
+│   │   │       │   └── traka_pay.protocol.yaml
+│   │   │       ├── security
+│   │   │       │   ├── kcbb_rcbb.protocol.yaml
+│   │   │       │   └── key_rotation.protocol.yaml
+│   │   │       ├── system
+│   │   │       │   ├── beat_sync.protocol.yaml
+│   │   │       │   ├── bet_engine.protocol.yaml
+│   │   │       │   ├── book_os.protocol.yaml
+│   │   │       │   ├── ink_burn.protocol.yaml
+│   │   │       │   ├── keeper_db.protocol.yaml
+│   │   │       │   ├── marker_router.protocol.yaml
+│   │   │       │   ├── mark_kernel.protocol.yaml
+│   │   │       │   ├── memory_scroll.protocol.yaml
+│   │   │       │   ├── ribbon_trail.protocol.yaml
+│   │   │       │   ├── token_stroke.protocol.yaml
+│   │   │       │   └── trail_ledger.protocol.yaml
+│   │   │       ├── tool
+│   │   │       │   ├── archbox.protocol.yaml
+│   │   │       │   ├── marketeer.protocol.yaml
+│   │   │       │   ├── scaffold.protocol.yaml
+│   │   │       │   └── using_tool.protocol.yaml
+│   │   │       └── wheeler
+│   │   │           ├── auto_assist.protocol.yaml
+│   │   │           ├── big_bear.protocol.yaml
+│   │   │           ├── cargo_connect.protocol.yaml
+│   │   │           ├── direct_dispatcher.protocol.yaml
+│   │   │           ├── error_echo.protocol.yaml
+│   │   │           ├── fuel_factor.protocol.yaml
+│   │   │           ├── ghost_guard.protcol.yaml
+│   │   │           ├── hazard_hauler.protocol.yaml
+│   │   │           ├── iron_insight.protocol.yaml
+│   │   │           ├── jackknife_jailer.protocol.yaml
+│   │   │           ├── key_keeper.protocol.yaml
+│   │   │           ├── legal_logger.protocol.yaml
+│   │   │           ├── memory_mark.protocol.yaml
+│   │   │           ├── night_nexus.protocol.yaml
+│   │   │           ├── oversize_overseer.protocol.yaml
+│   │   │           ├── packet_pilot.protocol.yaml
+│   │   │           ├── quick_quote.protocol.yaml
+│   │   │           ├── radar_reach.protocol.yaml
+│   │   │           ├── secret_safe.protocol.yaml
+│   │   │           ├── trucker_tales.protcol.yaml
+│   │   │           ├── unit_usage.protocol.yaml
+│   │   │           ├── voice_validator.protocol.yaml
+│   │   │           ├── whisper_witness.protocol.yaml
+│   │   │           ├── xeno_xeno.protocol.yaml
+│   │   │           ├── yes_yes.protocol.yaml
+│   │   │           └── zone_zipper.protocol.yaml
+│   │   ├── terminology.md
+│   │   └── the-tale-system.md
+│   └── README.md
+├── teardrop
+│   ├── games
+│   │   └── .gitkeep
+│   └── .gitkeep
+├── .vscode
+│   ├── keybindings.json
+│   ├── launch.json
+│   ├── .prettierrc.jsonc
+│   └── settings.json
+└── zboxxy
+    ├── core
+    │   ├── defaults
+    │   │   ├── autoload.zsh
+    │   │   ├── color.zsh
+    │   │   ├── exports.zsh
+    │   │   ├── keybind.zsh
+    │   │   ├── setopt.zsh
+    │   │   ├── values.zsh
+    │   │   └── zstyle.zsh
+    │   ├── isolation.yaml
+    │   ├── loader.zsh
+    │   ├── migrations
+    │   │   └── zbox_postgreSQL_memory.sql
+    │   ├── README.md
+    │   ├── router.yaml
+    │   ├── settings
+    │   │   ├── android-studio.zsh
+    │   │   ├── custom-aliases.zsh
+    │   │   ├── environments.zsh
+    │   │   ├── ollama-nodes.zsh
+    │   │   ├── pyenv-environment.zsh
+    │   │   ├── shell-prompt.zsh
+    │   │   └── zsh-plugins.zsh
+    │   ├── symlinks
+    │   │   ├── dotdirs
+    │   │   │   └── .config
+    │   │   │       ├── finda
+    │   │   │       │   ├── config
+    │   │   │       │   └── history
+    │   │   │       ├── fixa
+    │   │   │       │   ├── config
+    │   │   │       │   └── fix.log
+    │   │   │       ├── gita
+    │   │   │       │   └── config
+    │   │   │       ├── hypr
+    │   │   │       │   └── hyprland.conf
+    │   │   │       ├── neovide
+    │   │   │       │   └── config.toml
+    │   │   │       ├── nvim
+    │   │   │       │   ├── init.lua
+    │   │   │       │   ├── lazy-lock.json
+    │   │   │       │   └── lua
+    │   │   │       ├── ranger
+    │   │   │       │   ├── commands_full.py
+    │   │   │       │   ├── commands.py
+    │   │   │       │   ├── rc.conf
+    │   │   │       │   ├── rifle.conf
+    │   │   │       │   └── scope.sh
+    │   │   │       ├── serva
+    │   │   │       │   ├── config
+    │   │   │       │   ├── groups.conf
+    │   │   │       │   ├── serva.log
+    │   │   │       │   └── servers.conf
+    │   │   │       └── zed
+    │   │   │           ├── development_credentials
+    │   │   │           └── settings.json
+    │   │   └── dotfiles
+    │   │       ├── .gitconfig
+    │   │       ├── .nanorc
+    │   │       ├── .zprofile
+    │   │       ├── .zshenv
+    │   │       └── .zshrc
+    │   ├── zbox-deployment.yml
+    │   ├── zbox_security_system.zsh
+    │   └── zbox_spawn_instants.zsh
+    ├── Dockerfile.zbox
+    ├── docs
+    │   ├── ARCHITECTURE.md
+    │   ├── IN-PROGRESS.md
+    │   ├── placeholders
+    │   │   ├── AUTHORS
+    │   │   ├── DESCRIPTION
+    │   │   ├── LICENSE
+    │   │   ├── URL
+    │   │   └── VERSION
+    │   ├── PROJECT-BREAKDOWN.md
+    │   ├── versions
+    │   │   ├── source
+    │   │   │   ├── .10.zshenv
+    │   │   │   ├── .10.zshrc
+    │   │   │   ├── .11.zshenv
+    │   │   │   ├── .11.zshrc
+    │   │   │   ├── .12.zshrc
+    │   │   │   ├── .13.zshrc
+    │   │   │   ├── .14.zshrc
+    │   │   │   ├── .15.zshrc
+    │   │   │   ├── .16.zshrc
+    │   │   │   ├── .17.zshrc
+    │   │   │   ├── .18.zshrc
+    │   │   │   ├── .19.zshrc
+    │   │   │   ├── .20.zshrc
+    │   │   │   ├── .21.zshrc
+    │   │   │   ├── .22.zshrc
+    │   │   │   ├── .23.zshrc
+    │   │   │   ├── .24.zshrc
+    │   │   │   ├── .25.zshrc
+    │   │   │   ├── .26.zshrc
+    │   │   │   ├── .27.zshrc
+    │   │   │   ├── .2.zshenv
+    │   │   │   ├── .2.zshrc
+    │   │   │   ├── .3.zshenv
+    │   │   │   ├── .3.zshrc
+    │   │   │   ├── .4.zshenv
+    │   │   │   ├── .4.zshrc
+    │   │   │   ├── .5.zshenv
+    │   │   │   ├── .5.zshrc
+    │   │   │   ├── .6.zshenv
+    │   │   │   ├── .6.zshrc
+    │   │   │   ├── .7.zshenv
+    │   │   │   ├── .7.zshrc
+    │   │   │   ├── .8.zshenv
+    │   │   │   ├── .8.zshrc
+    │   │   │   ├── .9.zshenv
+    │   │   │   ├── .9.zshrc
+    │   │   │   ├── .env.defaults
+    │   │   │   ├── .zshenv
+    │   │   │   └── .zshrc
+    │   │   └── trashinfo
+    │   │       ├── .10.zshenv.trashinfo
+    │   │       ├── .10.zshrc.d.trashinfo
+    │   │       ├── .10.zshrc.trashinfo
+    │   │       ├── .11.zshenv.trashinfo
+    │   │       ├── .11.zshrc.d.trashinfo
+    │   │       ├── .11.zshrc.trashinfo
+    │   │       ├── .12.zshrc.d.trashinfo
+    │   │       ├── .12.zshrc.trashinfo
+    │   │       ├── .13.zshrc.d.trashinfo
+    │   │       ├── .13.zshrc.trashinfo
+    │   │       ├── .14.zshrc.d.trashinfo
+    │   │       ├── .14.zshrc.trashinfo
+    │   │       ├── .15.zshrc.d.trashinfo
+    │   │       ├── .15.zshrc.trashinfo
+    │   │       ├── .16.zshrc.d.trashinfo
+    │   │       ├── .16.zshrc.trashinfo
+    │   │       ├── .17.zshrc.d.trashinfo
+    │   │       ├── .17.zshrc.trashinfo
+    │   │       ├── .18.zshrc.d.trashinfo
+    │   │       ├── .18.zshrc.trashinfo
+    │   │       ├── .19.zshrc.d.trashinfo
+    │   │       ├── .19.zshrc.trashinfo
+    │   │       ├── .20.zshrc.d.trashinfo
+    │   │       ├── .20.zshrc.trashinfo
+    │   │       ├── .21.zshrc.d.trashinfo
+    │   │       ├── .21.zshrc.trashinfo
+    │   │       ├── .22.zshrc.d.trashinfo
+    │   │       ├── .22.zshrc.trashinfo
+    │   │       ├── .23.zshrc.d.trashinfo
+    │   │       ├── .23.zshrc.trashinfo
+    │   │       ├── .24.zshrc.d.trashinfo
+    │   │       ├── .24.zshrc.trashinfo
+    │   │       ├── .25.zshrc.d.trashinfo
+    │   │       ├── .25.zshrc.trashinfo
+    │   │       ├── .26.zshrc.d.trashinfo
+    │   │       ├── .26.zshrc.trashinfo
+    │   │       ├── .27.zshrc.d.trashinfo
+    │   │       ├── .27.zshrc.trashinfo
+    │   │       ├── .28.zshrc.d.trashinfo
+    │   │       ├── .29.zshrc.d.trashinfo
+    │   │       ├── .2.zshenv.d.trashinfo
+    │   │       ├── .2.zshenv.trashinfo
+    │   │       ├── .2.zshrc.d.trashinfo
+    │   │       ├── .2.zshrc.trashinfo
+    │   │       ├── .30.zshrc.d.trashinfo
+    │   │       ├── .31.zshrc.d.trashinfo
+    │   │       ├── .32.zshrc.d.trashinfo
+    │   │       ├── .33.zshrc.d.trashinfo
+    │   │       ├── .3.zshenv.d.trashinfo
+    │   │       ├── .3.zshenv.trashinfo
+    │   │       ├── .3.zshrc.d.trashinfo
+    │   │       ├── .3.zshrc.trashinfo
+    │   │       ├── .4.zshenv.trashinfo
+    │   │       ├── .4.zshrc.d.trashinfo
+    │   │       ├── .4.zshrc.trashinfo
+    │   │       ├── .5.zshenv.trashinfo
+    │   │       ├── .5.zshrc.d.trashinfo
+    │   │       ├── .5.zshrc.trashinfo
+    │   │       ├── .6.zshenv.trashinfo
+    │   │       ├── .6.zshrc.d.trashinfo
+    │   │       ├── .6.zshrc.trashinfo
+    │   │       ├── .7.zshenv.trashinfo
+    │   │       ├── .7.zshrc.d.trashinfo
+    │   │       ├── .7.zshrc.trashinfo
+    │   │       ├── .8.zshenv.trashinfo
+    │   │       ├── .8.zshrc.d.trashinfo
+    │   │       ├── .8.zshrc.trashinfo
+    │   │       ├── .9.zshenv.trashinfo
+    │   │       ├── .9.zshrc.d.trashinfo
+    │   │       ├── .9.zshrc.trashinfo
+    │   │       ├── .env.defaults.trashinfo
+    │   │       ├── .zshenv.d-20250820_145034.trashinfo
+    │   │       ├── .zshenv.d.trashinfo
+    │   │       ├── .zshrc.d-20250820_145034.trashinfo
+    │   │       ├── .zshrc.d-20250821_053533.trashinfo
+    │   │       ├── .zshrc.d-20250821_062317.trashinfo
+    │   │       ├── .zshrc.d-20250821_062409.trashinfo
+    │   │       ├── .zshrc.d-20250821_072121.trashinfo
+    │   │       ├── .zshrc.d-20250822_112339.trashinfo
+    │   │       ├── .zshrc.d-20250822_112501.trashinfo
+    │   │       ├── .zshrc.d-20250822_113913.trashinfo
+    │   │       ├── .zshrc.d-20250822_115415.trashinfo
+    │   │       ├── .zshrc.d-20250822_140709.trashinfo
+    │   │       ├── .zshrc.d-20250822_145428.trashinfo
+    │   │       ├── .zshrc.d-20250822_145431.trashinfo
+    │   │       ├── .zshrc.d-20250822_145755.trashinfo
+    │   │       ├── .zshrc.d-20250822_154012.trashinfo
+    │   │       ├── .zshrc.d.trashinfo
+    │   │       └── .zshrc.trashinfo
+    │   └── ZBOX-MEMORY-FEATURES.md
+    ├── main.zsh
+    ├── pkgs
+    │   └── template-engine
+    │       ├── core
+    │       │   └── engine
+    │       │       ├── config_base.py
+    │       │       ├── load_services.py
+    │       │       ├── render_service.py
+    │       │       └── update_values.py
+    │       ├── .gitignore
+    │       └── src
+    │           ├── configs
+    │           │   ├── argocd.values.yaml
+    │           │   ├── gitea.values.yaml
+    │           │   ├── grafana.values.yaml
+    │           │   ├── keycloak.values.yaml
+    │           │   ├── loki.values.yaml
+    │           │   ├── nginx.values.yaml
+    │           │   ├── prometheus.values.yaml
+    │           │   ├── redis.values.yaml
+    │           │   ├── restic.values.yaml
+    │           │   └── surrealdb.values.yaml
+    │           └── templates
+    │               ├── argocd.template.yaml
+    │               ├── gitea.template.yaml
+    │               ├── grafana.template.yaml
+    │               ├── keycloak.template.yaml
+    │               ├── loki.template.yaml
+    │               ├── nginx.template.yaml
+    │               ├── prometheus.template.yaml
+    │               ├── redis.template.yaml
+    │               ├── restic.template.yaml
+    │               └── surrealdb.template.yaml
+    ├── README.md
+    ├── src
+    │   ├── agents
+    │   │   ├── gpg-agent.zsh
+    │   │   └── ssh-agent.zsh
+    │   ├── controllers
+    │   │   ├── apictr
+    │   │   │   ├── apictr.zsh
+    │   │   │   ├── api-extractor.sh
+    │   │   │   ├── install.sh
+    │   │   │   ├── README.md
+    │   │   │   ├── route.zsh
+    │   │   │   └── source.2.zsh
+    │   │   ├── envctr
+    │   │   │   ├── envctr.zsh
+    │   │   │   ├── install.rs
+    │   │   │   └── README.md
+    │   │   └── sysctr
+    │   │       ├── install.rs
+    │   │       ├── README.md
+    │   │       └── sysctr.zsh
+    │   ├── functions
+    │   │   ├── helper
+    │   │   │   ├── agent_helpers.zsh
+    │   │   │   ├── file_helpers.zsh
+    │   │   │   ├── hydration_helpers.zsh
+    │   │   │   ├── input_helpers.zsh
+    │   │   │   ├── logging_helpers.zsh
+    │   │   │   ├── memory_helpers.zsh
+    │   │   │   ├── model_helpers.zsh
+    │   │   │   ├── network_helpers.zsh
+    │   │   │   ├── output_helpers.zsh
+    │   │   │   ├── parsing_helpers.zsh
+    │   │   │   ├── README.md
+    │   │   │   ├── security_helpers.zsh
+    │   │   │   ├── system_helpers.zsh
+    │   │   │   └── validation_helpers.zsh
+    │   │   └── memory
+    │   │       ├── zbox_memory_advanced_system.zsh
+    │   │       ├── zbox_memory_integration_wrapper.zsh
+    │   │       ├── zbox_memory_management_system.zsh
+    │   │       └── zbox_postgreSQL_memory_interface.py
+    │   ├── helpers
+    │   │   ├── archive.zsh
+    │   │   ├── backup.zsh
+    │   │   ├── docker.zsh
+    │   │   ├── encryption.zsh
+    │   │   ├── github.zsh
+    │   │   ├── history.zsh
+    │   │   ├── manifest.zsh
+    │   │   ├── network.zsh
+    │   │   ├── node-manager.zsh
+    │   │   ├── nomad-integration.zsh
+    │   │   ├── profile-monitor.zsh
+    │   │   ├── quick.zsh
+    │   │   ├── resource-monitor.zsh
+    │   │   ├── search.zsh
+    │   │   ├── storage.zsh
+    │   │   ├── system.zsh
+    │   │   ├── trash.zsh
+    │   │   └── vm-manager.zsh
+    │   ├── loader.zsh
+    │   └── suites
+    │       ├── finda.zsh
+    │       ├── fixa.zsh
+    │       ├── gita.zsh
+    │       ├── nuka.zsh
+    │       ├── scana.zsh
+    │       ├── senda.zsh
+    │       ├── serva.zsh
+    │       └── siza.zsh
+    ├── TRASH-SYSTEM.md
+    ├── USAGE.md
+    ├── zbox-agent-environment.plugin.zsh
+    ├── zbox_agent_environment.zsh
+    ├── zbox-master-agent-enviroment.plugin.zsh
+    ├── zbox_path_constants.zsh
+    ├── zboxxy.zsh
+    └── zbox.zsh
+
+794 directories, 3131 files
