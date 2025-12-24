@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package agency;
+
+// Core agent communication protocol
+// Used for all agent-to-agent and agent-to-coordinator communication
+
+// ============================================================================
+// Agent Communication
+// ============================================================================
+
+message AgentRequest {
+    string request_id = 1;          // UUID for tracking
+    string from_agent = 2;          // Source agent name
+    string to_agent = 3;            // Target agent name
+    string action = 4;              // Action to perform
+    bytes payload = 5;              // Serialized action-specific data
+    int64 timestamp = 6;            // Unix timestamp (ms)
+    map<string, string> metadata = 7;  // Optional metadata
+}
+
+message AgentResponse {
+    string request_id = 1;          // Matches request
+    bool success = 2;               // Operation success
+    bytes result = 3;               // Serialized result data
+    string error = 4;               // Error message if !success
+    int64 timestamp = 5;            // Unix timestamp (ms)
+    int64 duration_ms = 6;          // Execution time
+}
+
+// ============================================================================
+// Key Management
+// ============================================================================
+
+message KeyRequest {
+    string agent_name = 1;          // Requesting agent
+    repeated string capabilities = 2;  // Requested capabilities
+    string justification = 3;       // Why these keys are needed
+}
+
+message KeyGrant {
+    string key_id = 1;              // Unique key ID
+    string agent_name = 2;          // Agent this key is for
+    repeated string capabilities = 3;  // Granted capabilities
+    int64 issued_at = 4;            // Unix timestamp
+    int64 expires_at = 5;           // Unix timestamp (0 = never)
+    bool revoked = 6;               // Has been revoked?
+}
+
+message KeyValidation {
+    string key_id = 1;              // Key to validate
+    string capability = 2;          // Capability to check
+}
+
+message ValidationResult {
+    bool valid = 1;                 // Is key valid?
+    string reason = 2;              // Why invalid (if !valid)
+}
+
+// ============================================================================
+// Agent Registration
+// ============================================================================
+
+message AgentRegistration {
+    string agent_name = 1;            // Unique agent name
+    string version = 2;               // Agent version
+    repeated string capabilities = 3; // What can this agent do?
+    map<string, string> config = 4;   // Agent configuration
+    string endpoint = 5;              // gRPC endpoint
+    int32 port = 6;                   // Port number
+}
+
+message RegistrationAck {
+    bool accepted = 1;                // Registration accepted?
+    string agent_id = 2;              // Assigned agent ID
+    string coordinator_endpoint = 3;  // Where to reach coordinator
+    string error = 4;                 // Error if !accepted
+}
+
+// ============================================================================
+// Health and Status
+// ============================================================================
+
+message HealthCheck {
+    string agent_name = 1;
+}
+
+message HealthStatus {
+    string agent_name = 1;
+    bool healthy = 2;
+    string status = 3;                // "online", "degraded", "offline"
+    int64 uptime_seconds = 4;
+    map<string, string> metrics = 5;  // Custom metrics
+}
+
+// ============================================================================
+// Agent Discovery
+// ============================================================================
+
+message DiscoveryRequest {
+    string capability = 1;          // Find agents with this capability
+    bool online_only = 2;           // Only return online agents
+}
+
+message DiscoveryResponse {
+    repeated AgentInfo agents = 1;
+}
+
+message AgentInfo {
+    string agent_name = 1;
+    string agent_id = 2;
+    repeated string capabilities = 3;
+    string endpoint = 4;
+    int32 port = 5;
+    string status = 6;              // "online", "offline"
+}
+
+// ============================================================================
+// RPC Service Definitions
+// ============================================================================
+
+service AgentCoordinator {
+    // Agent registration
+    rpc Register (AgentRegistration) returns (RegistrationAck);
+
+    // Agent communication
+    rpc SendRequest (AgentRequest) returns (AgentResponse);
+
+    // Key management
+    rpc RequestKey (KeyRequest) returns (KeyGrant);
+    rpc ValidateKey (KeyValidation) returns (ValidationResult);
+
+    // Discovery
+    rpc FindAgents (DiscoveryRequest) returns (DiscoveryResponse);
+
+    // Health
+    rpc CheckHealth (HealthCheck) returns (HealthStatus);
+}
+
+service AgentService {
+    // Every agent implements this
+    rpc Execute (AgentRequest) returns (AgentResponse);
+    rpc Health (HealthCheck) returns (HealthStatus);
+}

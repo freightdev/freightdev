@@ -1,0 +1,32 @@
+{
+  "name": "@openhwy/root",
+  "private": true,
+  "packageManager": "pnpm@10.11.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "clean": "turbo run clean && rimraf .turbo .cache && pnpm store prune && pnpm cache delete",
+    "reset": "turbo run reset && rimraf node_modules pnpm-lock.yaml",
+    "web": "pnpm --filter web dev",
+    "native": "pnpm --filter mobile start"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/react": "^19.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.2.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1"
+  }
+}

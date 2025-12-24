@@ -1,0 +1,34 @@
+{
+  "name": "@openhwy/native",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "clean": "rimraf .turbo .expo",
+    "reset": "rimraf node_modules"
+  },
+  "dependencies": {
+    "@openhwy/app": "workspace:*",
+    "@openhwy/ui": "workspace:*",
+    "expo": "52.0.38",
+    "expo-image": "~2.0.6",
+    "expo-linear-gradient": "~14.0.2",
+    "expo-linking": "~7.0.5",
+    "expo-splash-screen": "~0.29.22",
+    "expo-status-bar": "~2.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "rimraf": "^6.0.1",
+    "babel-plugin-react-compiler": "19.0.0-beta-3229e95-20250315",
+    "react-compiler-runtime": "19.0.0-beta-3229e95-20250315"
+    },
+  "expo": {
+    "install": {
+      "exclude": ["react"]
+    }
+  }
+}

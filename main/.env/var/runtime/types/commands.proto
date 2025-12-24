@@ -1,0 +1,160 @@
+syntax = "proto3";
+
+package agency.commands;
+
+// Command execution protocol
+// Used when agents need to execute system commands
+
+// ============================================================================
+// Command Execution
+// ============================================================================
+
+message CommandRequest {
+    string command = 1;                     // Command to execute
+    repeated string args = 2;               // Arguments
+    map<string, string> env = 3;            // Environment variables
+    string working_dir = 4;                 // Working directory
+    int32 timeout_seconds = 5;              // Timeout (0 = no timeout)
+    bool capture_output = 6;                // Capture stdout/stderr
+}
+
+message CommandResponse {
+    int32 exit_code = 1;                    // Exit code
+    string stdout = 2;                      // Standard output
+    string stderr = 3;                      // Standard error
+    int64 execution_time_ms = 4;            // Execution time
+    bool timed_out = 5;                     // Did it timeout?
+    string error = 6;                       // Error if failed to start
+}
+
+// ============================================================================
+// File Operations
+// ============================================================================
+
+message FileReadRequest {
+    string path = 1;                        // File path
+    int64 offset = 2;                       // Byte offset (0 = start)
+    int64 limit = 3;                        // Bytes to read (0 = all)
+}
+
+message FileReadResponse {
+    bytes content = 1;                      // File content
+    int64 bytes_read = 2;                   // Bytes actually read
+    string error = 3;                       // Error if failed
+}
+
+message FileWriteRequest {
+    string path = 1;                        // File path
+    bytes content = 2;                      // Content to write
+    bool append = 3;                        // Append or overwrite
+    int32 permissions = 4;                  // Unix permissions (e.g., 0644)
+}
+
+message FileWriteResponse {
+    int64 bytes_written = 1;                // Bytes written
+    string error = 2;                       // Error if failed
+}
+
+message FileListRequest {
+    string path = 1;                        // Directory path
+    bool recursive = 2;                     // Recursive listing
+    int32 max_depth = 3;                    // Max recursion depth
+    string pattern = 4;                     // Glob pattern filter
+}
+
+message FileEntry {
+    string path = 1;                        // Full path
+    string name = 2;                        // File/dir name
+    bool is_dir = 3;                        // Is directory?
+    int64 size = 4;                         // Size in bytes
+    int64 modified = 5;                     // Last modified (Unix timestamp)
+    int32 permissions = 6;                  // Unix permissions
+}
+
+message FileListResponse {
+    repeated FileEntry entries = 1;
+    string error = 2;                       // Error if failed
+}
+
+// ============================================================================
+// Process Management
+// ============================================================================
+
+message ProcessStartRequest {
+    string command = 1;                     // Command to start
+    repeated string args = 2;               // Arguments
+    map<string, string> env = 3;            // Environment
+    string working_dir = 4;                 // Working directory
+    bool background = 5;                    // Run in background?
+}
+
+message ProcessStartResponse {
+    int32 pid = 1;                          // Process ID
+    string error = 2;                       // Error if failed
+}
+
+message ProcessStopRequest {
+    int32 pid = 1;                          // Process to stop
+    bool force = 2;                         // Force kill?
+}
+
+message ProcessStopResponse {
+    bool stopped = 1;                       // Successfully stopped?
+    string error = 2;                       // Error if failed
+}
+
+message ProcessStatusRequest {
+    int32 pid = 1;                          // Process to check
+}
+
+message ProcessStatusResponse {
+    bool running = 1;                       // Is running?
+    int32 exit_code = 2;                    // Exit code (if !running)
+    int64 uptime_seconds = 3;               // Uptime (if running)
+    double cpu_percent = 4;                 // CPU usage
+    int64 memory_bytes = 5;                 // Memory usage
+}
+
+// ============================================================================
+// Network Operations
+// ============================================================================
+
+message HttpRequest {
+    string method = 1;                      // GET, POST, etc.
+    string url = 2;                         // URL
+    map<string, string> headers = 3;        // HTTP headers
+    bytes body = 4;                         // Request body
+    int32 timeout_seconds = 5;              // Timeout
+}
+
+message HttpResponse {
+    int32 status_code = 1;                  // HTTP status code
+    map<string, string> headers = 2;        // Response headers
+    bytes body = 3;                         // Response body
+    int64 duration_ms = 4;                  // Request duration
+    string error = 5;                       // Error if failed
+}
+
+// ============================================================================
+// Service Definitions
+// ============================================================================
+
+service CommandExecutor {
+    rpc Execute (CommandRequest) returns (CommandResponse);
+}
+
+service FileOperations {
+    rpc Read (FileReadRequest) returns (FileReadResponse);
+    rpc Write (FileWriteRequest) returns (FileWriteResponse);
+    rpc List (FileListRequest) returns (FileListResponse);
+}
+
+service ProcessManager {
+    rpc Start (ProcessStartRequest) returns (ProcessStartResponse);
+    rpc Stop (ProcessStopRequest) returns (ProcessStopResponse);
+    rpc Status (ProcessStatusRequest) returns (ProcessStatusResponse);
+}
+
+service HttpClient {
+    rpc Request (HttpRequest) returns (HttpResponse);
+}

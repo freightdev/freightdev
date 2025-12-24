@@ -1,0 +1,28 @@
+# Location: ~/.docker/container/open-webui/docker-compose.yml
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "${WEBUI_PORT:-3000}:8080"
+    volumes:
+      - open-webui-data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URLS=${OLLAMA_BASE_URLS}
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-true}
+      - DEFAULT_USER_ROLE=${DEFAULT_USER_ROLE:-user}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - webui-network
+
+volumes:
+  open-webui-data:
+    driver: local
+
+networks:
+  webui-network:
+    driver: bridge

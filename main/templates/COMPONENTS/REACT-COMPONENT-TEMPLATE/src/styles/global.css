@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --color-background: 11 0 20;
+  --color-foreground: 255 255 255;
+  --color-accent: 255 79 216;
+  --color-primary: 225 0 255;
+  --color-muted: 160 160 160;
+}
+
+.dark {
+  --color-background: 11 0 20;
+  --color-foreground: 255 255 255;
+}

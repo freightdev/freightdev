@@ -1,0 +1,164 @@
+# AI Agency Agent Configuration Template
+# Copy this file to your agent directory as config.toml
+
+[agent]
+name = "agent_name"              # Unique agent identifier
+version = "1.0.0"                # Semantic versioning
+description = "Agent description"
+port = 9000                      # Port to listen on
+
+[capabilities]
+# What this agent can do (used for discovery and routing)
+web_search = false
+web_fetch = false
+file_read = false
+file_write = false
+command_exec = false
+database_query = false
+ai_inference = false
+image_processing = false
+pdf_manipulation = false
+
+[rules]
+# Operational rules and constraints
+
+# Network access
+allowed_domains = ["*"]          # "*" means all domains
+blocked_domains = []             # Blacklist specific domains
+rate_limit_per_domain = "10/min"  # Rate limiting
+
+# File system access
+allowed_paths = ["/tmp", "/home/admin/WORKSPACE"]
+blocked_paths = ["/etc", "/sys", "/proc"]
+max_file_size_mb = 100
+
+# Command execution
+allowed_commands = ["ls", "cat", "grep", "find"]
+blocked_commands = ["rm", "dd", "mkfs"]
+command_timeout_seconds = 30
+
+# Resource limits
+max_concurrent_requests = 10
+max_memory_mb = 512
+max_cpu_percent = 50
+
+# Logging and audit
+log_all_requests = true
+log_level = "info"               # debug, info, warn, error
+audit_critical_operations = true
+
+[tools]
+# Internal tools (in tools/ directory)
+internal = []
+# Example: internal = ["web_search.py", "parser.py", "formatter.rs"]
+
+# External tools (request from command coordinator)
+external = []
+# Example: external = ["curl", "wget", "jq", "sqlite3"]
+
+[communication]
+# How this agent communicates
+
+protocol = "grpc"                # grpc, http, or messagepack
+coordinator_address = "localhost:50051"
+health_check_interval_seconds = 30
+heartbeat_interval_seconds = 60
+
+# TLS configuration (optional)
+# tls_cert = "/path/to/cert.pem"
+# tls_key = "/path/to/key.pem"
+# tls_ca = "/path/to/ca.pem"
+
+[routing]
+# Where to send specific types of requests
+
+# When this agent needs database access, route to:
+database_writes = "database_manager"
+database_reads = "database_manager"
+
+# When this agent needs file operations, route to:
+file_operations = "file_handler"
+
+# When this agent needs to send notifications, route to:
+notifications = "messaging_service"
+
+# When this agent needs command execution, route to:
+command_execution = "coordinator"
+
+[storage]
+# Where this agent stores data
+
+# Local storage
+local_cache_dir = "/var/cache"
+local_data_dir = "/var/state/data"
+
+# Database connection (if applicable)
+# database_url = "postgresql://user:pass@localhost/dbname"
+
+# Redis connection (for caching/state)
+# redis_url = "redis://localhost:6379"
+
+[performance]
+# Performance tuning
+
+# Connection pooling
+max_connections = 100
+min_connections = 10
+connection_timeout_seconds = 5
+
+# Caching
+enable_cache = true
+cache_ttl_seconds = 300
+max_cache_size_mb = 100
+
+# Async settings
+worker_threads = 4
+blocking_threads = 16
+
+[security]
+# Security settings
+
+# API keys (if this agent needs to call external APIs)
+# api_keys = { brave = "sk-...", openai = "sk-..." }
+
+# Allowed IP ranges (if restricting access)
+# allowed_ips = ["127.0.0.1", "192.168.1.0/24"]
+
+# Authentication
+require_auth = false
+# auth_token = "secret-token"
+
+[monitoring]
+# Monitoring and metrics
+
+enable_metrics = true
+metrics_port = 9090              # Prometheus metrics port
+enable_tracing = false
+# tracing_endpoint = "localhost:4317"  # OpenTelemetry collector
+
+[startup]
+# Startup behavior
+
+auto_register = true             # Auto-register with coordinator
+wait_for_coordinator = true      # Wait for coordinator before starting
+retry_registration = true        # Retry if registration fails
+max_retries = 5
+retry_delay_seconds = 5
+
+[dependencies]
+# Other agents this agent depends on
+required_agents = []
+# Example: required_agents = ["database_manager", "file_ops"]
+
+optional_agents = []
+# Example: optional_agents = ["messaging_service"]
+
+[features]
+# Feature flags
+experimental_features = false
+debug_mode = false
+verbose_logging = false
+
+[custom]
+# Agent-specific custom configuration
+# Add any custom fields your agent needs

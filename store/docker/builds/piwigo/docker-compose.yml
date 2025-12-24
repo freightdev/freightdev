@@ -1,0 +1,36 @@
+services:
+  piwigo-db:
+    image: mariadb:11
+    container_name: piwigo-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./piwigo-db:/var/lib/mysql
+    networks:
+      - piwigo-network
+
+  piwigo:
+    image: linuxserver/piwigo:latest
+    container_name: piwigo
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./piwigo-config:/config
+      - ./piwigo-gallery:/gallery
+    ports:
+      - "${PIWIGO_PORT}:80"
+    depends_on:
+      - piwigo-db
+    networks:
+      - piwigo-network
+
+networks:
+  piwigo-network:
+    driver: bridge

@@ -1,0 +1,53 @@
+services:
+  openhands:
+    image: ghcr.io/all-hands-ai/openhands:latest
+    container_name: openhands-app
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount Docker socket to allow OpenHands to create containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Persist OpenHands configuration and data
+      - ./openhands_data:/home/host/.openhands
+      # Optional: Mount your workspace directory
+      - ./workspace:/srv/workspace
+    environment:
+      # Runtime container image for sandbox
+      - SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.14-nikolaik
+
+      # Optional: Set your LLM API keys here (or configure in UI)
+      # - LLM_API_KEY=your-api-key-here
+      # - LLM_MODEL=your-model-name-here
+
+      # Optional: Ollama configuration (if using local models)
+      - LLM_BASE_URL=http://host.docker.internal:11434
+      - LLM_MODEL=codellama:13b
+
+      # Log level (debug, info, warning, error)
+      - LOG_LEVEL=info
+    extra_hosts:
+      # Allows container to access host services (like Ollama)
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    networks:
+      - openhands-network
+
+  # Optional: Include Ollama service if you want fully local setup
+  # ollama:
+  #  image: ollama/ollama:latest
+  #  container_name: ollama
+  #  ports:
+  #    - "11434:11434"
+  #  volumes:
+  #    - ./ollama_data:/home/host/.ollama
+  #  restart: unless-stopped
+  #  networks:
+  #    - openhands-network
+
+networks:
+  openhands-network:
+    driver: bridge
+
+volumes:
+  openhands_data:
+  workspace:
